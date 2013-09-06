@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root:config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-servlet">
+	<!-- 框架配置 -->
+	<hasor>
+		<!-- 包扫描覆盖范围，逗号间隔（支持重复配置共同生效） -->
+		<loadPackages>net.hasor.mvc.*,net.hasor.servlet.*</loadPackages>
+		<!-- （仅在启动时生效）Web部分的配置 -->
+		<httpServlet>
+			<!-- Web请求遇到异常后轮询errorHook的次数。 -->
+			<errorCaseCount>1</errorCaseCount>
+			<!-- 请求响应编码设置 -->
+			<requestEncoding requestEncoding="utf-8" responseEncoding="utf-8" />
+		</httpServlet>
+	</hasor>
+	<environmentVar>
+		<!-- 资源缓存路径 -->
+		<HTTP_CACHE_PATH>%HASOR_WORK_HOME%/cache/httpservlet.resourceloader.classpath</HTTP_CACHE_PATH>
+	</environmentVar>
+	<!-- Hasor MVC，不支持跟随配置文件动态更新配置。 -->
+	<hasor-mvc>
+		<!-- Action配置，defaultProduces 默认响应类型 ;模式：mode:RestOnly（rest风格）、ServletOnly（中央servlet）、Both（两者同时使用） -->
+		<actionServlet workMode="Both" intercept="*.do" defaultProduces="*/*">
+			<!-- 方法忽略的方法（逗号分割多组方法名），注意：在这里配置的忽略会应用到所有action上（支持重复配置共同生效） -->
+			<ignoreMethod>equals,hashCode,toString,getClass,wait,notify,notifyAll</ignoreMethod>
+		</actionServlet>
+		<!-- 资源装载器 -->
+		<resourceLoader enable="false" contentTypes="js,css,gif,ico,jpg,jpeg,png,swf,swc,flv,mp3,wav,avi">
+			<!-- <zipLoader>{HASOR_WEBROOT}/pic.zip</zipLoader> -->
+			<!-- **需要配置，否则会导致资源装载器反复尝试从loader中装载** -->
+			<pathLoader>%HASOR_WEBROOT%/</pathLoader>
+			<classpathLoader>/META-INF/webapp</classpathLoader>
+		</resourceLoader>
+	</hasor-mvc>
+</root:config>

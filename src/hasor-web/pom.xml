@@ -8,13 +8,13 @@
 
 	<!-- Maven Info -->
 	<groupId>org.hasor</groupId>
-	<artifactId>hasor-core</artifactId>
+	<artifactId>hasor-web</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<!-- Project Info -->
-	<name>Hasor-Core</name>
-	<description>the hasor core project.</description>
+	<name>Hasor-Web</name>
+	<description>the Hasor Web project.</description>
 
 	<developers>
 		<developer>
@@ -25,17 +25,20 @@
 
 	<!-- 引用依赖 -->
 	<dependencies>
-		<!-- Log -->
+		<!-- Hasor-Core -->
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
+			<groupId>org.hasor</groupId>
+			<artifactId>hasor-core</artifactId>
+			<version>0.0.1</version>
 		</dependency>
-		<!-- Guice3 -->
+
+
+		<!-- J2EE -->
 		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>3.0</version>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
 		</dependency>
 		<!-- JSR-173 for JDK 1.5 -->
 		<dependency>
