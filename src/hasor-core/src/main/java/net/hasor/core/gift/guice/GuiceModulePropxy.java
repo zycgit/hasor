@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.module;
+package net.hasor.core.gift.guice;
 import net.hasor.Hasor;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
