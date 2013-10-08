@@ -18,8 +18,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.hasor.core.AppContext;
 /**
- * 标记一个Bean。
+ * 标记当前类为一个 注册Bean，必须为该Bean起一个名字。
+ * 当容器启动之后可以通过{@link AppContext#getBean(String)}方法取得该类的实例。
  * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
