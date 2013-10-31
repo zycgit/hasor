@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.resource;
-import java.io.IOException;
-import java.io.InputStream;
+package net.hasor.gift.resource;
+import net.hasor.core.AppContext;
 /**
  * 
- * @version : 2013-6-6
- * @author 赵永春 (zyc@hasor.net)
+ * @version : 2013-10-29
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface ResourceLoader {
-    /**装载指定资源。*/
-    public InputStream getResourceAsStream(String resourcePath) throws IOException;
-    /**装载指定资源。*/
-    public void close(Object resource) throws IOException;
-    /**测试资源是否可能被改变。*/
-    public boolean canModify(String resourcePath) throws IOException;
-    /**测试资源是否存在。*/
-    public boolean exist(String resourcePath) throws IOException;
+public interface ResourceLoaderFactory {
+    public ResourceLoader[] loaderArray(AppContext appContext);
 }
