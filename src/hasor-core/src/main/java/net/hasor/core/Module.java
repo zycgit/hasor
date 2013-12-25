@@ -20,7 +20,7 @@ package net.hasor.core;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface Module {
-    /**初始化过程。*/
+    /**初始化过程，注意：apiBinder 参数只能在 init 阶段中使用。*/
     public void init(ApiBinder apiBinder);
     /**启动信号*/
     public void start(AppContext appContext);
