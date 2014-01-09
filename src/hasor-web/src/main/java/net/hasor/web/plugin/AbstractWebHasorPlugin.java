@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.plugin;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
 import net.hasor.core.plugin.AbstractHasorPlugin;
+import net.hasor.web.WebApiBinder;
 /**
  * 
  * @version : 2013-11-4
