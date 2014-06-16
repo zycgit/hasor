@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.plugin;
-import net.hasor.core.ApiBinder;
+package net.hasor.core.binder.aop;
+import java.lang.reflect.Method;
+import org.aopalliance.intercept.MethodInterceptor;
 /**
- * 插件接口
- * @version : 2013-11-4
- * @author 赵永春(zyc@hasor.net)
+ * 
+ * @version : 2014年5月22日
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface HasorPlugin {
-    /**处理插件的初始化*/
-    public void loadPlugin(ApiBinder apiBinder) throws Throwable;
+public interface AopMatcherMethodInterceptor extends MethodInterceptor {
+    /**匹配类型*/
+    public boolean matcher(Class<?> targetClass);
+    /**匹配方法*/
+    public boolean matcher(Method targetMethod);
 }

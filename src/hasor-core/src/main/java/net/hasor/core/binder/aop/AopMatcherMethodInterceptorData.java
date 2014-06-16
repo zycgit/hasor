@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
+package net.hasor.core.binder.aop;
 import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder.Matcher;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -23,12 +23,12 @@ import org.aopalliance.intercept.MethodInvocation;
  * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */
-class AopMatcherRegisterData implements AopMatcherRegister {
+public class AopMatcherMethodInterceptorData implements AopMatcherMethodInterceptor {
     private Matcher<Class<?>> matcherClass  = null;
     private Matcher<Method>   matcherMethod = null;
     private MethodInterceptor interceptor   = null;
     //
-    public AopMatcherRegisterData(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
+    public AopMatcherMethodInterceptorData(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
         this.matcherClass = matcherClass;
         this.matcherMethod = matcherMethod;
         this.interceptor = interceptor;

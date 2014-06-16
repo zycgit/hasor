@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import java.lang.reflect.Method;
-import org.aopalliance.intercept.MethodInterceptor;
+package net.hasor.core.binder.aop;
 /**
  * 
  * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface AopMatcherRegister extends MethodInterceptor {
-    /**匹配类型*/
-    public boolean matcher(Class<?> targetClass);
-    /**匹配方法*/
-    public boolean matcher(Method targetMethod);
+public interface AopConst {
+    /**表示装配Aop*/
+    public final static String AopAssembly = "AopAssembly";
 }
