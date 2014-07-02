@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.context._;
+import java.util.Iterator;
+import net.hasor.core.RegisterInfo;
 /**
  * 
  * @version : 2014-3-17
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RegisterInfo<T> {
-    /**为类型绑定的名称。*/
-    public String getName();
-    /**获取注册的类型*/
-    public Class<T> getType();
-    /**获取元信息。*/
-    public Object getMetaData(String key);
+public interface BeanFactory {
+    /**创建Bean*/
+    public <T> T getInstance(RegisterInfo<T> oriType);
+    /**获取所有注册Bean的迭代器*/
+    public Iterator<RegisterInfo<?>> getRegisterIterator();
+    /**获取制定类型注册Bean的迭代器*/
+    public <T> Iterator<RegisterInfo<T>> getRegisterIterator(Class<T> type);
 }

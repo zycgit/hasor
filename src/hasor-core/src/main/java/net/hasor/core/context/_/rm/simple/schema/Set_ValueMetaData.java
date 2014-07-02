@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2009 the original 赵永春(zyc@hasor.net).
+ * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.context._.rm.simple.schema;
+import java.util.Set;
 /**
- * 
- * @version : 2014-3-17
- * @author 赵永春(zyc@hasor.net)
+ * 表示一个{@link Set}类型的值元信息描述。
+ * @version 2010-9-17
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface RegisterInfo<T> {
-    /**为类型绑定的名称。*/
-    public String getName();
-    /**获取注册的类型*/
-    public Class<T> getType();
-    /**获取元信息。*/
-    public Object getMetaData(String key);
+public class Set_ValueMetaData extends Collection_ValueMetaData<ValueMetaData> {
+    /**返回{@link PropertyType#Array}*/
+    @Override
+    public String getType() {
+        return PropertyType.Set.value();
+    }
 }
