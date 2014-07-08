@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.factorys.hasor;
-import net.hasor.core.RegisterInfo;
-import net.hasor.core.context.factorys.AbstractRegisterFactory;
-import net.hasor.core.context.factorys.AbstractRegisterInfoAdapter;
+package net.hasor.core.binder;
+import net.hasor.core.Provider;
 /**
- * 
- * @version : 2014年7月4日
+ * 实体类型的Provider代理
+ * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HasorRegisterFactory extends AbstractRegisterFactory {
-    protected <T> AbstractRegisterInfoAdapter<T> createRegisterInfoAdapter(Class<T> bindType) {
-        // TODO Auto-generated method stub
-        return null;
+public class InstanceProvider<T> implements Provider<T> {
+    private T instance = null;
+    public InstanceProvider(T instance) {
+        this.instance = instance;
     }
-    protected <T> T newInstance(RegisterInfo<T> oriType) {
-        // TODO Auto-generated method stub
-        return null;
+    public T get() {
+        return this.instance;
     }
 }
