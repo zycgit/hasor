@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.restful.support;
+package net.hasor.mvc.support;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -32,8 +32,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import net.hasor.core.AppContext;
-import net.hasor.mvc.restful.Path;
-import net.hasor.mvc.restful.RestfulService;
+import net.hasor.mvc.web.restful.Path;
+import net.hasor.mvc.web.restful.RestfulService;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.util.BeanUtils;
 /**
@@ -42,7 +42,7 @@ import org.more.util.BeanUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 class RestfulController implements Filter {
-    private RestfulInvokeDefine[] invokeArray = null;
+    private MappingDefine[] invokeArray = null;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         AppContext appContext = RuntimeListener.getLocalAppContext();
@@ -50,21 +50,21 @@ class RestfulController implements Filter {
         if (controllerSet == null)
             return;
         //1.注册服务
-        ArrayList<RestfulInvokeDefine> restfulList = new ArrayList<RestfulInvokeDefine>();
+        ArrayList<MappingDefine> restfulList = new ArrayList<MappingDefine>();
         for (Class<?> controllerType : controllerSet) {
             List<Method> actionMethods = BeanUtils.getMethods(controllerType);
             for (Method targetMethod : actionMethods) {
                 if (targetMethod.getAnnotation(Path.class) == null)
                     continue;
-                restfulList.add(new RestfulInvokeDefine(appContext, targetMethod));
+                restfulList.add(new MappingDefine(appContext, targetMethod));
             }
         }
-        Collections.sort(restfulList, new Comparator<RestfulInvokeDefine>() {
-            public int compare(RestfulInvokeDefine o1, RestfulInvokeDefine o2) {
+        Collections.sort(restfulList, new Comparator<MappingDefine>() {
+            public int compare(MappingDefine o1, MappingDefine o2) {
                 return o1.getRestfulMapping().compareToIgnoreCase(o2.getRestfulMapping()) * -1;
             }
         });
-        this.invokeArray = restfulList.toArray(new RestfulInvokeDefine[restfulList.size()]);
+        this.invokeArray = restfulList.toArray(new MappingDefine[restfulList.size()]);
     }
     public void destroy() {}
     //
@@ -74,7 +74,7 @@ class RestfulController implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         String actionPath = request.getRequestURI().substring(request.getContextPath().length());
         //1.获取 ActionInvoke
-        RestfulInvokeDefine define = this.getRestfulInvoke(request.getMethod(), actionPath);
+        MappingDefine define = this.getRestfulInvoke(request.getMethod(), actionPath);
         if (define == null) {
             chain.doFilter(request, resp);
             return;
@@ -82,8 +82,8 @@ class RestfulController implements Filter {
         //3.执行调用
         this.doInvoke(define, request, resp);
     }
-    private RestfulInvokeDefine getRestfulInvoke(String httpMethod, String requestPath) {
-        for (RestfulInvokeDefine restAction : this.invokeArray) {
+    private MappingDefine getRestfulInvoke(String httpMethod, String requestPath) {
+        for (MappingDefine restAction : this.invokeArray) {
             if (requestPath.matches(restAction.getRestfulMappingMatches()) == true) {
                 if (restAction.matchingMethod(httpMethod))
                     return restAction;
@@ -91,7 +91,7 @@ class RestfulController implements Filter {
         }
         return null;
     }
-    private void doInvoke(RestfulInvokeDefine define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+    private void doInvoke(MappingDefine define, ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         try {
             RestfulInvoke invoke = define.createIvnoke();
             invoke.initHttp((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse);//初始化
@@ -116,7 +116,7 @@ class RestfulController implements Filter {
     public RequestDispatcher getRequestDispatcher(final String newRequestUri, final HttpServletRequest request) {
         // TODO 需要检查下面代码是否符合Servlet规范（带request参数情况下也需要检查）
         //1.拆分请求字符串
-        final RestfulInvokeDefine define = getRestfulInvoke(request.getMethod(), newRequestUri);
+        final MappingDefine define = getRestfulInvoke(request.getMethod(), newRequestUri);
         if (define == null)
             return null;
         //

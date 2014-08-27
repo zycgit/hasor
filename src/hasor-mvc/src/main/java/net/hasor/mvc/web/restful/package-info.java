@@ -13,14 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Module;
-/***
- * 创建WebMVC环境
- * @version : 2014-1-13
- * @author 赵永春(zyc@hasor.net)
+/**
+ * <p>Web 插件，为 Web 下 Restful 风格 MVC 开发提供支持。</p>
  */
-public class ControllerModule implements Module {
-    public void loadModule(ApiBinder apiBinder) throws Throwable {}
-}
+package net.hasor.mvc.web.restful;

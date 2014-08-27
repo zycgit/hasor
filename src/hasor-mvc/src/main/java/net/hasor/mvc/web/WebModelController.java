@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.controller;
+package net.hasor.mvc.web;
 import java.util.Enumeration;
 import java.util.Map;
 import javax.servlet.http.Cookie;
@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import net.hasor.core.AppContext;
+import net.hasor.mvc.ModelController;
 import net.hasor.web.startup.RuntimeFilter;
 /**
  * Controller
@@ -32,7 +33,7 @@ import net.hasor.web.startup.RuntimeFilter;
  * @author JFinal
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractController {
+public abstract class WebModelController extends ModelController {
     /** Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller */
     public HttpServletRequest getRequest() {
         return RuntimeFilter.getLocalRequest();
@@ -58,17 +59,17 @@ public abstract class AbstractController {
     }
     // --------
     /**设置{@link HttpServletRequest}属性*/
-    public AbstractController putAtt(String attKey, Object attValue) {
+    public WebModelController putAtt(String attKey, Object attValue) {
         this.getRequest().setAttribute(attKey, attValue);
         return this;
     }
     /**设置{@link HttpServletResponse}Header属性*/
-    public AbstractController setHeader(String key, String value) {
+    public WebModelController setHeader(String key, String value) {
         this.getResponse().setHeader(key, value);
         return this;
     }
     /**设置{@link HttpServletResponse}Header属性*/
-    public AbstractController addHeader(String key, String value) {
+    public WebModelController addHeader(String key, String value) {
         this.getResponse().addHeader(key, value);
         return this;
     }
@@ -77,7 +78,7 @@ public abstract class AbstractController {
      * @param name a String specifying the name of the attribute
      * @param value the Object to be stored
      */
-    public AbstractController setAttr(String name, Object value) {
+    public WebModelController setAttr(String name, Object value) {
         this.getRequest().setAttribute(name, value);
         return this;
     }
@@ -85,7 +86,7 @@ public abstract class AbstractController {
      * Removes an attribute from this request
      * @param name a String specifying the name of the attribute to remove
      */
-    public AbstractController removeAttr(String name) {
+    public WebModelController removeAttr(String name) {
         this.getRequest().removeAttribute(name);
         return this;
     }
@@ -93,7 +94,7 @@ public abstract class AbstractController {
      * Stores attributes in this request, key of the map as attribute name and value of the map as attribute value
      * @param attrMap key and value as attribute of the map to be stored
      */
-    public AbstractController setAttrs(Map<String, Object> attrMap) {
+    public WebModelController setAttrs(Map<String, Object> attrMap) {
         for (Map.Entry<String, Object> entry : attrMap.entrySet())
             this.getRequest().setAttribute(entry.getKey(), entry.getValue());
         return this;
@@ -282,7 +283,7 @@ public abstract class AbstractController {
      * @param key a String specifying the key of the Object stored in session
      * @param value a Object specifying the value stored in session
      */
-    public AbstractController setSessionAttr(String key, Object value) {
+    public WebModelController setSessionAttr(String key, Object value) {
         this.getRequest().getSession(true).setAttribute(key, value);
         return this;
     }
@@ -290,7 +291,7 @@ public abstract class AbstractController {
      * Remove Object in session.
      * @param key a String specifying the key of the Object stored in session
      */
-    public AbstractController removeSessionAttr(String key) {
+    public WebModelController removeSessionAttr(String key) {
         HttpSession session = this.getRequest().getSession(false);
         if (session != null)
             session.removeAttribute(key);
@@ -340,7 +341,7 @@ public abstract class AbstractController {
         return result != null ? result : new Cookie[0];
     }
     /** Set Cookie to response. */
-    public AbstractController setCookie(Cookie cookie) {
+    public WebModelController setCookie(Cookie cookie) {
         this.getResponse().addCookie(cookie);
         return this;
     }
@@ -351,7 +352,7 @@ public abstract class AbstractController {
      * @param maxAgeInSeconds -1: clear cookie when close browser. 0: clear cookie immediately.  n>0 : max age in n seconds.
      * @param path see Cookie.setPath(String)
      */
-    public AbstractController setCookie(String name, String value, int maxAgeInSeconds, String path) {
+    public WebModelController setCookie(String name, String value, int maxAgeInSeconds, String path) {
         setCookie(name, value, maxAgeInSeconds, path, null);
         return this;
     }
@@ -363,7 +364,7 @@ public abstract class AbstractController {
      * @param path see Cookie.setPath(String)
      * @param domain the domain name within which this cookie is visible; form is according to RFC 2109
      */
-    public AbstractController setCookie(String name, String value, int maxAgeInSeconds, String path, String domain) {
+    public WebModelController setCookie(String name, String value, int maxAgeInSeconds, String path, String domain) {
         Cookie cookie = new Cookie(name, value);
         if (domain != null)
             cookie.setDomain(domain);
@@ -373,22 +374,22 @@ public abstract class AbstractController {
         return this;
     }
     /** Set Cookie with path = "/". */
-    public AbstractController setCookie(String name, String value, int maxAgeInSeconds) {
+    public WebModelController setCookie(String name, String value, int maxAgeInSeconds) {
         setCookie(name, value, maxAgeInSeconds, "/", null);
         return this;
     }
     /** Remove Cookie with path = "/". */
-    public AbstractController removeCookie(String name) {
+    public WebModelController removeCookie(String name) {
         setCookie(name, null, 0, "/", null);
         return this;
     }
     /** Remove Cookie. */
-    public AbstractController removeCookie(String name, String path) {
+    public WebModelController removeCookie(String name, String path) {
         setCookie(name, null, 0, path, null);
         return this;
     }
     /** Remove Cookie. */
-    public AbstractController removeCookie(String name, String path, String domain) {
+    public WebModelController removeCookie(String name, String path, String domain) {
         setCookie(name, null, 0, path, domain);
         return this;
     }
