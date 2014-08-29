@@ -19,4 +19,4 @@ package net.hasor.mvc;
  * @version : 2013-8-14
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class ModelController {}
+public interface ModelController {}

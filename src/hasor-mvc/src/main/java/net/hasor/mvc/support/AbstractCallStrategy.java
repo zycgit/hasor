@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.web.restful;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.mvc.support;
 /**
- * 请求头的中的值
- * @version : 2013-5-9
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2014年8月27日
+ * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.PARAMETER })
-@Documented
-public @interface HeaderParam {
-    /**参数名称。*/
-    public String value();
+public abstract class AbstractCallStrategy implements CallStrategy {
+    public final Object exeCall(Call call) throws Throwable {
+        Object[] args = this.resolveParams(call);
+        return this.returnCallBack(call.call(args), call);
+    }
+    /**处理 @Produces 注解。*/
+    protected Object returnCallBack(Object returnData, Call call) {
+        return returnData;
+    }
+    /**准备参数*/
+    protected abstract Object[] resolveParams(Call call) throws Throwable;
 }

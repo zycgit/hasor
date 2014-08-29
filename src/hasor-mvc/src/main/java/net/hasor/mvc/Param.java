@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.mvc;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * <p>Web 插件，为 Web 下 Restful 风格 MVC 开发提供支持。</p>
+ * 映射参数值
+ * @version : 2013-5-9
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.mvc.web.restful;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.PARAMETER })
+@Documented
+public @interface Param {
+    /**参数名称。*/
+    public String value();
+}
