@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.result;
-import net.hasor.mvc.support.Call;
+package net.hasor.mvc.support;
 /**
- * 
- * @version : 2014年8月29日
- * @author 赵永春(zyc@hasor.net)
+ * Controller
+ * @version : 2013-8-14
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface ResultProcess {
-    public Object returnData(Object returnData, Call call) throws Throwable;
+public interface FindMapping {
+    public boolean matching(MappingDefine invoke);
 }

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.result;
+package net.hasor.mvc.strategy;
 import net.hasor.mvc.support.Call;
 /**
  * 
- * @version : 2014年8月29日
+ * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ResultProcess {
-    public Object returnData(Object returnData, Call call) throws Throwable;
+public interface CallStrategy {
+    public Object exeCall(Call call) throws Throwable;
 }

@@ -13,21 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.support;
+package net.hasor.mvc.around;
 /**
- * 
- * @version : 2014年8月27日
+ * 切点
+ * @version : 2014年8月29日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractCallStrategy implements CallStrategy {
-    public final Object exeCall(Call call) throws Throwable {
-        Object[] args = this.resolveParams(call);
-        return this.returnCallBack(call.call(args), call);
-    }
-    /**处理 @Produces 注解。*/
-    protected Object returnCallBack(Object returnData, Call call) {
-        return returnData;
-    }
-    /**准备参数*/
-    protected abstract Object[] resolveParams(Call call) throws Throwable;
+public interface AroundInterceptor {
+    public Object invoke(AroundPoint invocation) throws Throwable;
 }

@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.mvc.result.ext;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.mvc.around;
+import net.hasor.mvc.support.Call;
 /**
- * 服务端转发
- * @version : 2013-6-5
- * @author 赵永春 (zyc@hasor.net)
+ * 切点
+ * @version : 2014年8月29日
+ * @author 赵永春(zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface Forword {}
+public interface AroundPoint {
+    public Object doCall(Call call) throws Throwable;
+}
