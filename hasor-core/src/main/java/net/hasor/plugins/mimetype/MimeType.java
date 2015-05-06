@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
-import java.util.EventListener;
+package net.hasor.plugins.mimetype;
 /**
- * 配置文件重载事件监听器
- * @version : 2013-4-18
- * @author 赵永春 (zyc@hasor.net)
+ * 
+ * @version : 2015年2月11日
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface SettingsListener extends EventListener {
-    /**
-     * 当接收到配置文件重载事件时触发该方法。
-     * @param newConfig 新加载的配置。
-     */
-    public void reload(Settings newConfig);
+public interface MimeType {
+    /**获取MimeType类型*/
+    public String getMimeType(String suffix);
 }

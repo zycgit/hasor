@@ -13,25 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.mime;
-import javax.servlet.ServletContext;
-import org.more.util.StringUtils;
+package net.hasor.plugins.resource;
+import net.hasor.core.AppContext;
 /**
  * 
- * @version : 2015年2月11日
+ * @version : 2013-10-29
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerMimeTypeWebContext extends InnerMimeTypeContext {
-    private static final long serialVersionUID = -174159036966050326L;
-    private ServletContext    sc               = null;
-    public InnerMimeTypeWebContext(Object content) {
-        super(content);
-        this.sc = (ServletContext) content;
-    }
-    public String getMimeType(String suffix) {
-        String mimeType = sc.getMimeType(suffix);
-        if (StringUtils.isBlank(mimeType) == false)
-            return mimeType;
-        return super.getMimeType(suffix);
-    }
+public interface ResourceLoaderFactory {
+    public ResourceLoader[] loaderArray(AppContext appContext);
 }

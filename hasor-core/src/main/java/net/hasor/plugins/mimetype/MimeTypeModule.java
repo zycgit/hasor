@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.mime;
+package net.hasor.plugins.mimetype;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import org.more.util.StringUtils;

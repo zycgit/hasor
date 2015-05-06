@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.mime;
 /**
- * 
- * @version : 2015年2月11日
- * @author 赵永春(zyc@hasor.net)
+ * 提供Web下请求响应编码的设置
  */
-public interface MimeType {
-    /**获取MimeType类型*/
-    public String getMimeType(String suffix);
-}
+package net.hasor.plugins.encoding;
