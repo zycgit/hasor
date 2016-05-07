@@ -29,7 +29,7 @@ import org.more.asm.Type;
  * @version 2009-10-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ASMEngineToos implements Opcodes {
+public class ASMEngineTools implements Opcodes {
     /**根据类型获取其Return指令。*/
     public static int getReturn(final String asmType) {
         char t = asmType.charAt(0);
@@ -138,7 +138,7 @@ public class ASMEngineToos implements Opcodes {
         } else if (classType == void.class) {
             return "V";
         } else if (classType.isArray() == true) {
-            return "[" + ASMEngineToos.toAsmType(classType.getComponentType());
+            return "[" + ASMEngineTools.toAsmType(classType.getComponentType());
         } else {
             return "L" + Type.getInternalName(classType) + ";";
         }
@@ -147,8 +147,8 @@ public class ASMEngineToos implements Opcodes {
     public static String toAsmType(final Class<?>[] classType) {
         String returnString = "";
         for (Class<?> c : classType) {
-            returnString += ASMEngineToos.toAsmType(c);
-        };
+            returnString += ASMEngineTools.toAsmType(c);
+        } ;
         return returnString;
     }
     /**获取方法的Signature描述信息。*/
