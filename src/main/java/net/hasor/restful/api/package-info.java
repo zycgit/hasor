@@ -13,19 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import javax.servlet.ServletContext;
 /**
- *
- * @version : 2013-7-16
- * @author 赵永春 (zyc@hasor.net)
+ * <p>MVC Web 框架，为 Web 下 Restful 风格 MVC 开发提供支持。</p>
  */
-public interface WebAppContext extends AppContext {
-    /**获取{@link ServletContext}*/
-    public ServletContext getServletContext();
-
-    /** @return 获取 {@link Environment} */
-    public WebEnvironment getEnvironment();
-}
+package net.hasor.restful.api;

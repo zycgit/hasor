@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import javax.servlet.ServletContext;
+package net.hasor.restful;
 /**
- *
- * @version : 2013-7-16
+ * 上下文
+ * @version : 2013-5-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface WebAppContext extends AppContext {
-    /**获取{@link ServletContext}*/
-    public ServletContext getServletContext();
+public interface RestfulContext {
+    public String getMimeType(String suffix);
 
-    /** @return 获取 {@link Environment} */
-    public WebEnvironment getEnvironment();
+    public RenderEngine getRenderEngine();
 }

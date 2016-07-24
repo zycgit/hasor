@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import javax.servlet.ServletContext;
+package org.more.resource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 /**
  *
- * @version : 2013-7-16
+ * @version : 2013-6-6
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface WebAppContext extends AppContext {
-    /**获取{@link ServletContext}*/
-    public ServletContext getServletContext();
+public interface ResourceLoader {
+    public URL getResource(String resourcePath) throws IOException;
 
-    /** @return 获取 {@link Environment} */
-    public WebEnvironment getEnvironment();
+    /**装载指定资源。*/
+    public InputStream getResourceAsStream(String resourcePath) throws IOException;
+
+    /**测试资源是否存在。*/
+    public boolean exist(String resourcePath) throws IOException;
 }

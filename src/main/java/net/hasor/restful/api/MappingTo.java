@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import javax.servlet.ServletContext;
+package net.hasor.restful.api;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- *
- * @version : 2013-7-16
+ * 控制器映射的地址。
+ * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface WebAppContext extends AppContext {
-    /**获取{@link ServletContext}*/
-    public ServletContext getServletContext();
-
-    /** @return 获取 {@link Environment} */
-    public WebEnvironment getEnvironment();
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+public @interface MappingTo {
+    /**请求地址*/
+    public String value();
 }

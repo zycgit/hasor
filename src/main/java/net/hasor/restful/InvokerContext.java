@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import javax.servlet.ServletContext;
+package net.hasor.restful;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
+import java.util.Map;
 /**
- *
- * @version : 2013-7-16
+ * 线程安全
+ * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface WebAppContext extends AppContext {
-    /**获取{@link ServletContext}*/
-    public ServletContext getServletContext();
+public interface InvokerContext extends Map<String, Object> {
+    public HttpServletRequest getHttpRequest();
 
-    /** @return 获取 {@link Environment} */
-    public WebEnvironment getEnvironment();
+    public HttpServletResponse getHttpResponse();
+
+    public Method getTarget();
+
+    public RestfulContext getContext();
+
+    public String getViewName();
+
+    public String setViewName(String viewName);
 }

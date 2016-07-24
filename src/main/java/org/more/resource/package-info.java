@@ -13,19 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import javax.servlet.ServletContext;
 /**
- *
- * @version : 2013-7-16
- * @author 赵永春 (zyc@hasor.net)
+ * 资源加载工具,可以实现 classpath、zip、dir。多个位置的资源组合成一个接口同时提供资源加载。
  */
-public interface WebAppContext extends AppContext {
-    /**获取{@link ServletContext}*/
-    public ServletContext getServletContext();
-
-    /** @return 获取 {@link Environment} */
-    public WebEnvironment getEnvironment();
-}
+package org.more.resource;

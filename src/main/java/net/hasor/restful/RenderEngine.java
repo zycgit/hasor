@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import javax.servlet.ServletContext;
+package net.hasor.restful;
+import net.hasor.web.WebAppContext;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
 /**
- *
- * @version : 2013-7-16
- * @author 赵永春 (zyc@hasor.net)
+ * @version : 2016年1月3日
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface WebAppContext extends AppContext {
-    /**获取{@link ServletContext}*/
-    public ServletContext getServletContext();
+public interface RenderEngine {
+    /** 初始化引擎 */
+    public void initEngine(WebAppContext appContext) throws IOException;
 
-    /** @return 获取 {@link Environment} */
-    public WebEnvironment getEnvironment();
+    /** 执行模版引擎 */
+    public void process(InvokerContext invokerContext, Writer writer, Map<String, Object> dataModel) throws Throwable;
+
+    /** 获取模版Loader */
+    public boolean exist(String template) throws IOException;
 }
