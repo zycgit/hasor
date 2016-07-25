@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.render.velocity;
+package net.hasor.restful.render;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -28,26 +25,15 @@ import java.io.Writer;
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class VelocityTemplateEngine implements RenderEngine {
-    private String         realPath;
-    private VelocityEngine velocityEngine;
-    public void process(String template, Writer writer) throws Throwable {
-        Template temp = velocityEngine.getTemplate(realPath + "/" + template);
-        VelocityContext context = new VelocityContext();
-        temp.merge(context, writer);
-        temp.process();
-    }
+public class XmlRenderEngine implements RenderEngine {
     @Override
-    public void initEngine(WebAppContext appContext) throws IOException {
-        this.realPath = appContext.getEnvironment().envVar("HASOR_WEBROOT");
-        this.velocityEngine = new VelocityEngine();
+    public void initEngine(WebAppContext appContext) throws Throwable {
     }
     @Override
     public void process(RenderData data, Writer writer) throws Throwable {
     }
     @Override
     public boolean exist(String template) throws IOException {
-        Template temp = velocityEngine.getTemplate(realPath + "/" + template);
-        return temp != null;
+        return false;
     }
 }
