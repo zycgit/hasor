@@ -13,19 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 /**
- * 渲染器,参数为渲染器支持的请求扩展名。
- * @version : 2013-3-26
- * @author 赵永春 (zyc@hasor.net)
+ * Restful 框架功能实现。
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Render {
-    /** 渲染器支持的请求扩展名。 */
-    public String[] value();
-}
+package net.hasor.restful.invoker;
