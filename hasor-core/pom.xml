@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.hasor</groupId>
+        <artifactId>hasor-parent</artifactId>
+        <version>0.0.11-SNAPSHOT</version>
+    </parent>
+
+    <!-- Maven Info -->
+    <artifactId>hasor-core</artifactId>
+    <version>${hasor.version}</version>
+    <packaging>jar</packaging>
+
+    <!-- Project Info -->
+    <name>Hasor-Core</name>
+    <description>the hasor core project.</description>
+
+    <!-- 配置属性 -->
+    <properties>
+        <project.shortname>Hasor-</project.shortname>
+    </properties>
+
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
+        <developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
+        <url>git@git.oschina.net:zycgit/hasor.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>赵永春(Mr.Zhao)</name>
+            <email>zyc@hasor.net</email>
+        </developer>
+    </developers>
+
+    <!-- 引用依赖 -->
+    <dependencies>
+        <!-- Log依赖 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.21</version>
+        </dependency>
+
+        <!-- 整合 Spring 容器时使用,最终由项目环境的 Spring 提供依赖 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>2.5.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>2.5.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
