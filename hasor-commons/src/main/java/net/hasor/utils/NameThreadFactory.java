@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.event;
+package net.hasor.utils;
 import java.util.concurrent.ThreadFactory;
 /**
  *
  * @version : 2015年3月28日
  * @author 赵永春(zyc@hasor.net)
  */
-class NameThreadFactory implements ThreadFactory {
+public class NameThreadFactory implements ThreadFactory {
     private String      nameSample = "Thread-%s";
     private ClassLoader loader     = null;
     private int         index      = 1;
