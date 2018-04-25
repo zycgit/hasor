@@ -19,10 +19,7 @@ package net.hasor.utils.future;
  * @version : 2014年11月15日
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface FutureCallback<T> {
-    /**执行完毕。*/
-    public void completed(T result);
-
-    /**执行过程出错*/
-    public void failed(Throwable ex);
+public interface CancellFutureCallback<T> extends FutureCallback<T> {
+    /**执行被取消。*/
+    public void cancelled();
 }
