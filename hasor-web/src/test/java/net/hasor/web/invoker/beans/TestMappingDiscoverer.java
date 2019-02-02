@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.BindInfo;
-
-import java.lang.reflect.Method;
+package net.hasor.web.invoker.beans;
+import net.hasor.web.Mapping;
+import net.hasor.web.MappingDiscoverer;
 /**
- * 控制器映射信息
- * @version : 2016-12-26
+ * @version : 2017-01-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface Mapping {
-    /**
-     * 获取目标类型
-     */
-    public BindInfo<?> getTargetType();
-
-    /** 获取映射的地址 */
-    public String getMappingTo();
-
-    /** 获取方法 */
-    public String[] getHttpMethodSet();
-
-    /** 获取方法 */
-    public Method getHttpMethod(String httpMethod);
+public class TestMappingDiscoverer implements MappingDiscoverer {
+    private static boolean resetCall = false;
+    //
+    public static void resetCall() {
+        resetCall = false;
+    }
+    public static boolean isResetCall() {
+        return resetCall;
+    }
+    //
+    @Override
+    public void discover(Mapping mappingData) {
+        resetCall = true;
+    }
 }
