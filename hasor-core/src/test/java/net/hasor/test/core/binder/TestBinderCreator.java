@@ -15,13 +15,13 @@
  */
 package net.hasor.test.core.binder;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.binder.ApiBinderCreater;
+import net.hasor.core.binder.ApiBinderCreator;
 
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TestBinderCreater implements ApiBinderCreater<TestBinder> {
+public class TestBinderCreator implements ApiBinderCreator<TestBinder> {
     @Override
     public TestBinder createBinder(ApiBinder apiBinder) {
         return new TestBinderImpl(apiBinder);

@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import net.hasor.core.ApiBinder;
+package net.hasor.web.valid;
+import net.hasor.web.Invoker;
+import net.hasor.web.InvokerCreater;
 
 /**
- * Binder 扩展接口
- * @version : 2016-12-16
+ * 表单验证器，Invoker扩展。
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ApiBinderCreater<T extends ApiBinder> {
-    /**
-     * 创建Beander 扩展接口实现类 {@link ApiBinder}
-     * @return return {@link ApiBinder}
-     */
-    public T createBinder(ApiBinder apiBinder) throws Throwable;
+public class ValidInvokerCreator implements InvokerCreater {
+    @Override
+    public Invoker createExt(Invoker dataContext) {
+        ValidInvokerSupplier supplier = new ValidInvokerSupplier(dataContext);
+        supplier.put(ValidInvoker.VALID_DATA_KEY, supplier.getValidData());
+        supplier.lockKey(ValidInvoker.VALID_DATA_KEY);
+        return supplier;
+    }
 }

@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render;
-import net.hasor.web.Invoker;
-import net.hasor.web.InvokerCreater;
+package net.hasor.core.binder;
+import net.hasor.core.ApiBinder;
 
 /**
- *
- * @version : 2017-01-10
+ * Binder 扩展接口
+ * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RenderInvokerCreater implements InvokerCreater {
-    @Override
-    public Invoker createExt(Invoker dataContext) {
-        return new RenderInvokerSupplier(dataContext);
-    }
+public interface ApiBinderCreator<T extends ApiBinder> {
+    /**
+     * 创建Beander 扩展接口实现类 {@link ApiBinder}
+     * @return return {@link ApiBinder}
+     */
+    public T createBinder(ApiBinder apiBinder) throws Throwable;
 }
