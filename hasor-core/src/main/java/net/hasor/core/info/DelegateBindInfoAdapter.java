@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
+import net.hasor.cobble.dynamic.DynamicProperty;
+import net.hasor.cobble.dynamic.ReadWriteType;
 import net.hasor.core.Provider;
-import net.hasor.core.aop.PropertyDelegate;
-import net.hasor.core.aop.ReadWriteType;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -26,14 +26,14 @@ import java.util.function.Supplier;
  * @version : 2020-09-29
  * @author 赵永春 (zyc@byshell.org)
  */
-public class DelegateBindInfoAdapter implements Supplier<PropertyDelegate>, PropertyDelegate {
-    private final Predicate<Class<?>>                  matcherClass;
-    private final String                               propertyName;
-    private final Class<?>                             propertyType;
-    private final Supplier<? extends PropertyDelegate> propertyDelegate;
-    private final ReadWriteType                        rwType;
+public class DelegateBindInfoAdapter implements Supplier<DynamicProperty>, DynamicProperty {
+    private final Predicate<Class<?>>                 matcherClass;
+    private final String                              propertyName;
+    private final Class<?>                            propertyType;
+    private final Supplier<? extends DynamicProperty> propertyDelegate;
+    private final ReadWriteType                       rwType;
 
-    public DelegateBindInfoAdapter(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType, Supplier<? extends PropertyDelegate> propertyDelegate, ReadWriteType rwType) {
+    public DelegateBindInfoAdapter(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType, Supplier<? extends DynamicProperty> propertyDelegate, ReadWriteType rwType) {
         this.matcherClass = matcherClass;
         this.propertyName = propertyName;
         this.propertyType = propertyType;
@@ -58,7 +58,7 @@ public class DelegateBindInfoAdapter implements Supplier<PropertyDelegate>, Prop
     }
 
     @Override
-    public PropertyDelegate get() {
+    public DynamicProperty get() {
         return this;
     }
 

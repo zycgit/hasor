@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.environment;
+import net.hasor.cobble.ClassUtils;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
-import net.hasor.core.aop.AopClassLoader;
 import net.hasor.core.event.StandardEventManager;
 import net.hasor.core.setting.BasicSettings;
 import net.hasor.core.setting.SettingNode;
@@ -51,7 +51,7 @@ public abstract class AbstractEnvironment implements Environment {
     public AbstractEnvironment(Object context, BasicSettings settings) {
         this.settings = settings;
         this.context = context;
-        this.rootLoader = new AopClassLoader();
+        this.rootLoader = ClassUtils.getClassLoader(null);
         this.envMap = new ConcurrentHashMap<>();
     }
 

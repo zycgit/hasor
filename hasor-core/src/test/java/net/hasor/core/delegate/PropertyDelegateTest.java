@@ -16,9 +16,9 @@
 package net.hasor.core.delegate;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import net.hasor.cobble.dynamic.SimpleDynamicProperty;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.aop.SimplePropertyDelegate;
 import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.basic.pojo.PojoBean1;
 import net.hasor.test.core.basic.pojo.PojoBean2;
@@ -64,7 +64,7 @@ public class PropertyDelegateTest {
 
     @Test
     public void propertyTest3() throws Exception {
-        SimplePropertyDelegate delegate = new SimplePropertyDelegate(123.123d);
+        SimpleDynamicProperty delegate = new SimpleDynamicProperty(123.123d);
         AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(PojoBean.class).dynamicReadOnlyProperty("dynamicName", Double.TYPE, delegate);
         });
@@ -102,7 +102,7 @@ public class PropertyDelegateTest {
 
     @Test
     public void propertyTest5() {
-        SimplePropertyDelegate delegate = new SimplePropertyDelegate(123.123d);
+        SimpleDynamicProperty delegate = new SimpleDynamicProperty(123.123d);
         AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.dynamicReadOnlyProperty(t -> true, "dynamicName", Double.TYPE).toInstance(delegate);
         });
@@ -138,7 +138,7 @@ public class PropertyDelegateTest {
     public void propertyTest7() {
         // 注册两个 Bean 并且共享同一个 name 属性。
         AppContext appContext = Hasor.create().build(apiBinder -> {
-            SimplePropertyDelegate delegate = new SimplePropertyDelegate("helloWord");
+            SimpleDynamicProperty delegate = new SimpleDynamicProperty("helloWord");
             apiBinder.bindType(PojoBean1.class).dynamicProperty("name", String.class, delegate);
             apiBinder.bindType(PojoBean2.class).dynamicProperty("name", String.class, delegate);
         });

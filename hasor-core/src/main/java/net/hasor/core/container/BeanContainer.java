@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.cobble.dynamic.AsmTools;
+import net.hasor.cobble.dynamic.DynamicConfig;
+import net.hasor.cobble.dynamic.Proxy;
+import net.hasor.cobble.dynamic.ReadWriteType;
 import net.hasor.core.EventListener;
 import net.hasor.core.*;
-import net.hasor.core.aop.AopClassConfig;
-import net.hasor.core.aop.AsmTools;
-import net.hasor.core.aop.ReadWriteType;
 import net.hasor.core.binder.BindInfoBuilderFactory;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
@@ -46,11 +47,11 @@ import static net.hasor.core.container.ContainerUtils.*;
  * @version : 2015-11-25
  */
 public class BeanContainer extends AbstractContainer implements BindInfoBuilderFactory {
-    private Environment                                 environment        = null;
-    private SpiCallerContainer                          spiCallerContainer = null;
-    private BindInfoContainer                           bindInfoContainer  = null;
-    private ScopeContainer                              scopeContainer     = null;
-    private ConcurrentHashMap<Class<?>, AopClassConfig> classEngineMap     = null;
+    private Environment                                environment        = null;
+    private SpiCallerContainer                         spiCallerContainer = null;
+    private BindInfoContainer                          bindInfoContainer  = null;
+    private ScopeContainer                             scopeContainer     = null;
+    private ConcurrentHashMap<Class<?>, DynamicConfig> classEngineMap     = null;
 
     public BeanContainer(Environment environment) {
         this.environment = Objects.requireNonNull(environment, "need Environment.");
@@ -378,10 +379,10 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         //
         // .动态代理，需要满足三个条件（1.类型必须支持Aop、2.没有被@AopIgnore排除在外、3.具有至少一个有效的拦截器）
         Class<?> newType = targetType;
-        if (AsmTools.isSupport(targetType) && (!aopList.isEmpty() || !delegateList.isEmpty())) {
-            AopClassConfig engine = this.classEngineMap.get(targetType);
+        if (isSupport(targetType) && (!aopList.isEmpty() || !delegateList.isEmpty())) {
+            DynamicConfig engine = this.classEngineMap.get(targetType);
             if (engine == null) {
-                engine = new AopClassConfig(targetType, rootLoader);
+                engine = new DynamicConfig(targetType);
                 for (AopBindInfoAdapter aop : aopList) {
                     if (aop.getMatcherClass().test(targetType)) {
                         engine.addAopInterceptor(aop.getMatcherMethod(), aop);
@@ -400,7 +401,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 }
             }
             try {
-                newType = engine.buildClass();
+                newType = Proxy.buildProxyClass(rootLoader, engine);
             } catch (Exception e) {
                 throw ExceptionUtils.toRuntime(e);
             }
@@ -409,6 +410,15 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         return (Class<T>) newType;
     }
 
+    /** 父类是否支持 */
+    private static boolean isSupport(Class<?> superClass) {
+        String resName = superClass.getName().replace(".", "/") + ".class";
+        if (resName.startsWith("java/") || resName.startsWith("javax/")) {
+            return false;
+        } else {
+            return !AsmTools.checkAnd(superClass.getModifiers(), Modifier.PRIVATE);
+        }
+    }
     /*-------------------------------------------------------------------------------------------*/
 
     /** 仅执行依赖注入 */

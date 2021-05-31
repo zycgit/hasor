@@ -14,34 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
-import net.hasor.core.*;
-import net.hasor.core.aop.AopClassLoader;
-import net.hasor.core.aop.DynamicClass;
-import net.hasor.core.setting.provider.StreamType;
-import net.hasor.test.core.aop.anno.AopBean;
+import net.hasor.core.AppContext;
+import net.hasor.core.AppContextWarp;
+import net.hasor.core.Hasor;
 import net.hasor.test.core.aop.ignore.types.GrandFatherBean;
 import net.hasor.test.core.aop.ignore.types.JamesBean;
 import net.hasor.test.core.aop.ignore.types.WilliamSonBean;
-import net.hasor.test.core.basic.inject.constructor.NativeConstructorPojoBeanRef;
-import net.hasor.test.core.basic.inject.constructor.SingleConstructorPojoBeanRef;
 import net.hasor.test.core.basic.pojo.PojoBean;
-import net.hasor.test.core.scope.AnnoSingletonBean;
-import net.hasor.test.core.scope.CustomHashBean;
-import net.hasor.utils.ResourcesUtils;
 import org.junit.Test;
 
-import javax.inject.Singleton;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Context2MapTest {
     @Test

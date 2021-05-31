@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import net.hasor.cobble.dynamic.MethodInterceptor;
 import net.hasor.core.*;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.environment.StandardEnvironment;

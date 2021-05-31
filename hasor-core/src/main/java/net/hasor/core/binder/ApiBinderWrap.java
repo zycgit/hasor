@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import net.hasor.cobble.dynamic.DynamicProperty;
+import net.hasor.cobble.dynamic.MethodInterceptor;
 import net.hasor.core.*;
-import net.hasor.core.aop.PropertyDelegate;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.utils.supplier.TypeSupplier;
 import org.slf4j.Logger;
@@ -93,12 +94,12 @@ public class ApiBinderWrap implements ApiBinder {
     }
 
     @Override
-    public LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String name, Class<?> propertyType) {
+    public LinkedBindingBuilder<DynamicProperty> dynamicProperty(Predicate<Class<?>> matcherClass, String name, Class<?> propertyType) {
         return this.apiBinder.dynamicProperty(matcherClass, name, propertyType);
     }
 
     @Override
-    public LinkedBindingBuilder<PropertyDelegate> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String name, Class<?> propertyType) {
+    public LinkedBindingBuilder<DynamicProperty> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String name, Class<?> propertyType) {
         return this.apiBinder.dynamicProperty(matcherClass, name, propertyType);
     }
 

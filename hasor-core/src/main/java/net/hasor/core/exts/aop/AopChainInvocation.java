@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.exts.aop;
+import net.hasor.cobble.dynamic.MethodInterceptor;
+import net.hasor.cobble.dynamic.MethodInvocation;
 import net.hasor.core.AppContext;
-import net.hasor.core.MethodInterceptor;
-import net.hasor.core.MethodInvocation;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -62,6 +62,11 @@ class AopChainInvocation implements MethodInvocation {
 
     public Object getThis() {
         return invocation.getThis();
+    }
+
+    @Override
+    public boolean isProxy() {
+        return invocation.isProxy();
     }
 
     public Method getMethod() {

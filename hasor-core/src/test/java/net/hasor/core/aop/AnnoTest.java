@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.aop;
+import net.hasor.cobble.dynamic.DynamicClass;
+import net.hasor.cobble.dynamic.Proxy;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.exts.aop.Matchers;
@@ -50,7 +52,7 @@ public class AnnoTest {
         });
         //
         AopBean instance = appContext.getInstance(AopBean.class);
-        assert instance instanceof DynamicClass;
+        assert Proxy.isProxyObject(instance);
         //
         instance.doInit(new ArrayList<>());
         assert methodInterceptor.getCallInfo().get("doInit") == null;

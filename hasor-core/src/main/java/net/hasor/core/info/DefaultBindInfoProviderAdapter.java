@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
+import net.hasor.cobble.dynamic.DynamicProperty;
+import net.hasor.cobble.dynamic.ReadWriteType;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.aop.PropertyDelegate;
-import net.hasor.core.aop.ReadWriteType;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.ConstructorUtils;
@@ -84,7 +84,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     }
 
     @Override
-    public void addDynamicProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate, ReadWriteType rwType) {
+    public void addDynamicProperty(String name, Class<?> propertyType, Supplier<? extends DynamicProperty> delegate, ReadWriteType rwType) {
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("args propertyName is null.");
         }

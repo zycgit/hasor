@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import net.hasor.cobble.dynamic.DynamicProperty;
+import net.hasor.cobble.dynamic.MethodInterceptor;
+import net.hasor.cobble.dynamic.ReadWriteType;
+import net.hasor.cobble.dynamic.SimpleDynamicProperty;
 import net.hasor.core.*;
-import net.hasor.core.aop.PropertyDelegate;
-import net.hasor.core.aop.ReadWriteType;
-import net.hasor.core.aop.SimplePropertyDelegate;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DelegateBindInfoAdapter;
@@ -163,16 +164,16 @@ public abstract class AbstractBinder implements ApiBinder {
     }
 
     @Override
-    public LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
+    public LinkedBindingBuilder<DynamicProperty> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
         return dynamicProperty(matcherClass, propertyName, propertyType, ReadWriteType.ReadWrite);
     }
 
     @Override
-    public LinkedBindingBuilder<PropertyDelegate> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
+    public LinkedBindingBuilder<DynamicProperty> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType) {
         return dynamicProperty(matcherClass, propertyName, propertyType, ReadWriteType.ReadOnly);
     }
 
-    private LinkedBindingBuilder<PropertyDelegate> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType, ReadWriteType rwType) {
+    private LinkedBindingBuilder<DynamicProperty> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType, ReadWriteType rwType) {
         if (matcherClass == null) {
             throw new IllegalArgumentException("args matcherClass is null.");
         }
@@ -183,10 +184,10 @@ public abstract class AbstractBinder implements ApiBinder {
             throw new IllegalArgumentException("args propertyType is null.");
         }
         //
-        LinkedBindingBuilder<PropertyDelegate> bindingBuilder = bindType(PropertyDelegate.class).uniqueName();
-        BindInfo<PropertyDelegate> bindInfo = bindingBuilder.toInfo();
+        LinkedBindingBuilder<DynamicProperty> bindingBuilder = bindType(DynamicProperty.class).uniqueName();
+        BindInfo<DynamicProperty> bindInfo = bindingBuilder.toInfo();
         Object defaultValue = BeanUtils.getDefaultValue(propertyType);
-        bindingBuilder.toInstance(new SimplePropertyDelegate(defaultValue));
+        bindingBuilder.toInstance(new SimpleDynamicProperty(defaultValue));
         //
         DelegateBindInfoAdapter adapter = new DelegateBindInfoAdapter(matcherClass, propertyName, propertyType, getProvider(bindInfo), rwType);
         bindType(DelegateBindInfoAdapter.class).toInstance(adapter);
@@ -407,38 +408,38 @@ public abstract class AbstractBinder implements ApiBinder {
         @Override
         public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType) {
             Object defaultValue = BeanUtils.getDefaultValue(propertyType);
-            return this.dynamicProperty(name, propertyType, new SimplePropertyDelegate(defaultValue));
+            return this.dynamicProperty(name, propertyType, new SimpleDynamicProperty(defaultValue));
         }
 
         @Override
-        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Class<? extends PropertyDelegate> delegate) {
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Class<? extends DynamicProperty> delegate) {
             return this.dynamicProperty(name, propertyType, getProvider(delegate));
         }
 
         @Override
-        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, BindInfo<? extends PropertyDelegate> delegate) {
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, BindInfo<? extends DynamicProperty> delegate) {
             return this.dynamicProperty(name, propertyType, getProvider(delegate));
         }
 
         @Override
-        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate) {
+        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Supplier<? extends DynamicProperty> delegate) {
             this.typeBuilder.addDynamicProperty(name, propertyType, delegate, ReadWriteType.ReadWrite);
             return this;
         }
 
         @Override
-        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Class<? extends PropertyDelegate> delegate) {
+        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Class<? extends DynamicProperty> delegate) {
             Object defaultValue = BeanUtils.getDefaultValue(propertyType);
-            return this.dynamicReadOnlyProperty(name, propertyType, new SimplePropertyDelegate(defaultValue));
+            return this.dynamicReadOnlyProperty(name, propertyType, new SimpleDynamicProperty(defaultValue));
         }
 
         @Override
-        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, BindInfo<? extends PropertyDelegate> delegate) {
+        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, BindInfo<? extends DynamicProperty> delegate) {
             return this.dynamicReadOnlyProperty(name, propertyType, getProvider(delegate));
         }
 
         @Override
-        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Supplier<? extends PropertyDelegate> delegate) {
+        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Supplier<? extends DynamicProperty> delegate) {
             this.typeBuilder.addDynamicProperty(name, propertyType, delegate, ReadWriteType.ReadOnly);
             return this;
         }

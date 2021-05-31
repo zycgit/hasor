@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.core.*;
-import net.hasor.core.aop.DynamicClass;
+import net.hasor.cobble.dynamic.DynamicClass;
+import net.hasor.cobble.dynamic.MethodInterceptor;
+import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
+import net.hasor.core.Hasor;
+import net.hasor.core.Provider;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.test.core.aop.custom.MyAopInterceptor;
