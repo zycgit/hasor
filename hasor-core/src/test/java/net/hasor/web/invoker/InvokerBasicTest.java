@@ -48,7 +48,7 @@ public class InvokerBasicTest extends AbstractTest {
         AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
             apiBinder.addRender("html").toInstance(renderEngine);
             apiBinder.loadMappingTo(HtmlProduces.class);
-        }, servlet30("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        }, servlet30("/"), LoadModule.Web, LoadModule.Render);
         //
         //
         List<MappingDef> definitions = appContext.findBindingBean(MappingDef.class);
@@ -84,7 +84,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
-        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        }, servlet25("/"), LoadModule.Web, LoadModule.Render);
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abcefg.do"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
@@ -151,7 +151,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
-        }, servlet30("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        }, servlet30("/"), LoadModule.Web, LoadModule.Render);
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
@@ -172,7 +172,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
-        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        }, servlet25("/"), LoadModule.Web, LoadModule.Render);
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
@@ -193,7 +193,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
-        }, servlet30("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        }, servlet30("/"), LoadModule.Web, LoadModule.Render);
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
@@ -221,7 +221,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
-        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        }, servlet25("/"), LoadModule.Web, LoadModule.Render);
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);

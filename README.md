@@ -3,10 +3,12 @@
 * Project Home: [https://www.hasor.net](https://www.hasor.net)
 * [![QQ群:193943114](https://img.shields.io/badge/QQ%E7%BE%A4-193943114-orange)](https://qm.qq.com/cgi-bin/qm/qr?k=0ZqU8WlKVENanH6ajgpbVua7WJUMOKQ9&jump_from=webapi)
   [![Gitter](https://badges.gitter.im/hasor/hasor-dataql.svg)](https://gitter.im/hasor/hasor-dataql?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-  [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+* [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
   [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core)
+  [![javadoc](https://javadoc.io/badge2/net.hasor/hasor-core/javadoc.svg)](https://javadoc.io/doc/net.hasor/hasor-core)
   [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=master)](https://travis-ci.org/zycgit/hasor)
 
+~~~~
 &emsp;&emsp; Hasor 本身是由多个不同系列框架组合而成的一个框架体系。这些子框架的能力涵盖了 IoC、Aop、WebMVC、数据库以及其它方方面面。这一切的基础要归功于 Hasor 的插件化能力。
 
 &emsp;&emsp; Hasor 帮助您设计更好的 API，它独有的框架扩展能力可以使新的能力完全无缝的集成到统一的 API 体系中。我们构建了通用功能，使您能够扩展 Hasor，而不是向核心框架添加每个特性。

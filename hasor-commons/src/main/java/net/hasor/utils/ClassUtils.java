@@ -809,7 +809,7 @@ public class ClassUtils {
         if (Modifier.isPublic(declaredMethod.getDeclaringClass().getModifiers())) {
             return declaredMethod;
         }
-        List<Class<?>> candidateClasses = new ArrayList<Class<?>>();
+        List<Class<?>> candidateClasses = new ArrayList<>();
         candidateClasses.addAll(ClassUtils.getAllInterfaces(cls));
         candidateClasses.addAll(ClassUtils.getAllSuperclasses(cls));
         for (Iterator<Class<?>> it = candidateClasses.iterator(); it.hasNext(); ) {

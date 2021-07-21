@@ -40,7 +40,7 @@ public class FilterTest extends AbstractTest {
             apiBinder.tryCast(WebApiBinder.class).jeeFilter("*").through(j2eeFilter);
             apiBinder.tryCast(WebApiBinder.class).filter("*").through(hasorFilter);
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
-        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        }, servlet25("/"), LoadModule.Web, LoadModule.Render);
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
@@ -94,7 +94,7 @@ public class FilterTest extends AbstractTest {
             apiBinder.tryCast(WebApiBinder.class).jeeFilter("*").through(j2eeFilter2);
             apiBinder.tryCast(WebApiBinder.class).jeeFilter("/abc/*").through(j2eeFilter3);
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
-        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        }, servlet25("/"), LoadModule.Web, LoadModule.Render);
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
@@ -122,7 +122,7 @@ public class FilterTest extends AbstractTest {
             apiBinder.tryCast(WebApiBinder.class).jeeFilter("*").through(j2eeFilter2);
             apiBinder.tryCast(WebApiBinder.class).jeeFilter("/abc/*").through(j2eeFilter3);
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
-        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        }, servlet25("/"), LoadModule.Web, LoadModule.Render);
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc/abc.do"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);

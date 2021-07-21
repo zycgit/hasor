@@ -16,6 +16,7 @@
  *
  */
 package net.hasor.core.setting.provider.yaml;
+import net.hasor.cobble.setting.provider.yaml.lib.Yaml;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.SettingNode;
 import net.hasor.core.setting.data.TreeNode;
@@ -23,7 +24,6 @@ import net.hasor.core.setting.provider.ConfigSource;
 import net.hasor.core.setting.provider.SettingsReader;
 import net.hasor.core.setting.provider.StreamType;
 import net.hasor.utils.ResourcesUtils;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.io.InputStream;
