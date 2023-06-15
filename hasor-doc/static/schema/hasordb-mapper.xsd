@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+       Copyright 2009-2018 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<xs:schema xmlns="http://www.hasor.net/schema/hasordb"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.hasor.net/schema/hasordb"
+           elementFormDefault="qualified">
+
+    <xs:simpleType name="boolean_type">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="true"/>
+            <xs:enumeration value="false"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="statementType_type">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="STATEMENT"/>
+            <xs:enumeration value="PREPARED"/>
+            <xs:enumeration value="CALLABLE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="resultSetType_type">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="FORWARD_ONLY"/>
+            <xs:enumeration value="SCROLL_INSENSITIVE"/>
+            <xs:enumeration value="SCROLL_SENSITIVE"/>
+            <xs:enumeration value="DEFAULT"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="multipleResult_type">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="FIRST"/>
+            <xs:enumeration value="LAST"/>
+            <xs:enumeration value="ALL"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- element -->
+    <xs:element name="mapper">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="entityMap"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="resultMap"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="sql"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="insert"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="update"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="delete"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="select"/>
+            </xs:choice>
+            <xs:attribute name="namespace" type="xs:string"/>
+            <xs:attribute name="caseInsensitive" type="boolean_type"/>
+            <xs:attribute name="mapUnderscoreToCamelCase" type="boolean_type"/>
+            <xs:attribute name="autoMapping" type="boolean_type"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="entityMap">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="id"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="mapping"/>
+            </xs:sequence>
+            <xs:attribute name="schema"/>
+            <xs:attribute name="table" use="required"/>
+            <xs:attribute name="type" use="required"/>
+            <xs:attribute name="caseInsensitive" type="boolean_type"/>
+            <xs:attribute name="mapUnderscoreToCamelCase" type="boolean_type"/>
+            <xs:attribute name="autoMapping" type="boolean_type"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="resultMap">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="id"/>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="result"/>
+            </xs:sequence>
+            <xs:attribute name="id" use="required"/>
+            <xs:attribute name="type" use="required"/>
+            <xs:attribute name="caseInsensitive" type="boolean_type"/>
+            <xs:attribute name="mapUnderscoreToCamelCase" type="boolean_type"/>
+            <xs:attribute name="autoMapping" type="boolean_type"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="mapping_type">
+        <xs:attribute name="property" use="required"/>
+        <xs:attribute name="javaType"/>
+        <xs:attribute name="column" use="required"/>
+        <xs:attribute name="jdbcType"/>
+        <xs:attribute name="typeHandler"/>
+    </xs:complexType>
+    <xs:element name="id" type="mapping_type"/>
+    <xs:element name="result" type="mapping_type"/>
+    <xs:element name="mapping" type="mapping_type"/>
+
+    <xs:element name="insert">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="selectKey"/>
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+            <xs:attribute name="id" use="required"/>
+            <xs:attribute name="statementType" type="statementType_type"/>
+            <xs:attribute name="timeout"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="update">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="selectKey"/>
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+            <xs:attribute name="id" use="required"/>
+            <xs:attribute name="statementType" type="statementType_type"/>
+            <xs:attribute name="timeout"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="selectKey">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+            <xs:attribute name="statementType" type="statementType_type"/>
+            <xs:attribute name="timeout"/>
+            <xs:attribute name="resultType"/>
+            <xs:attribute name="fetchSize"/>
+            <xs:attribute name="resultSetType"/>
+            <xs:attribute name="keyProperty" use="required"/>
+            <xs:attribute name="keyColumn"/>
+            <xs:attribute name="order">
+                <xs:simpleType>
+                    <xs:restriction base="xs:token">
+                        <xs:enumeration value="BEFORE"/>
+                        <xs:enumeration value="AFTER"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="handler"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="delete">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+            <xs:attribute name="id" use="required"/>
+            <xs:attribute name="statementType" type="statementType_type"/>
+            <xs:attribute name="timeout"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="select">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+            <xs:attribute name="id" use="required"/>
+            <xs:attribute name="statementType" type="statementType_type"/>
+            <xs:attribute name="timeout"/>
+            <xs:attribute name="resultMap"/>
+            <xs:attribute name="resultType"/>
+            <xs:attribute name="fetchSize"/>
+            <xs:attribute name="resultSetType" type="resultSetType_type"/>
+            <xs:attribute name="multipleResult" type="multipleResult_type"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Dynamic -->
+    <xs:element name="sql">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+            <xs:attribute name="id" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="include">
+        <xs:complexType>
+            <xs:attribute name="refid" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="trim">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+            <xs:attribute name="prefix"/>
+            <xs:attribute name="prefixOverrides"/>
+            <xs:attribute name="suffix"/>
+            <xs:attribute name="suffixOverrides"/>
+            <xs:attribute name="caseSensitive" type="boolean_type"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="where">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="set">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="foreach">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+            <xs:attribute name="collection" use="required"/>
+            <xs:attribute name="item" use="required"/>
+            <xs:attribute name="index"/>
+            <xs:attribute name="open"/>
+            <xs:attribute name="close"/>
+            <xs:attribute name="separator"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="choose">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="when"/>
+                <xs:element minOccurs="0" ref="otherwise"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="when">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+            <xs:attribute name="test" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="otherwise">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="if">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="include"/>
+                <xs:element ref="trim"/>
+                <xs:element ref="where"/>
+                <xs:element ref="set"/>
+                <xs:element ref="foreach"/>
+                <xs:element ref="choose"/>
+                <xs:element ref="if"/>
+                <xs:element ref="bind"/>
+            </xs:choice>
+            <xs:attribute name="test" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="bind">
+        <xs:complexType>
+            <xs:attribute name="name" use="required"/>
+            <xs:attribute name="value" use="required"/>
+            <xs:attribute name="overwrite" type="boolean_type"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

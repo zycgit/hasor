@@ -1,0 +1,158 @@
+---
+sidebar_position: 2
+title: 快速上手
+description: 开箱即用的 dbVisitor ORM 工具快速上手教程。
+---
+
+# 快速上手
+
+## 引入依赖
+
+export const Highlight = ({children, color}) => (
+  <span style={{ backgroundColor: color, borderRadius: '2px', color: '#fff', padding: '0.2rem', }}>{children}</span>
+);
+
+截止到目前为止 hasor 的最新版本为：**<Highlight color="rgb(227 17 108)">4.2.5</Highlight>**
+- 在 https://mvnrepository.com/artifact/net.hasor/core 上也可以查询到最新版本
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+  <TabItem value="Maven" label="Maven" default>
+
+```xml
+<dependency>
+    <groupId>net.hasor</groupId>
+    <artifactId>hasor-core</artifactId>
+    <version>4.2.5</version>
+</dependency>
+```
+  </TabItem>
+  <TabItem value="Gradle" label="Gradle">
+
+```text
+// Gradle
+implementation group: 'net.hasor', name: 'hasor-core', version: '4.2.5'
+
+// Gradle(Short)
+implementation 'net.hasor:hasor-core:4.2.5'
+
+// Gradle (Kotlin)
+implementation("net.hasor:hasor-core:4.2.5")
+```
+  </TabItem>
+  <TabItem value="SBT" label="SBT">
+
+```text
+libraryDependencies += "net.hasor" % "hasor-core" % "4.2.5"
+```
+  </TabItem>
+  <TabItem value="Ivy" label="Ivy">
+
+```xml
+<dependency org="net.hasor" name="hasor-core" rev="4.2.5"/>
+```
+  </TabItem>
+  <TabItem value="Grape" label="Grape">
+
+```text
+@Grapes(
+    @Grab(group='net.hasor', module='hasor-core', version='4.2.5')
+)
+```
+  </TabItem>
+  <TabItem value="Leiningen" label="Leiningen">
+
+```text
+[net.hasor/hasor-core "4.2.5"]
+```
+  </TabItem>
+  <TabItem value="Buildr" label="Buildr">
+
+```text
+'net.hasor:dbvisitor:jar:4.2.5'
+```
+  </TabItem>
+</Tabs>
+
+
+引入依赖包之后通过一行代码即可创建 Hasor
+
+```java
+AppContext appContext = Hasor.create().build();
+```
+
+:::tip
+需要注意的是，一个应用中可以存在多个 Hasor 环境。因此在同一个应用中多次调用上述代码会导致创建多个不同的 AppContext。它们彼此之间没有任何关系。
+:::
+
+## 启动模式
+
+Hasor 的启动有三种模式，所有模式都在 net.hasor.core.Hasor.Level 类中定义。
+- Hasor 默认运行在 Full 模式中，无需特意指定。
+- 明确指定 Hasor 启动模式的方法如下。
+
+| 模式   | 启动方式                               | 功效                                  |
+|------|------------------------------------|-------------------------------------|
+| Full | `Hasor.create().asFull().build();` | 完整加载框架和可以发现的所有插件模块。                 |
+| Core | `Hasor.create().asCore().build();` | 只完整的加载 hasor-core。                  |
+| Tiny | `Hasor.create().asTiny().build();` | 最小化启动。放弃一切插件加载包括 hasor-core 中的内置插件。 |
+
+:::tip
+Tiny 模式下，相当于设置 HASOR_LOAD_MODULE 和 HASOR_LOAD_EXTERNALBINDER 两个环境变量为 false。
+:::
+
+最后在启动的时候指定配置文件。
+
+```java
+Hasor.create().mainSettingWith("my-hconfig.xml").build();
+```
+
+## Module
+
+在 Hasor 里大部分的工作都是从 net.hasor.core.Module 接口开始。使用 Module 您需要编写一个类实现这个接口，下面这段代码就是我们实现的第一个 Module
+
+```java
+public class FirstModule implements Module {
+	public void loadModule(ApiBinder apiBinder) {
+		...
+	}
+}
+```
+
+接着在启动的中加载这个 Module
+
+```java
+Hasor.create().build(new FirstModule());
+```
+
+Hasor 会在启动过程中调用上面那个 Module 方法。
+
+
+```java title='加载多个 Module'
+Hasor.create().build(new UserModule(),new ClassModule() ...);
+```
+
+```java title='Module 加载 Module'
+public class RootModule implements Module {
+	public void loadModule(ApiBinder apiBinder) throws Throwable {
+		...
+		apiBinder.installModule(new UserModule());
+		apiBinder.installModule(new ClassModule());
+		...
+	}
+}
+```
+
+```xml title='配置文件加载 Module'
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.hasor.net/sechma/main">
+    <!-- 默认要装载的模块 -->
+    <hasor.modules>
+        <module>net.hasor.web.render.RenderWebPlugin</module>
+        <module>net.hasor.plugins.startup.StartupModule</module>
+        <module>net.hasor.plugins.aop.AopModule</module>
+    </hasor.modules>
+</config>
+```

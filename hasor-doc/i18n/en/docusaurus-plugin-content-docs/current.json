@@ -1,0 +1,30 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.guides.category.对象映射": {
+    "message": "Entity Mapping",
+    "description": "The label for category 对象映射 in sidebar guides"
+  },
+  "sidebar.guides.category.类型": {
+    "message": "Types",
+    "description": "The label for category 类型 in sidebar guides"
+  },
+  "sidebar.guides.category.SQL 模式": {
+    "message": "using SQL",
+    "description": "The label for category SQL 模式 in sidebar guides"
+  },
+  "sidebar.guides.category.CRUD 模式": {
+    "message": "using CRUD",
+    "description": "The label for category CRUD 模式 in sidebar guides"
+  },
+  "sidebar.guides.category.Mapper 模式": {
+    "message": "using Mapper File",
+    "description": "The label for category Mapper 模式 in sidebar guides"
+  },
+  "sidebar.guides.category.资源与事务": {
+    "message": "Transactions",
+    "description": "The label for category 资源与事务 in sidebar guides"
+  }
+}

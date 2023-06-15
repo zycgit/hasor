@@ -1,0 +1,26 @@
+{
+  "title": {
+    "message": "dbVisitor",
+    "description": "dbVisitor project"
+  },
+  "item.label.ORM": {
+    "message": "ORM",
+    "description": "ORM"
+  },
+  "item.label.Integration": {
+    "message": "Integration",
+    "description": "Integration"
+  },
+  "item.label.Faker": {
+    "message": "Faker",
+    "description": "Faker"
+  },
+  "item.label.码云": {
+    "message": "Gitee",
+    "description": "码云"
+  },
+  "item.label.Github": {
+    "message": "Github",
+    "description": "Github"
+  }
+}

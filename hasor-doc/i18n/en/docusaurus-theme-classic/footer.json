@@ -1,0 +1,6 @@
+{
+  "copyright": {
+    "message": "Copyright © 2022 dbVisitor. Built with Docusaurus.<br/>\n<a target=\"_blank\" href=\"http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33011002013536\">\n<img src=\"/img/beian.png\" style=\"display: inline-block;\">浙公网安备 33011002013536号\n</a>&nbsp;&nbsp;<a target=\"_blank\" href=\"http://www.beian.miit.gov.cn/\">浙ICP备18034797号</a>\n<div id=\"analyticsDiv\" style=\"display: inline-block;\"></div>",
+    "description": "The footer copyright"
+  }
+}

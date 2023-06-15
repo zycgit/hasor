@@ -1,0 +1,71 @@
+---
+id: multivalid
+sidebar_position: 2
+title: b.多验证器共同验证
+description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+---
+
+# 多验证器共同验证
+
+有些校验逻辑比较通用，可以提取成公共的校验逻辑。这样请求验证就可以是 公共 + 制定 两部分组成，如下：
+
+```java
+@ValidBy({LoginFormValidation.class, DataBaseValidation.class})
+public class LoginForm {
+    ...
+}
+```
+
+验证场景化，是指在执行验证时。开发者可以通过传给表单验证器的场景名称，进行必要的逻辑判断：
+- doValidLogin、负责处理登录
+- doValidSignUp、负责处理注册
+
+```java
+public class LoginFormValidation4Scene implements Validation<LoginForm4Scene> {
+    // - 登录验证
+    private void doValidLogin(LoginForm4Scene dataForm, ValidInvoker errors) {
+        ...
+    }
+
+    // - 注册登录
+    private void doValidSignUp(LoginForm4Scene dataForm, ValidInvoker errors) {
+        ...
+    }
+
+    public void doValidation(String validType, LoginForm4Scene dataForm, ValidInvoker errors) {
+        // -通用验证逻辑
+        if (StringUtils.isBlank(dataForm.getAccount())) {
+            errors.addError("account", "帐号为空。");
+        }
+        if (StringUtils.isBlank(dataForm.getPassword())) {
+            errors.addError("password", "密码为空。");
+        }
+        if (!errors.isValid()) {
+            return;
+        }
+
+        // -场景化差异
+        if (StringUtils.equalsIgnoreCase("signup", validType)) {
+            this.doValidSignUp(dataForm, errors);   // 注册
+            return;
+        }
+        if (StringUtils.equalsIgnoreCase("login", validType)) {
+            this.doValidLogin(dataForm, errors);    // 登录
+            return;
+        }
+    }
+}
+```
+
+最后，在使用验证时，在 @Valid 注解上设定好要使用的场景名称，就可以了。
+
+```java
+@MappingTo("/scene/login.do")
+public class Login4Scene {
+    public void execute(@Valid("login") @ParameterGroup LoginForm4Scene loginForm,
+            RenderInvoker invoker,
+            ValidInvoker valid) {
+        ...
+    }
+}
+```
