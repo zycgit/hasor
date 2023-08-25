@@ -26,5 +26,5 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface BeforeRequestListener extends java.util.EventListener {
     /** 在所有处理之前 */
-    public void doListener(AppContext appContext, HttpServletRequest request, HttpServletResponse response);
+    void doListener(AppContext appContext, HttpServletRequest request, HttpServletResponse response);
 }

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.ref.Scope;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Scope;
 import net.hasor.core.binder.BindInfoBuilder;
-import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

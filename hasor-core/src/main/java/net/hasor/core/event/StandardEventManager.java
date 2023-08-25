@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.concurrent.ThreadUtils;
+import net.hasor.cobble.concurrent.future.BasicFuture;
+import net.hasor.cobble.concurrent.future.FutureCallback;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.FireType;
-import net.hasor.utils.NameThreadFactory;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.future.BasicFuture;
-import net.hasor.utils.future.FutureCallback;
 
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +37,7 @@ public class StandardEventManager implements EventContext {
     private final ConcurrentMap<String, EventListenerPool> listenerMap = new ConcurrentHashMap<>();
 
     public StandardEventManager(int eventThreadPoolSize, String name, ClassLoader classLoader) {
-        this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize, new NameThreadFactory(name + "-EventPool-%s", classLoader));
+        this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize, ThreadUtils.daemonThreadFactory(classLoader, name + "-EventPool-%s"));
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.executorService;
         threadPool.setCorePoolSize(eventThreadPoolSize);
         threadPool.setMaximumPoolSize(eventThreadPoolSize);

@@ -25,11 +25,11 @@ import net.hasor.core.container.SpiCallerContainer;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface BindInfoBuilderFactory {
-    public Environment getEnvironment();
+    Environment getEnvironment();
 
-    public SpiCallerContainer getSpiContainer();
+    SpiCallerContainer getSpiContainer();
 
-    public BindInfoContainer getBindInfoContainer();
+    BindInfoContainer getBindInfoContainer();
 
-    public ScopeContainer getScopeContainer();
+    ScopeContainer getScopeContainer();
 }

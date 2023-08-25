@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
+import net.hasor.cobble.provider.SingleProvider;
 import net.hasor.core.Environment;
 import net.hasor.core.HasorUtils;
-import net.hasor.utils.supplier.SingleProvider;
 import net.hasor.web.Controller;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Any;

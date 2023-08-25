@@ -26,7 +26,7 @@ import net.hasor.test.core.basic.inject.constructor.SingleConstructorPojoBeanRef
 import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.scope.AnnoSingletonBean;
 import net.hasor.test.core.scope.CustomHashBean;
-import net.hasor.utils.ResourcesUtils;
+import net.hasor.core.ResourcesUtils;
 import org.junit.Test;
 
 import javax.inject.Singleton;

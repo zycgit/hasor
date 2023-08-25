@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.function.ESupplier;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.function.ESupplier;
 import net.hasor.web.Invoker;
 import net.hasor.web.Mapping;
 import org.slf4j.Logger;

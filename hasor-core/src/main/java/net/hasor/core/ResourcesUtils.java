@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.utils;
-import net.hasor.utils.io.input.AutoCloseInputStream;
+package net.hasor.core;
+import net.hasor.cobble.MatchUtils;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.io.input.AutoCloseInputStream;
 
 import java.io.*;
 import java.net.*;

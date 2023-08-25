@@ -21,7 +21,8 @@ import java.util.regex.Pattern;
  * @since 3.0
  */
 public enum UriPatternType {
-    SERVLET, REGEX;
+    SERVLET,
+    REGEX;
 
     public static UriPatternMatcher get(final UriPatternType type, final String pattern) {
         if (type == SERVLET) {
@@ -42,7 +43,10 @@ public enum UriPatternType {
         private final Kind   patternKind;
 
         private static enum Kind {
-            PREFIX, SUFFIX, LITERAL, WITHROOT,
+            PREFIX,
+            SUFFIX,
+            LITERAL,
+            WITHROOT,
         }
 
         public ServletStyleUriPatternMatcher(final String pattern) {

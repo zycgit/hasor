@@ -27,5 +27,5 @@ public interface CreatorProvisionListener extends java.util.EventListener {
      * @param newObject 新对象。
      * @param bindInfo 新对象的 BindInfo（可能为空）。
      */
-    public void beanCreated(Object newObject, BindInfo<?> bindInfo) throws Throwable;
+    void beanCreated(Object newObject, BindInfo<?> bindInfo) throws Throwable;
 }

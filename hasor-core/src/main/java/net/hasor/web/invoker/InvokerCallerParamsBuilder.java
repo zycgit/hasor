@@ -15,12 +15,12 @@
  */
 package net.hasor.web.invoker;
 import com.alibaba.fastjson.JSON;
+import net.hasor.cobble.BeanUtils;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.convert.ConverterUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
-import net.hasor.utils.BeanUtils;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.*;
 import org.slf4j.Logger;
@@ -164,8 +164,8 @@ public class InvokerCallerParamsBuilder {
         if (paramObject == null) {
             return null;
         }
-        List<Field> fieldList = BeanUtils.findALLFields(paramClass);
-        if (fieldList == null || fieldList.isEmpty()) {
+        Collection<Field> fieldList = BeanUtils.getALLFields(paramClass).values();
+        if (fieldList.isEmpty()) {
             return paramObject;
         }
         for (Field field : fieldList) {

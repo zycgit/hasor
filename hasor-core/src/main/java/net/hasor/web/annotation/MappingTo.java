@@ -27,5 +27,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MappingTo {
     /**请求地址*/
-    public String[] value();
+    String[] value();
 }

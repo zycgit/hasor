@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ValidItem extends ArrayList<Message> {
-    private String key;
+    private final String key;
 
     public ValidItem(String key) {
         this.key = key;

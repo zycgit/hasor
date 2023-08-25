@@ -27,5 +27,5 @@ import java.lang.annotation.*;
 @WebParameter
 public @interface HeaderParameter {
     /**参数名称。*/
-    public String value();
+    String value();
 }

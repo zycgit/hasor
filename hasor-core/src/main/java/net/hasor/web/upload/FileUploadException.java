@@ -31,10 +31,9 @@ public class FileUploadException extends IOException {
         InvalidContentTypeException(),      //
         ItemSkippedException(),             //
         SizeLimitExceededException(),       //
-        ;
     }
 
-    private UploadErrorCodes errorCode;
+    private final UploadErrorCodes errorCode;
 
     public FileUploadException(String errorMessage) {
         this(UploadErrorCodes.FileUploadException, errorMessage);

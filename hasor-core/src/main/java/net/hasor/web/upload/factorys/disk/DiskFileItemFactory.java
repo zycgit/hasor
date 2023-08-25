@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.factorys.disk;
-import net.hasor.utils.io.IOUtils;
+import net.hasor.cobble.io.IOUtils;
 import net.hasor.web.FileItem;
 import net.hasor.web.FileItemFactory;
 import net.hasor.web.FileItemStream;
@@ -48,7 +48,7 @@ public class DiskFileItemFactory implements FileItemFactory {
 
     @Override
     public FileItem createItem(FileItemStream itemStream) throws IOException {
-        String fid = UUID.randomUUID().toString() + ".tmp";
+        String fid = UUID.randomUUID() + ".tmp";
         if (itemStream.isFormField()) {
             return new MemoryFileItem(itemStream);
         } else {
@@ -61,7 +61,7 @@ public class DiskFileItemFactory implements FileItemFactory {
     }
 
     public static class MemoryFileItem extends FileItemBase {
-        private byte[] cachedContent;
+        private final byte[] cachedContent;
 
         public MemoryFileItem(FileItemStream stream) throws IOException {
             super(stream);

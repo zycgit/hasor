@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.jstl.taglib;
+import net.hasor.cobble.StringUtils;
 import net.hasor.core.AppContext;
-import net.hasor.utils.StringUtils;
 import net.hasor.web.startup.RuntimeListener;
 
 import javax.servlet.ServletContext;

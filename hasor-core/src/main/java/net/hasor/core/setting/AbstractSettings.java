@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.io.FilenameUtils;
 import net.hasor.core.Settings;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

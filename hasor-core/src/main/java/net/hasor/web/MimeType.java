@@ -21,5 +21,5 @@ package net.hasor.web;
  */
 public interface MimeType {
     /**获取MimeType类型*/
-    public String getMimeType(String suffix);
+    String getMimeType(String suffix);
 }

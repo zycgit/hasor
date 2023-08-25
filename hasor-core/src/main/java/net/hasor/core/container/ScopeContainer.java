@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.cobble.provider.Provider;
+import net.hasor.cobble.ref.PrototypeScope;
+import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.ref.SingletonScope;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
-import net.hasor.core.Scope;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.scope.PrototypeScope;
-import net.hasor.core.scope.SingletonScope;
 import net.hasor.core.spi.ScopeProvisionListener;
 
 import java.util.Arrays;

@@ -31,7 +31,7 @@ public interface FileItem extends FileItemStream {
      * Returns the size of the file item.
      * @return The size of the file item, in bytes.
      */
-    public long getSize();
+    long getSize();
 
     /**
      * A convenience method to write an uploaded item to disk. The client code
@@ -46,7 +46,7 @@ public interface FileItem extends FileItemStream {
      * @param outStream The <code>OutputStream</code> into which the uploaded item should be stored.
      * @throws Exception if an error occurs.
      */
-    public void writeTo(OutputStream outStream) throws IOException;
+    void writeTo(OutputStream outStream) throws IOException;
 
     /**
      * Deletes the underlying storage for a file item, including deleting any
@@ -55,13 +55,13 @@ public interface FileItem extends FileItemStream {
      * collected, this method can be used to ensure that this is done at an
      * earlier time, thus preserving system resources.
      */
-    public void deleteOrSkip();
+    void deleteOrSkip();
 
     /**
      * Returns the contents of the file item as an array of bytes.
      * @return The contents of the file item as an array of bytes.
      */
-    public byte[] get() throws IOException;
+    byte[] get() throws IOException;
 
     /**
      * Returns the contents of the file item as a String, using the specified
@@ -72,7 +72,7 @@ public interface FileItem extends FileItemStream {
      * @return The contents of the item, as a string.
      * @throws UnsupportedEncodingException if the requested character encoding is not available.
      */
-    public String getString(String encoding) throws IOException;
+    String getString(String encoding) throws IOException;
 
     /**
      * Returns the contents of the file item as a String, using the default
@@ -80,5 +80,5 @@ public interface FileItem extends FileItemStream {
      * contents of the item.
      * @return The contents of the item, as a string.
      */
-    public String getString() throws IOException;
+    String getString() throws IOException;
 }

@@ -26,5 +26,5 @@ public interface ApiBinderCreator<T extends ApiBinder> {
      * 创建Beander 扩展接口实现类 {@link ApiBinder}
      * @return return {@link ApiBinder}
      */
-    public T createBinder(ApiBinder apiBinder) throws Throwable;
+    T createBinder(ApiBinder apiBinder) throws Throwable;
 }

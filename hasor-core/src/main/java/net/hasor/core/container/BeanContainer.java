@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.cobble.*;
+import net.hasor.cobble.convert.ConverterUtils;
 import net.hasor.cobble.dynamic.AsmTools;
 import net.hasor.cobble.dynamic.DynamicConfig;
 import net.hasor.cobble.dynamic.Proxy;
 import net.hasor.cobble.dynamic.ReadWriteType;
+import net.hasor.cobble.function.Property;
+import net.hasor.cobble.provider.Provider;
+import net.hasor.cobble.ref.PrototypeScope;
+import net.hasor.cobble.ref.Scope;
 import net.hasor.core.EventListener;
 import net.hasor.core.*;
 import net.hasor.core.binder.BindInfoBuilderFactory;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.DelegateBindInfoAdapter;
-import net.hasor.core.scope.PrototypeScope;
 import net.hasor.core.spi.*;
-import net.hasor.utils.*;
-import net.hasor.utils.convert.ConverterUtils;
 
 import javax.inject.Named;
 import java.lang.annotation.Annotation;
@@ -211,7 +214,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
 
     /** 创建一个构造方法对应的参数Supplier */
     private Supplier<Object[]> parameterSupplier(Supplier<Executable> executableSupplier, AppContext appContext, Object[] params, boolean alwaysInject) {
-        return Provider.ofc(() -> {
+        return Provider.of((Supplier<Object[]>) () -> {
             // .基础数据
             Executable constructor = executableSupplier.get();                      // 方法
             Class<?>[] parameterTypes = constructor.getParameterTypes();            // 方法参数
@@ -464,12 +467,15 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             isOverwriteAnnotation = defBinder.isOverwriteAnnotation();
             //
             Map<String, Supplier<?>> propMaps = defBinder.getPropertyMap(appContext);
+            Map<String, Class<?>> propertyTypeMap = BeanUtils.getPropertyType(targetType);
+            Map<String, Property> propertyFuncMap = BeanUtils.getPropertyFunc(targetType);
+
             for (Map.Entry<String, Supplier<?>> propItem : propMaps.entrySet()) {
                 String propertyName = propItem.getKey();
-                Class<?> propertyType = BeanUtils.getPropertyOrFieldType(targetType, propertyName);
-                boolean canWrite = BeanUtils.canWriteProperty(propertyName, targetType);
+                Class<?> propertyType = propertyTypeMap.get(propertyName);
+                Property propertyFunc = propertyFuncMap.get(propertyName);
                 //
-                if (!canWrite) {
+                if (propertyFunc.isReadOnly()) {
                     // 理论上进不到这里，原因是在DefaultBindInfoProviderAdapter 配置阶段就会拦截到没有属性对应 set 方法的情况。
                     throw new IllegalStateException("doInject, property " + propertyName + " can not write.");
                 }
@@ -480,13 +486,12 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 }
                 //
                 Object propertyVal = ConverterUtils.convert(propertyType, provider.get());
-                BeanUtils.writePropertyOrField(targetBean, propertyName, propertyVal);
+                propertyFunc.set(targetBean, propertyVal);
                 injectFileds.add(propertyName);
             }
         }
         // b.注解注入
-        List<Field> fieldList = BeanUtils.findALLFields(targetType);
-        fieldList = fieldList == null ? new ArrayList<>(0) : fieldList;
+        Collection<Field> fieldList = BeanUtils.getALLFields(targetType).values();
         for (Field field : fieldList) {
             if (Modifier.isFinal(field.getModifiers())) {
                 continue;

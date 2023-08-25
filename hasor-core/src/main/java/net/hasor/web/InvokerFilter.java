@@ -26,7 +26,7 @@ public interface InvokerFilter {
      * @param config 配置信息
      * @throws Throwable 初始化过程中发生异常。
      */
-    public default void init(InvokerConfig config) throws Throwable {
+    default void init(InvokerConfig config) throws Throwable {
     }
 
     /**
@@ -35,9 +35,9 @@ public interface InvokerFilter {
      * @param chain 过滤器链
      * @throws Throwable 执行过滤器中发生的异常。
      */
-    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
+    Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
 
     /** 销毁过滤器。 */
-    public default void destroy() {
+    default void destroy() {
     }
 }

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.environment;
+import net.hasor.cobble.StringUtils;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.test.core.mods.ErrorModule;
-import net.hasor.utils.StringUtils;
 import org.junit.Test;
 
 import java.io.File;

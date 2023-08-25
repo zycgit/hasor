@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.setting.provider.xml;
+import net.hasor.cobble.StringUtils;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.SettingNode;
 import net.hasor.core.setting.data.TreeNode;
-import net.hasor.utils.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

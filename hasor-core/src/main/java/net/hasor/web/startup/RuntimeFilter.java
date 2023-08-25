@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.web.startup;
+import net.hasor.cobble.StringUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.utils.StringUtils;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.ExecuteCaller;

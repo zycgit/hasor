@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
+import net.hasor.cobble.concurrent.future.FutureCallback;
 import net.hasor.core.EventContext;
-import net.hasor.utils.future.FutureCallback;
 import org.junit.Test;
 
 import java.util.concurrent.Callable;

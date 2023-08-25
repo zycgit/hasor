@@ -28,33 +28,33 @@ public interface Mapping {
     /**
      * 获取目标类型
      */
-    public BindInfo<?> getTargetType();
+    BindInfo<?> getTargetType();
 
     /** 获取映射的地址 */
-    public String getMappingTo();
+    String getMappingTo();
 
     /** 获取映射的地址的正则表达式形式 */
-    public String getMappingToMatches();
+    String getMappingToMatches();
 
     /**
      * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
      * @return 返回测试结果。
      */
-    public boolean matchingMapping(HttpServletRequest request);
+    boolean matchingMapping(HttpServletRequest request);
 
     /** 获取方法 */
-    public String[] getHttpMethodSet();
+    String[] getHttpMethodSet();
 
     /**
      * 获取调用目标的方法
      */
-    public default Method findMethod(HttpServletRequest request) {
+    default Method findMethod(HttpServletRequest request) {
         return findMethod(request.getMethod().trim().toUpperCase());
     }
 
-    public Method findMethod(String requestMethod);
+    Method findMethod(String requestMethod);
 
-    public String getSpecialContentType(String requestMethod);
+    String getSpecialContentType(String requestMethod);
 
-    public boolean isAsync(HttpServletRequest request);
+    boolean isAsync(HttpServletRequest request);
 }

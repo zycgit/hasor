@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.wrap;
+import net.hasor.cobble.function.EFunction;
 import net.hasor.core.AppContext;
-import net.hasor.utils.function.EFunction;
 import net.hasor.web.Invoker;
 import net.hasor.web.Mapping;
 

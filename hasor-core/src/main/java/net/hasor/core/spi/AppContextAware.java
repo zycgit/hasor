@@ -27,5 +27,5 @@ public interface AppContextAware {
      * 注入AppContext。
      * @param appContext 注入的AppContext。
      */
-    public void setAppContext(AppContext appContext);
+    void setAppContext(AppContext appContext);
 }

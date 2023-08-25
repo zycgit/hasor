@@ -1,7 +1,7 @@
+import net.hasor.cobble.BeanUtils;
 import net.hasor.cobble.dynamic.SimpleDynamicProperty;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.utils.BeanUtils;
 import org.junit.Test;
 
 /**

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.cobble.BeanUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.binder.BindInfoBuilder;
@@ -21,7 +22,6 @@ import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.test.core.basic.pojo.SampleFace;
-import net.hasor.utils.BeanUtils;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -224,7 +224,7 @@ public class BindInfoContainerTest {
         try {
             // 反射的方式设置一个新值，引发异常；
             DefaultBindInfoProviderAdapter<SampleFace> adapter = infoContainer.createInfoAdapter(SampleFace.class, null);
-            Method writeMethod = BeanUtils.getWriteMethod("bindType", DefaultBindInfoProviderAdapter.class);
+            Method writeMethod = BeanUtils.getWriteMethod(DefaultBindInfoProviderAdapter.class, "bindType");
             writeMethod.invoke(adapter, SampleBean.class);
             assert false;
         } catch (Exception e) {

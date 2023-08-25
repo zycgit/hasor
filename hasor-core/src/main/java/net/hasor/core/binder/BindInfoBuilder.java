@@ -16,8 +16,8 @@
 package net.hasor.core.binder;
 import net.hasor.cobble.dynamic.DynamicProperty;
 import net.hasor.cobble.dynamic.ReadWriteType;
+import net.hasor.cobble.ref.Scope;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Scope;
 
 import java.util.function.Supplier;
 
@@ -31,44 +31,44 @@ public interface BindInfoBuilder<T> {
      * 为绑定设置ID。
      * @param newID newID
      */
-    public void setBindID(String newID);
+    void setBindID(String newID);
 
     /**
      * 为类型绑定一个名称。
      * @param bindName 名称
      */
-    public void setBindName(String bindName);
+    void setBindName(String bindName);
 
     /**
      * 为类型绑定一个实现，当获取类型实例时其实获取的是实现对象。
      * @param sourceType 实现类
      */
-    public void setSourceType(Class<? extends T> sourceType);
+    void setSourceType(Class<? extends T> sourceType);
 
     /**
      * 设置元信息。
      * @param key metaData key
      * @param value metaData value
      */
-    public void setMetaData(String key, Object value);
+    void setMetaData(String key, Object value);
 
     /**
      * 开发者自定义的{@link Supplier}。
      * @param customerProvider 设置自定义{@link Supplier}
      */
-    public void setCustomerProvider(Supplier<? extends T> customerProvider);
+    void setCustomerProvider(Supplier<? extends T> customerProvider);
 
     /**
      * 加入一个 Scope。
      * @param scopeProvider 命名空间
      */
-    public void addScopeProvider(Supplier<Scope> scopeProvider);
+    void addScopeProvider(Supplier<Scope> scopeProvider);
 
     /**
      * 加入一个 Scope。
      * @param scopeProvider 命名空间
      */
-    public default void addScopeProvider(Supplier<Scope>[] scopeProvider) {
+    default void addScopeProvider(Supplier<Scope>[] scopeProvider) {
         if (scopeProvider != null && scopeProvider.length > 0) {
             for (Supplier<Scope> scope : scopeProvider) {
                 this.addScopeProvider(scope);
@@ -79,7 +79,7 @@ public interface BindInfoBuilder<T> {
     /**
      * 清空已经加入的所有 Scope。
      */
-    public void clearScope();
+    void clearScope();
 
     /**
      * 设置构造参数。
@@ -87,7 +87,7 @@ public interface BindInfoBuilder<T> {
      * @param paramType 参数类型
      * @param valueProvider 参数值
      */
-    public void setConstructor(int index, Class<?> paramType, Supplier<?> valueProvider);
+    void setConstructor(int index, Class<?> paramType, Supplier<?> valueProvider);
 
     /**
      * 设置构造参数。
@@ -95,21 +95,21 @@ public interface BindInfoBuilder<T> {
      * @param paramType 参数类型
      * @param valueInfo 参数值
      */
-    public void setConstructor(int index, Class<?> paramType, BindInfo<?> valueInfo);
+    void setConstructor(int index, Class<?> paramType, BindInfo<?> valueInfo);
 
     /**
      * 添加依赖注入。
      * @param property 属性名
      * @param valueProvider 属性值
      */
-    public void addInject(String property, Supplier<?> valueProvider);
+    void addInject(String property, Supplier<?> valueProvider);
 
     /**
      * 添加依赖注入。
      * @param property 属性名
      * @param valueInfo 属性值
      */
-    public void addInject(String property, BindInfo<?> valueInfo);
+    void addInject(String property, BindInfo<?> valueInfo);
 
     /**
      * 动态添加属性。
@@ -117,29 +117,29 @@ public interface BindInfoBuilder<T> {
      * @param propertyType 属性类型
      * @param delegate 属性值的委托
      */
-    public void addDynamicProperty(String name, Class<?> propertyType, Supplier<? extends DynamicProperty> delegate, ReadWriteType rwType);
+    void addDynamicProperty(String name, Class<?> propertyType, Supplier<? extends DynamicProperty> delegate, ReadWriteType rwType);
 
     /**
      * 转化为{@link BindInfo}类型对象。
      * @return 返回{@link BindInfo}类型对象。
      */
-    public BindInfo<T> toInfo();
+    BindInfo<T> toInfo();
 
     /**
-     * 设置初始化方法，一个无参的方法。例如：public void init(){ ... }。
+     * 设置初始化方法，一个无参的方法。例如： void init(){ ... }。
      * @param methodName 方法名。
      */
-    public void initMethod(String methodName);
+    void initMethod(String methodName);
 
     /**
-     * 设置初始化方法，一个无参的方法。例如：public void init(){ ... }。
+     * 设置初始化方法，一个无参的方法。例如： void init(){ ... }。
      * @param methodName 方法名。
      */
-    public void destroyMethod(String methodName);
+    void destroyMethod(String methodName);
 
     /**
      * 是否强制忽略类的注解配置
      * @param overwrite 如果为 true 表示覆盖，默认是 false
      */
-    public void overwriteAnnotation(boolean overwrite);
+    void overwriteAnnotation(boolean overwrite);
 }

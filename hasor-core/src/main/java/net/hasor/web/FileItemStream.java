@@ -41,13 +41,13 @@ public interface FileItemStream {
      * Returns the collection of headers defined locally within this item.
      * @return the {@link FileItemHeaders} present for this item.
      */
-    public FileItemHeaders getHeaders();
+    FileItemHeaders getHeaders();
 
     /**
      * Returns the content type passed by the browser or <code>null</code> if not defined.
      * @return The content type passed by the browser or <code>null</code> if not defined.
      */
-    public String getContentType();
+    String getContentType();
 
     /**
      * Returns the original filename in the client's filesystem, as provided by
@@ -57,20 +57,20 @@ public interface FileItemStream {
      *
      * @return The original filename in the client's filesystem.
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the name of the field in the multipart form corresponding to this file item.
      * @return The name of the form field.
      */
-    public String getFieldName();
+    String getFieldName();
 
     /**
      * Determines whether or not a <code>FileItem</code> instance represents a simple form field.
      * @return <code>true</code> if the instance represents a simple form
      *         field; <code>false</code> if it represents an uploaded file.
      */
-    public boolean isFormField();
+    boolean isFormField();
 
     /**
      * Creates an {@link InputStream}, which allows to read the items contents.
@@ -78,5 +78,5 @@ public interface FileItemStream {
      * @throws IllegalStateException The method was already invoked on this item. It is not possible to recreate the data stream.
      * @throws IOException An I/O error occurred.
      */
-    public InputStream openStream() throws IOException;
+    InputStream openStream() throws IOException;
 }

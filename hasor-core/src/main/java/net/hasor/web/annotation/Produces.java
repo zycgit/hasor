@@ -26,5 +26,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Produces {
     /** 指定的内容响应类型 */
-    public String value();
+    String value();
 }

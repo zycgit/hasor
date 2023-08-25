@@ -24,5 +24,5 @@ import net.hasor.web.Mapping;
 @FunctionalInterface
 public interface MappingDiscoverer extends java.util.EventListener {
     /** 发现控制器 */
-    public void discover(Mapping mappingData);
+    void discover(Mapping mappingData);
 }

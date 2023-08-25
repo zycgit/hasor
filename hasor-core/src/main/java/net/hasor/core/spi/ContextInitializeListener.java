@@ -23,5 +23,5 @@ import net.hasor.core.AppContext;
  */
 public interface ContextInitializeListener extends java.util.EventListener {
     /**初始化完成*/
-    public void doInitializeCompleted(AppContext templateAppContext);
+    void doInitializeCompleted(AppContext templateAppContext);
 }

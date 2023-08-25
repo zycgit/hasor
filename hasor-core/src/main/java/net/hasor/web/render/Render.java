@@ -28,5 +28,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Render {
     /** 渲染器名字 */
-    public String[] value();
+    String[] value();
 }

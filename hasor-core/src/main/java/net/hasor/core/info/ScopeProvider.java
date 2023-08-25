@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import net.hasor.core.Scope;
+
+import net.hasor.cobble.ref.Scope;
 
 import java.util.function.Supplier;
 
@@ -25,5 +26,5 @@ import java.util.function.Supplier;
  */
 public interface ScopeProvider {
     /**获取Provider对象，可以直接取得对象实例。*/
-    public Supplier[] getCustomerScopeProvider();
+    Supplier[] getCustomerScopeProvider();
 }

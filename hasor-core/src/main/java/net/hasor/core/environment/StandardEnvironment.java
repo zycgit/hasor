@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.environment;
+import net.hasor.cobble.ResourcesUtils;
 import net.hasor.core.Environment;
 import net.hasor.core.setting.BasicSettings;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.utils.ResourcesUtils;
 
 import java.io.File;
 import java.io.IOException;

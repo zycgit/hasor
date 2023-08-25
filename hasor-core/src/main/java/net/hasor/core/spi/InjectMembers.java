@@ -29,5 +29,5 @@ public interface InjectMembers {
      * 执行注入
      * @param appContext appContext对象
      */
-    public void doInject(AppContext appContext) throws Throwable;
+    void doInject(AppContext appContext) throws Throwable;
 }

@@ -31,11 +31,11 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 public @interface InjectSettings {
     /** 聚焦在某个 配置空间 中 */
-    public String ns() default "";
+    String ns() default "";
 
     /** 配置Key */
-    public String value();
+    String value();
 
     /** 默认值 */
-    public String defaultValue() default "";
+    String defaultValue() default "";
 }

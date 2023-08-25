@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.web.upload;
-import net.hasor.utils.CommonCodeUtils;
+import net.hasor.cobble.codec.MD5;
 import net.hasor.web.FileItem;
 import net.hasor.web.WebController;
 import net.hasor.web.annotation.Any;
@@ -35,7 +35,7 @@ public class FileItemUploadAction extends WebController {
         for (FileItem fileItem : fileItems) {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             fileItem.writeTo(byteArrayOutputStream);
-            hashData.put(fileItem.getFieldName(), CommonCodeUtils.MD5.encodeMD5(byteArrayOutputStream.toByteArray()));
+            hashData.put(fileItem.getFieldName(), MD5.encodeMD5(byteArrayOutputStream.toByteArray()));
         }
         //
         return hashData;

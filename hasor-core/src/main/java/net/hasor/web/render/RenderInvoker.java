@@ -23,26 +23,26 @@ import net.hasor.web.Invoker;
  */
 public interface RenderInvoker extends Invoker {
     /**要渲染的资源。*/
-    public String renderTo();
+    String renderTo();
 
     /**指定要渲染的资源，并指定渲染器。*/
-    public void renderTo(String viewName);
+    void renderTo(String viewName);
 
     /**指定要渲染的资源，并指定渲染器。*/
-    public void renderTo(String renderType, String viewName);
+    void renderTo(String renderType, String viewName);
 
     /**当前使用的渲染器。*/
-    public String renderType();
+    String renderType();
 
     /**指定渲染器。*/
-    public void renderType(String renderType);
+    void renderType(String renderType);
 
     /**是否启用布局功能。*/
-    public boolean layout();
+    boolean layout();
 
     /**启用布局功能。*/
-    public void layoutEnable();
+    void layoutEnable();
 
     /**禁用布局功能。*/
-    public void layoutDisable();
+    void layoutDisable();
 }

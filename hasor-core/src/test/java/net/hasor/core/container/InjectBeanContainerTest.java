@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.cobble.provider.Provider;
 import net.hasor.core.*;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.environment.StandardEnvironment;

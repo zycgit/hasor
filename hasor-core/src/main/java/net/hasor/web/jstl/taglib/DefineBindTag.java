@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.jstl.taglib;
+import net.hasor.cobble.ClassUtils;
 import net.hasor.core.AppContext;
-import net.hasor.utils.ClassUtils;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;

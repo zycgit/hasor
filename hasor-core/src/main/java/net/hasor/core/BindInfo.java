@@ -21,11 +21,11 @@ package net.hasor.core;
  */
 public interface BindInfo<T> extends MetaInfo {
     /** @return 绑定的ID */
-    public String getBindID();
+    String getBindID();
 
     /** @return 为类型绑定的名称。*/
-    public String getBindName();
+    String getBindName();
 
     /** @return 获取注册的类型*/
-    public Class<T> getBindType();
+    Class<T> getBindType();
 }

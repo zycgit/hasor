@@ -35,5 +35,5 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 public @interface ID {
     /**如果同类型有多个注册可以使用该值进行区分。*/
-    public String value() default "";
+    String value() default "";
 }

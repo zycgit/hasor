@@ -29,5 +29,5 @@ import java.util.EventListener;
 @Target(ElementType.TYPE)
 public @interface Spi {
     /** 指出实现了哪些 SPI，如果不设置值。那么会自动抽取实现的接口并将符合 SPI 规范的接口注册为 Hasor SPI。*/
-    public Class<? extends EventListener>[] value() default {};
+    Class<? extends EventListener>[] value() default {};
 }

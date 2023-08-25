@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.mime;
-import net.hasor.utils.StringUtils;
+import net.hasor.cobble.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -26,7 +26,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SaxXmlParser extends DefaultHandler {
-    private Map<String, String> dataMap;
+    private final Map<String, String> dataMap;
 
     public SaxXmlParser(Map<String, String> dataMap) {
         this.dataMap = dataMap;

@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import net.hasor.cobble.ClassUtils;
+import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.dynamic.AsmTools;
 import net.hasor.cobble.dynamic.DynamicProperty;
+import net.hasor.cobble.dynamic.Matchers;
 import net.hasor.cobble.dynamic.MethodInterceptor;
-import net.hasor.core.exts.aop.Matchers;
+import net.hasor.cobble.provider.Provider;
+import net.hasor.cobble.ref.Scope;
 import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.SpiJudge;
-import net.hasor.utils.ClassUtils;
-import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.supplier.TypeSupplier;
 
 import javax.inject.Singleton;
 import java.io.Closeable;
@@ -49,7 +50,7 @@ public interface ApiBinder {
      * 获取 {@link Environment}
      * @return return {@link Environment}
      */
-    public Environment getEnvironment();
+    Environment getEnvironment();
 
     /**
      * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
@@ -57,7 +58,7 @@ public interface ApiBinder {
      * @param featureType 特征类型
      * @return 返回匹配的类集合。
      */
-    public Set<Class<?>> findClass(Class<?> featureType);
+    Set<Class<?>> findClass(Class<?> featureType);
 
     /**
      * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
@@ -66,13 +67,13 @@ public interface ApiBinder {
      * @param scanPackages 扫描的包范围
      * @return 返回匹配的类集合。
      */
-    public Set<Class<?>> findClass(Class<?> featureType, String... scanPackages);
+    Set<Class<?>> findClass(Class<?> featureType, String... scanPackages);
 
     /**
      * 尝试把 ApiBinder 转换为另一个 ApiBinder（如果它支持）<br/>
      * tips： 如果不支持转换则返回空。
      */
-    public <T extends ApiBinder> T tryCast(Class<T> castApiBinder);
+    <T extends ApiBinder> T tryCast(Class<T> castApiBinder);
 
     /**
      * 安装其它插件。
@@ -80,10 +81,10 @@ public interface ApiBinder {
      * @throws Throwable 在执行loadModule方法期间发生异常的。
      * @see net.hasor.core.Module#loadModule(ApiBinder)
      */
-    public ApiBinder installModule(Module... module) throws Throwable;
+    ApiBinder installModule(Module... module) throws Throwable;
 
     /** same as {@link Module#onStop(AppContext)} */
-    public default <T extends Closeable> T onShutdown(T closeable) {
+    default <T extends Closeable> T onShutdown(T closeable) {
         HasorUtils.pushShutdownListener(getEnvironment(), (event, eventData) -> {
             closeable.close();
         });
@@ -91,7 +92,7 @@ public interface ApiBinder {
     }
 
     /** same as {@link Module#onStop(AppContext)} */
-    public default ApiBinder onShutdown(Consumer<AppContext> consumer) {
+    default ApiBinder onShutdown(Consumer<AppContext> consumer) {
         HasorUtils.pushShutdownListener(getEnvironment(), (event, eventData) -> {
             consumer.accept((AppContext) eventData);
         });
@@ -99,7 +100,7 @@ public interface ApiBinder {
     }
 
     /** same as {@link Module#onStart(AppContext)} */
-    public default ApiBinder lazyLoad(Consumer<AppContext> consumer) {
+    default ApiBinder lazyLoad(Consumer<AppContext> consumer) {
         HasorUtils.pushStartListener(getEnvironment(), (event, eventData) -> {
             consumer.accept((AppContext) eventData);
         });
@@ -107,19 +108,19 @@ public interface ApiBinder {
     }
 
     /** 是否为单例 */
-    public boolean isSingleton(BindInfo<?> bindInfo);
+    boolean isSingleton(BindInfo<?> bindInfo);
 
     /** 是否为单例 */
-    public boolean isSingleton(Class<?> targetType);
+    boolean isSingleton(Class<?> targetType);
     /*----------------------------------------------------------------------------------------Aop*/
 
     /** 加载带有 @DimModule 注解的类。 */
-    public default ApiBinder loadModule(Set<Class<?>> moduleTypes) {
+    default ApiBinder loadModule(Set<Class<?>> moduleTypes) {
         return this.loadModule(moduleTypes, Matchers.anyClass(), null);
     }
 
     /** 加载带有 @DimModule 注解的类。 */
-    public default ApiBinder loadModule(Set<Class<?>> maybeModuleTypes, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
+    default ApiBinder loadModule(Set<Class<?>> maybeModuleTypes, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (maybeModuleTypes != null && !maybeModuleTypes.isEmpty()) {
             maybeModuleTypes.stream()//
                     .filter(matcher)//
@@ -130,12 +131,12 @@ public interface ApiBinder {
     }
 
     /** 加载带有 @DimModule 注解的类。 */
-    public default ApiBinder loadModule(Class<?> moduleType) {
+    default ApiBinder loadModule(Class<?> moduleType) {
         return loadModule(moduleType, null);
     }
 
     /** 加载带有 @DimModule 注解的类。 */
-    public default ApiBinder loadModule(Class<?> moduleType, final TypeSupplier typeSupplier) {
+    default ApiBinder loadModule(Class<?> moduleType, final TypeSupplier typeSupplier) {
         Objects.requireNonNull(moduleType, "class is null.");
         int modifier = moduleType.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || moduleType.isArray() || moduleType.isEnum()) {
@@ -175,7 +176,7 @@ public interface ApiBinder {
      * @param matcherExpression 格式为“<code>&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>”
      * @param interceptor 拦截器对象
      */
-    public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor);
+    void bindInterceptor(String matcherExpression, MethodInterceptor interceptor);
 
     /**
      * 使用匹配器配置Aop。
@@ -183,7 +184,7 @@ public interface ApiBinder {
      * @param matcherMethod 方法匹配器
      * @param interceptor 拦截器对象
      */
-    public void bindInterceptor(Predicate<Class<?>> matcherClass, Predicate<Method> matcherMethod, MethodInterceptor interceptor);
+    void bindInterceptor(Predicate<Class<?>> matcherClass, Predicate<Method> matcherMethod, MethodInterceptor interceptor);
 
     /**
      * 匹配类，将符合条件的 Bean 新增一个属性，该方法会生成属性对应的 get/set 方法。
@@ -192,7 +193,7 @@ public interface ApiBinder {
      * @param propertyType 属性类型
      * @return 返回 - {@link LinkedBindingBuilder}。
      */
-    public LinkedBindingBuilder<DynamicProperty> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType);
+    LinkedBindingBuilder<DynamicProperty> dynamicProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType);
 
     /**
      * 匹配类，将符合条件的 Bean 新增一个只读属性，该方法会生成属性对应的 get 方法。
@@ -201,15 +202,15 @@ public interface ApiBinder {
      * @param propertyType 属性类型
      * @return 返回 - {@link LinkedBindingBuilder}。
      */
-    public LinkedBindingBuilder<DynamicProperty> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType);
+    LinkedBindingBuilder<DynamicProperty> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String propertyName, Class<?> propertyType);
 
     /*--------------------------------------------------------------------------------------Finds*/
 
     /** 根据ID获取{@link BindInfo} */
-    public <T> BindInfo<T> getBindInfo(String bindID);
+    <T> BindInfo<T> getBindInfo(String bindID);
 
     /** 根据ID获取{@link BindInfo} */
-    public <T> BindInfo<T> getBindInfo(Class<T> bindType);
+    <T> BindInfo<T> getBindInfo(Class<T> bindType);
 
     /**
      * 通过一个类型获取所有绑定该类型下的绑定信息。
@@ -217,14 +218,14 @@ public interface ApiBinder {
      * @param bindType bean type
      * @return 返回所有符合条件的绑定信息。
      */
-    public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType);
+    <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType);
 
     /**
      * 通过一个类型获取所有绑定该类型下的绑定信息。
      * @param bindType bean type
      * @return 返回所有符合条件的绑定信息。
      */
-    public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType);
+    <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType);
 
     /*------------------------------------------------------------------------------------Binding*/
 
@@ -240,7 +241,7 @@ public interface ApiBinder {
      * @param type bean type。
      * @return 返回 - {@link NamedBindingBuilder}。
      */
-    public <T> NamedBindingBuilder<T> bindType(Class<T> type);
+    <T> NamedBindingBuilder<T> bindType(Class<T> type);
 
     /**
      * 绑定一个类型并且为这个类型指定一个实例。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
@@ -250,7 +251,7 @@ public interface ApiBinder {
      * @return 返回 - {@link OptionPropertyBindingBuilder}。
      * @see #bindType(Class)
      */
-    public default <T> OptionPropertyBindingBuilder<T> bindType(final Class<T> type, final T instance) {
+    default <T> OptionPropertyBindingBuilder<T> bindType(final Class<T> type, final T instance) {
         return this.bindType(type).toInstance(instance);
     }
 
@@ -262,7 +263,7 @@ public interface ApiBinder {
      * @return 返回 - {@link InjectPropertyBindingBuilder}。
      * @see #bindType(Class)
      */
-    public default <T> InjectPropertyBindingBuilder<T> bindType(final Class<T> type, final Class<? extends T> implementation) {
+    default <T> InjectPropertyBindingBuilder<T> bindType(final Class<T> type, final Class<? extends T> implementation) {
         return this.bindType(type).to(implementation);
     }
 
@@ -274,7 +275,7 @@ public interface ApiBinder {
      * @return 返回 - {@link ScopedBindingBuilder}。
      * @see #bindType(Class)
      */
-    public default <T> ScopedBindingBuilder<T> bindType(final Class<T> type, final Supplier<T> supplier) {
+    default <T> ScopedBindingBuilder<T> bindType(final Class<T> type, final Supplier<T> supplier) {
         return this.bindType(type).toProvider(supplier);
     }
 
@@ -286,7 +287,7 @@ public interface ApiBinder {
      * @return 返回 - {@link InjectPropertyBindingBuilder}。
      * @see #bindType(Class)
      */
-    public default <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type) {
+    default <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type) {
         return this.bindType(type).nameWith(withName).to(type);
     }
 
@@ -300,7 +301,7 @@ public interface ApiBinder {
      * @see #bindType(String, Class)
      * @see #bindType(Class)
      */
-    public default <T> OptionPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final T instance) {
+    default <T> OptionPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final T instance) {
         return this.bindType(type).nameWith(withName).toInstance(instance);
     }
 
@@ -314,7 +315,7 @@ public interface ApiBinder {
      * @see #bindType(String, Class)
      * @see #bindType(Class)
      */
-    public default <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final Class<? extends T> implementation) {
+    default <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final Class<? extends T> implementation) {
         return this.bindType(type).nameWith(withName).to(implementation);
     }
 
@@ -328,42 +329,42 @@ public interface ApiBinder {
      * @see #bindType(String, Class)
      * @see #bindType(Class)
      */
-    public default <T> LifeBindingBuilder<T> bindType(final String withName, final Class<T> type, final Supplier<T> supplier) {
+    default <T> LifeBindingBuilder<T> bindType(final String withName, final Class<T> type, final Supplier<T> supplier) {
         return this.bindType(type).nameWith(withName).toProvider(supplier);
     }
 
     /** 添加SPI监听器 */
-    public default <T extends EventListener> void bindSpiListener(Class<T> spiType, T listener) {
+    default <T extends EventListener> void bindSpiListener(Class<T> spiType, T listener) {
         this.bindSpiListener(spiType, (Supplier<T>) () -> listener);
     }
 
     /** 添加SPI监听器 */
-    public default <T extends EventListener> void bindSpiListener(Class<T> spiType, Class<? extends T> implementation) {
+    default <T extends EventListener> void bindSpiListener(Class<T> spiType, Class<? extends T> implementation) {
         this.bindSpiListener(spiType, getProvider(implementation));
     }
 
     /** 添加SPI监听器 */
-    public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<? extends T> listener);
+    <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<? extends T> listener);
 
     /** 加载SPI监听器，可以在 spiType 上选择配置 @Spi 注解 */
-    public default void loadSpiListener(Set<Class<?>> spiTypeSet) {
+    default void loadSpiListener(Set<Class<?>> spiTypeSet) {
         loadSpiListener(spiTypeSet, null);
     }
 
     /** 加载SPI监听器，可以在 spiType 上选择配置 @Spi 注解 */
-    public default void loadSpiListener(Set<Class<?>> spiSupplierTypeSet, TypeSupplier typeSupplier) {
+    default void loadSpiListener(Set<Class<?>> spiSupplierTypeSet, TypeSupplier typeSupplier) {
         if (spiSupplierTypeSet != null && !spiSupplierTypeSet.isEmpty()) {
             spiSupplierTypeSet.forEach(aClass -> loadSpiListener(aClass, typeSupplier));
         }
     }
 
     /** 加载SPI监听器，可以在 spiType 上选择配置 @Spi 注解 */
-    public default void loadSpiListener(Class<?> spiSupplierType) {
+    default void loadSpiListener(Class<?> spiSupplierType) {
         loadSpiListener(spiSupplierType, null);
     }
 
     /** 加载SPI监听器，可以在 spiType 上选择配置 @Spi 注解 */
-    public default void loadSpiListener(Class<?> spiSupplierType, final TypeSupplier typeSupplier) {
+    default void loadSpiListener(Class<?> spiSupplierType, final TypeSupplier typeSupplier) {
         Objects.requireNonNull(spiSupplierType, "spiSupplierType is Null.");
         Spi apiAnnotation = spiSupplierType.getAnnotation(Spi.class);
         Class<?>[] allTypes = null;
@@ -390,12 +391,12 @@ public interface ApiBinder {
     }
 
     /** 设置一个 SPI 仲裁，一个SPI只能注册一个仲裁 */
-    public default <T extends EventListener> void bindSpiJudge(Class<T> spiType, SpiJudge spiJudgeSupplier) {
+    default <T extends EventListener> void bindSpiJudge(Class<T> spiType, SpiJudge spiJudgeSupplier) {
         this.bindSpiJudge(spiType, Provider.of(spiJudgeSupplier));
     }
 
     /** 设置一个 SPI 仲裁，一个SPI只能注册一个仲裁 */
-    public <T extends EventListener> void bindSpiJudge(Class<T> spiType, Supplier<SpiJudge> spiJudgeSupplier);
+    <T extends EventListener> void bindSpiJudge(Class<T> spiType, Supplier<SpiJudge> spiJudgeSupplier);
 
     /**
      * 注册作用域。
@@ -404,7 +405,7 @@ public interface ApiBinder {
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      * @see javax.inject.Scope
      */
-    public default Supplier<Scope> bindScope(Class<? extends Annotation> scopeType, Scope scope) {
+    default Supplier<Scope> bindScope(Class<? extends Annotation> scopeType, Scope scope) {
         Objects.requireNonNull(scopeType, "scopeType is null.");
         javax.inject.Scope scopeTypeAnno = scopeType.getAnnotation(javax.inject.Scope.class);
         if (scopeTypeAnno == null) {
@@ -419,7 +420,7 @@ public interface ApiBinder {
      * @param scope 作用域
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
-    public default Supplier<Scope> bindScope(String scopeName, Scope scope) {
+    default Supplier<Scope> bindScope(String scopeName, Scope scope) {
         return this.bindScope(scopeName, Provider.of(scope));
     }
 
@@ -429,23 +430,23 @@ public interface ApiBinder {
      * @param scopeSupplier 作用域
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
-    public <T extends Scope> Supplier<T> bindScope(String scopeName, Supplier<T> scopeSupplier);
+    <T extends Scope> Supplier<T> bindScope(String scopeName, Supplier<T> scopeSupplier);
 
     /** 根据类型查找作用域 */
-    public default Supplier<Scope> findScope(Class<? extends Annotation> scopeType) {
+    default Supplier<Scope> findScope(Class<? extends Annotation> scopeType) {
         return findScope(scopeType.getName());
     }
 
     /** 根据名字查找作用域 */
-    public Supplier<Scope> findScope(String scopeName);
+    Supplier<Scope> findScope(String scopeName);
 
-    public default <T> Supplier<T> getProvider(Class<T> targetType) {
+    default <T> Supplier<T> getProvider(Class<T> targetType) {
         Objects.requireNonNull(targetType, "targetType is null.");
         class TargetSupplierByClass implements AppContextAware, Supplier<T> {
             private final Class<T>   targetType;
             private       AppContext appContext = null;
 
-            public TargetSupplierByClass(Class<T> targetType) {
+            TargetSupplierByClass(Class<T> targetType) {
                 this.targetType = targetType;
             }
 
@@ -465,13 +466,13 @@ public interface ApiBinder {
         return HasorUtils.autoAware(getEnvironment(), new TargetSupplierByClass(targetType));
     }
 
-    public default <T> Supplier<T> getProvider(BindInfo<T> targetType) {
+    default <T> Supplier<T> getProvider(BindInfo<T> targetType) {
         Objects.requireNonNull(targetType, "targetType is null.");
         class TargetSupplierByInfo implements AppContextAware, Supplier<T> {
             private BindInfo<T> targetType = null;
             private AppContext  appContext = null;
 
-            public TargetSupplierByInfo(BindInfo<T> targetType) {
+            TargetSupplierByInfo(BindInfo<T> targetType) {
                 this.targetType = targetType;
             }
 
@@ -494,21 +495,21 @@ public interface ApiBinder {
     /*--------------------------------------------------------------------------------------Faces*/
 
     /**给绑定起个名字。*/
-    public interface NamedBindingBuilder<T> extends LinkedBindingBuilder<T> {
+    interface NamedBindingBuilder<T> extends LinkedBindingBuilder<T> {
         /**
          * 绑定一个名称(并同时设置ID,为随机ID)。
          * @param name 名称
          * @return 返回 - {@link LinkedBindingBuilder}。
          */
-        public LinkedBindingBuilder<T> nameWith(String name);
+        LinkedBindingBuilder<T> nameWith(String name);
         //        {
         //            return this.annotationWith(new Named() {
         //                @Override
-        //                public Class<? extends Annotation> annotationType() {
+        //                 Class<? extends Annotation> annotationType() {
         //                    return Named.class;
         //                }
         //                @Override
-        //                public String value() {
+        //                 String value() {
         //                    return name;
         //                }
         //            });
@@ -519,44 +520,44 @@ public interface ApiBinder {
         //         * @param annotation 注解
         //         * @return 返回 - {@link LinkedBindingBuilder}。
         //         */
-        //        public LinkedBindingBuilder<T> annotationWith(Annotation annotation);
+        //         LinkedBindingBuilder<T> annotationWith(Annotation annotation);
 
         /**
          * 随机取一个不重复的名字(并同时设置ID,为随机ID)。
          * @return 返回 - {@link LinkedBindingBuilder}。
          */
-        public LinkedBindingBuilder<T> uniqueName();
+        LinkedBindingBuilder<T> uniqueName();
 
         /**
          * 设置一个ID标识符。
          * @param idString id标识符.
          * @return 返回 - {@link NamedBindingBuilder}。
          */
-        public NamedBindingBuilder<T> idWith(String idString);
+        NamedBindingBuilder<T> idWith(String idString);
 
         /**
          * 设置一个ID标识符，同时设置 name。
          * @param nameString id标识符.
          * @return 返回 - {@link NamedBindingBuilder}。
          */
-        public NamedBindingBuilder<T> bothWith(String nameString);
+        NamedBindingBuilder<T> bothWith(String nameString);
     }
 
     /**处理类型和实现的绑定。*/
-    public interface LinkedBindingBuilder<T> extends TypeSupplierBindingBuilder<T> {
+    interface LinkedBindingBuilder<T> extends TypeSupplierBindingBuilder<T> {
         /**
          * 为绑定设置一个实现类。
          * @param implementation 实现类型
          * @return 返回 - {@link InjectPropertyBindingBuilder}。
          */
-        public TypeSupplierBindingBuilder<T> to(Class<? extends T> implementation);
+        TypeSupplierBindingBuilder<T> to(Class<? extends T> implementation);
 
         /**
          * 为绑定设置一个实例
          * @param instance 实例对象
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public default OptionPropertyBindingBuilder<T> toInstance(final T instance) {
+        default OptionPropertyBindingBuilder<T> toInstance(final T instance) {
             return this.toProvider(Provider.of(instance)).asEagerSingleton();
         }
 
@@ -565,25 +566,25 @@ public interface ApiBinder {
          * @param supplier supplier 可以用来封装类型实例创建的细节。
          * @return 返回 - {@link LifeBindingBuilder}。
          */
-        public LifeBindingBuilder<T> toProvider(Supplier<? extends T> supplier);
+        LifeBindingBuilder<T> toProvider(Supplier<? extends T> supplier);
 
         /**
          * 为绑定设置一个构造方法。
          * @param constructor 使用的构造方法。
          * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
-        public InjectConstructorBindingBuilder<T> toConstructor(Constructor<? extends T> constructor);
+        InjectConstructorBindingBuilder<T> toConstructor(Constructor<? extends T> constructor);
     }
 
     /**构造方法依赖注入，该接口的配置会覆盖注解  {@link ConstructorBy}。*/
-    public interface InjectConstructorBindingBuilder<T> extends LifeBindingBuilder<T> {
+    interface InjectConstructorBindingBuilder<T> extends LifeBindingBuilder<T> {
         /**
          * 设置构造方法注入属性。
          * @param index 构造方法参数索引位置。
          * @param value 构造方法参数值。
          * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
-        public InjectConstructorBindingBuilder<T> injectValue(int index, Object value);
+        InjectConstructorBindingBuilder<T> injectValue(int index, Object value);
 
         /**
          * 设置构造方法注入属性。
@@ -591,7 +592,7 @@ public interface ApiBinder {
          * @param valueInfo 要注入的参数来自于其它绑定。
          * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
-        public InjectConstructorBindingBuilder<T> inject(int index, BindInfo<?> valueInfo);
+        InjectConstructorBindingBuilder<T> inject(int index, BindInfo<?> valueInfo);
 
         /**
          * 设置构造方法注入属性。
@@ -599,7 +600,7 @@ public interface ApiBinder {
          * @param valueSupplier supplier 可以用来封装类型实例创建的细节。
          * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
-        public InjectConstructorBindingBuilder<T> inject(int index, Supplier<?> valueSupplier);
+        InjectConstructorBindingBuilder<T> inject(int index, Supplier<?> valueSupplier);
 
         /**
          * 设置构造方法注入属性。
@@ -607,17 +608,17 @@ public interface ApiBinder {
          * @param valueType 要注入的参数来自于其它绑定。
          * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
-        public InjectConstructorBindingBuilder<T> inject(int index, Class<?> valueType);
+        InjectConstructorBindingBuilder<T> inject(int index, Class<?> valueType);
     }
 
     /** 可以委托创建 Bean 以及对 Bean 进行编辑 */
-    public interface TypeSupplierBindingBuilder<T> extends InjectPropertyBindingBuilder<T> {
+    interface TypeSupplierBindingBuilder<T> extends InjectPropertyBindingBuilder<T> {
         /**
          * 将 Bean 的创建委托出去，委托创建相当于设置了 toProvider Hasor 将不会执行 Aop 和注入的逻辑。
          * @param typeSupplier typeSupplier 用来委托创建。
          * @return 返回 - {@link InjectPropertyBindingBuilder}。
          */
-        public LifeBindingBuilder<T> toTypeSupplier(TypeSupplier typeSupplier);
+        LifeBindingBuilder<T> toTypeSupplier(TypeSupplier typeSupplier);
 
         /**
          * 动态的给 Bean 新增一个属性，该方法会生成属性对应的 get/set 方法。
@@ -625,7 +626,7 @@ public interface ApiBinder {
          * @param propertyType 属性类型
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
-        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType);
+        TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType);
 
         /**
          * 动态的给 Bean 新增一个属性，该方法会生成属性对应的 get/set 方法。
@@ -634,7 +635,7 @@ public interface ApiBinder {
          * @param delegate 属性的委托
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
-        public default TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, DynamicProperty delegate) {
+        default TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, DynamicProperty delegate) {
             return dynamicProperty(name, propertyType, Provider.of(delegate));
         }
 
@@ -645,7 +646,7 @@ public interface ApiBinder {
          * @param delegate 属性的委托
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
-        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Supplier<? extends DynamicProperty> delegate);
+        TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Supplier<? extends DynamicProperty> delegate);
 
         /**
          * 动态的给 Bean 新增一个属性，该方法会生成属性对应的 get/set 方法。
@@ -654,7 +655,7 @@ public interface ApiBinder {
          * @param delegate 属性的委托
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
-        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Class<? extends DynamicProperty> delegate);
+        TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, Class<? extends DynamicProperty> delegate);
 
         /**
          * 动态的给 Bean 新增一个属性，该方法会生成属性对应的 get/set 方法。
@@ -663,7 +664,7 @@ public interface ApiBinder {
          * @param delegate 属性的委托
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
-        public TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, BindInfo<? extends DynamicProperty> delegate);
+        TypeSupplierBindingBuilder<T> dynamicProperty(String name, Class<?> propertyType, BindInfo<? extends DynamicProperty> delegate);
 
         /**
          * 动态的给 Bean 新增一个只读属性，该方法会生成属性对应的 get 方法。
@@ -672,7 +673,7 @@ public interface ApiBinder {
          * @param delegate 属性的委托
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
-        public default TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, DynamicProperty delegate) {
+        default TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, DynamicProperty delegate) {
             return dynamicReadOnlyProperty(name, propertyType, Provider.of(delegate));
         }
 
@@ -683,7 +684,7 @@ public interface ApiBinder {
          * @param delegate 属性的委托
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
-        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Supplier<? extends DynamicProperty> delegate);
+        TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Supplier<? extends DynamicProperty> delegate);
 
         /**
          * 动态的给 Bean 新增一个只读属性，该方法会生成属性对应的 get/set 方法。
@@ -692,7 +693,7 @@ public interface ApiBinder {
          * @param delegate 属性的委托
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
-        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Class<? extends DynamicProperty> delegate);
+        TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, Class<? extends DynamicProperty> delegate);
 
         /**
          * 动态的给 Bean 新增一个只读属性，该方法会生成属性对应的 get/set 方法。
@@ -701,18 +702,18 @@ public interface ApiBinder {
          * @param delegate 属性的委托
          * @return 返回 - {@link TypeSupplierBindingBuilder}。
          */
-        public TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, BindInfo<? extends DynamicProperty> delegate);
+        TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, BindInfo<? extends DynamicProperty> delegate);
     }
 
     /**属性依赖注入*/
-    public interface InjectPropertyBindingBuilder<T> extends LifeBindingBuilder<T> {
+    interface InjectPropertyBindingBuilder<T> extends LifeBindingBuilder<T> {
         /**
          * 值类型的属性注入。
          * @param property 被注入Bean的属性名
          * @param value 属性值。
          * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
-        public InjectPropertyBindingBuilder<T> injectValue(String property, Object value);
+        InjectPropertyBindingBuilder<T> injectValue(String property, Object value);
 
         /**
          * 注入另一个Bean对象。
@@ -720,7 +721,7 @@ public interface ApiBinder {
          * @param valueInfo Bean配置信息。
          * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
-        public InjectPropertyBindingBuilder<T> inject(String property, BindInfo<?> valueInfo);
+        InjectPropertyBindingBuilder<T> inject(String property, BindInfo<?> valueInfo);
 
         /**
          * 工厂方式注入Bean。
@@ -728,7 +729,7 @@ public interface ApiBinder {
          * @param valueSupplier 属性值提供者。
          * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
-        public InjectPropertyBindingBuilder<T> inject(String property, Supplier<?> valueSupplier);
+        InjectPropertyBindingBuilder<T> inject(String property, Supplier<?> valueSupplier);
 
         /**
          * 工厂方式注入Bean。
@@ -736,34 +737,34 @@ public interface ApiBinder {
          * @param valueType 属性值提供者。
          * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
-        public InjectPropertyBindingBuilder<T> inject(String property, Class<?> valueType);
+        InjectPropertyBindingBuilder<T> inject(String property, Class<?> valueType);
 
         /**
          * 是否强制覆盖类本身注解配置。
          * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
-        public InjectPropertyBindingBuilder<T> overwriteAnnotation();
+        InjectPropertyBindingBuilder<T> overwriteAnnotation();
     }
 
     /**负责启动之后的生命周期方法映射。*/
-    public interface LifeBindingBuilder<T> extends ScopedBindingBuilder<T> {
+    interface LifeBindingBuilder<T> extends ScopedBindingBuilder<T> {
         /**配置当对象被创建时调用的方法，如果{@link Init @Init()}注解也定义了一个初始化方法则，注解方式优先于配置。
          * @see net.hasor.core.Init*/
-        public LifeBindingBuilder<T> initMethod(String methodName);
+        LifeBindingBuilder<T> initMethod(String methodName);
 
         /**配置当容器销毁时调用的方法，如果{@link Destroy @Destroy()}注解也定义了一个初始化方法则，注解方式优先于配置。
          * @see net.hasor.core.Destroy*/
-        public LifeBindingBuilder<T> destroyMethod(String methodName);
+        LifeBindingBuilder<T> destroyMethod(String methodName);
     }
 
     /**Bean存在的作用域*/
-    public interface ScopedBindingBuilder<T> extends OptionPropertyBindingBuilder<T> {
+    interface ScopedBindingBuilder<T> extends OptionPropertyBindingBuilder<T> {
         /**
          * 注册为原型模式(会覆盖类型上本身的作用域注释配置)。<p>
          * 原型模式：当类型被多个对象注入时，每个注入的类型实例都是全新的对象。
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public default OptionPropertyBindingBuilder<T> asEagerPrototype() {
+        default OptionPropertyBindingBuilder<T> asEagerPrototype() {
             return this.toScope(Prototype.class);
         }
 
@@ -772,7 +773,7 @@ public interface ApiBinder {
          * 单列模式：当类型被多个对象注入时，每个注入的类型实例都是同一个对象。
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public default OptionPropertyBindingBuilder<T> asEagerSingleton() {
+        default OptionPropertyBindingBuilder<T> asEagerSingleton() {
             return this.toScope(Singleton.class);
         }
 
@@ -781,7 +782,7 @@ public interface ApiBinder {
          * @param scope 作用域
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public default OptionPropertyBindingBuilder<T> toScope(Scope... scope) {
+        default OptionPropertyBindingBuilder<T> toScope(Scope... scope) {
             Supplier[] supplierArray = Arrays.stream(scope).map(Provider::of).toArray(Supplier[]::new);
             return this.toScope(supplierArray);
         }
@@ -791,7 +792,7 @@ public interface ApiBinder {
          * 如果配置了{@link #toScope(Supplier...)}或者{@link #toScope(Scope...)}，那么该方法将会使它们失效。
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public default OptionPropertyBindingBuilder<T> toScope(Class<?>... scopeAnno) {
+        default OptionPropertyBindingBuilder<T> toScope(Class<?>... scopeAnno) {
             return this.toScope(Arrays.stream(scopeAnno)//
                     .filter(aClass -> {
                         if (!aClass.isAnnotation()) {
@@ -813,34 +814,34 @@ public interface ApiBinder {
          * @param scope 作用域
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public OptionPropertyBindingBuilder<T> toScope(Supplier<Scope>... scope);
+        OptionPropertyBindingBuilder<T> toScope(Supplier<Scope>... scope);
 
         /**
          * 设置Scope。
          * @param scopeName 作用域
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public OptionPropertyBindingBuilder<T> toScope(String... scopeName);
+        OptionPropertyBindingBuilder<T> toScope(String... scopeName);
     }
 
     /** 选项和属性的配置。*/
-    public interface OptionPropertyBindingBuilder<T> extends MetaDataBindingBuilder<T> {
+    interface OptionPropertyBindingBuilder<T> extends MetaDataBindingBuilder<T> {
     }
 
     /**绑定元信息*/
-    public interface MetaDataBindingBuilder<T> {
+    interface MetaDataBindingBuilder<T> {
         /**
          * 设置元信息。
          * @param key 元信息 key
          * @param value 元信息 value
          * @return 返回 - {@link MetaDataBindingBuilder}。
          */
-        public MetaDataBindingBuilder<T> metaData(String key, Object value);
+        MetaDataBindingBuilder<T> metaData(String key, Object value);
 
         /**
          * 转换为 {@link BindInfo} 接口对象。
          * @return 返回{@link BindInfo}。
          */
-        public BindInfo<T> toInfo();
+        BindInfo<T> toInfo();
     }
 }

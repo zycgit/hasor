@@ -15,7 +15,7 @@
  */
 package net.hasor.test.web.render;
 import com.alibaba.fastjson.JSON;
-import net.hasor.utils.StringUtils;
+import net.hasor.cobble.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderInvoker;

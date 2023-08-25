@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.util;
-import net.hasor.utils.io.IOUtils;
+import net.hasor.cobble.io.IOUtils;
 import net.hasor.web.FileItemStream;
 
 import java.io.ByteArrayOutputStream;
@@ -160,12 +160,12 @@ public final class Streams {
             for (int i = 0; i < fileName.length(); i++) {
                 char c = fileName.charAt(i);
                 switch (c) {
-                case 0:
-                    sb.append("\\0");
-                    break;
-                default:
-                    sb.append(c);
-                    break;
+                    case 0:
+                        sb.append("\\0");
+                        break;
+                    default:
+                        sb.append(c);
+                        break;
                 }
             }
             throw new IllegalArgumentException("Invalid file [ " + fileName + "] , Invalid file name: " + sb);

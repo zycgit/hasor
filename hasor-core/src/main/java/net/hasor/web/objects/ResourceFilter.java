@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.objects;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.io.FilenameUtils;
-import net.hasor.utils.io.IOUtils;
-import net.hasor.utils.resource.ResourceLoader;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.io.FilenameUtils;
+import net.hasor.cobble.io.IOUtils;
+import net.hasor.cobble.loader.ResourceLoader;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
@@ -33,7 +33,7 @@ import java.io.InputStream;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ResourceFilter implements InvokerFilter {
-    private ResourceLoader loader;
+    private final ResourceLoader loader;
 
     public ResourceFilter(ResourceLoader loader) {
         this.loader = loader;
@@ -54,15 +54,24 @@ public class ResourceFilter implements InvokerFilter {
             httpResponse.setContentType(mimeType);
         }
         //
-        long size = loader.getResourceSize(requestURI);
-        if (size > 0) {
-            if (size >= Integer.MAX_VALUE) {
-                httpResponse.setContentLengthLong(size);
-            } else {
-                httpResponse.setContentLength((int) size);
-            }
-        }
+        httpResponse.setHeader("Transfer-Encoding", "chunked");
+
+        // TODO TODO
         //
+        //
+        //  Chunked-Body   = *chunk            //0至多个chunk
+        //                     last-chunk         //最后一个chunk
+        //                     trailer            //尾部
+        //                     CRLF               //结束标记符
+        //   chunk          = chunk-size [ chunk-extension ] CRLF
+        //                        chunk-data CRLF
+        //   chunk-size     = 1*HEX
+        //   last-chunk     = 1*("0") [ chunk-extension ] CRLF
+        //   chunk-extension= *( ";" chunk-ext-name [ "=" chunk-ext-val ] )
+        //   chunk-ext-name = token
+        //   chunk-ext-val  = token | quoted-string
+        //   chunk-data     = chunk-size(OCTET)
+        //   trailer        = *(entity-header CRLF)
         try (ServletOutputStream outputStream = httpResponse.getOutputStream()) {
             try (InputStream inputStream = loader.getResourceAsStream(requestURI)) {
                 IOUtils.copy(inputStream, outputStream);

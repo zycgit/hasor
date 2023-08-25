@@ -28,10 +28,10 @@ import java.util.EventListener;
  */
 public interface SpiTrigger {
     /** 判断某类 SPI 是否有注册 */
-    public boolean hasSpi(Class<? extends EventListener> spiType);
+    boolean hasSpi(Class<? extends EventListener> spiType);
 
     /** 判断某类 SPI 是否有注册了仲裁 */
-    public boolean hasJudge(Class<? extends EventListener> spiJudge);
+    boolean hasJudge(Class<? extends EventListener> spiJudge);
 
     /**
      * 通知型 SPI：保证所有 SPI 都会被触发，每一个SPI监听器 都可以拿到最初的值。
@@ -39,7 +39,7 @@ public interface SpiTrigger {
      * @param spiType SPI 接口类型
      * @param spiCaller spiCaller
      */
-    public default <T extends EventListener> void notifySpiWithoutResult(Class<T> spiType, SpiCallerWithoutResult<T> spiCaller) {
+    default <T extends EventListener> void notifySpiWithoutResult(Class<T> spiType, SpiCallerWithoutResult<T> spiCaller) {
         notifyWithoutJudge(spiType, spiCaller, null);
     }
 
@@ -49,7 +49,7 @@ public interface SpiTrigger {
      * @param spiType SPI 接口类型
      * @param spiCaller spiCaller
      */
-    public <R, T extends EventListener> R notifyWithoutJudge(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult);
+    <R, T extends EventListener> R notifyWithoutJudge(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult);
 
     /**
      * 通知型 SPI：保证所有 SPI 都会被触发，每一个SPI监听器 都可以拿到最初的值。
@@ -57,7 +57,7 @@ public interface SpiTrigger {
      * @param spiType SPI 接口类型
      * @param spiCaller spiCaller
      */
-    public <R, T extends EventListener> R notifySpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult);
+    <R, T extends EventListener> R notifySpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult);
 
     /**
      * 链型 SPI： 监听器工作模式类似Aop拦截器，下一个 SPI监听器 可以获取上一个 SPI监听器的值。
@@ -65,7 +65,7 @@ public interface SpiTrigger {
      * @param spiType SPI 接口类型
      * @param spiCaller spiCaller
      */
-    public default <R, T extends EventListener> R chainSpi(Class<T> spiType, SpiCaller<T, R> spiCaller) {
+    default <R, T extends EventListener> R chainSpi(Class<T> spiType, SpiCaller<T, R> spiCaller) {
         return chainSpi(spiType, spiCaller, null);
     }
 
@@ -76,5 +76,5 @@ public interface SpiTrigger {
      * @param spiCaller spiCaller
      * @param defaultResult 默认值
      */
-    public <R, T extends EventListener> R chainSpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult);
+    <R, T extends EventListener> R chainSpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult);
 }

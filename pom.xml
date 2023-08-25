@@ -54,7 +54,6 @@
     </developers>
 
     <modules>
-        <module>hasor-commons</module>
         <module>hasor-core</module>
     </modules>
 

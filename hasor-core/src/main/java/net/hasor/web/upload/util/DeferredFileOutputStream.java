@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.util;
-import net.hasor.utils.io.IOUtils;
+
+import net.hasor.cobble.io.IOUtils;
 
 import java.io.*;
 

@@ -20,14 +20,14 @@ package net.hasor.core.spi;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface SpiCaller<T, R> {
-    public R doResultSpi(T listener, R lastResult) throws Throwable;
+    R doResultSpi(T listener, R lastResult) throws Throwable;
 
-    public interface SpiCallerWithoutResult<T> extends SpiCaller<T, Object> {
-        public default Object doResultSpi(T listener, Object lastResult) throws Throwable {
+    interface SpiCallerWithoutResult<T> extends SpiCaller<T, Object> {
+        default Object doResultSpi(T listener, Object lastResult) throws Throwable {
             this.doSpi(listener);
             return null;
         }
 
-        public void doSpi(T listener) throws Throwable;
+        void doSpi(T listener) throws Throwable;
     }
 }

@@ -23,8 +23,8 @@ import net.hasor.core.AppContext;
  */
 public interface ContextShutdownListener extends java.util.EventListener {
     /**开始进入容器销毁过程。*/
-    public void doShutdown(AppContext appContext);
+    void doShutdown(AppContext appContext);
 
     /**容器销毁完成。*/
-    public void doShutdownCompleted(AppContext appContext);
+    void doShutdownCompleted(AppContext appContext);
 }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
+import net.hasor.cobble.CollectionUtils;
 import net.hasor.core.AppContext;
-import net.hasor.utils.CollectionUtils;
 import net.hasor.web.InvokerConfig;
 
 import javax.servlet.FilterConfig;

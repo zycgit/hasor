@@ -36,20 +36,20 @@ import java.lang.annotation.*;
 @Documented
 public @interface HttpMethod {
     /** HTTP ANY method */
-    public static final String ANY     = "ANY";
+    String ANY     = "ANY";
     /** HTTP GET method */
-    public static final String GET     = "GET";
+    String GET     = "GET";
     /** HTTP POST method */
-    public static final String POST    = "POST";
+    String POST    = "POST";
     /** HTTP PUT method */
-    public static final String PUT     = "PUT";
+    String PUT     = "PUT";
     /** HTTP DELETE method */
-    public static final String DELETE  = "DELETE";
+    String DELETE  = "DELETE";
     /** HTTP HEAD method */
-    public static final String HEAD    = "HEAD";
+    String HEAD    = "HEAD";
     /** HTTP OPTIONS method */
-    public static final String OPTIONS = "OPTIONS";
+    String OPTIONS = "OPTIONS";
 
     /** Specifies the name of a HTTP method. E.g. "GET". */
-    public String[] value();
+    String[] value();
 }

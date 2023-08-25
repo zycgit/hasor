@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
+import net.hasor.cobble.BeanUtils;
+import net.hasor.cobble.StringUtils;
 import net.hasor.core.BindInfo;
-import net.hasor.utils.BeanUtils;
-import net.hasor.utils.StringUtils;
 import net.hasor.web.Mapping;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;

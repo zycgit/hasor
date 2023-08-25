@@ -16,10 +16,10 @@
 package net.hasor.web.upload;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
+import net.hasor.cobble.codec.MD5;
+import net.hasor.cobble.concurrent.future.BasicFuture;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.utils.CommonCodeUtils;
-import net.hasor.utils.future.BasicFuture;
 import net.hasor.web.AbstractTest;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -41,7 +41,7 @@ import java.util.Random;
 public class AbstractFileUploadTest extends AbstractTest {
     protected String md5(String datas) {
         try {
-            return CommonCodeUtils.MD5.getMD5(datas);
+            return MD5.getMD5(datas);
         } catch (NoSuchAlgorithmException e) {
             return null;
         }
@@ -49,7 +49,7 @@ public class AbstractFileUploadTest extends AbstractTest {
 
     protected String md5(byte[] datas) {
         try {
-            return CommonCodeUtils.MD5.encodeMD5(datas);
+            return MD5.encodeMD5(datas);
         } catch (NoSuchAlgorithmException e) {
             return null;
         }

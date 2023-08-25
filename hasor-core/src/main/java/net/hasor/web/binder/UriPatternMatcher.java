@@ -25,11 +25,11 @@ public interface UriPatternMatcher {
      * @param uri A "contextual" (i.e. relative) Request URI, *not* a complete one.
      * @return Returns true if the uri matches the pattern.
      */
-    public boolean matches(String uri);
+    boolean matches(String uri);
 
     /** Returns the type of pattern this is. */
-    public UriPatternType getPatternType();
+    UriPatternType getPatternType();
 
     /** Returns the type of pattern this is. */
-    public String getPattern();
+    String getPattern();
 }

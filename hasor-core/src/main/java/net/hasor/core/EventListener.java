@@ -27,5 +27,5 @@ public interface EventListener<T> extends java.util.EventListener {
      * @param eventData 事件参数
      * @throws Throwable 执行事件期间引发的异常。
      */
-    public void onEvent(String event, T eventData) throws Throwable;
+    void onEvent(String event, T eventData) throws Throwable;
 }

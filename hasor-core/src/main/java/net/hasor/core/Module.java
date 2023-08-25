@@ -22,7 +22,7 @@ package net.hasor.core;
 @FunctionalInterface
 public interface Module {
     /** 表示放弃后续 onStart/onStop 的执行 */
-    public static final class IgnoreModuleException extends RuntimeException {
+    final class IgnoreModuleException extends RuntimeException {
     }
 
     /**
@@ -32,14 +32,14 @@ public interface Module {
      * @throws Throwable init异常抛出
      * @throws IgnoreModuleException 如果抛出该类型异常则表示放弃后续 onStart/onStop 的执行，module 的加载仍然继续
      */
-    public void loadModule(ApiBinder apiBinder) throws Throwable;
+    void loadModule(ApiBinder apiBinder) throws Throwable;
 
     /**
      * 启动过程。
      * @param appContext appContext
      * @throws Throwable init异常抛出
      */
-    public default void onStart(AppContext appContext) throws Throwable {
+    default void onStart(AppContext appContext) throws Throwable {
     }
 
     /**
@@ -47,6 +47,6 @@ public interface Module {
      * @param appContext appContext
      * @throws Throwable init异常抛出
      */
-    public default void onStop(AppContext appContext) throws Throwable {
+    default void onStop(AppContext appContext) throws Throwable {
     }
 }

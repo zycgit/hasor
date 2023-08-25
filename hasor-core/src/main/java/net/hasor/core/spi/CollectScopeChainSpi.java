@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.spi;
+import net.hasor.cobble.ref.Scope;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Scope;
 
 import java.util.function.Supplier;
 
@@ -32,7 +32,7 @@ public interface CollectScopeChainSpi extends java.util.EventListener {
      * @param appContext 容器对象
      * @param suppliers 已经找到了的作用域
      */
-    public Supplier<Scope>[] collectScope(BindInfo<?> bindInfo, AppContext appContext, Supplier<Scope>[] suppliers) throws Throwable;
+    Supplier<Scope>[] collectScope(BindInfo<?> bindInfo, AppContext appContext, Supplier<Scope>[] suppliers) throws Throwable;
 
     /**
      * 查找目标使用的作用域。
@@ -40,5 +40,5 @@ public interface CollectScopeChainSpi extends java.util.EventListener {
      * @param appContext 容器对象
      * @param suppliers 已经找到了的作用域
      */
-    public Supplier<Scope>[] collectScope(Class<?> targetType, AppContext appContext, Supplier<Scope>[] suppliers) throws Throwable;
+    Supplier<Scope>[] collectScope(Class<?> targetType, AppContext appContext, Supplier<Scope>[] suppliers) throws Throwable;
 }

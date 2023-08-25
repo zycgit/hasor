@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.objects;
-import net.hasor.utils.StringUtils;
+import net.hasor.cobble.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderInvoker;
@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @RenderType(engineType = ForwardTo.RedirectRenderEngine.class)
 public @interface ForwardTo {
-    public class RedirectRenderEngine implements RenderEngine {
+    class RedirectRenderEngine implements RenderEngine {
         @Override
         public void process(RenderInvoker invoker, Writer writer) throws Throwable {
             Object o = invoker.get(Invoker.RETURN_DATA_KEY);

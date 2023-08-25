@@ -33,5 +33,5 @@ public interface FileItemFactory {
      * @param itemStream   The FileItemStream of the form field.
      * @return The newly created file item.
      */
-    public FileItem createItem(FileItemStream itemStream) throws IOException;
+    FileItem createItem(FileItemStream itemStream) throws IOException;
 }

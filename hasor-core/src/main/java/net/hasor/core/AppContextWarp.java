@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import net.hasor.cobble.ref.Scope;
+
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;

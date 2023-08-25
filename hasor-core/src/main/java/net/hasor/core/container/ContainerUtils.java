@@ -1,16 +1,16 @@
 package net.hasor.core.container;
+import net.hasor.cobble.BeanUtils;
+import net.hasor.cobble.ExceptionUtils;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.asm.AnnotationVisitor;
+import net.hasor.cobble.asm.ClassReader;
+import net.hasor.cobble.asm.ClassVisitor;
+import net.hasor.cobble.asm.Opcodes;
+import net.hasor.cobble.convert.ConverterUtils;
 import net.hasor.cobble.dynamic.AsmTools;
 import net.hasor.core.Type;
 import net.hasor.core.*;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.utils.BeanUtils;
-import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.asm.AnnotationVisitor;
-import net.hasor.utils.asm.ClassReader;
-import net.hasor.utils.asm.ClassVisitor;
-import net.hasor.utils.asm.Opcodes;
-import net.hasor.utils.convert.ConverterUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -202,7 +202,7 @@ public class ContainerUtils {
     public static void invokeMethod(Object targetBean, Method initMethod) {
         //
         Class<?>[] paramArray = initMethod.getParameterTypes();
-        Object[] paramObject = BeanUtils.getDefaultValue(paramArray);
+        Object[] paramObject = BeanUtils.getDefaultValues(paramArray);
         //
         try {
             try {

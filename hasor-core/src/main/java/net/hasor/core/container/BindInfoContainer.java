@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.cobble.StringUtils;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
@@ -21,7 +22,6 @@ import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.GenerateBeanID;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.spi.BindInfoProvisionListener;
-import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

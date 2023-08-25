@@ -26,5 +26,5 @@ public interface BindInfoProvisionListener extends java.util.EventListener {
      * 注入AppContext。
      * @param bindInfo 新对象的 BindInfo
      */
-    public void newBindInfo(BindInfo<?> bindInfo) throws Throwable;
+    void newBindInfo(BindInfo<?> bindInfo) throws Throwable;
 }

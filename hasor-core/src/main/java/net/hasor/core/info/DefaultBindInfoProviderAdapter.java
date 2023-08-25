@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
+import net.hasor.cobble.BeanUtils;
+import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.dynamic.DynamicProperty;
 import net.hasor.cobble.dynamic.ReadWriteType;
+import net.hasor.cobble.reflect.ConstructorUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.utils.BeanUtils;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.reflect.ConstructorUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -98,7 +98,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     }
 
     private Class<?> lookupPropertyType(String propertyName) {
-        return BeanUtils.getPropertyOrFieldType(lookupType(), propertyName);
+        return BeanUtils.getPropertyType(lookupType(), propertyName);
     }
 
     private ConstructorInfo genConstructorInfo(AppContext appContext) {

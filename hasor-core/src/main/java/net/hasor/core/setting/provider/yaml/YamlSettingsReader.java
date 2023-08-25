@@ -23,7 +23,7 @@ import net.hasor.core.setting.data.TreeNode;
 import net.hasor.core.setting.provider.ConfigSource;
 import net.hasor.core.setting.provider.SettingsReader;
 import net.hasor.core.setting.provider.StreamType;
-import net.hasor.utils.ResourcesUtils;
+import net.hasor.core.ResourcesUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

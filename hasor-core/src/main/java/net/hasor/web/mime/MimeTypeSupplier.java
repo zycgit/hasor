@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.web.mime;
-import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.io.IOUtils;
+import net.hasor.cobble.ResourcesUtils;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.io.IOUtils;
 import net.hasor.web.MimeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,6 +107,6 @@ public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implemen
     }
 
     private static interface Call {
-        public void parser(SAXParser saxParser) throws Exception;
+        void parser(SAXParser saxParser) throws Exception;
     }
 }

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
+import net.hasor.cobble.io.IOUtils;
+import net.hasor.core.ResourcesUtils;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.provider.ConfigSource;
 import net.hasor.core.setting.provider.StreamType;
-import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;

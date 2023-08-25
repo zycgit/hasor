@@ -19,4 +19,9 @@ package net.hasor.web.jstl.taglib;
  * @version : 2013-12-23
  * @author 赵永春 (zyc@hasor.net)
  */
-enum AttributeNames {Var, BeanID, Name, BindType;}
+enum AttributeNames {
+    Var,
+    BeanID,
+    Name,
+    BindType;
+}

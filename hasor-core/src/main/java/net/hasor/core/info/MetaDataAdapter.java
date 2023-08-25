@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import net.hasor.utils.BeanUtils;
+
+import net.hasor.cobble.BeanUtils;
+import net.hasor.cobble.function.Property;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
@@ -42,10 +43,11 @@ public class MetaDataAdapter extends Observable {
     }
 
     public String toString() {
-        List<String> propertys = BeanUtils.getProperties(this.getClass());
+        Map<String, Property> properties = BeanUtils.getPropertyFunc(this.getClass());
         StringBuilder builder = new StringBuilder(this.getClass().getSimpleName()).append("{");
-        for (String key : propertys) {
-            Object var = BeanUtils.readPropertyOrField(this, key);
+        for (String key : properties.keySet()) {
+            Property property = properties.get(key);
+            Object var = property.get(this);
             builder = builder.append(key).append("=").append(var).append(" ,");
         }
         builder.append("}");

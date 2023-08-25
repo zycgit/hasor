@@ -21,7 +21,7 @@ import net.hasor.core.setting.provider.StreamType;
 import net.hasor.core.setting.provider.properties.PropertiesSettingsReader;
 import net.hasor.core.setting.provider.xml.XmlSettingsReader;
 import net.hasor.core.setting.provider.yaml.YamlSettingsReader;
-import net.hasor.utils.ResourcesUtils;
+import net.hasor.core.ResourcesUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;

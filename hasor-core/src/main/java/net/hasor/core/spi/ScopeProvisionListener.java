@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.spi;
-import net.hasor.core.Scope;
+import net.hasor.cobble.ref.Scope;
 
 import java.util.function.Supplier;
 
@@ -29,5 +29,5 @@ public interface ScopeProvisionListener extends java.util.EventListener {
      * @param scopeName 新作用域名。
      * @param scopeSupplier 新作用域。
      */
-    public void newScope(String scopeName, Supplier<? extends Scope> scopeSupplier) throws Throwable;
+    void newScope(String scopeName, Supplier<? extends Scope> scopeSupplier) throws Throwable;
 }

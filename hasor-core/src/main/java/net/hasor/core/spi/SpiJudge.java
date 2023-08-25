@@ -26,16 +26,16 @@ import java.util.List;
  */
 public interface SpiJudge {
     /** 默认裁决：1.所有 SPI 监听器，全部执行；2.结果只取最后一个。*/
-    public final static SpiJudge DEFAULT = new SpiJudge() {
+    SpiJudge DEFAULT = new SpiJudge() {
     };
 
     /** 调用仲裁 */
-    public default <T extends EventListener> List<T> judgeSpi(List<T> spiList) {
+    default <T extends EventListener> List<T> judgeSpi(List<T> spiList) {
         return spiList;
     }
 
     /** 结果仲裁 */
-    public default <R> R judgeResult(List<R> result, R defaultResult) {
+    default <R> R judgeResult(List<R> result, R defaultResult) {
         return (result == null || result.isEmpty()) ? defaultResult : result.get(result.size() - 1);
     }
 }

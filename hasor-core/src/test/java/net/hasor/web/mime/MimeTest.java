@@ -15,7 +15,7 @@
  */
 package net.hasor.web.mime;
 import net.hasor.core.AppContext;
-import net.hasor.utils.ResourcesUtils;
+import net.hasor.core.ResourcesUtils;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.MimeType;
 import net.hasor.web.WebApiBinder;

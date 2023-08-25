@@ -20,7 +20,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.setting.provider.ConfigSource;
 import net.hasor.core.setting.provider.SettingsReader;
 import net.hasor.core.setting.provider.StreamType;
-import net.hasor.utils.ResourcesUtils;
+import net.hasor.core.ResourcesUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

@@ -37,7 +37,7 @@ public interface FileItemHeaders {
      * @return a <code>String</code> containing the value of the requested
      *         header, or <code>null</code> if the item does not have a header of that name
      */
-    public String getHeader(String name);
+    String getHeader(String name);
 
     /**
      * <p>
@@ -55,7 +55,7 @@ public interface FileItemHeaders {
      *         requested header. If the item does not have any headers of
      *         that name, return an empty <code>Iterator</code>
      */
-    public Iterator<String> getHeaders(String name);
+    Iterator<String> getHeaders(String name);
 
     /**
      * Returns an <code>Iterator</code> of all the header names.
@@ -64,5 +64,5 @@ public interface FileItemHeaders {
      *         headers provided with this file item. If the item does not have
      *         any headers return an empty <code>Iterator</code>
      */
-    public Iterator<String> getHeaderNames();
+    Iterator<String> getHeaderNames();
 }

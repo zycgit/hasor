@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.setting.data;
+import net.hasor.cobble.StringUtils;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.UpdateValue;
-import net.hasor.utils.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;

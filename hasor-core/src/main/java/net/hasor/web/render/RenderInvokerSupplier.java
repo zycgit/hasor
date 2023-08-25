@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.render;
-import net.hasor.utils.StringUtils;
+import net.hasor.cobble.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.wrap.InvokerWrap;
 

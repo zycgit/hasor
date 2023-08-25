@@ -16,9 +16,10 @@
 package net.hasor.core.binder;
 import net.hasor.cobble.dynamic.DynamicProperty;
 import net.hasor.cobble.dynamic.MethodInterceptor;
+import net.hasor.cobble.ref.Scope;
 import net.hasor.core.*;
 import net.hasor.core.spi.SpiJudge;
-import net.hasor.utils.supplier.TypeSupplier;
+import net.hasor.core.TypeSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

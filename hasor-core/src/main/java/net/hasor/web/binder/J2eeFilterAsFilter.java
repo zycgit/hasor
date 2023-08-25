@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
-import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.supplier.SingleProvider;
+import net.hasor.cobble.ExceptionUtils;
+import net.hasor.cobble.provider.SingleProvider;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerConfig;

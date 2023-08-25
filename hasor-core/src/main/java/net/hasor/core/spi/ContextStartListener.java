@@ -23,8 +23,8 @@ import net.hasor.core.AppContext;
  */
 public interface ContextStartListener extends java.util.EventListener {
     /**开始进入容器启动过程。*/
-    public void doStart(AppContext appContext);
+    void doStart(AppContext appContext);
 
     /**容器启动完成，交由一个异步线程来执行*/
-    public void doStartCompleted(AppContext appContext);
+    void doStartCompleted(AppContext appContext);
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.web;
+import net.hasor.cobble.ArrayUtils;
+import net.hasor.cobble.ResourcesUtils;
 import net.hasor.cobble.dynamic.AsmTools;
+import net.hasor.cobble.dynamic.Matchers;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.exts.aop.Matchers;
-import net.hasor.utils.ArrayUtils;
-import net.hasor.utils.ResourcesUtils;
-import net.hasor.utils.supplier.TypeSupplier;
+import net.hasor.core.TypeSupplier;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.render.Render;
 import net.hasor.web.render.RenderEngine;
@@ -49,45 +49,45 @@ import java.util.function.Supplier;
  */
 public interface WebApiBinder extends ApiBinder, MimeType {
     /**获取ServletContext对象。*/
-    public ServletContext getServletContext();
+    ServletContext getServletContext();
 
     /** 设置请求编码 */
-    public WebApiBinder setRequestCharacter(String encoding);
+    WebApiBinder setRequestCharacter(String encoding);
 
     /** 设置响应编码 */
-    public WebApiBinder setResponseCharacter(String encoding);
+    WebApiBinder setResponseCharacter(String encoding);
 
     /** 设置请求响应编码 */
-    public default WebApiBinder setEncodingCharacter(String requestEncoding, String responseEncoding) {
+    default WebApiBinder setEncodingCharacter(String requestEncoding, String responseEncoding) {
         return this.setRequestCharacter(requestEncoding).setResponseCharacter(responseEncoding);
     }
 
     /**获取容器支持的Servlet版本。*/
-    public ServletVersion getServletVersion();
+    ServletVersion getServletVersion();
 
     /**使用 MappingTo 表达式，创建一个{@link ServletBindingBuilder}。*/
-    public default ServletBindingBuilder jeeServlet(String urlPattern, String... morePatterns) {
+    default ServletBindingBuilder jeeServlet(String urlPattern, String... morePatterns) {
         return this.jeeServlet(ArrayUtils.add(morePatterns, urlPattern));
     }
 
     /**使用 MappingTo 表达式，创建一个{@link ServletBindingBuilder}。*/
-    public ServletBindingBuilder jeeServlet(String[] morePatterns);
+    ServletBindingBuilder jeeServlet(String[] morePatterns);
 
     /**使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。*/
-    public default <T> MappingToBindingBuilder<T> mappingTo(String urlPattern, String... morePatterns) {
+    default <T> MappingToBindingBuilder<T> mappingTo(String urlPattern, String... morePatterns) {
         return this.mappingTo(ArrayUtils.add(morePatterns, urlPattern));
     }
 
     /**使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。*/
-    public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns);
+    <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns);
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default WebApiBinder loadMappingTo(Set<Class<?>> udfTypeSet) {
+    default WebApiBinder loadMappingTo(Set<Class<?>> udfTypeSet) {
         return this.loadMappingTo(udfTypeSet, Matchers.anyClass(), null);
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default WebApiBinder loadMappingTo(Set<Class<?>> maybeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
+    default WebApiBinder loadMappingTo(Set<Class<?>> maybeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (maybeUdfTypeSet != null && !maybeUdfTypeSet.isEmpty()) {
             maybeUdfTypeSet.stream()//
                     .filter(matcher)//
@@ -98,12 +98,12 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default WebApiBinder loadMappingTo(Class<?> mappingType) {
+    default WebApiBinder loadMappingTo(Class<?> mappingType) {
         return loadMappingTo(mappingType, null);
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default WebApiBinder loadMappingTo(Class<?> mappingType, final TypeSupplier typeSupplier) {
+    default WebApiBinder loadMappingTo(Class<?> mappingType, final TypeSupplier typeSupplier) {
         Objects.requireNonNull(mappingType, "class is null.");
         int modifier = mappingType.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || mappingType.isArray() || mappingType.isEnum()) {
@@ -142,210 +142,210 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
-    public default FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns) {
+    default FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns) {
         return this.filter(ArrayUtils.add(morePatterns, urlPattern));
     }
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns);
+    FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns);
 
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
-    public default FilterBindingBuilder<InvokerFilter> filterRegex(String regex, String... regexes) {
+    default FilterBindingBuilder<InvokerFilter> filterRegex(String regex, String... regexes) {
         return this.filter(ArrayUtils.add(regexes, regex));
     }
 
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes);
+    FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes);
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
-    public default FilterBindingBuilder<Filter> jeeFilter(String urlPattern, String... morePatterns) {
+    default FilterBindingBuilder<Filter> jeeFilter(String urlPattern, String... morePatterns) {
         return this.jeeFilter(ArrayUtils.add(morePatterns, urlPattern));
     }
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder<Filter> jeeFilter(String[] morePatterns);
+    FilterBindingBuilder<Filter> jeeFilter(String[] morePatterns);
 
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
-    public default FilterBindingBuilder<Filter> jeeFilterRegex(String regex, String... regexes) {
+    default FilterBindingBuilder<Filter> jeeFilterRegex(String regex, String... regexes) {
         return this.jeeFilterRegex(ArrayUtils.add(regexes, regex));
     }
 
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes);
+    FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes);
 
-    public void addMimeType(String type, String mimeType);
+    void addMimeType(String type, String mimeType);
 
-    public default void loadMimeType(String resource) throws IOException {
+    default void loadMimeType(String resource) throws IOException {
         loadMimeType(StandardCharsets.UTF_8, resource);
     }
 
-    public default void loadMimeType(InputStream inputStream) throws IOException {
+    default void loadMimeType(InputStream inputStream) throws IOException {
         loadMimeType(StandardCharsets.UTF_8, inputStream);
     }
 
-    public default void loadMimeType(Charset charset, String resource) throws IOException {
+    default void loadMimeType(Charset charset, String resource) throws IOException {
         loadMimeType(charset, Objects.requireNonNull(ResourcesUtils.getResourceAsStream(resource), resource + " is not exist"));
     }
 
-    public default void loadMimeType(Charset charset, InputStream inputStream) throws IOException {
+    default void loadMimeType(Charset charset, InputStream inputStream) throws IOException {
         loadMimeType(new InputStreamReader(inputStream, charset));
     }
 
-    public void loadMimeType(Reader reader) throws IOException;
+    void loadMimeType(Reader reader) throws IOException;
 
     /** 负责配置Filter */
-    public static interface FilterBindingBuilder<T> {
-        public default void through(Class<? extends T> filterKey) {
+    static interface FilterBindingBuilder<T> {
+        default void through(Class<? extends T> filterKey) {
             this.through(0, filterKey, null);
         }
 
-        public default void through(T filter) {
+        default void through(T filter) {
             this.through(0, filter, null);
         }
 
-        public default void through(Supplier<? extends T> filterProvider) {
+        default void through(Supplier<? extends T> filterProvider) {
             this.through(0, filterProvider, null);
         }
 
-        public default void through(BindInfo<? extends T> filterRegister) {
+        default void through(BindInfo<? extends T> filterRegister) {
             this.through(0, filterRegister, null);
         }
 
-        public default void through(Class<? extends T> filterKey, Map<String, String> initParams) {
+        default void through(Class<? extends T> filterKey, Map<String, String> initParams) {
             this.through(0, filterKey, initParams);
         }
 
-        public default void through(T filter, Map<String, String> initParams) {
+        default void through(T filter, Map<String, String> initParams) {
             this.through(0, filter, initParams);
         }
 
-        public default void through(Supplier<? extends T> filterProvider, Map<String, String> initParams) {
+        default void through(Supplier<? extends T> filterProvider, Map<String, String> initParams) {
             this.through(0, filterProvider, initParams);
         }
 
-        public default void through(BindInfo<? extends T> filterRegister, Map<String, String> initParams) {
+        default void through(BindInfo<? extends T> filterRegister, Map<String, String> initParams) {
             this.through(0, filterRegister, initParams);
         }
 
-        public default void through(int index, Class<? extends T> filterKey) {
+        default void through(int index, Class<? extends T> filterKey) {
             this.through(index, filterKey, null);
         }
 
-        public default void through(int index, T filter) {
+        default void through(int index, T filter) {
             this.through(index, filter, null);
         }
 
-        public default void through(int index, Supplier<? extends T> filterProvider) {
+        default void through(int index, Supplier<? extends T> filterProvider) {
             this.through(index, filterProvider, null);
         }
 
-        public default void through(int index, BindInfo<? extends T> filterRegister) {
+        default void through(int index, BindInfo<? extends T> filterRegister) {
             this.through(index, filterRegister, null);
         }
 
-        public void through(int index, Class<? extends T> filterKey, Map<String, String> initParams);
+        void through(int index, Class<? extends T> filterKey, Map<String, String> initParams);
 
-        public void through(int index, T filter, Map<String, String> initParams);
+        void through(int index, T filter, Map<String, String> initParams);
 
-        public void through(int index, Supplier<? extends T> filterProvider, Map<String, String> initParams);
+        void through(int index, Supplier<? extends T> filterProvider, Map<String, String> initParams);
 
-        public void through(int index, BindInfo<? extends T> filterRegister, Map<String, String> initParams);
+        void through(int index, BindInfo<? extends T> filterRegister, Map<String, String> initParams);
     }
 
     /**负责配置Servlet。*/
-    public static interface ServletBindingBuilder {
-        public default void with(Class<? extends HttpServlet> targetKey) {
+    static interface ServletBindingBuilder {
+        default void with(Class<? extends HttpServlet> targetKey) {
             with(0, targetKey, null);
         }
 
-        public default void with(HttpServlet target) {
+        default void with(HttpServlet target) {
             with(0, target, null);
         }
 
-        public default void with(Supplier<? extends HttpServlet> targetProvider) {
+        default void with(Supplier<? extends HttpServlet> targetProvider) {
             with(0, targetProvider, null);
         }
 
-        public default void with(BindInfo<? extends HttpServlet> targetInfo) {
+        default void with(BindInfo<? extends HttpServlet> targetInfo) {
             with(0, targetInfo, null);
         }
 
-        public default void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams) {
+        default void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams) {
             this.with(0, servletKey, initParams);
         }
 
-        public default void with(HttpServlet servlet, Map<String, String> initParams) {
+        default void with(HttpServlet servlet, Map<String, String> initParams) {
             this.with(0, servlet, initParams);
         }
 
-        public default void with(Supplier<? extends HttpServlet> servletProvider, Map<String, String> initParams) {
+        default void with(Supplier<? extends HttpServlet> servletProvider, Map<String, String> initParams) {
             this.with(0, servletProvider, initParams);
         }
 
-        public default void with(BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
+        default void with(BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
             this.with(0, servletRegister, initParams);
         }
 
-        public default void with(int index, Class<? extends HttpServlet> targetKey) {
+        default void with(int index, Class<? extends HttpServlet> targetKey) {
             this.with(index, targetKey, null);
         }
 
-        public default void with(int index, HttpServlet target) {
+        default void with(int index, HttpServlet target) {
             this.with(index, target, null);
         }
 
-        public default void with(int index, Supplier<? extends HttpServlet> targetProvider) {
+        default void with(int index, Supplier<? extends HttpServlet> targetProvider) {
             this.with(index, targetProvider, null);
         }
 
-        public default void with(int index, BindInfo<? extends HttpServlet> targetInfo) {
+        default void with(int index, BindInfo<? extends HttpServlet> targetInfo) {
             this.with(index, targetInfo, null);
         }
 
-        public void with(int index, Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
+        void with(int index, Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
 
-        public void with(int index, HttpServlet servlet, Map<String, String> initParams);
+        void with(int index, HttpServlet servlet, Map<String, String> initParams);
 
-        public void with(int index, Supplier<? extends HttpServlet> servletProvider, Map<String, String> initParams);
+        void with(int index, Supplier<? extends HttpServlet> servletProvider, Map<String, String> initParams);
 
-        public void with(int index, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams);
+        void with(int index, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams);
     }
 
     /**负责配置MappingTo。*/
-    public static interface MappingToBindingBuilder<T> {
-        public default void with(Class<? extends T> targetKey) {
+    static interface MappingToBindingBuilder<T> {
+        default void with(Class<? extends T> targetKey) {
             with(0, targetKey);
         }
 
-        public default void with(T target) {
+        default void with(T target) {
             with(0, target);
         }
 
-        public default void with(Class<T> referKey, Supplier<? extends T> targetProvider) {
+        default void with(Class<T> referKey, Supplier<? extends T> targetProvider) {
             with(0, referKey, targetProvider);
         }
 
-        public default void with(BindInfo<? extends T> targetInfo) {
+        default void with(BindInfo<? extends T> targetInfo) {
             with(0, targetInfo);
         }
 
-        public void with(int index, Class<? extends T> targetKey);
+        void with(int index, Class<? extends T> targetKey);
 
-        public void with(int index, T target);
+        void with(int index, T target);
 
-        public void with(int index, Class<T> referKey, Supplier<? extends T> targetProvider);
+        void with(int index, Class<T> referKey, Supplier<? extends T> targetProvider);
 
-        public void with(int index, BindInfo<? extends T> targetInfo);
+        void with(int index, BindInfo<? extends T> targetInfo);
     }
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /** 加载带有 @Render注解配置的渲染器。 */
-    public default WebApiBinder loadRender(Set<Class<?>> udfTypeSet) {
+    default WebApiBinder loadRender(Set<Class<?>> udfTypeSet) {
         return this.loadRender(udfTypeSet, Matchers.anyClass(), null);
     }
 
     /** 加载带有 @Render注解配置的渲染器。 */
-    public default WebApiBinder loadRender(Set<Class<?>> maybeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
+    default WebApiBinder loadRender(Set<Class<?>> maybeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (maybeUdfTypeSet != null && !maybeUdfTypeSet.isEmpty()) {
             maybeUdfTypeSet.stream()//
                     .filter(matcher)//
@@ -356,12 +356,12 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     /** 加载 @Render注解配置的渲染器。*/
-    public default WebApiBinder loadRender(Class<?> renderClass) {
+    default WebApiBinder loadRender(Class<?> renderClass) {
         return loadRender(renderClass, null);
     }
 
     /** 加载 @Render注解配置的渲染器。*/
-    public default WebApiBinder loadRender(Class<?> renderClass, TypeSupplier typeSupplier) {
+    default WebApiBinder loadRender(Class<?> renderClass, TypeSupplier typeSupplier) {
         Objects.requireNonNull(renderClass, "class is null.");
         int modifier = renderClass.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
@@ -394,30 +394,30 @@ public interface WebApiBinder extends ApiBinder, MimeType {
      * 添加一个渲染器，用来将 Action 请求的结果渲染成页面。
      * @param renderName 渲染器名称
      */
-    public RenderEngineBindingBuilder addRender(String renderName);
+    RenderEngineBindingBuilder addRender(String renderName);
 
     /** 负责配置RenderEngine。*/
-    public static interface RenderEngineBindingBuilder {
+    static interface RenderEngineBindingBuilder {
         /**绑定实现。*/
-        public <T extends RenderEngine> void to(Class<T> renderEngineType);
+        <T extends RenderEngine> void to(Class<T> renderEngineType);
 
         /**绑定实现。*/
-        public default void toInstance(RenderEngine renderEngine) {
+        default void toInstance(RenderEngine renderEngine) {
             this.toProvider(() -> renderEngine);
         }
 
         /**绑定实现。*/
-        public void toProvider(Supplier<? extends RenderEngine> renderEngineProvider);
+        void toProvider(Supplier<? extends RenderEngine> renderEngineProvider);
 
         /**绑定实现。*/
-        public void bindToInfo(BindInfo<? extends RenderEngine> renderEngineInfo);
+        void bindToInfo(BindInfo<? extends RenderEngine> renderEngineInfo);
     }
     //
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //    /** 创建一个映射，当匹配某个URL的时候使用指定的 Render 来渲染。如果存在多条规则按照 index 顺序裁决 index 最大的那一个*/
-    //    public default void urlExtensionToRender(String extension, String renderName) {
+    //     default void urlExtensionToRender(String extension, String renderName) {
     //        this.urlExtensionToRender(0, extension, renderName);
     //    }
     //
-    //    public void urlExtensionToRender(int index, String extension, String renderName);
+    //     void urlExtensionToRender(int index, String extension, String renderName);
 }

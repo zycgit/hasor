@@ -25,7 +25,7 @@ import net.hasor.core.Module;
 @FunctionalInterface
 public interface WebModule extends Module {
     @Override
-    public default void loadModule(final ApiBinder apiBinder) throws Throwable {
+    default void loadModule(final ApiBinder apiBinder) throws Throwable {
         WebApiBinder webApiBinder = apiBinder.tryCast(WebApiBinder.class);
         if (webApiBinder == null) {
             throw new Module.IgnoreModuleException();
@@ -33,5 +33,5 @@ public interface WebModule extends Module {
         this.loadModule(webApiBinder);
     }
 
-    public void loadModule(WebApiBinder apiBinder) throws Throwable;
+    void loadModule(WebApiBinder apiBinder) throws Throwable;
 }

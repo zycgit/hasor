@@ -35,7 +35,7 @@ public interface InvokerConfig {
      * initialization parameter, or <code>null</code> if
      * the initialization parameter does not exist
      */
-    public String getInitParameter(String name);
+    String getInitParameter(String name);
 
     /**
      * Returns the names of the filter's initialization parameters
@@ -46,7 +46,7 @@ public interface InvokerConfig {
      * @return an <code>Enumeration</code> of <code>String</code> objects
      * containing the names of the filter's initialization parameters
      */
-    public Enumeration<String> getInitParameterNames();
+    Enumeration<String> getInitParameterNames();
 
-    public AppContext getAppContext();
+    AppContext getAppContext();
 }

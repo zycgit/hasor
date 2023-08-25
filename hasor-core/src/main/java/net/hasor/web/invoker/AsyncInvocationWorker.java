@@ -23,8 +23,8 @@ import java.lang.reflect.Method;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AsyncInvocationWorker implements Runnable {
-    private AsyncContext asyncContext;
-    private Method       targetMethod;
+    private final AsyncContext asyncContext;
+    private final Method       targetMethod;
 
     public AsyncInvocationWorker(AsyncContext asyncContext, Method targetMethod) {
         this.asyncContext = asyncContext;

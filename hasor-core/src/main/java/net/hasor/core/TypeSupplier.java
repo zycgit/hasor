@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.utils.supplier;
+package net.hasor.core;
 /**
  * 根据类型创建对象。
  * @version : 2020年2月27日
@@ -22,15 +22,15 @@ package net.hasor.utils.supplier;
 @FunctionalInterface
 public interface TypeSupplier {
     /** @return 获取对象。*/
-    public <T> T get(Class<? extends T> targetType);
+    <T> T get(Class<? extends T> targetType);
 
     /** 测试 TypeSupplier 是否支持这个类型，默认全部支持。 */
-    public default <T> boolean test(Class<? extends T> targetType) {
+    default <T> boolean test(Class<? extends T> targetType) {
         return true;
     }
 
     /** 将当前 TypeSupplier 串联到 other 的前面，如果 other 的 test 方法返回 false 就会执行当前这个。 */
-    public default TypeSupplier beforeOther(TypeSupplier other) {
+    default TypeSupplier beforeOther(TypeSupplier other) {
         return new TypeSupplier() {
             public <T> T get(Class<? extends T> targetType) {
                 if (test(targetType)) {
@@ -46,7 +46,7 @@ public interface TypeSupplier {
     }
 
     /** 将当前 TypeSupplier 串联到 other 的后面，如果当前TypeSupplier的 test 方法返回 false 就会执行后面那个。 */
-    public default TypeSupplier afterOther(TypeSupplier other) {
+    default TypeSupplier afterOther(TypeSupplier other) {
         return new TypeSupplier() {
             public <T> T get(Class<? extends T> targetType) {
                 if (other.test(targetType)) {

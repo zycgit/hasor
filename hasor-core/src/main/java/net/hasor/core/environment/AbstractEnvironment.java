@@ -15,6 +15,7 @@
  */
 package net.hasor.core.environment;
 import net.hasor.cobble.ClassUtils;
+import net.hasor.cobble.StringUtils;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
@@ -22,8 +23,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.event.StandardEventManager;
 import net.hasor.core.setting.BasicSettings;
 import net.hasor.core.setting.SettingNode;
-import net.hasor.utils.ScanClassPath;
-import net.hasor.utils.StringUtils;
+import net.hasor.core.ScanClassPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

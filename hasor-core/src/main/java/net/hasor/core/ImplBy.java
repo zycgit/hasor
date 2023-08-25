@@ -31,5 +31,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface ImplBy {
     /**实现类。*/
-    public Class<?> value();
+    Class<?> value();
 }

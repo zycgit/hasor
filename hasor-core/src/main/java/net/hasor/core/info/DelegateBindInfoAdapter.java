@@ -16,7 +16,7 @@
 package net.hasor.core.info;
 import net.hasor.cobble.dynamic.DynamicProperty;
 import net.hasor.cobble.dynamic.ReadWriteType;
-import net.hasor.core.Provider;
+import net.hasor.cobble.provider.Provider;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;

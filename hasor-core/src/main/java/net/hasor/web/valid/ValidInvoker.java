@@ -30,13 +30,13 @@ import java.util.stream.Stream;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ValidInvoker extends Invoker {
-    public static final String VALID_DATA_KEY = "validData";//
+    String VALID_DATA_KEY = "validData";//
 
     /** 验证失败的验证keys */
-    public List<String> validKeys();
+    List<String> validKeys();
 
     /** Message of string */
-    public default List<String> validErrorsOfString() {
+    default List<String> validErrorsOfString() {
         return validErrorsOfMessage()       //
                 .stream()                   //
                 .map(Message::toString)     //
@@ -44,7 +44,7 @@ public interface ValidInvoker extends Invoker {
     }
 
     /** 获取某个key下验证失败信息 */
-    public default List<String> validErrorsOfString(String key) {
+    default List<String> validErrorsOfString(String key) {
         return validErrorsOfMessage(key)    //
                 .stream()                   //
                 .map(Message::toString)     //
@@ -52,13 +52,13 @@ public interface ValidInvoker extends Invoker {
     }
 
     /** 获取某个key下验证失败信息 */
-    public default String firstValidErrorsOfString(String key) {
+    default String firstValidErrorsOfString(String key) {
         Message msg = firstValidErrorsOfMessage(key);
         return (msg != null) ? msg.toString() : null;
     }
 
     /** 获取所有验证失败信息 */
-    public default List<Message> validErrorsOfMessage() {
+    default List<Message> validErrorsOfMessage() {
         List<Message> finalMessage = new ArrayList<>();
         for (String key : validKeys()) {
             finalMessage.addAll(validErrorsOfMessage(key));
@@ -67,46 +67,46 @@ public interface ValidInvoker extends Invoker {
     }
 
     /** 获取某个key下验证失败信息 */
-    public List<Message> validErrorsOfMessage(String key);
+    List<Message> validErrorsOfMessage(String key);
 
     /** 获取某个key下验证失败信息 */
-    public Message firstValidErrorsOfMessage(String key);
+    Message firstValidErrorsOfMessage(String key);
 
     /** 是否通过验证。*/
-    public boolean isValid();
+    boolean isValid();
 
     /** 某个规则是否通过验证 */
-    public boolean isValid(String key);
+    boolean isValid(String key);
 
     /** 删除所有验证信息 */
-    public default void clearValidErrors() {
+    default void clearValidErrors() {
         for (String key : validKeys()) {
             clearValidErrors(key);
         }
     }
 
     /** 删除某个验证信息 */
-    public void clearValidErrors(String key);
+    void clearValidErrors(String key);
 
     /** 添加验证失败的消息 */
-    public default void addError(String key, String validString) {
+    default void addError(String key, String validString) {
         this.addError(key, new Message(validString));
     }
 
     /** 添加验证失败的消息 */
-    public default void addError(String key, String validString, Object... args) {
+    default void addError(String key, String validString, Object... args) {
         this.addError(key, new Message(validString, args));
     }
 
     /** 添加验证失败的消息 */
-    public default void addError(String key, Message validMessage) {
+    default void addError(String key, Message validMessage) {
         addErrors(key, Collections.singletonList(validMessage));
     }
 
     /** 添加验证失败的消息 */
-    public void addErrors(String key, List<Message> validMessage);
+    void addErrors(String key, List<Message> validMessage);
 
-    public default boolean doValid(String scene, Object object) {
+    default boolean doValid(String scene, Object object) {
         if (object == null) {
             return false;
         }
@@ -120,7 +120,7 @@ public interface ValidInvoker extends Invoker {
         return this.doValid(scene, object, (Class<? extends Validation>[]) collect);
     }
 
-    public default boolean doValid(String scene, Object object, Class<? extends Validation>... validArrays) {
+    default boolean doValid(String scene, Object object, Class<? extends Validation>... validArrays) {
         for (Class<? extends Validation> validType : validArrays) {
             Validation validation = getAppContext().getInstance(validType);
             if (validation == null) {

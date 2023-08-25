@@ -21,5 +21,5 @@ package net.hasor.core.environment;
  * @version : 2020-04-12
  */
 interface TokenHandler {
-    public String handleToken(StringBuilder hasFound, String openToken, String content);
+    String handleToken(StringBuilder hasFound, String openToken, String content);
 }

@@ -27,5 +27,5 @@ public interface BindInfoAware {
      * 注入BindInfo。
      * @param bindInfo 注入的BindInfo。
      */
-    public void setBindInfo(BindInfo<?> bindInfo);
+    void setBindInfo(BindInfo<?> bindInfo);
 }

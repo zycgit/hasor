@@ -25,18 +25,18 @@ public interface MetaInfo {
      * @param key 元信息 key
      * @return 返回元信息值
      */
-    public Object getMetaData(String key);
+    Object getMetaData(String key);
 
     /**
      * 设置元数据
      * @param key 元信息 key
      * @param value 元信息值
      */
-    public void setMetaData(String key, Object value);
+    void setMetaData(String key, Object value);
 
     /**
      * 删除元数据
      * @param key 元信息 key
      */
-    public void removeMetaData(String key);
+    void removeMetaData(String key);
 }
