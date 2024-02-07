@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.web;
+import net.hasor.cobble.CollectionUtils;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.concurrent.future.BasicFuture;
+import net.hasor.cobble.io.output.WriterOutputStream;
+import net.hasor.cobble.setting.SettingNode;
+import net.hasor.cobble.setting.data.TreeNode;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.setting.SettingNode;
-import net.hasor.core.setting.data.TreeNode;
-import net.hasor.utils.CollectionUtils;
-import net.hasor.utils.StringUtils;
-import net.hasor.utils.future.BasicFuture;
-import net.hasor.utils.io.output.WriterOutputStream;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.ExecuteCaller;
 import net.hasor.web.invoker.InvokerContext;
@@ -46,8 +46,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.mockito.ArgumentMatchers.*;
 
 /**
- * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2016-12-16
  */
 public class AbstractTest {
     //
@@ -179,7 +179,7 @@ public class AbstractTest {
     }
 
     protected AppContext buildWebAppContext(String mainconfig, BuildHasor buildHasor, WebModule webModule, ServletContext servletContext, LoadModule... modules) {
-        Hasor settings = buildHasor.build(servletContext).asCore()//
+        Hasor settings = buildHasor.build(servletContext)//
                 .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet", defaultInnerApiBinderSetXmlNode(modules))//
                 .addSettings("http://test.hasor.net", "hasor.invokerCreatorSet", defaultInvokerCreaterSetXmlNode(modules))//
                 .mainSettingWith(mainconfig)//

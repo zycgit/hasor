@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container;
-import net.hasor.core.Provider;
-import net.hasor.core.Scope;
+package net.hasor.core.spi.container;
+import net.hasor.cobble.provider.Provider;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.provider.SingletonScope;
+import net.hasor.core.container.ScopeContainer;
+import net.hasor.core.container.SpiCallerContainer;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.scope.SingletonScope;
 import net.hasor.core.spi.ScopeProvisionListener;
 import net.hasor.test.core.basic.destroy.PrototypePublicCallDestroyBean;
 import net.hasor.test.core.basic.destroy.SingletonPublicCallDestroyBean;

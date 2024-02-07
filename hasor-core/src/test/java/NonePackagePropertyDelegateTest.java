@@ -1,7 +1,8 @@
+import net.hasor.cobble.BeanUtils;
+import net.hasor.cobble.dynamic.SimpleDynamicProperty;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.aop.SimplePropertyDelegate;
-import net.hasor.utils.BeanUtils;
 import org.junit.Test;
 
 /**
@@ -10,14 +11,16 @@ import org.junit.Test;
  * @Date 22/3/2021
  **/
 public class NonePackagePropertyDelegateTest {
+    private static void loadModule(ApiBinder apiBinder) {
+        SimpleDynamicProperty delegate = new SimpleDynamicProperty("helloWord");
+        apiBinder.bindType(PojoBean1.class).dynamicProperty("name", String.class, delegate);
+        apiBinder.bindType(PojoBean2.class).dynamicProperty("name", String.class, delegate);
+    }
+
     @Test
     public void test() {
         // 注册两个 Bean 并且共享同一个 name 属性。
-        AppContext appContext = Hasor.create().build(apiBinder -> {
-            SimplePropertyDelegate delegate = new SimplePropertyDelegate("helloWord");
-            apiBinder.bindType(PojoBean1.class).dynamicProperty("name", String.class, delegate);
-            apiBinder.bindType(PojoBean2.class).dynamicProperty("name", String.class, delegate);
-        });
+        AppContext appContext = Hasor.create().build(NonePackagePropertyDelegateTest::loadModule);
         // 创建两个 Bean
         PojoBean1 pojoBean1 = appContext.getInstance(PojoBean1.class);
         PojoBean2 pojoBean2 = appContext.getInstance(PojoBean2.class);
@@ -53,5 +56,3 @@ public class NonePackagePropertyDelegateTest {
         }
     }
 }
-
-

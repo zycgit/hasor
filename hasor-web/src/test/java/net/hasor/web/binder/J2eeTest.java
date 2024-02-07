@@ -35,8 +35,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.mockito.ArgumentMatchers.any;
 
 /**
- * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2016-12-16
  */
 public class J2eeTest extends AbstractTest {
     @Test
@@ -123,7 +123,7 @@ public class J2eeTest extends AbstractTest {
         assert mapping.getInitParams().getServletName().equals("test");
         assert j2eeServlet.getConfig() == null;
         //
-        AppContext appContext = Hasor.create().asCore().build();
+        AppContext appContext = Hasor.create().build();
         Invoker invoker = PowerMockito.mock(Invoker.class);
         PowerMockito.when(invoker.getAppContext()).thenReturn(appContext);
         //

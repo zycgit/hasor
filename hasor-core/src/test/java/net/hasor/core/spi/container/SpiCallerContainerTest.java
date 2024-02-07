@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container;
-import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
-import net.hasor.core.Scope;
+package net.hasor.core.spi.container;
+import net.hasor.cobble.provider.Provider;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.core.container.SpiCallerContainer;
 import net.hasor.core.spi.BindInfoProvisionListener;
-import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.ScopeProvisionListener;
-import net.hasor.test.core.spi.JdkSpiImpl;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -83,39 +81,5 @@ public class SpiCallerContainerTest {
         //
         assert receive.size() == 1;
         assert receive.get(0) == mockScope;
-    }
-
-    @Test
-    public void spiTest3() {
-        SpiCallerContainer spiCallerContainer = new SpiCallerContainer(Hasor.create().buildEnvironment());
-        spiCallerContainer.init();
-        //
-        ScopeProvisionListener listener = PowerMockito.mock(ScopeProvisionListener.class);
-        spiCallerContainer.addListener(ScopeProvisionListener.class, Provider.of(listener));
-        //
-        spiCallerContainer.forEachListener(entry -> {
-            try {
-                entry.setValue(null);
-                assert false;
-            } catch (Exception e) {
-                assert e.getMessage().equals("this entry no support.");
-            }
-        });
-    }
-
-    @Test
-    public void spiTest4() {
-        SpiCallerContainer spiCallerContainer = new SpiCallerContainer(Hasor.create().buildEnvironment());
-        spiCallerContainer.init();
-        //
-        JdkSpiImpl.resetInit();
-        assert !JdkSpiImpl.isInit();
-        //
-        spiCallerContainer.notifySpi(ContextInitializeListener.class, (listener, lastResult) -> {
-            listener.doInitializeCompleted(null);
-            return null;
-        }, null);
-        assert JdkSpiImpl.isInit();
-        //
     }
 }

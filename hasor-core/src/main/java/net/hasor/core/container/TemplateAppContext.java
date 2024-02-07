@@ -19,6 +19,7 @@ import net.hasor.cobble.ClassUtils;
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.concurrent.future.BasicFuture;
+import net.hasor.cobble.loader.ResourceLoader;
 import net.hasor.cobble.provider.Scope;
 import net.hasor.cobble.setting.SettingNode;
 import net.hasor.cobble.setting.Settings;
@@ -49,20 +50,14 @@ import static net.hasor.core.container.TemplateAppContext.AppContextStatus.*;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
- *
  * 提示：initContext 方法是整个类的入口方法。
- * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2013-4-9
  */
 public abstract class TemplateAppContext extends MetaDataAdapter implements AppContext {
-    /**主配置文件名称*/
-    public static final  String                            DefaultSettings = "hconfig.xml";
-    /**默认静态配置文件名称*/
-    private static final String                            SchemaName      = "/META-INF/hasor.schemas";
-    protected static     Logger                            logger          = LoggerFactory.getLogger(TemplateAppContext.class);
-    private final        ShutdownHook                      shutdownHook    = new ShutdownHook(this);
-    private final        ShutdownHook                      shutdownHook    = new ShutdownHook(this);
-    private final        AtomicReference<AppContextStatus> status          = new AtomicReference<>(AppContextStatus.Stopped);
+    protected static Logger                            logger       = LoggerFactory.getLogger(TemplateAppContext.class);
+    private final    ShutdownHook                      shutdownHook = new ShutdownHook(this);
+    private final    AtomicReference<AppContextStatus> status       = new AtomicReference<>(AppContextStatus.Stopped);
 
     protected static enum AppContextStatus {
         Stopped,
@@ -274,8 +269,28 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return getContainer().providerOnlyBindInfo(bindInfo, this);
     }
 
-    /**获取用于创建Bean对象的{@link BeanContainer}接口*/
+    /** 获取用于创建Bean对象的{@link BeanContainer}接口 */
     protected abstract BeanContainer getContainer();
+
+    @Override
+    public EventContext getEventContext() {
+        return getContainer().getEventContext();
+    }
+
+    @Override
+    public ResourceLoader getResourceLoader() {
+        return getContainer().getResourceLoader();
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return getContainer().getClassLoader();
+    }
+
+    @Override
+    public Object getContext() {
+        return getContainer().getContext();
+    }
 
     /*------------------------------------------------------------------------------------Binding*/
 
@@ -298,14 +313,10 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
 
     /*------------------------------------------------------------------------------------Process*/
 
-    /**查找Module（由Module初始化的子Module不再查找范围内）。*/
+    /** 查找Module（由Module初始化的子Module不再查找范围内）。 */
     protected Module[] findModules() {
         Settings settings = this.getSettings();
         boolean throwLoadError = settings.getBoolean("hasor.modules.throwLoadError", true);
-        boolean loadModule = settings.getBoolean("hasor.modules.loadModule", true);
-        if (!loadModule) {
-            return new Module[0];
-        }
         //
         ArrayList<Module> moduleList = new ArrayList<>();
         String[] allModules = settings.getStringArray("hasor.modules.module");
@@ -330,35 +341,35 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return moduleList.toArray(new Module[0]);
     }
 
-    /**初始化过程完成.*/
+    /** 初始化过程完成. */
     protected void doInitializeCompleted() {
         getContainer().getSpiContainer().notifySpiWithoutResult(ContextInitializeListener.class, listener -> {
             listener.doInitializeCompleted(TemplateAppContext.this);
         });
     }
 
-    /**开始进入容器启动过程.*/
+    /** 开始进入容器启动过程. */
     protected void doStart() {
         getContainer().getSpiContainer().notifySpiWithoutResult(ContextStartListener.class, listener -> {
             listener.doStart(TemplateAppContext.this);
         });
     }
 
-    /**容器启动完成。*/
+    /** 容器启动完成。 */
     protected void doStartCompleted() {
         getContainer().getSpiContainer().notifySpiWithoutResult(ContextStartListener.class, listener -> {
             listener.doStartCompleted(TemplateAppContext.this);
         });
     }
 
-    /**开始进入容器停止.*/
+    /** 开始进入容器停止. */
     protected void doShutdown() {
         getContainer().getSpiContainer().notifySpiWithoutResult(ContextShutdownListener.class, listener -> {
             listener.doShutdown(TemplateAppContext.this);
         });
     }
 
-    /**容器启动停止。*/
+    /** 容器启动停止。 */
     protected void doShutdownCompleted() {
         getContainer().getSpiContainer().notifySpiWithoutResult(ContextShutdownListener.class, listener -> {
             listener.doShutdownCompleted(TemplateAppContext.this);
@@ -367,16 +378,14 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
 
     /*--------------------------------------------------------------------------------------Utils*/
 
-    /**为模块创建ApiBinder。*/
+    /** 为模块创建ApiBinder。 */
     protected ApiBinder newApiBinder() throws Throwable {
         //
         // .寻找ApiBinder扩展
         SettingNode[] innerBinderSet = this.getSettings().getNodeArray("hasor.innerApiBinderSet.binder");
         List<SettingNode> loadBinderSet = new ArrayList<>(Arrays.asList(innerBinderSet));
-        if (this.getSettings().getBoolean("hasor.apiBinderSet.loadExternal", true)) {
-            SettingNode[] binderSet = this.getSettings().getNodeArray("hasor.apiBinderSet.binder");
-            loadBinderSet.addAll(Arrays.asList(binderSet));
-        }
+        SettingNode[] binderSet = this.getSettings().getNodeArray("hasor.apiBinderSet.binder");
+        loadBinderSet.addAll(Arrays.asList(binderSet));
         //
         Map<Class<?>, Class<?>> extBinderMap = new HashMap<>();
         for (SettingNode atNode : loadBinderSet) {
@@ -404,7 +413,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         //
         // .创建扩展
         AtomicReference<ApiBinder> proxyApiBinder = new AtomicReference<>();
-        BasicBinder binder = new BasicBinder(this.getSettings()) {
+        BasicBinder binder = new BasicBinder(this.getContainer()) {
             @Override
             protected ApiBinder self() {
                 return proxyApiBinder.get();
@@ -444,7 +453,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return apiBinder;
     }
 
-    /**当开始所有 Module 的 installModule 之前。*/
+    /** 当开始所有 Module 的 installModule 之前。 */
     protected void doBindBefore(ApiBinder apiBinder) {
         /*绑定Settings对象的Provider*/
         apiBinder.bindType(Settings.class).toProvider(this::getSettings);
@@ -456,7 +465,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         apiBinder.bindType(SpiTrigger.class).toProvider(() -> getContainer().getSpiContainer());
     }
 
-    /**当完成所有 Module 的 installModule 直呼。*/
+    /** 当完成所有 Module 的 installModule 直呼。 */
     protected void doBindAfter(ApiBinder apiBinder) {
         //
     }
@@ -471,12 +480,12 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return this.status.get() == Started;
     }
 
-    /**获取环境接口。*/
+    /** 获取环境接口。 */
     public Settings getSettings() {
         return getContainer().getSettings();
     }
 
-    /**安装模块的工具方法。*/
+    /** 安装模块的工具方法。 */
     protected void installModule(ApiBinder apiBinder, Module module) throws Throwable {
         try {
             logger.info("loadModule " + module.getClass());
@@ -537,7 +546,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         status.compareAndSet(Processing, Started);//从 进行中 更新到 已启动
     }
 
-    /**发送停止通知*/
+    /** 发送停止通知 */
     public synchronized final void shutdown() {
         tryShutdown();
         this.status.compareAndSet(Started, Processing);

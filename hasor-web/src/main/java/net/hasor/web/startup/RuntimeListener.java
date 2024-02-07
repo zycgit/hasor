@@ -15,7 +15,6 @@
  */
 package net.hasor.web.startup;
 import net.hasor.cobble.ExceptionUtils;
-import net.hasor.cobble.ResourcesUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -27,18 +26,12 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.*;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.function.Supplier;
 
 /**
- *
- * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-01-10
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener, ServletRequestListener {
     protected           Logger               logger           = LoggerFactory.getLogger(getClass());
@@ -66,26 +59,23 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         return () -> appContext;
     }
 
-    /**获取{@link AppContext}*/
+    /** 获取{@link AppContext} */
     public static AppContext getAppContext(ServletContext servletContext) {
         return (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
     }
     /*----------------------------------------------------------------------------------------------------*/
 
-    /**创建{@link AppContext}对象*/
-    protected Hasor newHasor(ServletContext sc, String configName, Properties properties) throws Throwable {
+    /** 创建{@link AppContext}对象 */
+    protected Hasor newHasor(ServletContext sc, String configName) throws Throwable {
         Hasor webHasor = Hasor.create(sc);
         //
         if (StringUtils.isNotBlank(configName)) {
             webHasor.mainSettingWith(configName);
         }
-        if (properties != null && !properties.isEmpty()) {
-            properties.forEach((key, val) -> webHasor.addVariable(key.toString(), val.toString()));
-        }
         return webHasor;
     }
 
-    /**获取启动模块*/
+    /** 获取启动模块 */
     protected Module newRootModule(ServletContext sc, String rootModule) throws Exception {
         if (StringUtils.isBlank(rootModule)) {
             logger.info("web initModule is undefinition.");
@@ -97,36 +87,16 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         }
     }
 
-    /**加载属性文件*/
-    protected Properties loadEnvProperties(ServletContext sc, String envPropertieName) throws IOException {
-        if (StringUtils.isBlank(envPropertieName)) {
-            logger.info("properties file is not specified.");
-            return null;
-        } else {
-            InputStream resourceAsStream = ResourcesUtils.getResourceAsStream(envPropertieName);
-            if (resourceAsStream == null) {
-                logger.error("properties file is " + envPropertieName + " , but there is not exist.");
-                return null;
-            }
-            logger.info("properties file is " + envPropertieName + ", charset using utf-8");
-            Properties prop = new Properties();
-            prop.load(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8));
-            return prop;
-        }
-    }
-
     protected AppContext doInit(ServletContext sc) {
         try {
             String rootModule = sc.getInitParameter("hasor-root-module");       // 启动入口
             String configName = sc.getInitParameter("hasor-hconfig-file");      // 配置文件名
-            String envProperties = sc.getInitParameter("hasor-env-file");       // 环境变量配置
             //
-            Properties properties = this.loadEnvProperties(sc, envProperties);
             Module startModule = this.newRootModule(sc, rootModule);
             //
-            Hasor newHasor = this.newHasor(sc, configName, properties);
+            Hasor newHasor = this.newHasor(sc, configName);
             String webContextDir = sc.getRealPath("/");
-            newHasor.addVariable("HASOR_WEBROOT", webContextDir);
+            System.setProperty("HASOR_WEBROOT", webContextDir);
             return newHasor.build(startModule);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntime(e);

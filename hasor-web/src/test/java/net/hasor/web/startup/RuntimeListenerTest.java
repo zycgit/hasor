@@ -26,30 +26,29 @@ import javax.servlet.ServletRequestEvent;
 import javax.servlet.http.HttpSessionEvent;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 /**
- * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2016-12-16
  */
 public class RuntimeListenerTest extends AbstractTest {
-    @Test
-    public void basic_test() throws Throwable {
-        HashMap<String, String> init_params = new HashMap<>();
-        init_params.put("hasor-root-module", StartModule.class.getName());
-        ServletContext servletContext = servletInitParams(servlet25("/"), init_params);
-        //
-        RuntimeListener listener = new RuntimeListener();
-        assert listener.newRootModule(servletContext, null) == null;
-        //
-        assert listener.loadEnvProperties(null, null) == null;
-        assert listener.loadEnvProperties(servletContext, null) == null;
-        assert listener.loadEnvProperties(servletContext, "abc.abc") == null;
-        //
-        Properties properties = listener.loadEnvProperties(servletContext, "/net_hasor_web_startup/data-config.properties");
-        assert properties != null;
-        assert properties.getProperty("mySelf.myBirthday").equals("1986-01-01 00:00:00");
-    }
+    //    @Test
+    //    public void basic_test() throws Throwable {
+    //        HashMap<String, String> init_params = new HashMap<>();
+    //        init_params.put("hasor-root-module", StartModule.class.getName());
+    //        ServletContext servletContext = servletInitParams(servlet25("/"), init_params);
+    //        //
+    //        RuntimeListener listener = new RuntimeListener();
+    //        assert listener.newRootModule(servletContext, null) == null;
+    //        //
+    //        assert listener.loadEnvProperties(null, null) == null;
+    //        assert listener.loadEnvProperties(servletContext, null) == null;
+    //        assert listener.loadEnvProperties(servletContext, "abc.abc") == null;
+    //        //
+    //        Properties properties = listener.loadEnvProperties(servletContext, "/net_hasor_web_startup/data-config.properties");
+    //        assert properties != null;
+    //        assert properties.getProperty("mySelf.myBirthday").equals("1986-01-01 00:00:00");
+    //    }
 
     @Test
     public void params_test() throws Throwable {

@@ -14,42 +14,33 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.*;
-import net.hasor.core.container.BeanContainer;
-import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.core.exts.aop.Matchers;
+import net.hasor.cobble.dynamic.Matchers;
+import net.hasor.cobble.dynamic.MethodInterceptor;
+import net.hasor.cobble.provider.Provider;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.spi.BindInfoProvisionListener;
 import net.hasor.test.core.MockBindInfo;
-import net.hasor.test.core.basic.init.SingletonPublicCallInitBean;
-import net.hasor.test.core.basic.init.WithoutAnnoCallInitBean;
-import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.basic.pojo.PojoBeanTestBeanC;
 import net.hasor.test.core.basic.pojo.PojoBeanTestBeanP;
-import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.test.core.binder.TestBinder;
-import net.hasor.test.core.scope.My;
-import net.hasor.test.core.scope.MyScope;
-import org.junit.Before;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
-import java.util.EventListener;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class BinderDataTest extends AbstractBinderDataTest {
-    @Before
-    public void beforeTest() throws IOException {
-        super.beforeTest();
-    }
+    //    @Before
+    //    public void beforeTest() throws IOException {
+    //        super.beforeTest();
+    //    }
 
     @Test
     public void metaDataTest1() {
@@ -340,85 +331,5 @@ public class BinderDataTest extends AbstractBinderDataTest {
         assert binder.findClass(null, (String) null) == null;
         assert !binder.findClass(ApiBinder.class, new String[] { "test.net.hasor.core._07_binder" }).isEmpty();
         assert binder.getSettings() != null;
-    }
-
-    @Test
-    public void otherTest3() throws IOException {
-        Environment env = new StandardEnvironment(null);
-        BeanContainer container = new BeanContainer(env);
-        ApiBinderWrap binder = new ApiBinderWrap(newAbstractBinder(env, container));
-        container.preInitialize();
-        //
-        MyScope myScope1 = new MyScope();
-        binder.bindScope(My.class, myScope1);
-        binder.bindType(PojoBean.class).idWith("aa").toScope(My.class);
-        //
-        MyScope myScope2 = new MyScope();
-        binder.bindType(SampleBean.class).idWith("bb").toScope(myScope2);
-        //
-        container.init();
-        BindInfo<Object> bindInfo1 = container.getBindInfoContainer().findBindInfo("aa");
-        Supplier<Scope>[] collectScope1 = container.getScopeContainer().collectScope(bindInfo1);
-        assert collectScope1[0].get() == myScope1;
-        //
-        BindInfo<Object> bindInfo2 = container.getBindInfoContainer().findBindInfo("bb");
-        Supplier<Scope>[] collectScope2 = container.getScopeContainer().collectScope(bindInfo2);
-        assert collectScope2[0].get() == myScope2;
-    }
-
-    @Test
-    public void otherTest5() throws IOException {
-        Environment env = new StandardEnvironment(null);
-        BeanContainer container = new BeanContainer(env);
-        ApiBinderWrap binder = new ApiBinderWrap(newAbstractBinder(env, container));
-        container.preInitialize();
-        //
-        BindInfoProvisionListener listener = bindInfo -> {
-        };
-        binder.bindSpiListener(BindInfoProvisionListener.class, listener);
-        //
-        List<Supplier<EventListener>> list = container.getSpiContainer().getEventListenerList(BindInfoProvisionListener.class);
-        assert list.size() == 1;
-        assert list.get(0).get() == listener;
-    }
-
-    @Test
-    public void otherTest6() throws IOException {
-        Environment env = new StandardEnvironment(null);
-        BeanContainer container = new BeanContainer(env);
-        ApiBinderWrap binder = new ApiBinderWrap(newAbstractBinder(env, container));
-        container.preInitialize();
-        //
-        MyScope myScope1 = new MyScope();
-        MyScope myScope2 = new MyScope();
-        binder.bindType(SampleBean.class).idWith("aa").toScope(myScope1, myScope2);
-        //
-        container.init();
-        BindInfo<Object> bindInfo = container.getBindInfoContainer().findBindInfo("aa");
-        Supplier<Scope>[] collectScope = container.getScopeContainer().collectScope(bindInfo);
-        assert collectScope[0].get() == myScope1;
-        assert collectScope[1].get() == myScope2;
-    }
-
-    @Test
-    public void singletonTest1() throws IOException {
-        Environment env = new StandardEnvironment(null);
-        BeanContainer container = new BeanContainer(env);
-        ApiBinderWrap binder = new ApiBinderWrap(newAbstractBinder(env, container));
-        container.preInitialize();
-        //
-        assert binder.isSingleton(SingletonPublicCallInitBean.class);
-        assert !binder.isSingleton(WithoutAnnoCallInitBean.class);
-        //
-        BindInfo<?> bindInfo1 = binder.bindType(SampleBean.class).toInfo();
-        BindInfo<?> bindInfo2 = binder.bindType(SingletonPublicCallInitBean.class).toInfo();
-        BindInfo<?> bindInfo3 = binder.bindType(WithoutAnnoCallInitBean.class).asEagerSingleton().toInfo();
-        //
-        assert !binder.isSingleton(bindInfo1);
-        assert binder.isSingleton(bindInfo2);
-        assert binder.isSingleton(bindInfo3);
-        //
-        assert binder.isSingleton(SingletonPublicCallInitBean.class);
-        assert binder.isSingleton(WithoutAnnoCallInitBean.class);
     }
 }

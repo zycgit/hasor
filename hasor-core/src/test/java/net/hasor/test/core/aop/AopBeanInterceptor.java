@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.test.core.aop;
-import net.hasor.core.MethodInterceptor;
-import net.hasor.core.MethodInvocation;
+import net.hasor.cobble.dynamic.MethodInterceptor;
+import net.hasor.cobble.dynamic.MethodInvocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2016-12-16
  */
 public class AopBeanInterceptor implements MethodInterceptor {
     private Map<String, List<String>> callInfo = new HashMap<>();

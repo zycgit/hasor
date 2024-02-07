@@ -36,12 +36,12 @@ import java.util.Map;
 
 public class RenderLayoutTest extends AbstractTest {
     protected AppContext renderAppContext(boolean enableLayout, RenderEngine renderEngine, Module... module) {
+
+        System.setProperty("HASOR_RESTFUL_LAYOUT", String.valueOf(enableLayout));
+        System.setProperty("HASOR_RESTFUL_LAYOUT_PATH", "/layout/mytest");
+        System.setProperty("HASOR_RESTFUL_LAYOUT_TEMPLATES", "/templates/myfiles");
         return buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", context -> {
-            Hasor hasor = Hasor.create(context);
-            hasor.addVariable("HASOR_RESTFUL_LAYOUT", String.valueOf(enableLayout));
-            hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH", "/layout/mytest");
-            hasor.addVariable("HASOR_RESTFUL_LAYOUT_TEMPLATES", "/templates/myfiles");
-            return hasor;
+            return Hasor.create(context);
         }, apiBinder -> {
             if (renderEngine != null) {
                 apiBinder.addRender("html").toInstance(renderEngine);

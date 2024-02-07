@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Environment;
-import net.hasor.core.Hasor;
-import net.hasor.core.container.BindInfoContainer;
-import net.hasor.core.container.ScopeContainer;
-import net.hasor.core.container.SpiCallerContainer;
-import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.info.GenerateBeanID;
-import org.powermock.api.mockito.PowerMockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
-
-import static org.mockito.ArgumentMatchers.any;
 
 public class AbstractBinderDataTest {
     protected Logger                                          logger = LoggerFactory.getLogger(getClass());
@@ -39,50 +27,49 @@ public class AbstractBinderDataTest {
     protected AtomicReference<DefaultBindInfoProviderAdapter> reference;
     protected ApiBinderWrap                                   binder;
 
-    public void beforeTest() throws IOException {
-        this.reference = new AtomicReference<>();
-        //
-        BindInfoContainer bindInfoContainer = PowerMockito.mock(BindInfoContainer.class);
-        PowerMockito.when(bindInfoContainer.createInfoAdapter((Class<?>) any(), any())).thenAnswer(invocationOnMock -> {
-            Class<Object> targetType = (Class<Object>) invocationOnMock.getArguments()[0];
-            DefaultBindInfoProviderAdapter<Object> adapter = new DefaultBindInfoProviderAdapter<>(targetType, new GenerateBeanID());
-            Predicate<Class<?>> defaultMatcher = (ignoreMatcher == null) ? (aClass -> false) : ignoreMatcher;
-            if (defaultMatcher.test(targetType)) {
-                return adapter;
-            }
-            reference.set(adapter);
-            return reference.get();
-        });
-        //
-        BindInfoBuilderFactory factory = PowerMockito.mock(BindInfoBuilderFactory.class);
-        PowerMockito.when(factory.getBindInfoContainer()).thenReturn(bindInfoContainer);
-        //
-        Environment environment = Hasor.create().buildEnvironment();
-        SpiCallerContainer spiContainer = new SpiCallerContainer(environment);
-        ScopeContainer scopFactory = new ScopeContainer(spiContainer);
-        scopFactory.init();
-        PowerMockito.when(factory.getScopeContainer()).thenReturn(scopFactory);
-        this.binder = new ApiBinderWrap(newAbstractBinder(factory));
-    }
-
-    protected BasicBinder newAbstractBinder(BindInfoBuilderFactory factory) throws IOException {
-        return newAbstractBinder(new StandardEnvironment(null), factory);
-    }
-
-    protected BasicBinder newAbstractBinder(Environment environment, BindInfoBuilderFactory factory) {
-        AtomicReference<ApiBinder> refApiBinder = new AtomicReference<>();
-        BasicBinder binder = new BasicBinder(environment) {
-            @Override
-            protected ApiBinder self() {
-                return refApiBinder.get();
-            }
-
-            @Override
-            protected BindInfoBuilderFactory containerFactory() {
-                return factory;
-            }
-        };
-        refApiBinder.set(this.binder);
-        return binder;
-    }
+    //    public void beforeTest() throws IOException {
+    //        this.reference = new AtomicReference<>();
+    //        //
+    //        BindInfoContainer bindInfoContainer = PowerMockito.mock(BindInfoContainer.class);
+    //        PowerMockito.when(bindInfoContainer.createInfoAdapter((Class<?>) any(), any())).thenAnswer(invocationOnMock -> {
+    //            Class<Object> targetType = (Class<Object>) invocationOnMock.getArguments()[0];
+    //            DefaultBindInfoProviderAdapter<Object> adapter = new DefaultBindInfoProviderAdapter<>(targetType, new GenerateBeanID());
+    //            Predicate<Class<?>> defaultMatcher = (ignoreMatcher == null) ? (aClass -> false) : ignoreMatcher;
+    //            if (defaultMatcher.test(targetType)) {
+    //                return adapter;
+    //            }
+    //            reference.set(adapter);
+    //            return reference.get();
+    //        });
+    //        //
+    //        BindInfoBuilderFactory factory = PowerMockito.mock(BindInfoBuilderFactory.class);
+    //        PowerMockito.when(factory.getBindInfoContainer()).thenReturn(bindInfoContainer);
+    //        //
+    //        SpiCallerContainer spiContainer = new SpiCallerContainer();
+    //        ScopeContainer scopFactory = new ScopeContainer(spiContainer);
+    //        scopFactory.init();
+    //        PowerMockito.when(factory.getScopeContainer()).thenReturn(scopFactory);
+    //        this.binder = new ApiBinderWrap(newAbstractBinder(factory));
+    //    }
+    //
+    //    protected BasicBinder newAbstractBinder(BindInfoBuilderFactory factory) throws IOException {
+    //        return newAbstractBinder(new StandardEnvironment(null), factory);
+    //    }
+    //
+    //    protected BasicBinder newAbstractBinder(Environment environment, BindInfoBuilderFactory factory) {
+    //        AtomicReference<ApiBinder> refApiBinder = new AtomicReference<>();
+    //        BasicBinder binder = new BasicBinder(environment) {
+    //            @Override
+    //            protected ApiBinder self() {
+    //                return refApiBinder.get();
+    //            }
+    //
+    //            @Override
+    //            protected BindInfoBuilderFactory containerFactory() {
+    //                return factory;
+    //            }
+    //        };
+    //        refApiBinder.set(this.binder);
+    //        return binder;
+    //    }
 }

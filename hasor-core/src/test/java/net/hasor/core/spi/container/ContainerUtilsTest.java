@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container;
-import net.hasor.core.*;
+package net.hasor.core.spi.container;
+import net.hasor.core.ID;
+import net.hasor.core.container.BindInfoContainer;
+import net.hasor.core.container.InnerUtils;
+import net.hasor.core.container.SpiCallerContainer;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.test.core.aop.ignore.level.LevelFooFunction;
 import net.hasor.test.core.aop.ignore.level.l2.L2FooFunction;
 import net.hasor.test.core.aop.ignore.thread.ThreadFooFunction;
@@ -40,16 +42,11 @@ import net.hasor.test.core.basic.inject.jsr330.Jsr330ConstructorRef;
 import net.hasor.test.core.basic.inject.property.PropertyBean;
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
 import javax.inject.Named;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
-
-import static org.mockito.Matchers.anyString;
 
 public class ContainerUtilsTest {
     private Method initMethod_1    = null;
@@ -257,53 +254,53 @@ public class ContainerUtilsTest {
         assert InnerUtils.isInjectConstructor(Jsr330ConstructorRef.class.getConstructors()[0]);
     }
 
-    @Test
-    public void testInject5() throws IOException, URISyntaxException {
-        AppContext appContext = PowerMockito.mock(AppContext.class);
-        Environment environment = PowerMockito.mock(Environment.class);
-        Settings settings = new StandardContextSettings();
-        PowerMockito.when(appContext.getSettings()).thenReturn(environment);
-        PowerMockito.when(appContext.getSettings().getSettings()).thenReturn(settings);
-        PowerMockito.when(appContext.getSettings().evalString(anyString())).thenReturn("EVAL_STRING");
-        //
-        //
-        class InjectSettingsImpl implements InjectSettings {
-            private String value;
-            private String defaultValue;
-
-            public InjectSettingsImpl(String value, String defaultValue) {
-                this.value = value;
-                this.defaultValue = defaultValue;
-            }
-
-            @Override
-            public String ns() {
-                return "";
-            }
-
-            @Override
-            public String value() {
-                return value;
-            }
-
-            @Override
-            public String defaultValue() {
-                return defaultValue;
-            }
-
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return InjectSettings.class;
-            }
-        }
-        //
-        settings.addSetting("mock.test1", "abc");
-        //
-        assert InnerUtils.injSettings(appContext, new InjectSettingsImpl("mock.test1", ""), String.class).equals("abc");
-        assert InnerUtils.injSettings(appContext, new InjectSettingsImpl("mock.test2", "123"), String.class).equals("123");
-        assert InnerUtils.injSettings(appContext, new InjectSettingsImpl("${java_home}", "123"), String.class).equals("EVAL_STRING");
-        assert InnerUtils.injSettings(appContext, null, Integer.TYPE).equals(0);
-    }
+    //    @Test
+    //    public void testInject5() throws IOException, URISyntaxException {
+    //        AppContext appContext = PowerMockito.mock(AppContext.class);
+    //        Environment environment = PowerMockito.mock(Environment.class);
+    //        Settings settings = new StandardContextSettings();
+    //        PowerMockito.when(appContext.getSettings()).thenReturn(environment);
+    //        PowerMockito.when(appContext.getSettings().getSettings()).thenReturn(settings);
+    //        PowerMockito.when(appContext.getSettings().evalString(anyString())).thenReturn("EVAL_STRING");
+    //        //
+    //        //
+    //        class InjectSettingsImpl implements InjectSettings {
+    //            private String value;
+    //            private String defaultValue;
+    //
+    //            public InjectSettingsImpl(String value, String defaultValue) {
+    //                this.value = value;
+    //                this.defaultValue = defaultValue;
+    //            }
+    //
+    //            @Override
+    //            public String ns() {
+    //                return "";
+    //            }
+    //
+    //            @Override
+    //            public String value() {
+    //                return value;
+    //            }
+    //
+    //            @Override
+    //            public String defaultValue() {
+    //                return defaultValue;
+    //            }
+    //
+    //            @Override
+    //            public Class<? extends Annotation> annotationType() {
+    //                return InjectSettings.class;
+    //            }
+    //        }
+    //        //
+    //        settings.addSetting("mock.test1", "abc");
+    //        //
+    //        assert InnerUtils.injSettings(appContext, new InjectSettingsImpl("mock.test1", ""), String.class).equals("abc");
+    //        assert InnerUtils.injSettings(appContext, new InjectSettingsImpl("mock.test2", "123"), String.class).equals("123");
+    //        assert InnerUtils.injSettings(appContext, new InjectSettingsImpl("${java_home}", "123"), String.class).equals("EVAL_STRING");
+    //        assert InnerUtils.injSettings(appContext, null, Integer.TYPE).equals(0);
+    //    }
 
     @Test
     public void testInject6() {

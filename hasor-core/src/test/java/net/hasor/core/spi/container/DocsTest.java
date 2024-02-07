@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container;
+package net.hasor.core.spi.container;
 import net.hasor.core.Hasor;
 import net.hasor.test.core.docs.CustomBean;
 import net.hasor.test.core.docs.OrderManager;

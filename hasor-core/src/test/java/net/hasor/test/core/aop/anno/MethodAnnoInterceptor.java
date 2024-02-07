@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.test.core.aop.anno;
-import net.hasor.core.MethodInterceptor;
-import net.hasor.core.MethodInvocation;
+import net.hasor.cobble.dynamic.MethodInterceptor;
+import net.hasor.cobble.dynamic.MethodInvocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;

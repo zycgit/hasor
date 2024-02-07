@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.test.core.aop.level;
-import net.hasor.core.exts.aop.Aop;
+import net.hasor.cobble.dynamic.Aop;
 import net.hasor.test.core.aop.custom.MyAopInterceptor;
 
 /**
  * 方法级别
- * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2014-1-3
  */
 public class MethodAopBean {
     @Aop(MyAopInterceptor.class)

@@ -15,55 +15,40 @@
  */
 package net.hasor.core;
 import net.hasor.cobble.ExceptionUtils;
-import net.hasor.cobble.ResourcesUtils;
 import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.setting.BasicSettings;
+import net.hasor.cobble.loader.providers.ClassPathResourceLoader;
+import net.hasor.cobble.setting.DefaultSettings;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.cobble.setting.provider.StreamType;
-import net.hasor.core.container.StatusAppContext;
+import net.hasor.core.container.BeanContainer;
 import net.hasor.core.container.TemplateAppContext;
-import net.hasor.core.environment.StandardEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
 
 /**
  * Hasor 基础工具包。
- * @version : 2013-4-3
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2013-4-3
  */
 public final class Hasor {
-    protected final static Logger                           logger                 = LoggerFactory.getLogger(Hasor.class);
-    private final          Object                           context;
-    private                Object                           mainSettings           = TemplateAppContext.DefaultSettings;
-    private                StreamType                       mainSettingsStreamType = null;
-    private final          List<Module>                     moduleList             = new ArrayList<>();
-    private                ClassLoader                      loader;
-    private final          Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
-    private final          Map<String, String>              variableMap            = new HashMap<>();
-    private                Level                            asLevel                = Level.Full;
+    protected final static Logger logger     = LoggerFactory.getLogger(Hasor.class);
+    public                 String SchemaName = "/META-INF/hasor.schemas";
+
+    public        Object                           mainSettings           = "hconfig.xml";
+    private final Object                           context;
+    private       StreamType                       mainSettingsStreamType = null;
+    private final List<Module>                     moduleList             = new ArrayList<>();
+    private       ClassLoader                      loader;
+    private final Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
+    private final Map<String, String>              variableMap            = new HashMap<>();
 
     protected Hasor(Object context) {
         this.context = context;
-    }
-
-    /** 加载框架的规模 */
-    public static enum Level {
-        /**
-         * 微小的，放弃一切插件加载，并且只处理 hasor-core 的加载
-         * 下面环境变量会被设置
-         *  - HASOR_LOAD_MODULE 为 false
-         *  - HASOR_LOAD_EXTERNALBINDER 为 false
-         */
-        Tiny(),
-        /** 核心部分，只完整的加载 hasor-core。 */
-        Core(),
-        /** 完整加载框架和可以发现的所有插件模块。 */
-        Full()
     }
 
     public Hasor mainSettingWith(File mainSettings) {
@@ -83,12 +68,6 @@ public final class Hasor {
 
     public Hasor mainSettingWith(String mainSettings) {
         this.mainSettings = mainSettings;
-        return this;
-    }
-
-    public Hasor mainSettingWith(Reader mainSettings, StreamType streamType) {
-        this.mainSettings = mainSettings;
-        this.mainSettingsStreamType = streamType;
         return this;
     }
 
@@ -116,71 +95,6 @@ public final class Hasor {
         return this;
     }
 
-    /** 添加 Hasor 环境变量 */
-    public Hasor addVariable(String key, String value) {
-        this.variableMap.put(key, value);
-        return this;
-    }
-
-    /** 添加 Hasor 环境变量 */
-    public Hasor addVariableMap(Map<String, String> mapData) {
-        this.variableMap.putAll(mapData);
-        return this;
-    }
-
-    /** 从文件中加载环境变量到 Hasor 框架中 */
-    public Hasor loadVariables(File resourceName) throws IOException {
-        return loadVariables(new FileReader(resourceName));
-    }
-
-    /** 从资源文件中加载环境变量到 Hasor 框架中 */
-    public Hasor loadVariables(String resourceName) throws IOException {
-        InputStream inStream = ResourcesUtils.getResourceAsStream(resourceName);
-        if (inStream != null) {
-            return loadVariables(new InputStreamReader(inStream, Settings.DefaultCharset));
-        } else {
-            return this;
-        }
-    }
-
-    /** 从资源文件中加载环境变量到 Hasor 框架中 */
-    public Hasor loadVariables(String encodeing, InputStream inStream) throws IOException {
-        return loadVariables(new InputStreamReader(inStream, encodeing));
-    }
-
-    /** 从属性对象中加载环境变量到 Hasor 框架中 */
-    public Hasor loadVariables(Properties properties) {
-        if (properties != null) {
-            for (Object key : properties.keySet()) {
-                this.variableMap.put(key.toString(), properties.getProperty(key.toString()));
-            }
-        }
-        return this;
-    }
-
-    /** 从资源文件中加载环境变量到 Hasor 框架中 */
-    public Hasor loadVariables(Reader propertiesReader) throws IOException {
-        Properties properties = new Properties();
-        properties.load(propertiesReader);
-        return loadVariables(properties);
-    }
-
-    /** 导入环境变量到配置（导入目标是：Settings.DefaultNameSpace） */
-    public Hasor importVariablesToSettings() {
-        return importVariablesToSettings(Settings.DefaultNameSpace);
-    }
-
-    /** 导入环境变量到配置（导入目标自定义） */
-    public Hasor importVariablesToSettings(String namespace) {
-        if (StringUtils.isBlank(namespace)) {
-            throw new IllegalArgumentException("namespace is not null.");
-        }
-        for (String key : this.variableMap.keySet()) {
-            addSettings(namespace, key, this.variableMap.get(key));
-        }
-        return this;
-    }
-
     public Hasor addModules(List<Module> moduleList) {
         if (moduleList != null) {
             this.moduleList.addAll(moduleList);
@@ -200,66 +114,28 @@ public final class Hasor {
         return this;
     }
 
-    /**
-     * 微小的，放弃一切插件加载，并且只处理 hasor-core 的加载
-     * 下面环境变量会被设置
-     *  - HASOR_LOAD_MODULE 为 false
-     *  - HASOR_LOAD_EXTERNALBINDER 为 false
-     */
-    public Hasor asTiny() {
-        this.asLevel = Level.Tiny;
-        return this;
-    }
-
-    /** 核心部分，只完整的加载 hasor-core。 */
-    public Hasor asCore() {
-        this.asLevel = Level.Core;
-        return this;
-    }
-
-    /** 完整加载框架和可以发现的所有插件模块。 */
-    public Hasor asFull() {
-        this.asLevel = Level.Full;
-        return this;
-    }
-
-    /**用简易的方式创建{@link Settings}容器。*/
+    /** 用简易的方式创建{@link Settings}容器。 */
     public Settings buildSettings() {
         // .单独处理RUN_PATH
         String runPath = new File("").getAbsolutePath();
-        this.addVariable("RUN_PATH", runPath);
-        this.addVariable("RUN_MODE", this.asLevel.name());
-        if (logger.isInfoEnabled()) {
-            logger.info("runMode at {} ,runPath at {}", this.variableMap.get("RUN_MODE"), runPath);
-        }
-        //
-        if (this.asLevel == Level.Tiny) {
-            this.addVariable("HASOR_LOAD_MODULE", "false");
-            this.addVariable("HASOR_LOAD_EXTERNALBINDER", "false");
-        }
-        if (this.asLevel == Level.Tiny || this.asLevel == Level.Core) {
-            StandardContextSettings.setLoadMatcher("/META-INF/hasor-framework/core-hconfig.xml"::equals);
-        } else {
-            StandardContextSettings.setLoadMatcher(null);
-        }
+        System.setProperty("RUN_PATH", runPath);
         //
         try {
-            StandardContextSettings mainSettings = null;
+            DefaultSettings mainSettings;
             if (this.mainSettings == null) {
-                mainSettings = new StandardContextSettings(TemplateAppContext.DefaultSettings);
+                mainSettings = new DefaultSettings("hconfig.xml");
             } else if (this.mainSettings instanceof String) {
                 if (StringUtils.isBlank(this.mainSettings.toString())) {
-                    this.mainSettings = TemplateAppContext.DefaultSettings;
+                    mainSettings = new DefaultSettings("hconfig.xml");
+                } else {
+                    mainSettings = new DefaultSettings((String) this.mainSettings);
                 }
-                mainSettings = new StandardContextSettings((String) this.mainSettings);
             } else if (this.mainSettings instanceof File) {
-                mainSettings = new StandardContextSettings((File) this.mainSettings);
+                mainSettings = new DefaultSettings((File) this.mainSettings);
             } else if (this.mainSettings instanceof URI) {
-                mainSettings = new StandardContextSettings((URI) this.mainSettings);
+                mainSettings = new DefaultSettings((URI) this.mainSettings);
             } else if (this.mainSettings instanceof URL) {
-                mainSettings = new StandardContextSettings(((URL) this.mainSettings).toURI());
-            } else if (this.mainSettings instanceof Reader && this.mainSettingsStreamType != null) {
-                mainSettings = new StandardContextSettings((Reader) this.mainSettings, this.mainSettingsStreamType);
+                mainSettings = new DefaultSettings(((URL) this.mainSettings).toURI());
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -280,21 +156,23 @@ public final class Hasor {
         }
     }
 
-    /**用简易的方式创建{@link Environment}容器。*/
-    public Environment buildEnvironment() {
-        BasicSettings buildSettings = (BasicSettings) buildSettings();
-        return new StandardEnvironment(this.context, buildSettings, this.variableMap, this.loader);
-    }
-
-    /**用简易的方式创建{@link AppContext}容器。*/
+    /** 用简易的方式创建{@link AppContext}容器。 */
     public AppContext build(Module... modules) {
         if (modules != null) {
             this.addModules(modules);
         }
         //
         try {
-            Environment env = this.buildEnvironment();
-            AppContext appContext = new StatusAppContext(env);
+            Settings settings = buildSettings();
+
+            BeanContainer container = new BeanContainer(settings, this.loader, new ClassPathResourceLoader(this.loader), this.context);
+            container.init();
+            AppContext appContext = new TemplateAppContext() {
+                @Override
+                protected BeanContainer getContainer() {
+                    return container;
+                }
+            };
             appContext.start(this.moduleList.toArray(new Module[0]));
             return appContext;
         } catch (Throwable e) {
@@ -302,12 +180,12 @@ public final class Hasor {
         }
     }
 
-    /**用Builder的方式创建{@link AppContext}容器。*/
+    /** 用Builder的方式创建{@link AppContext}容器。 */
     public static Hasor create() {
         return new Hasor(null);
     }
 
-    /**用Builder的方式创建{@link AppContext}容器。*/
+    /** 用Builder的方式创建{@link AppContext}容器。 */
     public static Hasor create(Object context) {
         return new Hasor(context);
     }

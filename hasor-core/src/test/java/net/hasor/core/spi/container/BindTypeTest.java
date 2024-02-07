@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container;
+package net.hasor.core.spi.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import org.junit.Test;
 public class BindTypeTest {
     @Test
     public void test1() {
-        AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
+        AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(BindTypeTest.class).uniqueName().toInstance(new BindTypeTest());
             apiBinder.bindType(BindTypeTest.class).uniqueName().toInstance(new BindTypeTest());
         });

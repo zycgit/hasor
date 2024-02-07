@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import net.hasor.cobble.ExceptionUtils;
+import net.hasor.cobble.dynamic.Aop;
+import net.hasor.cobble.provider.SingletonScope;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.utils.supplier.TypeSupplier;
-import net.hasor.core.exts.aop.Aop;
-import net.hasor.core.scope.SingletonScope;
+import net.hasor.core.TypeSupplier;
 import net.hasor.test.core.basic.pojo.*;
 import net.hasor.test.core.scope.AnnoMyBean;
 import net.hasor.test.core.scope.My;
-import net.hasor.utils.ExceptionUtils;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicBoolean;

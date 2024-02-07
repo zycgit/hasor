@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container;
+package net.hasor.core.spi.container;
+import net.hasor.cobble.ArrayUtils;
+import net.hasor.cobble.provider.Scope;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.Scope;
 import net.hasor.core.spi.CollectScopeChainSpi;
 import net.hasor.test.core.basic.pojo.PojoBean;
-import net.hasor.utils.ArrayUtils;
 import org.junit.Test;
 
 import javax.inject.Singleton;
