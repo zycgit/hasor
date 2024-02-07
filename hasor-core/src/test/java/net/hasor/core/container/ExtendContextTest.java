@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
+package net.hasor.core.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.TypeSupplier;
+import net.hasor.utils.supplier.TypeSupplier;
 import net.hasor.test.core.basic.pojo.PojoBean;
 import org.junit.Test;
 

@@ -16,15 +16,14 @@
 package net.hasor.core.delegate;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import net.hasor.cobble.BeanUtils;
-import net.hasor.cobble.dynamic.SimpleDynamicProperty;
-import net.hasor.cobble.function.Property;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.core.aop.SimplePropertyDelegate;
 import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.basic.pojo.PojoBean1;
 import net.hasor.test.core.basic.pojo.PojoBean2;
 import net.hasor.test.core.basic.pojo.SampleBean;
+import net.hasor.utils.BeanUtils;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -39,15 +38,10 @@ public class PropertyDelegateTest {
         PojoBean pojoBean = appContext.getInstance(PojoBean.class);
         SampleBean sampleBean = appContext.getInstance(SampleBean.class);
         //
-        Property property1 = BeanUtils.getPropertyFunc(SampleBean.class, "dynamicName");
-        Property property2 = BeanUtils.getPropertyFunc(sampleBean.getClass(), "dynamicName");
-        assert property1 == null;
-        assert property2 == null;
-
-        Property property3 = BeanUtils.getPropertyFunc(PojoBean.class, "dynamicName");
-        Property property4 = BeanUtils.getPropertyFunc(pojoBean.getClass(), "dynamicName");
-        assert property3 == null;
-        assert property4 != null;
+        assert !BeanUtils.hasPropertyOrField("dynamicName", SampleBean.class);
+        assert !BeanUtils.hasPropertyOrField("dynamicName", sampleBean.getClass());
+        assert !BeanUtils.hasPropertyOrField("dynamicName", PojoBean.class);
+        assert BeanUtils.hasPropertyOrField("dynamicName", pojoBean.getClass());
         //
         BeanUtils.writeProperty(pojoBean, "dynamicName", "abc");
         assert JSON.toJSONString(pojoBean, SerializerFeature.UseSingleQuotes).equals("{'dynamicName':'abc'}");
@@ -70,14 +64,14 @@ public class PropertyDelegateTest {
 
     @Test
     public void propertyTest3() throws Exception {
-        SimpleDynamicProperty delegate = new SimpleDynamicProperty(123.123d);
+        SimplePropertyDelegate delegate = new SimplePropertyDelegate(123.123d);
         AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.bindType(PojoBean.class).dynamicReadOnlyProperty("dynamicName", Double.TYPE, delegate);
         });
         PojoBean pojoBean = appContext.getInstance(PojoBean.class);
         //
-        Property property = BeanUtils.getPropertyFunc(pojoBean.getClass(), "dynamicName");
-        assert property.isReadOnly();
+        assert BeanUtils.canReadPropertyOrField("dynamicName", pojoBean.getClass());
+        assert !BeanUtils.canWritePropertyOrField("dynamicName", pojoBean.getClass());
         //
         // 没有写属性
         BeanUtils.writeProperty(pojoBean, "dynamicName", 12);
@@ -95,15 +89,10 @@ public class PropertyDelegateTest {
         PojoBean pojoBean = appContext.getInstance(PojoBean.class);
         SampleBean sampleBean = appContext.getInstance(SampleBean.class);
         //
-        Property property1 = BeanUtils.getPropertyFunc(SampleBean.class, "dynamicName");
-        Property property2 = BeanUtils.getPropertyFunc(sampleBean.getClass(), "dynamicName");
-        assert property1 == null;
-        assert property2 != null;
-
-        Property property3 = BeanUtils.getPropertyFunc(PojoBean.class, "dynamicName");
-        Property property4 = BeanUtils.getPropertyFunc(pojoBean.getClass(), "dynamicName");
-        assert property3 == null;
-        assert property4 != null;
+        assert !BeanUtils.hasPropertyOrField("dynamicName", SampleBean.class);
+        assert BeanUtils.hasPropertyOrField("dynamicName", sampleBean.getClass());
+        assert !BeanUtils.hasPropertyOrField("dynamicName", PojoBean.class);
+        assert BeanUtils.hasPropertyOrField("dynamicName", pojoBean.getClass());
         //
         BeanUtils.writeProperty(pojoBean, "dynamicName", "abc");
         assert JSON.toJSONString(pojoBean, SerializerFeature.UseSingleQuotes).equals("{'dynamicName':'abc'}");
@@ -113,14 +102,14 @@ public class PropertyDelegateTest {
 
     @Test
     public void propertyTest5() {
-        SimpleDynamicProperty delegate = new SimpleDynamicProperty(123.123d);
+        SimplePropertyDelegate delegate = new SimplePropertyDelegate(123.123d);
         AppContext appContext = Hasor.create().build(apiBinder -> {
             apiBinder.dynamicReadOnlyProperty(t -> true, "dynamicName", Double.TYPE).toInstance(delegate);
         });
         PojoBean pojoBean = appContext.getInstance(PojoBean.class);
         //
-        Property property = BeanUtils.getPropertyFunc(pojoBean.getClass(), "dynamicName");
-        assert property.isReadOnly();
+        assert BeanUtils.canReadPropertyOrField("dynamicName", pojoBean.getClass());
+        assert !BeanUtils.canWritePropertyOrField("dynamicName", pojoBean.getClass());
         //
         // 没有写属性
         BeanUtils.writeProperty(pojoBean, "dynamicName", 12);
@@ -149,7 +138,7 @@ public class PropertyDelegateTest {
     public void propertyTest7() {
         // 注册两个 Bean 并且共享同一个 name 属性。
         AppContext appContext = Hasor.create().build(apiBinder -> {
-            SimpleDynamicProperty delegate = new SimpleDynamicProperty("helloWord");
+            SimplePropertyDelegate delegate = new SimplePropertyDelegate("helloWord");
             apiBinder.bindType(PojoBean1.class).dynamicProperty("name", String.class, delegate);
             apiBinder.bindType(PojoBean2.class).dynamicProperty("name", String.class, delegate);
         });

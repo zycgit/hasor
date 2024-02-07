@@ -16,14 +16,12 @@
 package net.hasor.core.container;
 import net.hasor.cobble.*;
 import net.hasor.cobble.convert.ConverterUtils;
-import net.hasor.cobble.dynamic.AsmTools;
-import net.hasor.cobble.dynamic.DynamicConfig;
-import net.hasor.cobble.dynamic.Proxy;
-import net.hasor.cobble.dynamic.ReadWriteType;
-import net.hasor.cobble.function.Property;
+import net.hasor.cobble.loader.CobbleClassScanner;
+import net.hasor.cobble.loader.ResourceLoader;
+import net.hasor.cobble.provider.PrototypeScope;
 import net.hasor.cobble.provider.Provider;
-import net.hasor.cobble.ref.PrototypeScope;
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.setting.Settings;
 import net.hasor.core.EventListener;
 import net.hasor.core.*;
 import net.hasor.core.binder.BindInfoBuilderFactory;
@@ -37,12 +35,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static net.hasor.core.container.ContainerUtils.*;
+import static net.hasor.core.container.InnerUtils.*;
 
 /**
  * 负责创建 Bean
@@ -50,23 +47,27 @@ import static net.hasor.core.container.ContainerUtils.*;
  * @version : 2015-11-25
  */
 public class BeanContainer extends AbstractContainer implements BindInfoBuilderFactory {
-    private Environment                                environment        = null;
-    private SpiCallerContainer                         spiCallerContainer = null;
-    private BindInfoContainer                          bindInfoContainer  = null;
-    private ScopeContainer                             scopeContainer     = null;
-    private ConcurrentHashMap<Class<?>, DynamicConfig> classEngineMap     = null;
+    private EventContext       eventContext;
+    private ResourceLoader     resourceLoader;
+    private ClassLoader        classLoader;
+    private CobbleClassScanner scanner;
+    private Object             context;
+    private Settings           settings           = null;
+    private SpiCallerContainer spiCallerContainer = null;
+    private BindInfoContainer  bindInfoContainer  = null;
+    private ScopeContainer     scopeContainer     = null;
+    //    private ConcurrentHashMap<Class<?>, DynamicConfig> classEngineMap     = null;
 
-    public BeanContainer(Environment environment) {
-        this.environment = Objects.requireNonNull(environment, "need Environment.");
-        this.spiCallerContainer = new SpiCallerContainer(environment);
-        this.bindInfoContainer = new BindInfoContainer(spiCallerContainer);
-        this.scopeContainer = new ScopeContainer(spiCallerContainer);
-        this.classEngineMap = new ConcurrentHashMap<>();
+    public BeanContainer(Settings settings) {
+        this.settings = Objects.requireNonNull(settings, "need Settings.");
+        this.spiCallerContainer = new SpiCallerContainer();
+        this.bindInfoContainer = new BindInfoContainer(this.spiCallerContainer);
+        this.scopeContainer = new ScopeContainer(this.spiCallerContainer);
     }
 
     @Override
-    public Environment getEnvironment() {
-        return environment;
+    public Settings getSettings() {
+        return this.settings;
     }
 
     @Override
@@ -84,6 +85,25 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         return this.scopeContainer;
     }
 
+    public EventContext getEventContext() {
+        return this.eventContext;
+    }
+
+    public ResourceLoader getResourceLoader() {
+        return this.resourceLoader;
+    }
+
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
+    }
+
+    public CobbleClassScanner getScanner() {
+        return this.scanner;
+    }
+
+    public Object getContext() {
+        return this.context;
+    }
     /*-------------------------------------------------------------------------------------------*/
 
     /**
@@ -214,7 +234,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
 
     /** 创建一个构造方法对应的参数Supplier */
     private Supplier<Object[]> parameterSupplier(Supplier<Executable> executableSupplier, AppContext appContext, Object[] params, boolean alwaysInject) {
-        return Provider.of((Supplier<Object[]>) () -> {
+        return Provider.ofc(() -> {
             // .基础数据
             Executable constructor = executableSupplier.get();                      // 方法
             Class<?>[] parameterTypes = constructor.getParameterTypes();            // 方法参数
@@ -382,10 +402,10 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         //
         // .动态代理，需要满足三个条件（1.类型必须支持Aop、2.没有被@AopIgnore排除在外、3.具有至少一个有效的拦截器）
         Class<?> newType = targetType;
-        if (isSupport(targetType) && (!aopList.isEmpty() || !delegateList.isEmpty())) {
-            DynamicConfig engine = this.classEngineMap.get(targetType);
+        if (AsmTools.isSupport(targetType) && (!aopList.isEmpty() || !delegateList.isEmpty())) {
+            AopClassConfig engine = this.classEngineMap.get(targetType);
             if (engine == null) {
-                engine = new DynamicConfig(targetType);
+                engine = new AopClassConfig(targetType, rootLoader);
                 for (AopBindInfoAdapter aop : aopList) {
                     if (aop.getMatcherClass().test(targetType)) {
                         engine.addAopInterceptor(aop.getMatcherMethod(), aop);
@@ -404,7 +424,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 }
             }
             try {
-                newType = Proxy.buildProxyClass(rootLoader, engine);
+                newType = engine.buildClass();
             } catch (Exception e) {
                 throw ExceptionUtils.toRuntime(e);
             }
@@ -413,15 +433,6 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         return (Class<T>) newType;
     }
 
-    /** 父类是否支持 */
-    private static boolean isSupport(Class<?> superClass) {
-        String resName = superClass.getName().replace(".", "/") + ".class";
-        if (resName.startsWith("java/") || resName.startsWith("javax/")) {
-            return false;
-        } else {
-            return !AsmTools.checkAnd(superClass.getModifiers(), Modifier.PRIVATE);
-        }
-    }
     /*-------------------------------------------------------------------------------------------*/
 
     /** 仅执行依赖注入 */
@@ -467,15 +478,12 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             isOverwriteAnnotation = defBinder.isOverwriteAnnotation();
             //
             Map<String, Supplier<?>> propMaps = defBinder.getPropertyMap(appContext);
-            Map<String, Class<?>> propertyTypeMap = BeanUtils.getPropertyType(targetType);
-            Map<String, Property> propertyFuncMap = BeanUtils.getPropertyFunc(targetType);
-
             for (Map.Entry<String, Supplier<?>> propItem : propMaps.entrySet()) {
                 String propertyName = propItem.getKey();
-                Class<?> propertyType = propertyTypeMap.get(propertyName);
-                Property propertyFunc = propertyFuncMap.get(propertyName);
+                Class<?> propertyType = BeanUtils.getPropertyOrFieldType(targetType, propertyName);
+                boolean canWrite = BeanUtils.canWriteProperty(propertyName, targetType);
                 //
-                if (propertyFunc.isReadOnly()) {
+                if (!canWrite) {
                     // 理论上进不到这里，原因是在DefaultBindInfoProviderAdapter 配置阶段就会拦截到没有属性对应 set 方法的情况。
                     throw new IllegalStateException("doInject, property " + propertyName + " can not write.");
                 }
@@ -486,12 +494,13 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 }
                 //
                 Object propertyVal = ConverterUtils.convert(propertyType, provider.get());
-                propertyFunc.set(targetBean, propertyVal);
+                BeanUtils.writePropertyOrField(targetBean, propertyName, propertyVal);
                 injectFileds.add(propertyName);
             }
         }
         // b.注解注入
-        Collection<Field> fieldList = BeanUtils.getALLFields(targetType).values();
+        List<Field> fieldList = BeanUtils.findALLFields(targetType);
+        fieldList = fieldList == null ? new ArrayList<>(0) : fieldList;
         for (Field field : fieldList) {
             if (Modifier.isFinal(field.getModifiers())) {
                 continue;
@@ -560,7 +569,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
                 single = getScopeContainer().isSingleton(targetObject.getClass());
             }
             if (single) {
-                HasorUtils.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
+                HasorUtils.pushShutdownListener(appContext.getSettings(), (EventListener<AppContext>) (event, eventData) -> {
                     invokeMethod(targetObject, destroyMethod);
                 });
             }

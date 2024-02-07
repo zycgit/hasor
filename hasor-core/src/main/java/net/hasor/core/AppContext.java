@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core;
-
 import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.loader.ResourceLoader;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.core.container.TemplateAppContext;
 
 import java.io.Closeable;
 import java.lang.annotation.Annotation;
@@ -36,19 +38,26 @@ import java.util.stream.Collectors;
  */
 public interface AppContext extends MetaInfo, Closeable {
     /** 容器事件，在所有模块 start 阶段之后引发。
-     * @see net.hasor.core.context.TemplateAppContext*/
+     * @see TemplateAppContext */
     String ContextEvent_Started  = "ContextEvent_Started";
     /** 容器事件，在所有模块 start 阶段之后引发。
-     * @see net.hasor.core.context.TemplateAppContext*/
+     * @see TemplateAppContext */
     String ContextEvent_Shutdown = "ContextEvent_Shutdown";
 
-    /** @return 获取 {@link Environment} */
-    Environment getEnvironment();
+    /** @return 获取 {@link Settings} */
+    Settings getSettings();
+
+    /** @return 事件上下文*/
+    EventContext getEventContext();
+
+    /** @return 事件上下文*/
+    ResourceLoader getResourceLoader();
 
     /** 获取当创建Bean时使用的{@link ClassLoader} */
-    default ClassLoader getClassLoader() {
-        return this.getEnvironment().getClassLoader();
-    }
+    ClassLoader getClassLoader();
+
+    /** 获取上下文 */
+    Object getContext();
 
     /**
      * 启动，如果在启动期间发生异常，将会抛出该异常。该方式不会等待异步的 doStartCompleted 任务执行完。

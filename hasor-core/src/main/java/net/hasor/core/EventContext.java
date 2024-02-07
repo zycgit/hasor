@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core;
-
 import net.hasor.cobble.concurrent.future.FutureCallback;
 
 import java.util.concurrent.Callable;

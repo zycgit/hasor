@@ -65,13 +65,13 @@ public class AbstractBinderDataTest {
         this.binder = new ApiBinderWrap(newAbstractBinder(factory));
     }
 
-    protected AbstractBinder newAbstractBinder(BindInfoBuilderFactory factory) throws IOException {
+    protected BasicBinder newAbstractBinder(BindInfoBuilderFactory factory) throws IOException {
         return newAbstractBinder(new StandardEnvironment(null), factory);
     }
 
-    protected AbstractBinder newAbstractBinder(Environment environment, BindInfoBuilderFactory factory) {
+    protected BasicBinder newAbstractBinder(Environment environment, BindInfoBuilderFactory factory) {
         AtomicReference<ApiBinder> refApiBinder = new AtomicReference<>();
-        AbstractBinder binder = new AbstractBinder(environment) {
+        BasicBinder binder = new BasicBinder(environment) {
             @Override
             protected ApiBinder self() {
                 return refApiBinder.get();

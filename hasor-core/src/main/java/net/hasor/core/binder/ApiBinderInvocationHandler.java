@@ -28,7 +28,7 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
     private final Map<Class<?>, Object> supportMap;
 
     protected Map<Class<?>, Object> supportMap() {
-        return Collections.unmodifiableMap(supportMap);
+        return Collections.unmodifiableMap(this.supportMap);
     }
 
     public ApiBinderInvocationHandler(Map<Class<?>, Object> supportMap) {

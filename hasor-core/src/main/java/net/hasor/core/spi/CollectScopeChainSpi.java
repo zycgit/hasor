@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.spi;
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.provider.Scope;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 

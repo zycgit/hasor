@@ -15,7 +15,7 @@
  */
 /**
  * 软件包 for net.hasor.plugins.aop
- * <p>Provide <code>{@link net.hasor.core.exts.aop.Aop}</code>
+ * <p>Provide <code>{@link net.hasor.cobble.dynamic.Aop}</code>
  *  annotation way as the class or method statement Aop interceptors.</p>
  */
 package net.hasor.core.exts.aop;

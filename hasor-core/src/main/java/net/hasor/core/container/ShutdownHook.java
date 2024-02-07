@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
+package net.hasor.core.container;
 import net.hasor.core.AppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

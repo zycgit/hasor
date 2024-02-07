@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
+package net.hasor.core.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextWarp;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
+import net.hasor.core.container.ShutdownHook;
+import net.hasor.core.container.StatusAppContext;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.ContextShutdownListener;

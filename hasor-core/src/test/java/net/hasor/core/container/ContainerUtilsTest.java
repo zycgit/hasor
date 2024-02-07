@@ -90,16 +90,16 @@ public class ContainerUtilsTest {
 
     @Test
     public void test1() {
-        assert ContainerUtils.findImplClass(ImplSampleBean.class).equals(ImplSampleBean.class);
-        assert ContainerUtils.findImplClass(SampleBeanFace.class).equals(ImplSampleBean.class);
-        assert ContainerUtils.findImplClass(SampleBeanFaceByFace.class).equals(ImplSampleBean.class);
+        assert InnerUtils.findImplClass(ImplSampleBean.class).equals(ImplSampleBean.class);
+        assert InnerUtils.findImplClass(SampleBeanFace.class).equals(ImplSampleBean.class);
+        assert InnerUtils.findImplClass(SampleBeanFaceByFace.class).equals(ImplSampleBean.class);
     }
 
     @Test
     public void initMethodTest1() {
-        assert ContainerUtils.findInitMethod(NonePrivateCallInitBean.class, null) == null;
-        assert ContainerUtils.findInitMethod(NonePublicCallInitBean.class, null).equals(initMethod_2);
-        assert ContainerUtils.findInitMethod(WithoutAnnoCallInitBean.class, null) == null;
+        assert InnerUtils.findInitMethod(NonePrivateCallInitBean.class, null) == null;
+        assert InnerUtils.findInitMethod(NonePublicCallInitBean.class, null).equals(initMethod_2);
+        assert InnerUtils.findInitMethod(WithoutAnnoCallInitBean.class, null) == null;
     }
 
     @Test
@@ -114,9 +114,9 @@ public class ContainerUtilsTest {
         adapter_3.initMethod("init");
         //
         //
-        assert ContainerUtils.findInitMethod(NonePrivateCallInitBean.class, adapter_1) == null;
-        assert ContainerUtils.findInitMethod(NonePublicCallInitBean.class, adapter_2).equals(initMethod_2);
-        assert ContainerUtils.findInitMethod(WithoutAnnoCallInitBean.class, adapter_3).equals(initMethod_3);
+        assert InnerUtils.findInitMethod(NonePrivateCallInitBean.class, adapter_1) == null;
+        assert InnerUtils.findInitMethod(NonePublicCallInitBean.class, adapter_2).equals(initMethod_2);
+        assert InnerUtils.findInitMethod(WithoutAnnoCallInitBean.class, adapter_3).equals(initMethod_3);
     }
 
     @Test
@@ -128,15 +128,15 @@ public class ContainerUtilsTest {
         //
         Method initMethod = NonePublicCallInitBean.class.getDeclaredMethod("isInit");
         //
-        assert !ContainerUtils.findInitMethod(NonePublicCallInitBean.class, adapter).equals(initMethod);    // 即便指定了 init 但是同时配置了注解，因此注解优先
-        assert ContainerUtils.findInitMethod(NonePublicCallInitBean.class, adapter).equals(initMethod_2);   //
+        assert !InnerUtils.findInitMethod(NonePublicCallInitBean.class, adapter).equals(initMethod);    // 即便指定了 init 但是同时配置了注解，因此注解优先
+        assert InnerUtils.findInitMethod(NonePublicCallInitBean.class, adapter).equals(initMethod_2);   //
     }
 
     @Test
     public void destroyMethodTest1() {
-        assert ContainerUtils.findDestroyMethod(NonePrivateCallDestroyBean.class, null) == null;
-        assert ContainerUtils.findDestroyMethod(NonePublicCallDestroyBean.class, null).equals(destroyMethod_2);
-        assert ContainerUtils.findDestroyMethod(WithoutAnnoCallDestroyBean.class, null) == null;
+        assert InnerUtils.findDestroyMethod(NonePrivateCallDestroyBean.class, null) == null;
+        assert InnerUtils.findDestroyMethod(NonePublicCallDestroyBean.class, null).equals(destroyMethod_2);
+        assert InnerUtils.findDestroyMethod(WithoutAnnoCallDestroyBean.class, null) == null;
     }
 
     @Test
@@ -151,9 +151,9 @@ public class ContainerUtilsTest {
         adapter_3.destroyMethod("destroy");
         //
         //
-        assert ContainerUtils.findDestroyMethod(NonePrivateCallDestroyBean.class, adapter_1) == null;
-        assert ContainerUtils.findDestroyMethod(NonePublicCallDestroyBean.class, adapter_2).equals(destroyMethod_2);
-        assert ContainerUtils.findDestroyMethod(WithoutAnnoCallDestroyBean.class, adapter_3).equals(destroyMethod_3);
+        assert InnerUtils.findDestroyMethod(NonePrivateCallDestroyBean.class, adapter_1) == null;
+        assert InnerUtils.findDestroyMethod(NonePublicCallDestroyBean.class, adapter_2).equals(destroyMethod_2);
+        assert InnerUtils.findDestroyMethod(WithoutAnnoCallDestroyBean.class, adapter_3).equals(destroyMethod_3);
     }
 
     @Test
@@ -165,17 +165,17 @@ public class ContainerUtilsTest {
         //
         Method destroyMethod = NonePublicCallDestroyBean.class.getDeclaredMethod("isDestroy");
         //
-        assert !ContainerUtils.findDestroyMethod(NonePublicCallDestroyBean.class, adapter).equals(destroyMethod);    // 即便指定了 destroy 但是同时配置了注解，因此注解优先
-        assert ContainerUtils.findDestroyMethod(NonePublicCallDestroyBean.class, adapter).equals(destroyMethod_2);   //
+        assert !InnerUtils.findDestroyMethod(NonePublicCallDestroyBean.class, adapter).equals(destroyMethod);    // 即便指定了 destroy 但是同时配置了注解，因此注解优先
+        assert InnerUtils.findDestroyMethod(NonePublicCallDestroyBean.class, adapter).equals(destroyMethod_2);   //
     }
 
     @Test
     public void testInject1() throws NoSuchFieldException {
-        assert ContainerUtils.findInject(false, null) == null;
+        assert InnerUtils.findInject(false, null) == null;
         //
-        Annotation injectAnno_1 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_1 = InnerUtils.findInject(false, //
                 PropertyPojoBeanRef.class.getDeclaredField("pojoBean").getAnnotations());
-        Annotation injectAnno_2 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_2 = InnerUtils.findInject(false, //
                 PropertyPojoBeanRef.class.getDeclaredField("pojoBean").getAnnotations());
         injectAnno_1.toString();
         //
@@ -189,9 +189,9 @@ public class ContainerUtilsTest {
 
     @Test
     public void testInject2() throws NoSuchFieldException {
-        Annotation injectAnno_1 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_1 = InnerUtils.findInject(false, //
                 ByIDPropertyPojoBeanRef.class.getDeclaredField("pojoBean").getAnnotations());
-        Annotation injectAnno_2 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_2 = InnerUtils.findInject(false, //
                 ByIDPropertyPojoBeanRef.class.getDeclaredField("pojoBean").getAnnotations());
         injectAnno_1.toString();
         //
@@ -205,21 +205,21 @@ public class ContainerUtilsTest {
 
     @Test
     public void testInject3() throws NoSuchFieldException {
-        Annotation injectAnno_1 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_1 = InnerUtils.findInject(false, //
                 PropertyPojoBeanRef.class.getDeclaredField("pojoBean").getAnnotations());
         assert injectAnno_1 instanceof Named;
         assert ((Named) injectAnno_1).value().equals("");
         assert injectAnno_1.annotationType() == Named.class;
         //
         //
-        Annotation injectAnno_2 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_2 = InnerUtils.findInject(false, //
                 ByIDPropertyPojoBeanRef.class.getDeclaredField("pojoBean").getAnnotations());
         assert injectAnno_2 instanceof ID;
         assert injectAnno_2.annotationType() == ID.class;
         assert ((ID) injectAnno_2).value().equals("my_pojoBean");
         //
         //
-        Annotation injectAnno_3 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_3 = InnerUtils.findInject(false, //
                 ByNamePropertyPojoBeanRef.class.getDeclaredField("pojoBean").getAnnotations());
         assert injectAnno_3 instanceof Named;
         assert ((Named) injectAnno_3).value().equals("my_pojoBean");
@@ -228,17 +228,17 @@ public class ContainerUtilsTest {
 
     @Test
     public void jsrInject1() throws NoSuchFieldException {
-        Annotation injectAnno_1 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_1 = InnerUtils.findInject(false, //
                 Jsr330BasicRef.class.getDeclaredField("pojoBean1").getAnnotations());
-        Annotation injectAnno_2 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_2 = InnerUtils.findInject(false, //
                 Jsr330BasicRef.class.getDeclaredField("pojoBean2").getAnnotations());
-        Annotation injectAnno_3 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_3 = InnerUtils.findInject(false, //
                 Jsr330BasicRef.class.getDeclaredField("pojoBean3").getAnnotations());
-        Annotation injectAnno_4 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_4 = InnerUtils.findInject(false, //
                 Jsr330BasicRef.class.getDeclaredField("pojoBean4").getAnnotations());
-        Annotation injectAnno_5 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_5 = InnerUtils.findInject(false, //
                 Jsr330BasicRef.class.getDeclaredField("pojoBean5").getAnnotations());
-        Annotation injectAnno_6 = ContainerUtils.findInject(false, //
+        Annotation injectAnno_6 = InnerUtils.findInject(false, //
                 Jsr330BasicRef.class.getDeclaredField("pojoBean6").getAnnotations());
         //
         //
@@ -252,9 +252,9 @@ public class ContainerUtilsTest {
 
     @Test
     public void testInject4() {
-        assert !ContainerUtils.isInjectConstructor(PropertyPojoBeanRef.class.getConstructors()[0]);
-        assert ContainerUtils.isInjectConstructor(SingleConstructorPojoBeanRef.class.getConstructors()[0]);
-        assert ContainerUtils.isInjectConstructor(Jsr330ConstructorRef.class.getConstructors()[0]);
+        assert !InnerUtils.isInjectConstructor(PropertyPojoBeanRef.class.getConstructors()[0]);
+        assert InnerUtils.isInjectConstructor(SingleConstructorPojoBeanRef.class.getConstructors()[0]);
+        assert InnerUtils.isInjectConstructor(Jsr330ConstructorRef.class.getConstructors()[0]);
     }
 
     @Test
@@ -262,9 +262,9 @@ public class ContainerUtilsTest {
         AppContext appContext = PowerMockito.mock(AppContext.class);
         Environment environment = PowerMockito.mock(Environment.class);
         Settings settings = new StandardContextSettings();
-        PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
-        PowerMockito.when(appContext.getEnvironment().getSettings()).thenReturn(settings);
-        PowerMockito.when(appContext.getEnvironment().evalString(anyString())).thenReturn("EVAL_STRING");
+        PowerMockito.when(appContext.getSettings()).thenReturn(environment);
+        PowerMockito.when(appContext.getSettings().getSettings()).thenReturn(settings);
+        PowerMockito.when(appContext.getSettings().evalString(anyString())).thenReturn("EVAL_STRING");
         //
         //
         class InjectSettingsImpl implements InjectSettings {
@@ -299,25 +299,25 @@ public class ContainerUtilsTest {
         //
         settings.addSetting("mock.test1", "abc");
         //
-        assert ContainerUtils.injSettings(appContext, new InjectSettingsImpl("mock.test1", ""), String.class).equals("abc");
-        assert ContainerUtils.injSettings(appContext, new InjectSettingsImpl("mock.test2", "123"), String.class).equals("123");
-        assert ContainerUtils.injSettings(appContext, new InjectSettingsImpl("${java_home}", "123"), String.class).equals("EVAL_STRING");
-        assert ContainerUtils.injSettings(appContext, null, Integer.TYPE).equals(0);
+        assert InnerUtils.injSettings(appContext, new InjectSettingsImpl("mock.test1", ""), String.class).equals("abc");
+        assert InnerUtils.injSettings(appContext, new InjectSettingsImpl("mock.test2", "123"), String.class).equals("123");
+        assert InnerUtils.injSettings(appContext, new InjectSettingsImpl("${java_home}", "123"), String.class).equals("EVAL_STRING");
+        assert InnerUtils.injSettings(appContext, null, Integer.TYPE).equals(0);
     }
 
     @Test
     public void testInject6() {
         NonePublicCallInitBean initBean = new NonePublicCallInitBean();
-        Method initMethod = ContainerUtils.findInitMethod(NonePublicCallInitBean.class, null);
+        Method initMethod = InnerUtils.findInitMethod(NonePublicCallInitBean.class, null);
         assert !initBean.isInit();
-        ContainerUtils.invokeMethod(initBean, initMethod);
+        InnerUtils.invokeMethod(initBean, initMethod);
         assert initBean.isInit();
         //
         //
         NonePublicCallDestroyBean destroyBean = new NonePublicCallDestroyBean();
-        Method destroyMethod = ContainerUtils.findDestroyMethod(NonePublicCallDestroyBean.class, null);
+        Method destroyMethod = InnerUtils.findDestroyMethod(NonePublicCallDestroyBean.class, null);
         assert !destroyBean.isDestroy();
-        ContainerUtils.invokeMethod(destroyBean, destroyMethod);
+        InnerUtils.invokeMethod(destroyBean, destroyMethod);
         assert destroyBean.isDestroy();
     }
 
@@ -326,14 +326,14 @@ public class ContainerUtilsTest {
         NonePrivateCallInitBean initBean = new NonePrivateCallInitBean();
         Method initMethod = NonePrivateCallInitBean.class.getDeclaredMethod("init");
         assert !initBean.isInit();
-        ContainerUtils.invokeMethod(initBean, initMethod);
+        InnerUtils.invokeMethod(initBean, initMethod);
         assert initBean.isInit();
         //
         //
         NonePrivateCallDestroyBean destroyBean = new NonePrivateCallDestroyBean();
         Method destroyMethod = NonePrivateCallDestroyBean.class.getDeclaredMethod("destroy");
         assert !destroyBean.isDestroy();
-        ContainerUtils.invokeMethod(destroyBean, destroyMethod);
+        InnerUtils.invokeMethod(destroyBean, destroyMethod);
         assert destroyBean.isDestroy();
     }
 
@@ -344,24 +344,24 @@ public class ContainerUtilsTest {
         //        field.setAccessible(true);
         //
         //        assert Integer.valueOf(0).equals(field.get(initBean));
-        ContainerUtils.invokeField(field, initBean, "123");
+        InnerUtils.invokeField(field, initBean, "123");
         assert Integer.valueOf(123).equals(field.get(initBean));
     }
 
     @Test
     public void testAop1() {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        assert !ContainerUtils.testAopIgnore(PropertyBean.class, loader);
+        assert !InnerUtils.testAopIgnore(PropertyBean.class, loader);
         //
-        assert !ContainerUtils.testAopIgnore(LevelFooFunction.class, loader);
-        assert ContainerUtils.testAopIgnore(ThreadFooFunction.class, loader);
-        assert ContainerUtils.testAopIgnore(L2FooFunction.class, loader);
+        assert !InnerUtils.testAopIgnore(LevelFooFunction.class, loader);
+        assert InnerUtils.testAopIgnore(ThreadFooFunction.class, loader);
+        assert InnerUtils.testAopIgnore(L2FooFunction.class, loader);
         //
         //
-        assert !ContainerUtils.testAopIgnore(GrandFatherBean.class, loader);
-        assert ContainerUtils.testAopIgnore(JamesBean.class, loader);
-        assert !ContainerUtils.testAopIgnore(JamesSonBean.class, loader);
-        assert ContainerUtils.testAopIgnore(WilliamBean.class, loader);
-        assert ContainerUtils.testAopIgnore(WilliamSonBean.class, loader);
+        assert !InnerUtils.testAopIgnore(GrandFatherBean.class, loader);
+        assert InnerUtils.testAopIgnore(JamesBean.class, loader);
+        assert !InnerUtils.testAopIgnore(JamesSonBean.class, loader);
+        assert InnerUtils.testAopIgnore(WilliamBean.class, loader);
+        assert InnerUtils.testAopIgnore(WilliamSonBean.class, loader);
     }
 }

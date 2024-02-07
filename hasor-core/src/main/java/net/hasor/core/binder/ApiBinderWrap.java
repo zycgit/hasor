@@ -16,10 +16,11 @@
 package net.hasor.core.binder;
 import net.hasor.cobble.dynamic.DynamicProperty;
 import net.hasor.cobble.dynamic.MethodInterceptor;
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.loader.ResourceLoader;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.setting.Settings;
 import net.hasor.core.*;
 import net.hasor.core.spi.SpiJudge;
-import net.hasor.core.TypeSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,13 +46,28 @@ public class ApiBinderWrap implements ApiBinder {
     }
 
     @Override
-    public Environment getEnvironment() {
-        return this.apiBinder.getEnvironment();
+    public Settings getSettings() {
+        return this.apiBinder.getSettings();
     }
 
     @Override
-    public Set<Class<?>> findClass(final Class<?> featureType) {
-        return this.apiBinder.findClass(featureType);
+    public EventContext getEventContext() {
+        return this.apiBinder.getEventContext();
+    }
+
+    @Override
+    public ResourceLoader getResourceLoader() {
+        return this.apiBinder.getResourceLoader();
+    }
+
+    @Override
+    public Object getContext() {
+        return this.apiBinder.getContext();
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return this.apiBinder.getClassLoader();
     }
 
     @Override

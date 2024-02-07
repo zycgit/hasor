@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import net.hasor.core.container.BeanContainer;
+package net.hasor.core.container;
+import net.hasor.core.Hasor;
+import net.hasor.test.core.docs.CustomBean;
+import net.hasor.test.core.docs.OrderManager;
+import org.junit.Test;
 
-/**
- * 通过{@link BeanContainer}提供{@link AppContext}接口功能。
- * @version : 2013-4-9
- * @author 赵永春 (zyc@hasor.net)
- */
-public class StatusAppContext extends TemplateAppContext {
-    private BeanContainer container = null;
-
-    public StatusAppContext(Environment environment) {
-        this.container = new BeanContainer(environment);
+public class DocsTest {
+    @Test
+    public void doc_1() {
+        CustomBean customBean = Hasor.create().build().getInstance(CustomBean.class);
+        assert customBean != null;
+        assert customBean.callFoo() != null;
     }
 
-    @Override
-    protected BeanContainer getContainer() {
-        return this.container;
+    @Test
+    public void doc_2() {
+        OrderManager customBean = Hasor.create().build().getInstance(OrderManager.class);
+        assert customBean.getStockBean() == null;
+        assert customBean.getStockBeanTest() == null;
     }
 }

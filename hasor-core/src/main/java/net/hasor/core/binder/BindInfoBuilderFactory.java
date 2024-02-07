@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.Environment;
+import net.hasor.cobble.setting.Settings;
 import net.hasor.core.container.BindInfoContainer;
 import net.hasor.core.container.ScopeContainer;
 import net.hasor.core.container.SpiCallerContainer;
@@ -25,7 +25,7 @@ import net.hasor.core.container.SpiCallerContainer;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface BindInfoBuilderFactory {
-    Environment getEnvironment();
+    Settings getSettings();
 
     SpiCallerContainer getSpiContainer();
 

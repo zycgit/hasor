@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-
 import net.hasor.cobble.BeanUtils;
 import net.hasor.cobble.function.Property;
 
@@ -43,11 +42,10 @@ public class MetaDataAdapter extends Observable {
     }
 
     public String toString() {
-        Map<String, Property> properties = BeanUtils.getPropertyFunc(this.getClass());
+        Map<String, Property> propertys = BeanUtils.getPropertyFunc(this.getClass());
         StringBuilder builder = new StringBuilder(this.getClass().getSimpleName()).append("{");
-        for (String key : properties.keySet()) {
-            Property property = properties.get(key);
-            Object var = property.get(this);
+        for (String key : propertys.keySet()) {
+            Object var = propertys.get(key).get(this);
             builder = builder.append(key).append("=").append(var).append(" ,");
         }
         builder.append("}");

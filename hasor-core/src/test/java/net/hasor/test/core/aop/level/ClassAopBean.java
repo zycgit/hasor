@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.core.aop.level;
-import net.hasor.cobble.dynamic.Aop;
+import net.hasor.core.exts.aop.Aop;
 import net.hasor.test.core.aop.custom.MyAopInterceptor;
 
 /**

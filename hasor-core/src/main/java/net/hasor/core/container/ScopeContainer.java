@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.cobble.provider.PrototypeScope;
 import net.hasor.cobble.provider.Provider;
-import net.hasor.cobble.ref.PrototypeScope;
-import net.hasor.cobble.ref.Scope;
-import net.hasor.cobble.ref.SingletonScope;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.provider.SingletonScope;
 import net.hasor.core.BindInfo;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.spi.ScopeProvisionListener;
@@ -33,10 +33,10 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ScopeContainer extends AbstractContainer {
-    private SingletonScope                             singletonScope = new SingletonScope();
-    private PrototypeScope                             prototypeScope = new PrototypeScope();
-    private SpiCallerContainer                         spiContainer   = null;
-    private ConcurrentHashMap<String, Supplier<Scope>> scopeMapping   = new ConcurrentHashMap<>();
+    private final SingletonScope                             singletonScope = new SingletonScope();
+    private final PrototypeScope                             prototypeScope = new PrototypeScope();
+    private final SpiCallerContainer                         spiContainer;
+    private final ConcurrentHashMap<String, Supplier<Scope>> scopeMapping   = new ConcurrentHashMap<>();
 
     public ScopeContainer(SpiCallerContainer spiContainer) {
         this.spiContainer = Objects.requireNonNull(spiContainer, "SpiCallerContainer si null.");
@@ -121,7 +121,7 @@ public class ScopeContainer extends AbstractContainer {
             sourceType = adapter.getBindType();
         }
         //
-        return collectScope(ContainerUtils.findImplClass(sourceType));
+        return collectScope(InnerUtils.findImplClass(sourceType));
     }
 
     /** 根据类型上的注解查找对应的作用域。 */
@@ -181,7 +181,7 @@ public class ScopeContainer extends AbstractContainer {
     }
 
     protected void doInitialize() {
-        this.singletonScope = new SingletonScope();
+        this.singletonScope.getSingletonData().clear();
         this.scopeMapping.put(net.hasor.core.Prototype.class.getName(), Provider.of(prototypeScope));
         this.scopeMapping.put(net.hasor.core.Singleton.class.getName(), Provider.of(singletonScope));
         this.scopeMapping.put(javax.inject.Singleton.class.getName(), Provider.of(singletonScope));

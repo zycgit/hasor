@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.cobble.provider.Provider;
 import net.hasor.core.*;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.test.core.basic.implby.endsingleton.EsImplSampleBean;
@@ -260,7 +259,7 @@ public class BasicBeanContainerTest {
         Environment environment = Hasor.create().buildEnvironment();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
-        PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getSettings()).thenReturn(environment);
         //
         BeanContainer container = new BeanContainer(environment);
         PowerMockito.when(appContext.getInstance(anyString())).then(invoker -> {
@@ -287,8 +286,8 @@ public class BasicBeanContainerTest {
         container.init();
         //
         {
-            ID annoID1 = new IDImpl("id_a");
-            ID annoID2 = new IDImpl("id_b");
+            ID annoID1 = new InnerID("id_a");
+            ID annoID2 = new InnerID("id_b");
             PojoBean supplierA = container.providerOnlyAnnotation(PojoBean.class, annoID1, appContext).get();
             PojoBean supplierB = container.providerOnlyAnnotation(PojoBean.class, annoID2, appContext).get();
             //
@@ -297,8 +296,8 @@ public class BasicBeanContainerTest {
         }
         //
         {
-            Named annoID1 = new NamedImpl("aaa");
-            Named annoID2 = new NamedImpl("bbb");
+            Named annoID1 = new InnerNamed("aaa");
+            Named annoID2 = new InnerNamed("bbb");
             PojoBean supplierA = container.providerOnlyAnnotation(PojoBean.class, annoID1, appContext).get();
             PojoBean supplierB = container.providerOnlyAnnotation(PojoBean.class, annoID2, appContext).get();
             //
@@ -329,7 +328,7 @@ public class BasicBeanContainerTest {
         Environment mockEnv = PowerMockito.mock(Environment.class);
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
-        PowerMockito.when(appContext.getEnvironment()).thenReturn(mockEnv);
+        PowerMockito.when(appContext.getSettings()).thenReturn(mockEnv);
         PowerMockito.when(mockEnv.evalString(anyString())).then(invocationOnMock -> invocationOnMock.getArguments()[0]);
         //
         //

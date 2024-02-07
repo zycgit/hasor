@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.test.core.aop.anno;
-import net.hasor.cobble.dynamic.Aop;
 import net.hasor.core.IgnoreProxy;
 import net.hasor.core.Settings;
+import net.hasor.core.exts.aop.Aop;
 
 import java.util.*;
 

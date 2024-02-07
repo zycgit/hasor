@@ -17,12 +17,12 @@ package net.hasor.core;
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.ResourcesUtils;
 import net.hasor.cobble.StringUtils;
-import net.hasor.core.context.StatusAppContext;
-import net.hasor.core.context.TemplateAppContext;
+import net.hasor.cobble.setting.BasicSettings;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.cobble.setting.provider.StreamType;
+import net.hasor.core.container.StatusAppContext;
+import net.hasor.core.container.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.core.setting.BasicSettings;
-import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.core.setting.provider.StreamType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

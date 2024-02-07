@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
+package net.hasor.core.container;
 import net.hasor.core.*;
+import net.hasor.core.container.StatusAppContext;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.test.core.basic.inject.PropertyPojoBeanRef;
 import net.hasor.test.core.basic.inject.constructor.SingleConstructorPojoBeanRef;

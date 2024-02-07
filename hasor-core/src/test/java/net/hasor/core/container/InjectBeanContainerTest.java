@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.cobble.provider.Provider;
 import net.hasor.core.*;
-import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.test.core.basic.inject.PropertyPojoBeanRef;
@@ -55,7 +53,7 @@ public class InjectBeanContainerTest {
         AppContext appContext = PowerMockito.mock(AppContext.class);
         //
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
-        PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getSettings()).thenReturn(environment);
         //
         Settings settings = environment.getSettings();
         settings.addSetting("byteValue", 1);
@@ -105,7 +103,7 @@ public class InjectBeanContainerTest {
         AppContext appContext = PowerMockito.mock(AppContext.class);
         //
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
-        PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getSettings()).thenReturn(environment);
         //
         // 使用系统默认构造方法
         Constructor<?> constructor = ConstructorBeanByInjectSettingConfValue.class.getConstructors()[0];
@@ -141,7 +139,7 @@ public class InjectBeanContainerTest {
         Settings settings = environment.getSettings();
         //
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
-        PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getSettings()).thenReturn(environment);
         //
         //
         // 使用系统默认构造方法
@@ -180,7 +178,7 @@ public class InjectBeanContainerTest {
         Settings settings = environment.getSettings();
         //
         PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
-        PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getSettings()).thenReturn(environment);
         //
         settings.addSetting("byteValue", 1);
         settings.addSetting("shortValue", 2);

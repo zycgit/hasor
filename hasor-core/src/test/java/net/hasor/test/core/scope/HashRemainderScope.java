@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.core.scope;
-import net.hasor.cobble.provider.Provider;
+import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 
 import java.util.HashMap;

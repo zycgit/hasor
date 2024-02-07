@@ -16,7 +16,6 @@
 package net.hasor.core.aop;
 import net.hasor.cobble.dynamic.DynamicClass;
 import net.hasor.cobble.dynamic.Matchers;
-import net.hasor.cobble.dynamic.Proxy;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.test.core.aop.anno.AopBean;
@@ -52,7 +51,7 @@ public class AnnoTest {
         });
         //
         AopBean instance = appContext.getInstance(AopBean.class);
-        assert Proxy.isProxyObject(instance);
+        assert instance instanceof DynamicClass;
         //
         instance.doInit(new ArrayList<>());
         assert methodInterceptor.getCallInfo().get("doInit") == null;

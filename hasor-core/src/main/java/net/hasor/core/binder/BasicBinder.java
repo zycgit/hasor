@@ -17,9 +17,12 @@ package net.hasor.core.binder;
 import net.hasor.cobble.BeanUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.dynamic.*;
+import net.hasor.cobble.loader.ResourceLoader;
 import net.hasor.cobble.provider.Provider;
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.setting.Settings;
 import net.hasor.core.*;
+import net.hasor.core.container.BeanContainer;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DelegateBindInfoAdapter;
 import net.hasor.core.spi.SpiJudge;
@@ -38,44 +41,57 @@ import java.util.function.Supplier;
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractBinder implements ApiBinder {
-    protected     Logger      logger = LoggerFactory.getLogger(getClass());
-    private final Environment environment;
+public abstract class BasicBinder implements ApiBinder {
+    protected final Logger        logger = LoggerFactory.getLogger(BasicBinder.class);
+    protected final BeanContainer context;
 
-    public AbstractBinder(Environment environment) {
-        this.environment = Objects.requireNonNull(environment, "environment is null.");
+    public BasicBinder(BeanContainer context) {
+        this.context = context;
     }
 
     @Override
-    public Environment getEnvironment() {
-        return this.environment;
+    public Settings getSettings() {
+        return this.context.getSettings();
     }
 
     @Override
-    public Set<Class<?>> findClass(final Class<?> featureType) {
-        String[] spanPackage = this.getEnvironment().getSpanPackage();
-        return this.getEnvironment().findClass(featureType, spanPackage);
+    public EventContext getEventContext() {
+        return this.context.getEventContext();
+    }
+
+    @Override
+    public ResourceLoader getResourceLoader() {
+        return this.context.getResourceLoader();
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return this.context.getClassLoader();
+    }
+
+    @Override
+    public Object getContext() {
+        return this.context.getContext();
     }
 
     @Override
     public Set<Class<?>> findClass(final Class<?> featureType, final String... scanPackages) {
         if (featureType == null || scanPackages == null || scanPackages.length == 0) {
-            return null;
+            return Collections.emptySet();
         }
-        return this.getEnvironment().findClass(featureType, scanPackages);
+        return this.context.getScanner().getClassSet(scanPackages, featureType);
     }
 
     @Override
     public ApiBinder installModule(final Module... modules) throws Throwable {
-        Environment environment = getEnvironment();
         for (Module module : modules) {
             logger.info("installModule ->" + module);
             /*加载*/
             module.loadModule(self());
             /*启动*/
-            HasorUtils.pushStartListener(environment, (net.hasor.core.EventListener<AppContext>) (event, eventData) -> module.onStart(eventData));
+            HasorUtils.pushStartListener(getEventContext(), (net.hasor.core.EventListener<AppContext>) (event, eventData) -> module.onStart(eventData));
             /*停止*/
-            HasorUtils.pushShutdownListener(environment, (net.hasor.core.EventListener<AppContext>) (event, eventData) -> module.onStop(eventData));
+            HasorUtils.pushShutdownListener(getEventContext(), (net.hasor.core.EventListener<AppContext>) (event, eventData) -> module.onStop(eventData));
         }
         return this;
     }
@@ -156,7 +172,7 @@ public abstract class AbstractBinder implements ApiBinder {
         Objects.requireNonNull(interceptor, "interceptor is null.");
         //
         AopBindInfoAdapter aopAdapter = new AopBindInfoAdapter(matcherClass, matcherMethod, interceptor);
-        aopAdapter = HasorUtils.autoAware(this.getEnvironment(), aopAdapter);
+        aopAdapter = HasorUtils.autoAware(this.getEventContext(), aopAdapter);
         this.bindType(AopBindInfoAdapter.class).uniqueName().toInstance(aopAdapter);
     }
 

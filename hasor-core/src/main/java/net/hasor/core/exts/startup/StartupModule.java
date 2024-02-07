@@ -15,9 +15,9 @@
  */
 package net.hasor.core.exts.startup;
 import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.setting.Settings;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.core.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,11 +29,11 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StartupModule implements Module {
-    private static Logger logger = LoggerFactory.getLogger(StartupModule.class);
+    private static final Logger logger = LoggerFactory.getLogger(StartupModule.class);
 
     public final void loadModule(ApiBinder apiBinder) throws Throwable {
-        ClassLoader classLoader = apiBinder.getEnvironment().getClassLoader();
-        Settings settings = apiBinder.getEnvironment().getSettings();
+        ClassLoader classLoader = apiBinder.getClassLoader();
+        Settings settings = apiBinder.getSettings();
         Module mod = this.getStartModule(settings, classLoader);
         if (mod != null) {
             apiBinder.installModule(mod);

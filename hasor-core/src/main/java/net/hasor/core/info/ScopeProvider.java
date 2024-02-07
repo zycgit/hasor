@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.provider.Scope;
 
 import java.util.function.Supplier;
 

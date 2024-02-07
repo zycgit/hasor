@@ -36,9 +36,9 @@ public class SpiTest {
         AppContextAware aware2 = reference2::set;
         //
         AppContext appContext = Hasor.create().build(apiBinder -> {
-            assert aware1 == HasorUtils.autoAware(apiBinder.getEnvironment(), aware1);
+            assert aware1 == HasorUtils.autoAware(apiBinder.getSettings(), aware1);
             Supplier<AppContextAware> awareSupplier = () -> aware2;
-            assert awareSupplier == HasorUtils.autoAware(apiBinder.getEnvironment(), awareSupplier);
+            assert awareSupplier == HasorUtils.autoAware(apiBinder.getSettings(), awareSupplier);
         });
         //
         assert reference1.get() != null;
@@ -53,9 +53,9 @@ public class SpiTest {
         AppContextListener listener2 = new AppContextListener();
         //
         AppContext appContext = Hasor.create().build(apiBinder -> {
-            assert listener1 == HasorUtils.pushStartListener(apiBinder.getEnvironment(), listener1);
+            assert listener1 == HasorUtils.pushStartListener(apiBinder.getSettings(), listener1);
             BindInfo<EventListener> bindInfo = apiBinder.bindType(EventListener.class).toInstance(listener2).toInfo();
-            assert bindInfo == HasorUtils.pushStartListener(apiBinder.getEnvironment(), bindInfo);
+            assert bindInfo == HasorUtils.pushStartListener(apiBinder.getSettings(), bindInfo);
         });
         //
         assert listener1.getAppContext() == appContext;
@@ -70,9 +70,9 @@ public class SpiTest {
         AppContextListener listener2 = new AppContextListener();
         //
         AppContext appContext = Hasor.create().build(apiBinder -> {
-            assert listener1 == HasorUtils.pushShutdownListener(apiBinder.getEnvironment(), listener1);
+            assert listener1 == HasorUtils.pushShutdownListener(apiBinder.getSettings(), listener1);
             BindInfo<EventListener> bindInfo = apiBinder.bindType(EventListener.class).toInstance(listener2).toInfo();
-            assert bindInfo == HasorUtils.pushShutdownListener(apiBinder.getEnvironment(), bindInfo);
+            assert bindInfo == HasorUtils.pushShutdownListener(apiBinder.getSettings(), bindInfo);
         });
         //
         assert listener1.getAppContext() == null;

@@ -19,4 +19,8 @@ package net.hasor.test.core.enums;
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum SelectEnum {One, Two, Three}
+public enum SelectEnum {
+    One,
+    Two,
+    Three
+}

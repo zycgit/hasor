@@ -16,7 +16,7 @@
 package net.hasor.core.binder;
 import net.hasor.cobble.dynamic.DynamicProperty;
 import net.hasor.cobble.dynamic.ReadWriteType;
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.provider.Scope;
 import net.hasor.core.BindInfo;
 
 import java.util.function.Supplier;
@@ -126,13 +126,13 @@ public interface BindInfoBuilder<T> {
     BindInfo<T> toInfo();
 
     /**
-     * 设置初始化方法，一个无参的方法。例如： void init(){ ... }。
+     * 设置初始化方法，一个无参的方法。例如：public void init(){ ... }。
      * @param methodName 方法名。
      */
     void initMethod(String methodName);
 
     /**
-     * 设置初始化方法，一个无参的方法。例如： void init(){ ... }。
+     * 设置初始化方法，一个无参的方法。例如：public void init(){ ... }。
      * @param methodName 方法名。
      */
     void destroyMethod(String methodName);

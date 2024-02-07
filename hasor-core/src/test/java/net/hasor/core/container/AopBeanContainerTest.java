@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.cobble.dynamic.DynamicClass;
 import net.hasor.cobble.dynamic.MethodInterceptor;
 import net.hasor.cobble.provider.InstanceProvider;
 import net.hasor.cobble.provider.Provider;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
+import net.hasor.core.aop.DynamicClass;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.test.core.aop.custom.MyAopInterceptor;
@@ -81,7 +81,7 @@ public class AopBeanContainerTest {
         Predicate<Method> mb = aMethod -> true;
         MyAopInterceptor.resetInit();
         MethodInterceptor interceptor = new MyAopInterceptor();
-        adapter.setCustomerProvider(new InstanceProvider<>(new AopBindInfoAdapter(ma, mb, interceptor)));
+        adapter.setCustomerProvider(InstanceProvider.of(new AopBindInfoAdapter(ma, mb, interceptor)));
         //
         PojoBean bean = container.providerOnlyType(PojoBean.class, appContext, null).get();
         //
@@ -103,7 +103,7 @@ public class AopBeanContainerTest {
         Predicate<Class<?>> ma = aClass -> true;
         Predicate<Method> mb = aMethod -> true;
         MethodInterceptor interceptor = new MyAopInterceptor();
-        adapter.setCustomerProvider(new InstanceProvider<>(new AopBindInfoAdapter(ma, mb, interceptor)));
+        adapter.setCustomerProvider(InstanceProvider.of(new AopBindInfoAdapter(ma, mb, interceptor)));
         //
         {
             GrandFatherBean bean1 = container.providerOnlyType(GrandFatherBean.class, appContext, null).get();

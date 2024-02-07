@@ -15,16 +15,12 @@
  */
 package net.hasor.core.container;
 import net.hasor.cobble.ExceptionUtils;
-import net.hasor.core.Environment;
 import net.hasor.core.spi.SpiCaller;
 import net.hasor.core.spi.SpiJudge;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.core.ResourcesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -40,17 +36,8 @@ import java.util.stream.Stream;
  */
 public class SpiCallerContainer extends AbstractContainer implements SpiTrigger {
     protected static Logger                                                     logger      = LoggerFactory.getLogger(SpiCallerContainer.class);
-    private final    Environment                                                environment;
     private final    ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener = new ConcurrentHashMap<>();
     private final    ConcurrentHashMap<Class<?>, Supplier<SpiJudge>>            spiSpiJudge = new ConcurrentHashMap<>();
-
-    public SpiCallerContainer() {
-        this(null);
-    }
-
-    public SpiCallerContainer(Environment environment) {
-        this.environment = environment;
-    }
 
     @Override
     public <R, T extends EventListener> R notifySpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult) {
@@ -203,45 +190,6 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
 
     /** 初始化过程 */
     protected void doInitialize() {
-        if (this.environment != null) {
-            String[] checkAutoLoadArrays = this.environment.getSettings().getStringArray("hasor.autoLoadSpi.spi");
-            Set<String> checkAutoLoad = new HashSet<>(Arrays.asList(checkAutoLoadArrays));
-            Set<Class<?>> autoLoadSet = new HashSet<>();
-            try {
-                ResourcesUtils.scan(this.environment.getClassLoader(), "META-INF/services/*", (event, isInJar) -> {
-                    String eventName = event.getName().substring("META-INF/services/".length());
-                    if (checkAutoLoad.contains(eventName)) {
-                        try {
-                            Class<?> aClass = this.environment.getClassLoader().loadClass(eventName);
-                            autoLoadSet.add(aClass);
-                        } catch (ClassNotFoundException e) {
-                            /*  */
-                        }
-                    }
-                });
-            } catch (IOException | URISyntaxException e) {
-                logger.error(e.getMessage(), e);
-            }
-            //
-            for (Class<?> autoLoad : autoLoadSet) {
-                if (!EventListener.class.isAssignableFrom(autoLoad)) {
-                    logger.error("spi " + autoLoad.getName() + " is not java.util.EventListener");
-                    continue;
-                }
-                ServiceLoader<?> serviceLoader = ServiceLoader.load(autoLoad);
-                for (Object spiObject : serviceLoader) {
-                    if (!autoLoad.isInstance(spiObject)) {
-                        logger.error("spi " + spiObject.getClass() + " not implement " + autoLoad.getName());
-                        continue;
-                    }
-                    logger.info("load Java SPI " + autoLoad.getName() + " implement by " + spiObject.getClass());
-                    addListener((Class<EventListener>) autoLoad, () -> {
-                        return (EventListener) spiObject;
-                    });
-                }
-            }
-            //
-        }
     }
 
     /** 销毁过程，清理掉所有已经注册的 SPI 监听器 */

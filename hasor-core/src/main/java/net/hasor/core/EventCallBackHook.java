@@ -26,7 +26,7 @@ public interface EventCallBackHook<T> {
      * @param eventData 事件参数
      * @param e 发生的异常。
      */
-    public void handleException(String eventType, T eventData, Throwable e);
+    void handleException(String eventType, T eventData, Throwable e);
 
     /**
      * 当完成异步事件处理时回调。<p>
@@ -34,5 +34,5 @@ public interface EventCallBackHook<T> {
      * @param eventType 事件类型
      * @param eventData 事件参数
      */
-    public void handleComplete(String eventType, T eventData);
+    void handleComplete(String eventType, T eventData);
 }

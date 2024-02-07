@@ -33,10 +33,10 @@ public class HasorUtils {
      * @param awareProvider 需要被注册的 AppContextAware 接口实现对象。
      * @return 返回 aware 参数本身。
      */
-    public static <T extends AppContextAware> Supplier<T> autoAware(Environment env, final Supplier<T> awareProvider) {
+    public static <T extends AppContextAware> Supplier<T> autoAware(EventContext env, final Supplier<T> awareProvider) {
         Objects.requireNonNull(env, "EventContext is null.");
         if (awareProvider != null) {
-            env.getEventContext().pushListener(ContextEvent_Started, (EventListener<AppContext>) (event, eventData) -> {
+            env.pushListener(ContextEvent_Started, (EventListener<AppContext>) (event, eventData) -> {
                 awareProvider.get().setAppContext(eventData);
             });
         }
@@ -48,7 +48,7 @@ public class HasorUtils {
      * @param aware 需要被注册的 AppContextAware 接口实现对象。
      * @return 返回 aware 参数本身。
      */
-    public static <T extends AppContextAware> T autoAware(Environment env, final T aware) {
+    public static <T extends AppContextAware> T autoAware(EventContext env, final T aware) {
         Objects.requireNonNull(env, "EventContext is null.");
         if (aware != null) {
             pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> {
@@ -58,23 +58,23 @@ public class HasorUtils {
         return aware;
     }
 
-    public static <TD, T extends EventListener<TD>> T pushStartListener(Environment env, T eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Started, eventListener);
+    public static <TD, T extends EventListener<TD>> T pushStartListener(EventContext env, T eventListener) {
+        env.pushListener(ContextEvent_Started, eventListener);
         return eventListener;
     }
 
-    public static <TD, T extends EventListener<TD>> T pushShutdownListener(Environment env, T eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Shutdown, eventListener);
+    public static <TD, T extends EventListener<TD>> T pushShutdownListener(EventContext env, T eventListener) {
+        env.pushListener(ContextEvent_Shutdown, eventListener);
         return eventListener;
     }
 
-    public static <T extends EventListener<AppContext>> BindInfo<T> pushStartListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Started, doLazyCallEvent(eventListener));
+    public static <T extends EventListener<AppContext>> BindInfo<T> pushStartListener(EventContext env, final BindInfo<T> eventListener) {
+        env.pushListener(ContextEvent_Started, doLazyCallEvent(eventListener));
         return eventListener;
     }
 
-    public static <T extends EventListener<AppContext>> BindInfo<T> pushShutdownListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Shutdown, doLazyCallEvent(eventListener));
+    public static <T extends EventListener<AppContext>> BindInfo<T> pushShutdownListener(EventContext env, final BindInfo<T> eventListener) {
+        env.pushListener(ContextEvent_Shutdown, doLazyCallEvent(eventListener));
         return eventListener;
     }
 

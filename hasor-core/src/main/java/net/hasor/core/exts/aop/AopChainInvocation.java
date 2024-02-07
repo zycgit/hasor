@@ -66,7 +66,7 @@ class AopChainInvocation implements MethodInvocation {
 
     @Override
     public boolean isProxy() {
-        return invocation.isProxy();
+        return this.invocation.isProxy();
     }
 
     public Method getMethod() {

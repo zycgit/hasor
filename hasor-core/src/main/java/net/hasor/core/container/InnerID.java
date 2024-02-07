@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import javax.inject.Named;
+import net.hasor.core.ID;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 
-class NamedImpl implements Named, Serializable {
-    public static final Named  DEFAULT = new NamedImpl("");
-    private final       String value;
+class InnerID implements ID, Serializable {
+    private final String value;
 
-    public NamedImpl(String value) {
-        this.value = Objects.requireNonNull(value, "name");
+    public InnerID(String value) {
+        this.value = Objects.requireNonNull(value, "id");
     }
 
     @Override
@@ -40,21 +40,21 @@ class NamedImpl implements Named, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Named)) {
+        if (!(o instanceof ID)) {
             return false;
         }
-        Named other = (Named) o;
+        ID other = (ID) o;
         return value.equals(other.value());
     }
 
     @Override
     public String toString() {
-        return "@" + Named.class.getName() + "(value=" + value + ")";
+        return "@" + ID.class.getName() + "(value=" + value + ")";
     }
 
     @Override
     public Class<? extends Annotation> annotationType() {
-        return Named.class;
+        return ID.class;
     }
 
     private static final long serialVersionUID = 0;

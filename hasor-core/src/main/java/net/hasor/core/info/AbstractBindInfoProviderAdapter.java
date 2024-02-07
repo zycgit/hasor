@@ -15,7 +15,7 @@
  */
 package net.hasor.core.info;
 import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.provider.Scope;
 import net.hasor.core.BindInfo;
 import net.hasor.core.binder.BindInfoBuilder;
 import org.slf4j.Logger;

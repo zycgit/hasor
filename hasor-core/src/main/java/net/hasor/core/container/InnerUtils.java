@@ -8,6 +8,7 @@ import net.hasor.cobble.asm.ClassVisitor;
 import net.hasor.cobble.asm.Opcodes;
 import net.hasor.cobble.convert.ConverterUtils;
 import net.hasor.cobble.dynamic.AsmTools;
+import net.hasor.cobble.setting.Settings;
 import net.hasor.core.Type;
 import net.hasor.core.*;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
@@ -26,26 +27,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ContainerUtils {
-    protected static Logger logger = LoggerFactory.getLogger(ContainerUtils.class);
+public class InnerUtils {
+    protected static Logger logger = LoggerFactory.getLogger(InnerUtils.class);
 
     /** 查找类的默认初始化方法(注解优先) */
     public static Method findInitMethod(Class<?> targetBeanType, BindInfo<?> bindInfo) {
         Method initMethod = null;
         //a.注解形式（注解优先）
         if (targetBeanType != null) {
-            List<Method> methodList = BeanUtils.findALLMethods(targetBeanType);
-            if (methodList != null) {
-                for (Method method : methodList) {
-                    Init initAnno1 = method.getAnnotation(Init.class);
-                    PostConstruct initAnno2 = method.getAnnotation(PostConstruct.class);
-                    if (initAnno1 == null && initAnno2 == null) {
-                        continue;
-                    }
-                    if (Modifier.isPublic(method.getModifiers())) {
-                        initMethod = method;
-                        break;
-                    }
+            List<Method> methodList = BeanUtils.getAllMethodToList(targetBeanType);
+            for (Method method : methodList) {
+                Init initAnno1 = method.getAnnotation(Init.class);
+                PostConstruct initAnno2 = method.getAnnotation(PostConstruct.class);
+                if (initAnno1 == null && initAnno2 == null) {
+                    continue;
+                }
+                if (Modifier.isPublic(method.getModifiers())) {
+                    initMethod = method;
+                    break;
                 }
             }
         }
@@ -62,18 +61,16 @@ public class ContainerUtils {
         Method destroyMethod = null;
         //a.注解形式（注解优先）
         if (targetBeanType != null) {
-            List<Method> methodList = BeanUtils.findALLMethods(targetBeanType);
-            if (methodList != null) {
-                for (Method method : methodList) {
-                    Destroy destroyAnno1 = method.getAnnotation(Destroy.class);
-                    PreDestroy destroyAnno2 = method.getAnnotation(PreDestroy.class);
-                    if (destroyAnno1 == null && destroyAnno2 == null) {
-                        continue;
-                    }
-                    if (Modifier.isPublic(method.getModifiers())) {
-                        destroyMethod = method;
-                        break;
-                    }
+            List<Method> methodList = BeanUtils.getAllMethodToList(targetBeanType);
+            for (Method method : methodList) {
+                Destroy destroyAnno1 = method.getAnnotation(Destroy.class);
+                PreDestroy destroyAnno2 = method.getAnnotation(PreDestroy.class);
+                if (destroyAnno1 == null && destroyAnno2 == null) {
+                    continue;
+                }
+                if (Modifier.isPublic(method.getModifiers())) {
+                    destroyMethod = method;
+                    break;
                 }
             }
         }
@@ -120,10 +117,10 @@ public class ContainerUtils {
             if (anno instanceof net.hasor.core.Inject) {
                 injectBoolean = true;
                 if (Type.ByName == ((net.hasor.core.Inject) anno).byType()) {
-                    qualifier = new NamedImpl(((net.hasor.core.Inject) anno).value());
+                    qualifier = new InnerNamed(((net.hasor.core.Inject) anno).value());
                 }
                 if (Type.ByID == ((net.hasor.core.Inject) anno).byType()) {
-                    qualifier = new IDImpl(((net.hasor.core.Inject) anno).value());
+                    qualifier = new InnerID(((net.hasor.core.Inject) anno).value());
                 }
                 break;
             }
@@ -153,9 +150,9 @@ public class ContainerUtils {
                 return qualifier;
             }
             if (qualifier instanceof javax.inject.Inject) {
-                return new NamedImpl("");
+                return new InnerNamed("");
             }
-            return new NamedImpl(qualifier.annotationType().getName());
+            return new InnerNamed(qualifier.annotationType().getName());
         }
         return null;
     }
@@ -177,7 +174,7 @@ public class ContainerUtils {
         String settingValue = null;
         if (settingVar.startsWith("${") && settingVar.endsWith("}")) {
             settingVar = settingVar.substring(2, settingVar.length() - 1);
-            settingValue = appContext.getEnvironment().evalString("%" + settingVar + "%");
+            settingValue = appContext.getSettings().getEnv("%" + settingVar + "%");
             if (StringUtils.isBlank(settingValue)) {
                 settingValue = defaultVal;
             }
@@ -185,7 +182,7 @@ public class ContainerUtils {
             if (StringUtils.isBlank(defaultVal)) {
                 defaultVal = null;// 行为保持和 Convert 一致
             }
-            Settings settings = appContext.getEnvironment().getSettings();
+            Settings settings = appContext.getSettings();
             if (StringUtils.isNotBlank(useNS)) {
                 settings = settings.getSettings(useNS);
             }

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.loader.ResourceLoader;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.setting.Settings;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -50,8 +52,28 @@ public class AppContextWarp implements AppContext {
     }
 
     @Override
-    public Environment getEnvironment() {
-        return this.getAppContext().getEnvironment();
+    public Settings getSettings() {
+        return this.getAppContext().getSettings();
+    }
+
+    @Override
+    public EventContext getEventContext() {
+        return this.getAppContext().getEventContext();
+    }
+
+    @Override
+    public ResourceLoader getResourceLoader() {
+        return this.getAppContext().getResourceLoader();
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return this.getAppContext().getClassLoader();
+    }
+
+    @Override
+    public Object getContext() {
+        return this.getAppContext().getContext();
     }
 
     @Override

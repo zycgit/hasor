@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * @author 赵永春 (zyc@hasor.net)
  */
 class AopInterceptor implements MethodInterceptor, AppContextAware {
-    private WeakHashMap<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new WeakHashMap<Method, List<Class<? extends MethodInterceptor>>>();
+    private WeakHashMap<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new WeakHashMap<>();
     private AppContext                                                    appContext           = null;
 
     public void setAppContext(AppContext appContext) {

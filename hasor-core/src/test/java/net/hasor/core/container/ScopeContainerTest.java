@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.cobble.provider.Provider;
+import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.scope.SingletonScope;

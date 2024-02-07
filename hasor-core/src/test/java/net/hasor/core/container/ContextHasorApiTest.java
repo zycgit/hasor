@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
-import net.hasor.cobble.dynamic.DynamicClass;
+package net.hasor.core.container;
 import net.hasor.core.*;
+import net.hasor.core.aop.AopClassLoader;
+import net.hasor.core.aop.DynamicClass;
 import net.hasor.core.setting.provider.StreamType;
 import net.hasor.test.core.aop.anno.AopBean;
 import net.hasor.test.core.aop.ignore.types.GrandFatherBean;
@@ -26,7 +27,7 @@ import net.hasor.test.core.basic.inject.constructor.SingleConstructorPojoBeanRef
 import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.scope.AnnoSingletonBean;
 import net.hasor.test.core.scope.CustomHashBean;
-import net.hasor.core.ResourcesUtils;
+import net.hasor.utils.ResourcesUtils;
 import org.junit.Test;
 
 import javax.inject.Singleton;
@@ -125,7 +126,7 @@ public class ContextHasorApiTest {
         AppContextWarp appContext = new AppContextWarp(() -> context);
         //
         assert appContext.getAppContext() == context;
-        assert appContext.getEnvironment() == context.getEnvironment();
+        assert appContext.getSettings() == context.getSettings();
         //
         appContext.setMetaData("abc", "abc");
         assert "abc".equals(appContext.getMetaData("abc"));
@@ -136,42 +137,42 @@ public class ContextHasorApiTest {
     @Test
     public void hasorTest1() {
         AppContext context = Hasor.create().asTiny().build();
-        assert context.getEnvironment().runMode() == Hasor.Level.Tiny;
-        assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Tiny.name());
-        assert context.getEnvironment().getVariable("HASOR_LOAD_MODULE").equals("false");
-        assert context.getEnvironment().getVariable("HASOR_LOAD_EXTERNALBINDER").equals("false");
-        assert !context.getEnvironment().getSettings().getBoolean("hasor.modules.loadModule");
-        assert !context.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
+        assert context.getSettings().runMode() == Hasor.Level.Tiny;
+        assert context.getSettings().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Tiny.name());
+        assert context.getSettings().getVariable("HASOR_LOAD_MODULE").equals("false");
+        assert context.getSettings().getVariable("HASOR_LOAD_EXTERNALBINDER").equals("false");
+        assert !context.getSettings().getSettings().getBoolean("hasor.modules.loadModule");
+        assert !context.getSettings().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
         assert !(context.getInstance(AopBean.class) instanceof DynamicClass);
     }
 
     @Test
     public void hasorTest2() {
         AppContext context = Hasor.create().asCore().build();
-        assert context.getEnvironment().runMode() == Hasor.Level.Core;
-        assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Core.name());
-        assert context.getEnvironment().getSettings().getBoolean("hasor.modules.loadModule");
-        assert context.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
+        assert context.getSettings().runMode() == Hasor.Level.Core;
+        assert context.getSettings().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Core.name());
+        assert context.getSettings().getSettings().getBoolean("hasor.modules.loadModule");
+        assert context.getSettings().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
         assert context.getInstance(AopBean.class) instanceof DynamicClass;
     }
 
     @Test
     public void hasorTest3() {
         AppContext context = Hasor.create().asFull().build();
-        assert context.getEnvironment().runMode() == Hasor.Level.Full;
-        assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Full.name());
-        assert context.getEnvironment().getSettings().getBoolean("hasor.modules.loadModule");
-        assert context.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
+        assert context.getSettings().runMode() == Hasor.Level.Full;
+        assert context.getSettings().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Full.name());
+        assert context.getSettings().getSettings().getBoolean("hasor.modules.loadModule");
+        assert context.getSettings().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
         assert context.getInstance(AopBean.class) instanceof DynamicClass;
     }
 
     @Test
     public void hasorTest4() {
         AppContext context = Hasor.create().build();
-        assert context.getEnvironment().runMode() == Hasor.Level.Full;
-        assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Full.name());
-        assert context.getEnvironment().getSettings().getBoolean("hasor.modules.loadModule");
-        assert context.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
+        assert context.getSettings().runMode() == Hasor.Level.Full;
+        assert context.getSettings().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Full.name());
+        assert context.getSettings().getSettings().getBoolean("hasor.modules.loadModule");
+        assert context.getSettings().getSettings().getBoolean("hasor.apiBinderSet.loadExternal");
         assert context.getInstance(AopBean.class) instanceof DynamicClass;
     }
 
@@ -188,11 +189,11 @@ public class ContextHasorApiTest {
         hasor.loadVariables(new File("src/test/resources/net_hasor_core_context/variable_2.properties"));
         //
         AppContext appContext = hasor.build();
-        assert appContext.getEnvironment().getVariable("var_a").equalsIgnoreCase("a");
-        assert appContext.getEnvironment().getVariable("var_b").equalsIgnoreCase("b");
-        assert appContext.getEnvironment().getVariable("var_c").equalsIgnoreCase("c");
-        assert appContext.getEnvironment().getVariable("var_d").equalsIgnoreCase("d");
-        assert appContext.getEnvironment().getVariable("var_e").equalsIgnoreCase("e");
+        assert appContext.getSettings().getVariable("var_a").equalsIgnoreCase("a");
+        assert appContext.getSettings().getVariable("var_b").equalsIgnoreCase("b");
+        assert appContext.getSettings().getVariable("var_c").equalsIgnoreCase("c");
+        assert appContext.getSettings().getVariable("var_d").equalsIgnoreCase("d");
+        assert appContext.getSettings().getVariable("var_e").equalsIgnoreCase("e");
     }
 
     @Test
@@ -202,23 +203,23 @@ public class ContextHasorApiTest {
         //
         //
         AppContext appContext1 = Hasor.create().mainSettingWith("/net_hasor_core_context/variable_1.properties").build();
-        assert appContext1.getEnvironment().getSettings().getString("var_d").equalsIgnoreCase("d");
+        assert appContext1.getSettings().getSettings().getString("var_d").equalsIgnoreCase("d");
         //
         AppContext appContext2 = Hasor.create().mainSettingWith(resource).build();
-        assert appContext2.getEnvironment().getSettings().getString("var_d").equalsIgnoreCase("d");
+        assert appContext2.getSettings().getSettings().getString("var_d").equalsIgnoreCase("d");
         //
         AppContext appContext3 = Hasor.create().mainSettingWith(resource.toURI()).build();
-        assert appContext3.getEnvironment().getSettings().getString("var_d").equalsIgnoreCase("d");
+        assert appContext3.getSettings().getSettings().getString("var_d").equalsIgnoreCase("d");
         //
         AppContext appContext4 = Hasor.create().mainSettingWith(file).build();
-        assert appContext4.getEnvironment().getSettings().getString("var_d").equalsIgnoreCase("d");
+        assert appContext4.getSettings().getSettings().getString("var_d").equalsIgnoreCase("d");
         //
         InputStreamReader reader = new InputStreamReader(ResourcesUtils.getResourceAsStream("/net_hasor_core_context/variable_1.properties"), "utf-8");
         AppContext appContext5 = Hasor.create().mainSettingWith(reader, StreamType.Properties).build();
-        assert appContext5.getEnvironment().getSettings().getString("var_d").equalsIgnoreCase("d");
+        assert appContext5.getSettings().getSettings().getString("var_d").equalsIgnoreCase("d");
         //
         AppContext appContext6 = Hasor.create().addSettings("abc", "test_1", "t").build();
-        assert appContext6.getEnvironment().getSettings().getString("test_1").equalsIgnoreCase("t");
+        assert appContext6.getSettings().getSettings().getString("test_1").equalsIgnoreCase("t");
     }
 
     @Test
@@ -249,8 +250,8 @@ public class ContextHasorApiTest {
         hasor.addVariable("abc", "abc");
         AppContext build = hasor.importVariablesToSettings().build();
         //
-        assert build.getEnvironment().getVariable("abc").equalsIgnoreCase("abc");
-        assert build.getEnvironment().getSettings().getString("abc").equalsIgnoreCase("abc");
+        assert build.getSettings().getVariable("abc").equalsIgnoreCase("abc");
+        assert build.getSettings().getSettings().getString("abc").equalsIgnoreCase("abc");
     }
 
     @Test
@@ -269,14 +270,14 @@ public class ContextHasorApiTest {
             assert e.getMessage().equalsIgnoreCase("namespace is not null.");
         }
         //
-        //        AopClassLoader loader = new AopClassLoader();
-        //        AppContext appContext = Hasor.create().parentClassLoaderWith(loader).build();
-        //        assert appContext.getClassLoader() == loader;
-        //        //
-        //        AopBean instance = appContext.getInstance(AopBean.class);
-        //        assert instance instanceof DynamicClass;
-        //        //
-        //        assert loader.findClassConfig(instance.getClass().getName()) != null;
+        AopClassLoader loader = new AopClassLoader();
+        AppContext appContext = Hasor.create().parentClassLoaderWith(loader).build();
+        assert appContext.getClassLoader() == loader;
+        //
+        AopBean instance = appContext.getInstance(AopBean.class);
+        assert instance instanceof DynamicClass;
+        //
+        assert loader.findClassConfig(instance.getClass().getName()) != null;
     }
 
     @Test
@@ -305,7 +306,7 @@ public class ContextHasorApiTest {
                 .loadSettings(properties)//
                 .build();//
         //
-        assert appContext.getEnvironment().getSettings().getString("msg_hallo").equals("Hello Word");
-        assert appContext.getEnvironment().getSettings().getString("msg").equals("ABCDEFG");
+        assert appContext.getSettings().getSettings().getString("msg_hallo").equals("Hello Word");
+        assert appContext.getSettings().getSettings().getString("msg").equals("ABCDEFG");
     }
 }

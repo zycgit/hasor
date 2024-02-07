@@ -17,7 +17,7 @@ package net.hasor.core.setting;
 import net.hasor.core.setting.provider.ConfigSource;
 import net.hasor.core.setting.provider.StreamType;
 import net.hasor.core.setting.provider.properties.PropertiesSettingsReader;
-import net.hasor.core.ResourcesUtils;
+import net.hasor.utils.ResourcesUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

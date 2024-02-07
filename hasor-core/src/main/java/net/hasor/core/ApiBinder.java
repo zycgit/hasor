@@ -20,8 +20,10 @@ import net.hasor.cobble.dynamic.AsmTools;
 import net.hasor.cobble.dynamic.DynamicProperty;
 import net.hasor.cobble.dynamic.Matchers;
 import net.hasor.cobble.dynamic.MethodInterceptor;
+import net.hasor.cobble.loader.ResourceLoader;
 import net.hasor.cobble.provider.Provider;
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.setting.Settings;
 import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.SpiJudge;
 
@@ -46,19 +48,20 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ApiBinder {
-    /**
-     * 获取 {@link Environment}
-     * @return return {@link Environment}
-     */
-    Environment getEnvironment();
+    /** @return 获取 {@link Settings} */
+    Settings getSettings();
 
-    /**
-     * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
-     *  -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
-     * @param featureType 特征类型
-     * @return 返回匹配的类集合。
-     */
-    Set<Class<?>> findClass(Class<?> featureType);
+    /** @return 事件上下文*/
+    EventContext getEventContext();
+
+    /** @return 事件上下文*/
+    ResourceLoader getResourceLoader();
+
+    /** 获取当创建Bean时使用的{@link ClassLoader} */
+    ClassLoader getClassLoader();
+
+    /** 获取上下文 */
+    Object getContext();
 
     /**
      * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
@@ -85,7 +88,7 @@ public interface ApiBinder {
 
     /** same as {@link Module#onStop(AppContext)} */
     default <T extends Closeable> T onShutdown(T closeable) {
-        HasorUtils.pushShutdownListener(getEnvironment(), (event, eventData) -> {
+        HasorUtils.pushShutdownListener(getEventContext(), (event, eventData) -> {
             closeable.close();
         });
         return closeable;
@@ -93,7 +96,7 @@ public interface ApiBinder {
 
     /** same as {@link Module#onStop(AppContext)} */
     default ApiBinder onShutdown(Consumer<AppContext> consumer) {
-        HasorUtils.pushShutdownListener(getEnvironment(), (event, eventData) -> {
+        HasorUtils.pushShutdownListener(getEventContext(), (event, eventData) -> {
             consumer.accept((AppContext) eventData);
         });
         return this;
@@ -101,7 +104,7 @@ public interface ApiBinder {
 
     /** same as {@link Module#onStart(AppContext)} */
     default ApiBinder lazyLoad(Consumer<AppContext> consumer) {
-        HasorUtils.pushStartListener(getEnvironment(), (event, eventData) -> {
+        HasorUtils.pushStartListener(getEventContext(), (event, eventData) -> {
             consumer.accept((AppContext) eventData);
         });
         return this;
@@ -463,7 +466,7 @@ public interface ApiBinder {
                 return appContext.getInstance(this.targetType);
             }
         }
-        return HasorUtils.autoAware(getEnvironment(), new TargetSupplierByClass(targetType));
+        return HasorUtils.autoAware(getEventContext(), new TargetSupplierByClass(targetType));
     }
 
     default <T> Supplier<T> getProvider(BindInfo<T> targetType) {
@@ -489,7 +492,7 @@ public interface ApiBinder {
                 return appContext.getInstance(this.targetType);
             }
         }
-        return HasorUtils.autoAware(getEnvironment(), new TargetSupplierByInfo(targetType));
+        return HasorUtils.autoAware(getEventContext(), new TargetSupplierByInfo(targetType));
     }
 
     /*--------------------------------------------------------------------------------------Faces*/
@@ -505,11 +508,11 @@ public interface ApiBinder {
         //        {
         //            return this.annotationWith(new Named() {
         //                @Override
-        //                 Class<? extends Annotation> annotationType() {
+        //        Class<? extends Annotation> annotationType() {
         //                    return Named.class;
         //                }
         //                @Override
-        //                 String value() {
+        //        String value() {
         //                    return name;
         //                }
         //            });
@@ -520,7 +523,7 @@ public interface ApiBinder {
         //         * @param annotation 注解
         //         * @return 返回 - {@link LinkedBindingBuilder}。
         //         */
-        //         LinkedBindingBuilder<T> annotationWith(Annotation annotation);
+        //LinkedBindingBuilder<T> annotationWith(Annotation annotation);
 
         /**
          * 随机取一个不重复的名字(并同时设置ID,为随机ID)。

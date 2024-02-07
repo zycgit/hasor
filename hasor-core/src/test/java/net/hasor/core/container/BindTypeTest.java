@@ -13,8 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * <p>标准的 <code>{@link net.hasor.core.Settings Settings}</code> 接口实现.</p>
- * <p>Standard implementations of the <code>{@link net.hasor.core.Settings Settings}</code> interface.</p>
- */
-package net.hasor.core.setting;
+package net.hasor.core.container;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import org.junit.Test;
+
+public class BindTypeTest {
+    @Test
+    public void test1() {
+        AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
+            apiBinder.bindType(BindTypeTest.class).uniqueName().toInstance(new BindTypeTest());
+            apiBinder.bindType(BindTypeTest.class).uniqueName().toInstance(new BindTypeTest());
+        });
+        assert appContext.findBindingBean(BindTypeTest.class).size() == 2;
+    }
+}

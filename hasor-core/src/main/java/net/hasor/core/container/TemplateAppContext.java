@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
+package net.hasor.core.container;
 import net.hasor.cobble.ArrayUtils;
 import net.hasor.cobble.ClassUtils;
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.concurrent.future.BasicFuture;
-import net.hasor.cobble.ref.Scope;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.setting.SettingNode;
+import net.hasor.cobble.setting.Settings;
 import net.hasor.core.EventListener;
 import net.hasor.core.*;
-import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.ApiBinderCreator;
 import net.hasor.core.binder.ApiBinderInvocationHandler;
+import net.hasor.core.binder.BasicBinder;
 import net.hasor.core.binder.BindInfoBuilderFactory;
-import net.hasor.core.container.BeanContainer;
 import net.hasor.core.info.MetaDataAdapter;
-import net.hasor.core.setting.SettingNode;
-import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.ContextShutdownListener;
 import net.hasor.core.spi.ContextStartListener;
@@ -45,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import static net.hasor.core.context.TemplateAppContext.AppContextStatus.*;
+import static net.hasor.core.container.TemplateAppContext.AppContextStatus.*;
 
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
@@ -56,10 +55,14 @@ import static net.hasor.core.context.TemplateAppContext.AppContextStatus.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TemplateAppContext extends MetaDataAdapter implements AppContext {
-    public static final String                            DefaultSettings = StandardContextSettings.MainSettingName;
-    protected static    Logger                            logger          = LoggerFactory.getLogger(TemplateAppContext.class);
-    private final       ShutdownHook                      shutdownHook    = new ShutdownHook(this);
-    private final       AtomicReference<AppContextStatus> status          = new AtomicReference<>(AppContextStatus.Stopped);
+    /**主配置文件名称*/
+    public static final  String                            DefaultSettings = "hconfig.xml";
+    /**默认静态配置文件名称*/
+    private static final String                            SchemaName      = "/META-INF/hasor.schemas";
+    protected static     Logger                            logger          = LoggerFactory.getLogger(TemplateAppContext.class);
+    private final        ShutdownHook                      shutdownHook    = new ShutdownHook(this);
+    private final        ShutdownHook                      shutdownHook    = new ShutdownHook(this);
+    private final        AtomicReference<AppContextStatus> status          = new AtomicReference<>(AppContextStatus.Stopped);
 
     protected static enum AppContextStatus {
         Stopped,
@@ -297,15 +300,15 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
 
     /**查找Module（由Module初始化的子Module不再查找范围内）。*/
     protected Module[] findModules() {
-        Environment env = this.getEnvironment();
-        boolean throwLoadError = env.getSettings().getBoolean("hasor.modules.throwLoadError", true);
-        boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule", true);
+        Settings settings = this.getSettings();
+        boolean throwLoadError = settings.getBoolean("hasor.modules.throwLoadError", true);
+        boolean loadModule = settings.getBoolean("hasor.modules.loadModule", true);
         if (!loadModule) {
             return new Module[0];
         }
         //
         ArrayList<Module> moduleList = new ArrayList<>();
-        String[] allModules = env.getSettings().getStringArray("hasor.modules.module");
+        String[] allModules = settings.getStringArray("hasor.modules.module");
         Set<String> moduleTypeSet = new LinkedHashSet<>(Arrays.asList(allModules));
         for (String moduleType : moduleTypeSet) {
             if (StringUtils.isBlank(moduleType)) {
@@ -368,10 +371,10 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     protected ApiBinder newApiBinder() throws Throwable {
         //
         // .寻找ApiBinder扩展
-        SettingNode[] innerBinderSet = this.getEnvironment().getSettings().getNodeArray("hasor.innerApiBinderSet.binder");
+        SettingNode[] innerBinderSet = this.getSettings().getNodeArray("hasor.innerApiBinderSet.binder");
         List<SettingNode> loadBinderSet = new ArrayList<>(Arrays.asList(innerBinderSet));
-        if (this.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal", true)) {
-            SettingNode[] binderSet = this.getEnvironment().getSettings().getNodeArray("hasor.apiBinderSet.binder");
+        if (this.getSettings().getBoolean("hasor.apiBinderSet.loadExternal", true)) {
+            SettingNode[] binderSet = this.getSettings().getNodeArray("hasor.apiBinderSet.binder");
             loadBinderSet.addAll(Arrays.asList(binderSet));
         }
         //
@@ -386,8 +389,8 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
                 continue;
             }
             //
-            Class<?> binderType = getEnvironment().getClassLoader().loadClass(binderTypeStr);
-            Class<?> binderImpl = getEnvironment().getClassLoader().loadClass(binderImplStr);
+            Class<?> binderType = this.getClassLoader().loadClass(binderTypeStr);
+            Class<?> binderImpl = this.getClassLoader().loadClass(binderImplStr);
             if (!binderType.isInterface()) {
                 continue;
             }
@@ -401,7 +404,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         //
         // .创建扩展
         AtomicReference<ApiBinder> proxyApiBinder = new AtomicReference<>();
-        AbstractBinder binder = new AbstractBinder(this.getEnvironment()) {
+        BasicBinder binder = new BasicBinder(this.getSettings()) {
             @Override
             protected ApiBinder self() {
                 return proxyApiBinder.get();
@@ -444,11 +447,9 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     /**当开始所有 Module 的 installModule 之前。*/
     protected void doBindBefore(ApiBinder apiBinder) {
         /*绑定Settings对象的Provider*/
-        apiBinder.bindType(Settings.class).toProvider(() -> getEnvironment().getSettings());
+        apiBinder.bindType(Settings.class).toProvider(this::getSettings);
         /*绑定EventContext对象的Provider*/
-        apiBinder.bindType(EventContext.class).toProvider(() -> getEnvironment().getEventContext());
-        /*绑定Environment对象的Provider*/
-        apiBinder.bindType(Environment.class).toProvider(this::getEnvironment);
+        apiBinder.bindType(EventContext.class).toProvider(this::getEventContext);
         /*绑定AppContext对象的Provider*/
         apiBinder.bindType(AppContext.class).toProvider(() -> TemplateAppContext.this);
         /*绑定SpiTrigger对象的Provider*/
@@ -471,8 +472,8 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
 
     /**获取环境接口。*/
-    public Environment getEnvironment() {
-        return getContainer().getEnvironment();
+    public Settings getSettings() {
+        return getContainer().getSettings();
     }
 
     /**安装模块的工具方法。*/
@@ -482,9 +483,9 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             /*加载*/
             module.loadModule(apiBinder);
             /*启动*/
-            HasorUtils.pushStartListener(this.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> module.onStart(eventData));
+            HasorUtils.pushStartListener(this.getEventContext(), (EventListener<AppContext>) (event, eventData) -> module.onStart(eventData));
             /*停止*/
-            HasorUtils.pushShutdownListener(this.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> module.onStop(eventData));
+            HasorUtils.pushShutdownListener(this.getEventContext(), (EventListener<AppContext>) (event, eventData) -> module.onStop(eventData));
         } catch (Module.IgnoreModuleException e) {
             logger.warn("loadModule " + module.getClass() + " ignore start/stop");
         }
@@ -529,7 +530,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         doStart();
         /*6.发送启动事件*/
         logger.debug("appContext -> fireSyncEvent ,eventType = {}", ContextEvent_Started);
-        getEnvironment().getEventContext().fireSyncEvent(ContextEvent_Started, this);
+        this.getEventContext().fireSyncEvent(ContextEvent_Started, this);
         /*7.通知启动成功*/
         doStartCompleted();/*用于扩展*/
         logger.info("Hasor StartCompleted!");
@@ -540,7 +541,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     public synchronized final void shutdown() {
         tryShutdown();
         this.status.compareAndSet(Started, Processing);
-        EventContext ec = getEnvironment().getEventContext();
+        EventContext ec = this.getEventContext();
         /*1.Init*/
         logger.debug("shutdown - doShutdown.");
         doShutdown();
@@ -569,7 +570,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         tryShutdown();
         // .当收到 Shutdown 事件时退出 join
         BasicFuture<Object> future = new BasicFuture<>();
-        HasorUtils.pushShutdownListener(getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
+        HasorUtils.pushShutdownListener(getEventContext(), (EventListener<AppContext>) (event, eventData) -> {
             future.completed(new Object());
         });
         //

@@ -21,7 +21,7 @@ package net.hasor.core;
  */
 public enum FireType {
     /**当遇到异常时，中断调用其它事件监听器。*/
-    Interrupt,//
+    Interrupt,
     /**当遇到异常时，继续调用其它事件监听器。*/
     Continue
 }
