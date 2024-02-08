@@ -29,8 +29,8 @@ import java.util.function.Supplier;
 
 /**
  * 作用域管理器
- * @version : 2019年06月20日
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2019年06月20日
  */
 public class ScopeContainer extends AbstractContainer {
     private final SingletonScope                             singletonScope = new SingletonScope();
@@ -181,7 +181,7 @@ public class ScopeContainer extends AbstractContainer {
     }
 
     protected void doInitialize() {
-        this.singletonScope.getSingletonData().clear();
+        this.singletonScope.cleanData();
         this.scopeMapping.put(net.hasor.core.Prototype.class.getName(), Provider.of(prototypeScope));
         this.scopeMapping.put(net.hasor.core.Singleton.class.getName(), Provider.of(singletonScope));
         this.scopeMapping.put(javax.inject.Singleton.class.getName(), Provider.of(singletonScope));

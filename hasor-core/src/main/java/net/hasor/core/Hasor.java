@@ -15,7 +15,9 @@
  */
 package net.hasor.core;
 import net.hasor.cobble.ExceptionUtils;
+import net.hasor.cobble.ResourcesUtils;
 import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.io.IOUtils;
 import net.hasor.cobble.loader.providers.ClassPathResourceLoader;
 import net.hasor.cobble.setting.DefaultSettings;
 import net.hasor.cobble.setting.Settings;
@@ -26,8 +28,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.URI;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -37,33 +41,16 @@ import java.util.*;
  */
 public final class Hasor {
     protected final static Logger logger     = LoggerFactory.getLogger(Hasor.class);
-    public                 String SchemaName = "/META-INF/hasor.schemas";
+    public final static    String SchemaName = "/META-INF/hasor.schemas";
 
-    public        Object                           mainSettings           = "hconfig.xml";
+    public        String                           mainSettings   = "hconfig.xml";
     private final Object                           context;
-    private       StreamType                       mainSettingsStreamType = null;
-    private final List<Module>                     moduleList             = new ArrayList<>();
+    private final List<Module>                     moduleList     = new ArrayList<>();
     private       ClassLoader                      loader;
-    private final Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
-    private final Map<String, String>              variableMap            = new HashMap<>();
+    private final Map<String, Map<String, Object>> initSettingMap = new HashMap<>();
 
     protected Hasor(Object context) {
         this.context = context;
-    }
-
-    public Hasor mainSettingWith(File mainSettings) {
-        this.mainSettings = mainSettings;
-        return this;
-    }
-
-    public Hasor mainSettingWith(URI mainSettings) {
-        this.mainSettings = mainSettings;
-        return this;
-    }
-
-    public Hasor mainSettingWith(URL mainSettings) {
-        this.mainSettings = mainSettings;
-        return this;
     }
 
     public Hasor mainSettingWith(String mainSettings) {
@@ -115,31 +102,16 @@ public final class Hasor {
     }
 
     /** 用简易的方式创建{@link Settings}容器。 */
-    public Settings buildSettings() {
+    public DefaultSettings buildSettings() {
         // .单独处理RUN_PATH
         String runPath = new File("").getAbsolutePath();
         System.setProperty("RUN_PATH", runPath);
         //
         try {
-            DefaultSettings mainSettings;
-            if (this.mainSettings == null) {
-                mainSettings = new DefaultSettings("hconfig.xml");
-            } else if (this.mainSettings instanceof String) {
-                if (StringUtils.isBlank(this.mainSettings.toString())) {
-                    mainSettings = new DefaultSettings("hconfig.xml");
-                } else {
-                    mainSettings = new DefaultSettings((String) this.mainSettings);
-                }
-            } else if (this.mainSettings instanceof File) {
-                mainSettings = new DefaultSettings((File) this.mainSettings);
-            } else if (this.mainSettings instanceof URI) {
-                mainSettings = new DefaultSettings((URI) this.mainSettings);
-            } else if (this.mainSettings instanceof URL) {
-                mainSettings = new DefaultSettings(((URL) this.mainSettings).toURI());
-            } else {
-                throw new UnsupportedOperationException();
-            }
-            //
+            DefaultSettings mainSettings = new DefaultSettings();
+            loadPluginSettings(mainSettings);
+            loadSettings(mainSettings, this.mainSettings);
+
             for (Map.Entry<String, Map<String, Object>> namespaceData : this.initSettingMap.entrySet()) {
                 String namespaceKey = namespaceData.getKey();
                 Map<String, Object> value = namespaceData.getValue();
@@ -156,6 +128,60 @@ public final class Hasor {
         }
     }
 
+    private static void loadPluginSettings(DefaultSettings configSetting) throws IOException {
+        // 装载所有 xxx-hconfig.xml
+        Map<String, URL> toLoading = new HashMap<>();
+        List<URL> schemaUrlList = ResourcesUtils.getResources(SchemaName);
+        for (URL schemaUrl : schemaUrlList) {
+            InputStream schemaStream = ResourcesUtils.getResourceAsStream(schemaUrl);
+            List<String> readLines = IOUtils.readLines(schemaStream, StandardCharsets.UTF_8);
+            if (readLines.isEmpty()) {
+                logger.warn("found nothing , {}", schemaUrl);
+                continue;
+            }
+            for (String schema : readLines) {
+                toLoading.put(schema, schemaUrl);
+            }
+        }
+        for (Map.Entry<String, URL> entry : toLoading.entrySet()) {
+            String resource = entry.getKey();
+            URL schemaUrl = entry.getValue();
+            if (loadSettings(configSetting, resource)) {
+                logger.info("config loaded '{}' from '{}'", resource, schemaUrl);
+            } else {
+                logger.info("config cannot be read '{}' from '{}'", resource, schemaUrl);
+            }
+        }
+    }
+
+    private static boolean loadSettings(DefaultSettings configSetting, String resource) throws IOException {
+        StreamType streamType = getStreamType(resource);
+        if (streamType == null) {
+            return false;
+        }
+        try (InputStream in = ResourcesUtils.getResourceAsStream(resource)) {
+            configSetting.loadStream(in, streamType);
+        }
+
+        return true;
+    }
+
+    private static StreamType getStreamType(String schemaUrl) {
+        if (schemaUrl == null) {
+            return null;
+        }
+        String lowerCase = schemaUrl.toLowerCase();
+        if (lowerCase.endsWith(".xml")) {
+            return StreamType.Xml;
+        } else if (lowerCase.endsWith(".yaml") || lowerCase.endsWith(".yml")) {
+            return StreamType.Yaml;
+        } else if (lowerCase.endsWith(".properties")) {
+            return StreamType.Properties;
+        } else {
+            return null;
+        }
+    }
+
     /** 用简易的方式创建{@link AppContext}容器。 */
     public AppContext build(Module... modules) {
         if (modules != null) {
@@ -165,8 +191,11 @@ public final class Hasor {
         try {
             Settings settings = buildSettings();
 
+            if (this.loader == null) {
+                this.loader = Thread.currentThread().getContextClassLoader();
+            }
+
             BeanContainer container = new BeanContainer(settings, this.loader, new ClassPathResourceLoader(this.loader), this.context);
-            container.init();
             AppContext appContext = new TemplateAppContext() {
                 @Override
                 protected BeanContainer getContainer() {

@@ -18,7 +18,9 @@ import net.hasor.cobble.dynamic.Matchers;
 import net.hasor.cobble.dynamic.MethodInterceptor;
 import net.hasor.cobble.provider.Provider;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Hasor;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.test.core.MockBindInfo;
@@ -37,13 +39,10 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class BinderDataTest extends AbstractBinderDataTest {
-    //    @Before
-    //    public void beforeTest() throws IOException {
-    //        super.beforeTest();
-    //    }
-
     @Test
     public void metaDataTest1() {
+        AppContext appContext = Hasor.create().build();
+
         binder.bindType(BinderDataTest.class);
         assert reference.get().getBindType() == BinderDataTest.class;
         //
