@@ -277,7 +277,7 @@
             <dependency>
                 <groupId>net.hasor</groupId>
                 <artifactId>cobble-all</artifactId>
-                <version>4.6.3-SNAPSHOT</version>
+                <version>4.6.3</version>
             </dependency>
 
             <!-- Log依赖 -->
