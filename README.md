@@ -9,13 +9,13 @@
 
 - “微内核+插件” 简单、小巧、功能强大、使用简单
 - COC原则的最佳实践，‘零’配置文件
-- 合理的整体架构规划，即是小框架也大平台
+- 合理的整体架构规划，即是小框架也是大平台
 - 各部分全部独立，按需使用，绝不臃肿
 - 体积小，无依赖
 
 ----------
 ### 架构
-![架构](//files.hasor.net/uploader/20170221/125130/CC2_C7F9_F92E_2A8C.png "架构")
+![架构](http://files.hasor.net/uploader/20170225/025145/CC2_58F9_847F_B06E.png "架构")
 
 - Core 职责是提供Bean容器、Module机制
 - DB 提供了JDBC操作、事务管理
@@ -39,10 +39,23 @@
 11. 提供对某一个状态提供分布式下状态一致性支持
 
 ----------
+### 发展状况
+
+&emsp;&emsp; Hasor起源于2012年。当时尚未开源，并被应用到公司个大项目中。当时基于Guice构建，并且整合了Spring JDBC、Guice等大量三方框架。
+
+&emsp;&emsp; 2013年9月15日，第一个Hasor版本发布。Module化的插件概念被提出，同时依赖大量减少，成为一个开源的java开发框架。
+
+&emsp;&emsp; 2015年7月3日，1.0.0版本发布。这一年Hasor明确的发展路线，确立了“小而美的核心，大而全的生态圈”目标。
+
+&emsp;&emsp; 2016年8月18日，2.4.3版本发布，基于2.4版本Hasor开始孕育全新的子项目 RSF。当时 Hasor 的版图还没有这么大。
+
+&emsp;&emsp; 2017年2月21日，RSF 和 Land 被并入 Hasor 体系，同时首次公开了 Hasor 大版图的想法。
+
+----------
 ### 集成
 01. 支持与 Spring 集成（2016-02-16）
 02. 支持与 JFinal 集成（2016-11-03）
-03. 支持与 Nutz 集成（2017-02-21）
+03. 支持与 [Nutz 集成（2017-02-21）](https://github.com/nutzam/nutzmore/tree/master/nutz-integration-hasor)
 
 ----------
 ### 发展状况
@@ -53,7 +66,7 @@
 
 &emsp;&emsp; 2015年7月3日，1.0.0版本发布。这一年Hasor明确的发展路线，确立了“小而美的核心，大而全的生态圈”目标。
 
-&emsp;&emsp; 2016年8月18日，2.4.3版本发布，基于2.4版本Hasor开始孕育全新的子项目 RSF。当时 Hasor 的版图还没有这么大。 
+&emsp;&emsp; 2016年8月18日，2.4.3版本发布，基于2.4版本Hasor开始孕育全新的子项目 RSF。当时 Hasor 的版图还没有这么大。
 
 &emsp;&emsp; 2017年2月21日，Hasor 大版图的想法首次公开亮相，RSF被并入大版图，同时 Land 项目进入开发阶段。
 
@@ -64,16 +77,13 @@
 
 ----------
 ### 相关连接
-
-* Docs : [http://hasor-guide.mydoc.io/](http://hasor-guide.mydoc.io/)
 * Issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
-* Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
 * Demo工程：[http://git.oschina.net/zycgit/hasor-example](http://git.oschina.net/zycgit/hasor-example)
 * QQ群：193943114
 * [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core)
-[![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=master)](https://travis-ci.org/zycgit/hasor)
-[![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=dev)](https://travis-ci.org/zycgit/hasor)
+  [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core)
+  [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=master)](https://travis-ci.org/zycgit/hasor)
+  [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=dev)](https://travis-ci.org/zycgit/hasor)
 
 ### 正式发布
 
