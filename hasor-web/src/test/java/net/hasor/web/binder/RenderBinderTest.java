@@ -16,16 +16,18 @@
 package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.core.TypeSupplier;
 import net.hasor.test.web.actions.basic.BasicAction;
 import net.hasor.test.web.render.AnnoErrorRenderEngine;
+import net.hasor.test.web.render.AnnoTestRenderEngine;
 import net.hasor.test.web.render.SimpleRenderEngine;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.render.Render;
 import net.hasor.web.render.RenderEngine;
-import net.hasor.web.render.RenderWebPlugin;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -113,10 +115,15 @@ public class RenderBinderTest extends AbstractTest {
                 assert e.getMessage().endsWith(" must be implements RenderEngine.");
             }
             //
-            Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.test.web.render.*");
+            Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.test.web.render");
             assert classSet.size() == 2;
             classSet.remove(AnnoErrorRenderEngine.class); // remove Error
-            apiBinder.loadRender(classSet);
+            apiBinder.loadRender(classSet, type -> type == AnnoTestRenderEngine.class, new TypeSupplier() {
+                @Override
+                public <T> T get(Class<? extends T> targetType) {
+                    return targetType.cast(new AnnoTestRenderEngine(Collections.emptyList()));
+                }
+            });
         }, servlet30("/"), LoadModule.Web);
         //
         List<RenderDef> definitions = appContext.findBindingBean(RenderDef.class);
@@ -132,7 +139,6 @@ public class RenderBinderTest extends AbstractTest {
     @Test
     public void renderTest_4() {
         AppContext appContext = buildWebAppContext(apiBinder -> {
-            apiBinder.installModule(new RenderWebPlugin());
             apiBinder.addRender("htm").toInstance(PowerMockito.mock(RenderEngine.class));
         }, servlet30("/"), LoadModule.Web, LoadModule.Render);
         //

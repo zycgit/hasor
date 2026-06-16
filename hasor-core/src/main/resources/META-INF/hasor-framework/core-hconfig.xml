@@ -4,17 +4,6 @@
     <root:config>
         <root:hasor.loadPackages>${HASOR_LOAD_PACKAGES:net.*,org.*,com.*}</root:hasor.loadPackages>
     </root:config>
-    <!-- ============================================================================ -->
-    <!-- 环境变量定义,如果和(系统环境变量,java环境变量,java属性)冲突那么将会放弃配置文件中配置的环境变量,并同时产生一条警告。 -->
-    <hasor.environmentVar>
-        <!-- 工作目录 -->
-        <WORK_HOME>%USER.HOME%/hasor-work</WORK_HOME>
-        <!-- 程序目录（不可配置，框架启动会自动初始化这个值） -->
-        <RUN_PATH>./</RUN_PATH>
-        <!-- 运行模式（不可配置，框架启动会自动初始化这个值）值范围：smaller、none -->
-        <RUN_MODE></RUN_MODE>
-    </hasor.environmentVar>
-
     <!-- 框架配置 -->
     <hasor>
         <!-- 包扫描覆盖范围，逗号间隔 -->

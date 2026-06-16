@@ -97,7 +97,7 @@ public class ExampleModule implements SpringModule {
         // .DataSource form Spring boot into Hasor
         apiBinder.installModule(new JdbcModule(Level.Full, this.dataSource));
         // .custom DataQL
-        //apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class));
+        //apiBinder.tryCast(QueryApiBinder.class).loadUdfSource(apiBinder.findClass(DimUdfSource.class, "com.example.dataql.udf.*"));
         //apiBinder.tryCast(QueryApiBinder.class).bindFragment("sql", SqlFragment.class);
     }
 }
@@ -120,4 +120,3 @@ public class ExampleModule implements SpringModule {
 - `dataway admin workAt /interface-ui/` 表示 管理配置界面的地址。
 
 此时访问：`http://<yourIP>:<yourProt>/interface-ui/` 就可以看到配置页面了。
-

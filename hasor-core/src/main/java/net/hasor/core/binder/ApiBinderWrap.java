@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.cobble.dynamic.DynamicProperty;
-import net.hasor.cobble.dynamic.MethodInterceptor;
-import net.hasor.cobble.loader.ResourceLoader;
-import net.hasor.cobble.provider.Scope;
-import net.hasor.cobble.setting.Settings;
-import net.hasor.core.*;
-import net.hasor.core.spi.SpiJudge;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Method;
 import java.util.EventListener;
 import java.util.List;
@@ -31,6 +21,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.cobble.dynamic.DynamicProperty;
+import net.hasor.cobble.dynamic.MethodInterceptor;
+import net.hasor.cobble.loader.ResourceLoader;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
+import net.hasor.core.EventContext;
+import net.hasor.core.TypeSupplier;
+import net.hasor.core.spi.SpiJudge;
 
 /**
  * 标准的 {@link ApiBinder} 接口包装类。
@@ -38,8 +40,8 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ApiBinderWrap implements ApiBinder {
-    protected static Logger    logger = LoggerFactory.getLogger(ApiBinderWrap.class);
-    private final    ApiBinder apiBinder;
+    protected static Logger logger = LoggerFactory.getLogger(ApiBinderWrap.class);
+    private final ApiBinder apiBinder;
 
     public ApiBinderWrap(ApiBinder apiBinder) {
         this.apiBinder = Objects.requireNonNull(apiBinder);
@@ -81,7 +83,7 @@ public class ApiBinderWrap implements ApiBinder {
     }
 
     @Override
-    public ApiBinder installModule(final Module... module) throws Throwable {
+    public ApiBinder installModule(final net.hasor.core.Module... module) throws Throwable {
         return this.apiBinder.installModule(module);
     }
 
@@ -117,7 +119,7 @@ public class ApiBinderWrap implements ApiBinder {
 
     @Override
     public LinkedBindingBuilder<DynamicProperty> dynamicReadOnlyProperty(Predicate<Class<?>> matcherClass, String name, Class<?> propertyType) {
-        return this.apiBinder.dynamicProperty(matcherClass, name, propertyType);
+        return this.apiBinder.dynamicReadOnlyProperty(matcherClass, name, propertyType);
     }
 
     @Override

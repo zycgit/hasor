@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 import net.hasor.cobble.provider.PrototypeScope;
 import net.hasor.cobble.provider.Provider;
 import net.hasor.cobble.provider.Scope;
@@ -21,11 +25,6 @@ import net.hasor.cobble.provider.SingletonScope;
 import net.hasor.core.BindInfo;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.spi.ScopeProvisionListener;
-
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
 /**
  * 作用域管理器
@@ -150,7 +149,7 @@ public class ScopeContainer extends AbstractContainer {
      */
     public boolean isSingleton(BindInfo<?> bindInfo) {
         Supplier<Scope>[] scopeArrays = collectScope(bindInfo);
-        if (scopeArrays != null && scopeArrays.length > 0) {
+        if (scopeArrays != null) {
             for (Supplier<Scope> scope : scopeArrays) {
                 if (scope.get() == singletonScope) {
                     return true;
@@ -181,7 +180,7 @@ public class ScopeContainer extends AbstractContainer {
     }
 
     protected void doInitialize() {
-        this.singletonScope.cleanData();
+        this.singletonScope.clean();
         this.scopeMapping.put(net.hasor.core.Prototype.class.getName(), Provider.of(prototypeScope));
         this.scopeMapping.put(net.hasor.core.Singleton.class.getName(), Provider.of(singletonScope));
         this.scopeMapping.put(javax.inject.Singleton.class.getName(), Provider.of(singletonScope));

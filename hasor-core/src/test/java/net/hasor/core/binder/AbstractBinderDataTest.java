@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
+import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.cobble.loader.providers.ClassPathResourceLoader;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.container.BeanContainer;
+import net.hasor.core.container.BindInfoContainer;
+import net.hasor.core.container.ScopeContainer;
+import net.hasor.core.container.SpiCallerContainer;
+import net.hasor.core.info.DefaultBindInfoProviderAdapter;
+import net.hasor.core.info.GenerateBeanID;
 
 public class AbstractBinderDataTest {
     protected Logger                                          logger = LoggerFactory.getLogger(getClass());
@@ -27,49 +36,65 @@ public class AbstractBinderDataTest {
     protected AtomicReference<DefaultBindInfoProviderAdapter> reference;
     protected ApiBinderWrap                                   binder;
 
-    //    public void beforeTest() throws IOException {
-    //        this.reference = new AtomicReference<>();
-    //        //
-    //        BindInfoContainer bindInfoContainer = PowerMockito.mock(BindInfoContainer.class);
-    //        PowerMockito.when(bindInfoContainer.createInfoAdapter((Class<?>) any(), any())).thenAnswer(invocationOnMock -> {
-    //            Class<Object> targetType = (Class<Object>) invocationOnMock.getArguments()[0];
-    //            DefaultBindInfoProviderAdapter<Object> adapter = new DefaultBindInfoProviderAdapter<>(targetType, new GenerateBeanID());
-    //            Predicate<Class<?>> defaultMatcher = (ignoreMatcher == null) ? (aClass -> false) : ignoreMatcher;
-    //            if (defaultMatcher.test(targetType)) {
-    //                return adapter;
-    //            }
-    //            reference.set(adapter);
-    //            return reference.get();
-    //        });
-    //        //
-    //        BindInfoBuilderFactory factory = PowerMockito.mock(BindInfoBuilderFactory.class);
-    //        PowerMockito.when(factory.getBindInfoContainer()).thenReturn(bindInfoContainer);
-    //        //
-    //        SpiCallerContainer spiContainer = new SpiCallerContainer();
-    //        ScopeContainer scopFactory = new ScopeContainer(spiContainer);
-    //        scopFactory.init();
-    //        PowerMockito.when(factory.getScopeContainer()).thenReturn(scopFactory);
-    //        this.binder = new ApiBinderWrap(newAbstractBinder(factory));
-    //    }
-    //
-    //    protected BasicBinder newAbstractBinder(BindInfoBuilderFactory factory) throws IOException {
-    //        return newAbstractBinder(new StandardEnvironment(null), factory);
-    //    }
-    //
-    //    protected BasicBinder newAbstractBinder(Environment environment, BindInfoBuilderFactory factory) {
-    //        AtomicReference<ApiBinder> refApiBinder = new AtomicReference<>();
-    //        BasicBinder binder = new BasicBinder(environment) {
-    //            @Override
-    //            protected ApiBinder self() {
-    //                return refApiBinder.get();
-    //            }
-    //
-    //            @Override
-    //            protected BindInfoBuilderFactory containerFactory() {
-    //                return factory;
-    //            }
-    //        };
-    //        refApiBinder.set(this.binder);
-    //        return binder;
-    //    }
+    @Before
+    public void beforeTest() throws IOException {
+        this.reference = new AtomicReference<>();
+        SpiCallerContainer spiContainer = new SpiCallerContainer();
+        BindInfoContainer bindInfoContainer = new BindInfoContainer(spiContainer) {
+            private final GenerateBeanID generateBeanID = new GenerateBeanID();
+
+            @Override
+            public <T> DefaultBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType, ApiBinder apiBinder) {
+                DefaultBindInfoProviderAdapter<T> adapter = new DefaultBindInfoProviderAdapter<>(bindType, this.generateBeanID);
+                Predicate<Class<?>> defaultMatcher = (ignoreMatcher == null) ? (aClass -> false) : ignoreMatcher;
+                if (!defaultMatcher.test(bindType)) {
+                    reference.set(adapter);
+                }
+                return adapter;
+            }
+        };
+        ScopeContainer scopeContainer = new ScopeContainer(spiContainer);
+        scopeContainer.init();
+        BindInfoBuilderFactory factory = new BindInfoBuilderFactory() {
+            @Override
+            public Settings getSettings() {
+                return net.hasor.core.Hasor.create().buildSettings();
+            }
+
+            @Override
+            public SpiCallerContainer getSpiContainer() {
+                return spiContainer;
+            }
+
+            @Override
+            public BindInfoContainer getBindInfoContainer() {
+                return bindInfoContainer;
+            }
+
+            @Override
+            public ScopeContainer getScopeContainer() {
+                return scopeContainer;
+            }
+        };
+        this.binder = new ApiBinderWrap(newAbstractBinder(factory));
+    }
+
+    protected BasicBinder newAbstractBinder(BindInfoBuilderFactory factory) throws IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        BeanContainer context = new BeanContainer(net.hasor.core.Hasor.create().buildSettings(), classLoader, new ClassPathResourceLoader(classLoader), null);
+        AtomicReference<ApiBinder> refApiBinder = new AtomicReference<>();
+        BasicBinder basicBinder = new BasicBinder(context) {
+            @Override
+            protected ApiBinder self() {
+                return refApiBinder.get();
+            }
+
+            @Override
+            protected BindInfoBuilderFactory containerFactory() {
+                return factory;
+            }
+        };
+        refApiBinder.set(this.binder);
+        return basicBinder;
+    }
 }

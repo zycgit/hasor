@@ -71,7 +71,6 @@ public class PropertyDelegateTest {
         PojoBean pojoBean = appContext.getInstance(PojoBean.class);
         //
         assert BeanUtils.hasProperty(pojoBean.getClass(), "dynamicName");
-        assert !BeanUtils.hasProperty(pojoBean.getClass(), "dynamicName");
         //
         // 没有写属性
         BeanUtils.writeProperty(pojoBean, "dynamicName", 12);
@@ -109,7 +108,6 @@ public class PropertyDelegateTest {
         PojoBean pojoBean = appContext.getInstance(PojoBean.class);
         //
         assert BeanUtils.hasProperty(pojoBean.getClass(), "dynamicName");
-        assert !BeanUtils.hasProperty(pojoBean.getClass(), "dynamicName");
         //
         // 没有写属性
         BeanUtils.writeProperty(pojoBean, "dynamicName", 12);

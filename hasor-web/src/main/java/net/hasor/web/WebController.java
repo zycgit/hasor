@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.web;
+import java.io.IOException;
+import java.util.*;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.io.FilenameUtils;
 import net.hasor.cobble.setting.Settings;
@@ -22,13 +28,6 @@ import net.hasor.web.annotation.Produces;
 import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.upload.FileUpload;
 import net.hasor.web.upload.factorys.disk.DiskFileItemFactory;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Controller <br>
@@ -599,8 +598,7 @@ public class WebController implements Controller {
     /** 更新渲染模版。*/
     protected void renderTo(String viewName) {
         Invoker invoker = getInvoker();
-        if (invoker != null && invoker instanceof RenderInvoker) {
-            RenderInvoker render = (RenderInvoker) invoker;
+        if (invoker instanceof RenderInvoker render) {
             render.renderTo(viewName);
         }
     }
@@ -612,8 +610,7 @@ public class WebController implements Controller {
      */
     protected void renderTo(String renderType, String viewName) {
         Invoker invoker = getInvoker();
-        if (invoker != null && invoker instanceof RenderInvoker) {
-            RenderInvoker render = (RenderInvoker) invoker;
+        if (invoker instanceof RenderInvoker render) {
             render.renderTo(renderType, viewName);
         }
     }

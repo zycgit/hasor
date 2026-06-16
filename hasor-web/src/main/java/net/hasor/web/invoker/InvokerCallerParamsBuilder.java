@@ -14,6 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import net.hasor.cobble.BeanUtils;
 import net.hasor.cobble.StringUtils;
@@ -22,19 +34,6 @@ import net.hasor.cobble.setting.Settings;
 import net.hasor.core.AppContext;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * 负责解析参数并执行调用。
@@ -111,18 +110,18 @@ public class InvokerCallerParamsBuilder {
     private Object resolveParam(Invoker invoker, Class<?> paramClass, Annotation pAnno) {
         Object atData = null;
         //
-        if (pAnno instanceof AttributeParameter) {
-            atData = this.getAttributeParam(invoker, (AttributeParameter) pAnno);
-        } else if (pAnno instanceof CookieParameter) {
-            atData = this.getCookieParam((CookieParameter) pAnno);
-        } else if (pAnno instanceof HeaderParameter) {
-            atData = this.getHeaderParam((HeaderParameter) pAnno);
-        } else if (pAnno instanceof QueryParameter) {
-            atData = this.getQueryParam((QueryParameter) pAnno);
-        } else if (pAnno instanceof PathParameter) {
-            atData = this.getPathParam((PathParameter) pAnno);
-        } else if (pAnno instanceof RequestParameter) {
-            atData = this.getRequestParam((RequestParameter) pAnno);
+        if (pAnno instanceof AttributeParameter p) {
+            atData = this.getAttributeParam(invoker, p);
+        } else if (pAnno instanceof CookieParameter p) {
+            atData = this.getCookieParam(p);
+        } else if (pAnno instanceof HeaderParameter p) {
+            atData = this.getHeaderParam(p);
+        } else if (pAnno instanceof QueryParameter p) {
+            atData = this.getQueryParam(p);
+        } else if (pAnno instanceof PathParameter p) {
+            atData = this.getPathParam(p);
+        } else if (pAnno instanceof RequestParameter p) {
+            atData = this.getRequestParam(p);
         } else if (pAnno instanceof RequestBody) {
             String jsonBodyString = invoker.getJsonBodyString();
             if (jsonBodyString == null) {
@@ -145,7 +144,7 @@ public class InvokerCallerParamsBuilder {
             }
         } else if (pAnno instanceof ParameterGroup) {
             try {
-                atData = invoker.getAppContext().justInject(paramClass.newInstance());
+                atData = invoker.getAppContext().justInject(net.hasor.cobble.ClassUtils.newInstance(paramClass));
                 atData = this.getParamsParam(invoker, paramClass, atData);
             } catch (Throwable e) {
                 logger.error(paramClass.getName() + "newInstance error.", e.getMessage());

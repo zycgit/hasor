@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.cobble.ClassUtils;
-import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.setting.SettingNode;
-import net.hasor.cobble.setting.Settings;
-import net.hasor.core.AppContext;
-import net.hasor.web.Invoker;
-import net.hasor.web.InvokerCreator;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +22,13 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import net.hasor.cobble.ClassUtils;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.setting.SettingNode;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.core.AppContext;
+import net.hasor.web.Invoker;
+import net.hasor.web.InvokerCreator;
 /**
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
@@ -79,7 +78,7 @@ class RootInvokerCreater implements InvokerCreator {
             if (this.createrMap.containsKey(createrType)) {
                 continue;
             }
-            InvokerCreator creater = (InvokerCreator) createrType.newInstance();
+            InvokerCreator creater = (InvokerCreator) net.hasor.cobble.ClassUtils.newInstance(createrType);
             this.createrMap.put(createrType, creater);
         }
     }

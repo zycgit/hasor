@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.concurrent.future.BasicFuture;
-import net.hasor.web.*;
-import net.hasor.web.binder.FilterDef;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
+import javax.servlet.AsyncContext;
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.concurrent.future.BasicFuture;
+import net.hasor.web.*;
+import net.hasor.web.binder.FilterDef;
 
 /**
  * 负责解析参数并执行调用。
@@ -35,9 +34,9 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller {
-    protected static Logger            logger          = LoggerFactory.getLogger(InvokerCaller.class);
-    private          FilterDef[]       filterArrays    = null;
-    private          Supplier<Invoker> invokerSupplier = null;
+    protected static Logger   logger          = LoggerFactory.getLogger(InvokerCaller.class);
+    private FilterDef[]       filterArrays    = null;
+    private Supplier<Invoker> invokerSupplier = null;
 
     public InvokerCaller(Supplier<Invoker> invokerSupplier, FilterDef[] filterArrays) {
         this.invokerSupplier = invokerSupplier;
@@ -86,8 +85,8 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller 
         //
         // .初始化 Controller
         final Object targetObject = invoker.getAppContext().getInstance(invoker.ownerMapping().getTargetType());
-        if (targetObject instanceof Controller) {
-            ((Controller) targetObject).initController(invoker);
+        if (targetObject instanceof Controller controller) {
+            controller.initController(invoker);
         }
         if (targetObject == null) {
             throw new NullPointerException("mappingToDefine newInstance is null.");

@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.cobble.StringUtils;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
@@ -22,13 +27,6 @@ import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.GenerateBeanID;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.spi.BindInfoProvisionListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
-
 /**
  * 负责管理 Bean 的元信息
  *
@@ -36,12 +34,12 @@ import java.util.function.Consumer;
  * @version : 2019-06-20
  */
 public class BindInfoContainer extends AbstractContainer implements Observer {
-    protected static Logger                                  logger           = LoggerFactory.getLogger(BindInfoContainer.class);
-    private final    List<BindInfo<?>>                       allBindInfoList  = new ArrayList<>();
-    private final    ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<>();
-    private final    ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<>();
-    private final    SpiCallerContainer                      spiCallerContainer;
-    private final    GenerateBeanID                          generateBeanID   = new GenerateBeanID();
+    protected static Logger                               logger           = LoggerFactory.getLogger(BindInfoContainer.class);
+    private final List<BindInfo<?>>                       allBindInfoList  = new ArrayList<>();
+    private final ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<>();
+    private final SpiCallerContainer                      spiCallerContainer;
+    private final GenerateBeanID                          generateBeanID   = new GenerateBeanID();
 
     public BindInfoContainer(SpiCallerContainer spiCallerContainer) {
         this.spiCallerContainer = spiCallerContainer;
@@ -148,14 +146,13 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
     }
 
     private void doUpdate(Observable o, Object arg) {
-        if (!(arg instanceof NotifyData)) {
+        if (!(arg instanceof NotifyData notifyData)) {
             return;
         }
-        if (!(o instanceof AbstractBindInfoProviderAdapter)) {
+        if (!(o instanceof AbstractBindInfoProviderAdapter target)) {
             return;
         }
         //
-        AbstractBindInfoProviderAdapter target = (AbstractBindInfoProviderAdapter) o;
         String bindTypeStr = target.getBindType().getName();
         String bindID = target.getBindID();
         //
@@ -172,7 +169,6 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
             typeList.add(bindID);
         }
         // .
-        NotifyData notifyData = (NotifyData) arg;
         Object oldValue = notifyData.getOldValue();
         Object newValue = notifyData.getNewValue();
         if ((newValue == null && oldValue == null) || (newValue != null && newValue.equals(oldValue))) {

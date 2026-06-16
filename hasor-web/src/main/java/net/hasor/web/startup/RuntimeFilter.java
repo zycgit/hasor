@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.web.startup;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.cobble.StringUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.spi.SpiTrigger;
@@ -23,17 +33,6 @@ import net.hasor.web.invoker.ExecuteCaller;
 import net.hasor.web.invoker.InvokerContext;
 import net.hasor.web.spi.AfterResponseListener;
 import net.hasor.web.spi.BeforeRequestListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
@@ -41,15 +40,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeFilter implements Filter {
-    protected           Logger         logger                     = LoggerFactory.getLogger(getClass());
-    private final       AtomicBoolean  inited                     = new AtomicBoolean(false);
-    public static final String         HTTP_REQUEST_ENCODING_KEY  = "HTTP_REQUEST_ENCODING";
-    public static final String         HTTP_RESPONSE_ENCODING_KEY = "HTTP_RESPONSE_ENCODING";
-    private             String         httpRequestEncoding        = null;
-    private             String         httpResponseEncoding       = null;
-    private             AppContext     appContext                 = null;
-    private             SpiTrigger     spiTrigger                 = null;
-    private             InvokerContext invokerContext             = null;
+    protected Logger            logger                     = LoggerFactory.getLogger(getClass());
+    private final AtomicBoolean inited                     = new AtomicBoolean(false);
+    public static final String  HTTP_REQUEST_ENCODING_KEY  = "HTTP_REQUEST_ENCODING";
+    public static final String  HTTP_RESPONSE_ENCODING_KEY = "HTTP_RESPONSE_ENCODING";
+    private String              httpRequestEncoding        = null;
+    private String              httpResponseEncoding       = null;
+    private AppContext          appContext                 = null;
+    private SpiTrigger          spiTrigger                 = null;
+    private InvokerContext      invokerContext             = null;
 
     public RuntimeFilter() {
         this(null);
@@ -130,17 +129,17 @@ public class RuntimeFilter implements Filter {
                 chain.doFilter(httpReq, httpRes);
             }
         } catch (Throwable e) {
-            if (e instanceof ExecutionException) {
-                e = e.getCause();
+            if (e instanceof ExecutionException ee) {
+                e = ee.getCause();
             }
-            if (e instanceof IOException) {
-                throw (IOException) e;
+            if (e instanceof IOException ee) {
+                throw ee;
             }
-            if (e instanceof ServletException) {
-                throw (ServletException) e;
+            if (e instanceof ServletException ee) {
+                throw ee;
             }
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException) e;
+            if (e instanceof RuntimeException ee) {
+                throw ee;
             }
             throw new ServletException(e);
         }

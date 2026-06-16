@@ -99,7 +99,12 @@ public class FilterDef implements InvokerFilter {
     }
 
     private InvokerFilter targetFilter() {
-        InvokerFilter filter = this.targetFilter.get();
+        InvokerFilter filter;
+        try {
+            filter = this.targetFilter.get();
+        } catch (NullPointerException e) {
+            throw new NullPointerException("target InvokerFilter instance is null.");
+        }
         if (filter == null) {
             throw new NullPointerException("target InvokerFilter instance is null.");
         }

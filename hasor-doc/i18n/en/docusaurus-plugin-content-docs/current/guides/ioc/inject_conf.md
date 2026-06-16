@@ -58,7 +58,7 @@ AppContext appContext = Hasor.create().mainSettingWith("<config-file-name>").bui
 
 ## 类型自动转换
 
-`@InjectSettings` 可以帮助做一些简单的类型转换，类型转换工具为 `net.hasor.utils.convert.ConverterUtils`。其来源为： Apache Commons
+`@InjectSettings` 可以帮助做一些简单的类型转换，类型转换工具为 `net.hasor.cobble.convert.ConverterUtils`。
 
 ```java
 public class TestBean {

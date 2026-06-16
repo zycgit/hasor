@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import javax.inject.Named;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
+import javax.inject.Named;
 
-class InnerNamed implements Named, Serializable {
-    public static final Named  DEFAULT = new InnerNamed("");
-    private final       String value;
+record InnerNamed(String value) implements Named, Serializable {
+    public static final Named DEFAULT = new InnerNamed("");
 
-    public InnerNamed(String value) {
+    InnerNamed(String value) {
         this.value = Objects.requireNonNull(value, "name");
-    }
-
-    @Override
-    public String value() {
-        return this.value;
     }
 
     @Override
@@ -40,10 +34,9 @@ class InnerNamed implements Named, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Named)) {
+        if (!(o instanceof Named other)) {
             return false;
         }
-        Named other = (Named) o;
         return value.equals(other.value());
     }
 

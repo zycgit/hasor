@@ -1,4 +1,17 @@
 package net.hasor.core.container;
+import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Named;
+import javax.inject.Qualifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.cobble.BeanUtils;
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.StringUtils;
@@ -7,25 +20,11 @@ import net.hasor.cobble.asm.ClassReader;
 import net.hasor.cobble.asm.ClassVisitor;
 import net.hasor.cobble.asm.Opcodes;
 import net.hasor.cobble.convert.ConverterUtils;
-import net.hasor.cobble.dynamic.AsmTools;
+import net.hasor.cobble.reflect.ByteCodeTools;
 import net.hasor.cobble.setting.Settings;
-import net.hasor.core.Type;
 import net.hasor.core.*;
+import net.hasor.core.Type;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Named;
-import javax.inject.Qualifier;
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InnerUtils {
     protected static Logger logger = LoggerFactory.getLogger(InnerUtils.class);
@@ -49,8 +48,7 @@ public class InnerUtils {
             }
         }
         //b.可能存在的配置。
-        if (initMethod == null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
-            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+        if (initMethod == null && bindInfo instanceof DefaultBindInfoProviderAdapter<?> defBinder) {
             initMethod = defBinder.getInitMethod(targetBeanType);
         }
         return initMethod;
@@ -75,8 +73,7 @@ public class InnerUtils {
             }
         }
         //b.可能存在的配置。
-        if (destroyMethod == null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
-            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+        if (destroyMethod == null && bindInfo instanceof DefaultBindInfoProviderAdapter<?> defBinder) {
             destroyMethod = defBinder.getDestroyMethod(targetBeanType);
         }
         return destroyMethod;
@@ -114,13 +111,13 @@ public class InnerUtils {
         //
         for (Annotation anno : annotations) {
             // .如果遇到 net.hasor.core.Inject 那么信息是完整的不需要在查看其它注解
-            if (anno instanceof net.hasor.core.Inject) {
+            if (anno instanceof net.hasor.core.Inject inject) {
                 injectBoolean = true;
-                if (Type.ByName == ((net.hasor.core.Inject) anno).byType()) {
-                    qualifier = new InnerNamed(((net.hasor.core.Inject) anno).value());
+                if (Type.ByName == inject.byType()) {
+                    qualifier = new InnerNamed(inject.value());
                 }
-                if (Type.ByID == ((net.hasor.core.Inject) anno).byType()) {
-                    qualifier = new InnerID(((net.hasor.core.Inject) anno).value());
+                if (Type.ByID == inject.byType()) {
+                    qualifier = new InnerID(inject.value());
                 }
                 break;
             }
@@ -174,10 +171,14 @@ public class InnerUtils {
         String settingValue = null;
         if (settingVar.startsWith("${") && settingVar.endsWith("}")) {
             settingVar = settingVar.substring(2, settingVar.length() - 1);
-            settingValue = appContext.getSettings().getEnv("%" + settingVar + "%");
-            if (StringUtils.isBlank(settingValue)) {
-                settingValue = defaultVal;
+            if (StringUtils.isBlank(defaultVal)) {
+                defaultVal = null;// 行为保持和 Convert 一致
             }
+            Settings settings = appContext.getSettings();
+            if (StringUtils.isNotBlank(useNS)) {
+                settings = settings.getSettings(useNS);
+            }
+            settingValue = settings.getString(settingVar, defaultVal);
         } else {
             if (StringUtils.isBlank(defaultVal)) {
                 defaultVal = null;// 行为保持和 Convert 一致
@@ -278,10 +279,12 @@ public class InnerUtils {
         //
         //
         class AopIgnoreFinderVisitor extends AnnotationVisitor {
-            private Map<String, Object> collectInfo = new HashMap<String, Object>() {{
-                put(PROP_NAME_PROPAGATE, true);   // 注解默认值
-                put(PROP_NAME_IGNORE, true);      // 注解默认值
-            }};
+            private final Map<String, Object> collectInfo = new HashMap<String, Object>() {
+                {
+                    put(PROP_NAME_PROPAGATE, true);   // 注解默认值
+                    put(PROP_NAME_IGNORE, true);      // 注解默认值
+                }
+            };
 
             public AopIgnoreFinderVisitor(int api, AnnotationVisitor av) {
                 super(api, av);
@@ -301,7 +304,7 @@ public class InnerUtils {
                 super.visitEnd();
             }
         }
-        for (; ; ) {
+        for (;;) {
             InputStream asStream = rootLoader.getResourceAsStream(packageName + "/package-info.class");
             if (asStream != null) {
                 try {
@@ -309,7 +312,7 @@ public class InnerUtils {
                     classReader.accept(new ClassVisitor(Opcodes.ASM7) {
                         @Override
                         public AnnotationVisitor visitAnnotation(final String desc, final boolean visible) {
-                            if (!AsmTools.toAsmType(IgnoreProxy.class).equals(desc)) {
+                            if (!ByteCodeTools.toAsmType(IgnoreProxy.class).equals(desc)) {
                                 return super.visitAnnotation(desc, visible);
                             }
                             return new AopIgnoreFinderVisitor(Opcodes.ASM7, super.visitAnnotation(desc, visible));

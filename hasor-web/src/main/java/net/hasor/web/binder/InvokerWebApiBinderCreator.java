@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
+import java.io.IOException;
+import javax.servlet.ServletContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.binder.ApiBinderCreator;
 import net.hasor.web.MimeType;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.mime.MimeTypeSupplier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContext;
-import java.io.IOException;
 
 /**
  * 渲染插件，的ApiBinder扩展器。
@@ -51,10 +50,9 @@ public class InvokerWebApiBinderCreator implements ApiBinderCreator<WebApiBinder
     //
     public static WebApiBinder newBinder(ApiBinder apiBinder) throws IOException {
         Object context = apiBinder.getContext();
-        if (!(context instanceof ServletContext)) {
+        if (!(context instanceof ServletContext servletContext)) {
             return null;
         }
-        ServletContext servletContext = (ServletContext) context;
         //
         // .MimeType
         MimeTypeSupplier mimeTypeContext = new MimeTypeSupplier(servletContext);
@@ -73,7 +71,9 @@ public class InvokerWebApiBinderCreator implements ApiBinderCreator<WebApiBinder
             curVersion = ServletVersion.V3_0;
             servletContext.getVirtualServerName();
             curVersion = ServletVersion.V3_1;
-        } catch (Throwable e) { /* 忽略 */ }
+        } catch (Throwable e) {
+            /* 忽略 */
+        }
         //
         // .Binder
         apiBinder.bindType(ServletContext.class).toInstance(servletContext);

@@ -14,20 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.render;
-import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.setting.Settings;
-import net.hasor.core.AppContext;
-import net.hasor.web.Invoker;
-import net.hasor.web.InvokerChain;
-import net.hasor.web.InvokerFilter;
-import net.hasor.web.binder.RenderDef;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -35,6 +21,19 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Predicate;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.core.AppContext;
+import net.hasor.web.Invoker;
+import net.hasor.web.InvokerChain;
+import net.hasor.web.InvokerFilter;
+import net.hasor.web.binder.RenderDef;
 
 /**
  * 渲染器插件。
@@ -42,13 +41,13 @@ import java.util.function.Predicate;
  * @author 赵永春 (zyc@hasor.net)
  */
 class RenderInvokerFilter implements InvokerFilter {
-    private static final Logger                    logger        = LoggerFactory.getLogger(RenderInvokerFilter.class);
-    private              String                    layoutPath    = null;                    // 布局模版位置
-    private              boolean                   useLayout     = true;
-    private              String                    templatePath  = null;                    // 页面模版位置
-    private final        Map<String, RenderEngine> engineMap     = new HashMap<>();
-    private              String                    placeholder   = null;
-    private              String                    defaultLayout = null;
+    private static final Logger             logger        = LoggerFactory.getLogger(RenderInvokerFilter.class);
+    private String                          layoutPath    = null;                    // 布局模版位置
+    private boolean                         useLayout     = true;
+    private String                          templatePath  = null;                    // 页面模版位置
+    private final Map<String, RenderEngine> engineMap     = new HashMap<>();
+    private String                          placeholder   = null;
+    private String                          defaultLayout = null;
 
     public void doInit(AppContext appContext) throws Throwable {
         List<RenderDef> renderInfoList = appContext.findBindingBean(RenderDef.class);
@@ -70,8 +69,8 @@ class RenderInvokerFilter implements InvokerFilter {
 
     @Override
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
-        if (invoker instanceof RenderInvoker) {
-            return doRenderInvoker((RenderInvoker) invoker, chain);
+        if (invoker instanceof RenderInvoker renderInvoker) {
+            return doRenderInvoker(renderInvoker, chain);
         } else {
             return chain.doNext(invoker);
         }
@@ -79,8 +78,8 @@ class RenderInvokerFilter implements InvokerFilter {
 
     private static RenderType findRenderType(Annotation[] annotations) {
         return Arrays.stream(annotations).map(annotation -> {
-            if (annotation instanceof RenderType) {
-                return (RenderType) annotation;
+            if (annotation instanceof RenderType renderType) {
+                return renderType;
             }
             return annotation.annotationType().getAnnotation(RenderType.class);
         }).filter((Predicate<Annotation>) Objects::nonNull).findFirst().orElse(null);

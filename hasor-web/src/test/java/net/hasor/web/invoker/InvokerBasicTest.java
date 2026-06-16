@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
 
 public class InvokerBasicTest extends AbstractTest {
@@ -52,7 +53,7 @@ public class InvokerBasicTest extends AbstractTest {
         //
         //
         List<MappingDef> definitions = appContext.findBindingBean(MappingDef.class);
-        assert definitions.size() == 2;
+        assertEquals(2, definitions.size());
         final Set<String> responseType = new HashSet<>();
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
         PowerMockito.doAnswer((Answer<Void>) invocation -> {
@@ -66,14 +67,14 @@ public class InvokerBasicTest extends AbstractTest {
         {
             ExecuteCaller caller = invokerContext.genCaller(mockRequest("post", new URL("http://www.hasor.net/abc.do")), servletResponse);
             caller.invoke(null);
-            assert responseType.contains("test/html");
+            assertTrue(responseType.contains("test/html"));
         }
         //
         {
             responseType.clear();
             ExecuteCaller caller = invokerContext.genCaller(mockRequest("get", new URL("http://www.hasor.net/abc.do")), servletResponse);
             caller.invoke(null);
-            assert responseType.contains("text/javacc_jj");
+            assertTrue(responseType.contains("text/javacc_jj"));
         }
     }
 
@@ -93,24 +94,23 @@ public class InvokerBasicTest extends AbstractTest {
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
-        assert true;
-        assert !action.isExecute();
+        assertFalse(action.isExecute());
     }
 
     @Test
     public void asyncInvocationWorker_test_1() {
         AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
-        final Method targetMethod = PowerMockito.mock(Method.class);
+        final Method targetMethod = reflectMethod("asyncInvocationWorker_test_1");
         //
         AsyncInvocationWorker worker = new AsyncInvocationWorker(asyncContext, targetMethod) {
             @Override
             public void doWork(Method method) {
-                assert method == targetMethod;
+                assertSame(targetMethod, method);
             }
 
             @Override
             public void doWorkWhenError(Method targetMethod, Throwable e) {
-                assert false;
+                fail();
             }
         };
         //
@@ -121,13 +121,13 @@ public class InvokerBasicTest extends AbstractTest {
         }).when(asyncContext).complete();
         //
         worker.run();
-        assert atomicBoolean.get();
+        assertTrue(atomicBoolean.get());
     }
 
     @Test
     public void asyncInvocationWorker_test_2() {
         AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
-        final Method targetMethod = PowerMockito.mock(Method.class);
+        final Method targetMethod = reflectMethod("asyncInvocationWorker_test_2");
         final Exception error = new Exception();
         //
         AsyncInvocationWorker worker = new AsyncInvocationWorker(asyncContext, targetMethod) {
@@ -138,7 +138,7 @@ public class InvokerBasicTest extends AbstractTest {
 
             @Override
             public void doWorkWhenError(Method targetMethod, Throwable e) {
-                assert error == e;
+                assertSame(error, e);
             }
         };
         //
@@ -163,7 +163,7 @@ public class InvokerBasicTest extends AbstractTest {
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
-        assert action.getData().get() == obj;
+        assertSame(obj, action.getData().get());
     }
 
     @Test
@@ -184,7 +184,7 @@ public class InvokerBasicTest extends AbstractTest {
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
-        assert action.getData().get() != obj;
+        assertNotSame(obj, action.getData().get());
     }
 
     @Test
@@ -206,12 +206,12 @@ public class InvokerBasicTest extends AbstractTest {
         ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         try {
             caller.invoke(null).get();
-            assert false;
+            fail();
         } catch (Exception e) {
-            assert e.getCause() instanceof IllegalStateException;
-            assert e.getCause().getMessage().equals("aaaa");
+            assertTrue(e.getCause() instanceof IllegalStateException);
+            assertEquals("aaaa", e.getCause().getMessage());
         } finally {
-            assert action.getData().get() == obj; // 异步
+            assertSame(obj, action.getData().get()); // 异步
         }
     }
 
@@ -234,12 +234,12 @@ public class InvokerBasicTest extends AbstractTest {
         ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         try {
             caller.invoke(null).get();
-            assert false;
+            fail();
         } catch (Exception e) {
-            assert e.getCause() instanceof IllegalStateException;
-            assert e.getCause().getMessage().equals("aaaa");
+            assertTrue(e.getCause() instanceof IllegalStateException);
+            assertEquals("aaaa", e.getCause().getMessage());
         } finally {
-            assert action.getData().get() != obj; // 同步
+            assertNotSame(obj, action.getData().get()); // 同步
         }
     }
 
@@ -250,32 +250,40 @@ public class InvokerBasicTest extends AbstractTest {
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
         InvokerSupplier supplier = new InvokerSupplier(PowerMockito.mock(Mapping.class), appContext, httpRequest, httpResponse);
         //
-        assert supplier.getHttpRequest() == httpRequest;
-        assert supplier.getHttpResponse() == httpResponse;
-        assert supplier.getAppContext() == appContext;
+        assertSame(httpRequest, supplier.getHttpRequest());
+        assertSame(httpResponse, supplier.getHttpResponse());
+        assertSame(appContext, supplier.getAppContext());
         //
         supplier.put("abc", "abc");
-        assert "abc".equals(supplier.get("abc"));
+        assertEquals("abc", supplier.get("abc"));
         supplier.remove("abc");
-        assert supplier.get("abc") == null;
+        assertNull(supplier.get("abc"));
         //
         supplier.put("key", "kv");
-        assert "kv".equals(supplier.get("key"));
+        assertEquals("kv", supplier.get("key"));
         supplier.lockKey("key");
         try {
             supplier.put("key", "111");
-            assert false;
+            fail();
         } catch (Exception e) {
-            assert e.getMessage().endsWith(" is lock key.");
+            assertTrue(e.getMessage().endsWith(" is lock key."));
         }
         try {
             supplier.remove("key");
-            assert false;
+            fail();
         } catch (Exception e) {
-            assert e.getMessage().endsWith(" is lock key.");
+            assertTrue(e.getMessage().endsWith(" is lock key."));
         }
         //
         Set<String> strings = supplier.keySet();
-        assert strings.contains("key");
+        assertTrue(strings.contains("key"));
+    }
+
+    private static Method reflectMethod(String methodName) {
+        try {
+            return InvokerBasicTest.class.getDeclaredMethod(methodName);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

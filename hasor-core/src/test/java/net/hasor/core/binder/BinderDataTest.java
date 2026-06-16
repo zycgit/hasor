@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import org.junit.Test;
 import net.hasor.cobble.dynamic.Matchers;
 import net.hasor.cobble.dynamic.MethodInterceptor;
 import net.hasor.cobble.provider.Provider;
@@ -27,16 +35,6 @@ import net.hasor.test.core.MockBindInfo;
 import net.hasor.test.core.basic.pojo.PojoBeanTestBeanC;
 import net.hasor.test.core.basic.pojo.PojoBeanTestBeanP;
 import net.hasor.test.core.binder.TestBinder;
-import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class BinderDataTest extends AbstractBinderDataTest {
     @Test
@@ -59,7 +57,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
 
     @Test
     public void metaDataTest3() {
-        Method target = PowerMockito.mock(Method.class);
+        Method target = BinderDataTest.class.getDeclaredMethods()[0];
         binder.bindType(PojoBeanTestBeanP.class).metaData("metaKey", target);
         assert target == reference.get().getMetaData("metaKey");
     }
@@ -325,10 +323,15 @@ public class BinderDataTest extends AbstractBinderDataTest {
 
     @Test
     public void otherTest2() {
-        assert binder.findClass(null) == null;
-        assert !binder.findClass(ApiBinder.class).isEmpty();
-        assert binder.findClass(null, (String) null) == null;
-        assert !binder.findClass(ApiBinder.class, new String[] { "test.net.hasor.core._07_binder" }).isEmpty();
+        assert binder.findClass(null).isEmpty();
+        try {
+            binder.findClass(ApiBinder.class);
+            assert false;
+        } catch (IllegalArgumentException e) {
+            assert e.getMessage().contains("requires package ranges");
+        }
+        assert binder.findClass(null, (String) null).isEmpty();
+        assert !binder.findClass(ApiBinder.class, new String[] { "net.hasor.test.core.binder" }).isEmpty();
         assert binder.getSettings() != null;
     }
 }

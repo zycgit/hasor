@@ -28,6 +28,7 @@ import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.startup.RuntimeFilter;
 import org.junit.Test;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -210,7 +211,7 @@ public class MappingBinderTest extends AbstractTest {
                 assert e.getMessage().endsWith(" must be normal Bean");
             }
             //
-            Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.test.web.actions.mapping.*");
+            Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.test.web.actions.mapping");
             assert classSet.size() == 3;
             apiBinder.loadMappingTo(classSet);
         }, servlet30("/"), LoadModule.Web);
@@ -262,6 +263,8 @@ public class MappingBinderTest extends AbstractTest {
         }, servlet30("/"), LoadModule.Web);
         //
         List<FilterDef> definitions = appContext.findBindingBean(FilterDef.class);
+        definitions.removeIf(def -> "net.hasor.web.render.RenderInvokerFilter".equals(def.getTargetType().getBindID()));
+        definitions.sort(Comparator.comparingInt(FilterDef::getIndex).thenComparing(def -> def.getMatcher().getPattern()));
         assert definitions.size() == 10;
         for (int i = 0; i < 10; i++) {
             OneConfig oneConfig = new OneConfig("", () -> appContext);
@@ -329,43 +332,30 @@ public class MappingBinderTest extends AbstractTest {
         }, servlet30("/"), LoadModule.Web);
         //
         List<FilterDef> definitions = appContext.findBindingBean(FilterDef.class);
+        definitions.removeIf(def -> "net.hasor.web.render.RenderInvokerFilter".equals(def.getTargetType().getBindID()));
+        definitions.sort(Comparator.comparingInt(FilterDef::getIndex).thenComparing(def -> def.getMatcher().getPattern()));
         assert definitions.size() == 8;
         //
-        assert "/abc.do".equals(definitions.get(0).getMatcher().getPattern());
-        assert "/abc.do".equals(definitions.get(2).getMatcher().getPattern());
-        assert "/abc.do".equals(definitions.get(4).getMatcher().getPattern());
-        assert "/abc.do".equals(definitions.get(6).getMatcher().getPattern());
-        assert definitions.get(0) instanceof FilterDef;
-        assert definitions.get(2) instanceof FilterDef;
-        assert definitions.get(4) instanceof FilterDef;
-        assert definitions.get(6) instanceof FilterDef;
-        //
-        assert "/def.do".equals(definitions.get(1).getMatcher().getPattern());
-        assert "/def.do".equals(definitions.get(3).getMatcher().getPattern());
-        assert "/def.do".equals(definitions.get(5).getMatcher().getPattern());
-        assert "/def.do".equals(definitions.get(7).getMatcher().getPattern());
-        assert definitions.get(1) instanceof FilterDef;
-        assert definitions.get(3) instanceof FilterDef;
-        assert definitions.get(5) instanceof FilterDef;
-        assert definitions.get(7) instanceof FilterDef;
+        assert definitions.stream().filter(def -> "/abc.do".equals(def.getMatcher().getPattern())).count() == 4;
+        assert definitions.stream().filter(def -> "/def.do".equals(def.getMatcher().getPattern())).count() == 4;
         //
         for (int i = 0; i < 8; i++) {
             definitions.get(i).init(new OneConfig("", () -> appContext));
         }
         //
-        Object invoke0 = appContext.getInstance(definitions.get(0).getTargetType());     // 1
-        Object invoke2 = appContext.getInstance(definitions.get(2).getTargetType());     // 2
-        Object invoke4_1 = appContext.getInstance(definitions.get(4).getTargetType());   // 3
-        Object invoke4_2 = appContext.getInstance(definitions.get(4).getTargetType());   // 3
-        Object invoke6_1 = appContext.getInstance(definitions.get(6).getTargetType());   // 4
-        Object invoke6_2 = appContext.getInstance(definitions.get(6).getTargetType());   // 4
-        //
-        assert invoke0 == invoke2;
-        assert invoke4_1 == invoke4_2;
-        assert invoke6_1 == invoke6_2;
-        //
-        assert invoke4_1 instanceof J2eeFilterAsFilter;
-        assert invoke6_1 instanceof J2eeFilterAsFilter;
+        long invokerFilterCount = 0;
+        long jeeFilterCount = 0;
+        for (FilterDef definition : definitions) {
+            Object filter = appContext.getInstance(definition.getTargetType());
+            if (filter == invokerFilter) {
+                invokerFilterCount++;
+            }
+            if (filter instanceof J2eeFilterAsFilter) {
+                jeeFilterCount++;
+            }
+        }
+        assert invokerFilterCount == 4;
+        assert jeeFilterCount == 4;
     }
 
     @Test

@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.EventListener;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.cobble.BeanUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.dynamic.*;
@@ -26,15 +34,6 @@ import net.hasor.core.container.BeanContainer;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DelegateBindInfoAdapter;
 import net.hasor.core.spi.SpiJudge;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.EventListener;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
@@ -76,15 +75,18 @@ public abstract class BasicBinder implements ApiBinder {
 
     @Override
     public Set<Class<?>> findClass(final Class<?> featureType, final String... scanPackages) {
-        if (featureType == null || scanPackages == null || scanPackages.length == 0) {
+        if (featureType == null) {
             return Collections.emptySet();
+        }
+        if (scanPackages == null || scanPackages.length == 0) {
+            throw new IllegalArgumentException("Class scan requires package ranges.");
         }
         return this.context.getScanner().getClassSet(scanPackages, featureType);
     }
 
     @Override
-    public ApiBinder installModule(final Module... modules) throws Throwable {
-        for (Module module : modules) {
+    public ApiBinder installModule(final net.hasor.core.Module... modules) throws Throwable {
+        for (net.hasor.core.Module module : modules) {
             logger.info("installModule ->" + module);
             /*加载*/
             module.loadModule(self());

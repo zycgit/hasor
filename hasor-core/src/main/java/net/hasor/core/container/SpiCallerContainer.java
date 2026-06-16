@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.cobble.ExceptionUtils;
-import net.hasor.core.spi.SpiCaller;
-import net.hasor.core.spi.SpiJudge;
-import net.hasor.core.spi.SpiTrigger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -28,6 +21,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.hasor.cobble.ExceptionUtils;
+import net.hasor.core.spi.SpiCaller;
+import net.hasor.core.spi.SpiJudge;
+import net.hasor.core.spi.SpiTrigger;
 
 /**
  * SPI 管理器。
@@ -35,9 +34,9 @@ import java.util.stream.Stream;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpiCallerContainer extends AbstractContainer implements SpiTrigger {
-    protected static Logger                                                     logger      = LoggerFactory.getLogger(SpiCallerContainer.class);
-    private final    ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener = new ConcurrentHashMap<>();
-    private final    ConcurrentHashMap<Class<?>, Supplier<SpiJudge>>            spiSpiJudge = new ConcurrentHashMap<>();
+    protected static Logger                                                  logger      = LoggerFactory.getLogger(SpiCallerContainer.class);
+    private final ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Class<?>, Supplier<SpiJudge>>            spiSpiJudge = new ConcurrentHashMap<>();
 
     @Override
     public <R, T extends EventListener> R notifySpi(Class<T> spiType, SpiCaller<T, R> spiCaller, R defaultResult) {
@@ -162,15 +161,10 @@ public class SpiCallerContainer extends AbstractContainer implements SpiTrigger 
         }
     }
 
-    /** A single entry in the map. */
-    private static final class MapEntry implements Map.Entry<Class<?>, EventListener> {
-        private final Class<?>      listenerKey;
-        private final EventListener listenerEntry;
-
-        public MapEntry(Class<?> listenerKey, EventListener listenerEntry) {
-            this.listenerKey = listenerKey;
-            this.listenerEntry = listenerEntry;
-        }
+    /**
+     * A single entry in the map.
+     */
+    private record MapEntry(Class<?> listenerKey, EventListener listenerEntry) implements Map.Entry<Class<?>, EventListener> {
 
         @Override
         public Class<?> getKey() {

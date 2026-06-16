@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web;
-import net.hasor.cobble.ExceptionUtils;
-import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.function.EFunction;
-import net.hasor.core.AppContext;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Objects;
@@ -29,6 +22,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import net.hasor.cobble.ExceptionUtils;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.function.EFunction;
+import net.hasor.core.AppContext;
 
 /**
  * 请求调用
@@ -88,7 +87,7 @@ public interface Invoker extends MimeType {
     /** 将Request中的参数填充到 formType 类型对象上，formType 的创建将会使用 {@link AppContext#justInject(Object)}  方法。 */
     default <T> T fillForm(Class<? extends T> formType) {
         try {
-            return this.fillForm(formType, this.getAppContext().justInject(formType.newInstance()));
+            return this.fillForm(formType, this.getAppContext().justInject(net.hasor.cobble.ClassUtils.newInstance(formType)));
         } catch (Exception e) {
             throw ExceptionUtils.toRuntime(e);
         }

@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import static net.hasor.core.container.TemplateAppContext.AppContextStatus.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Proxy;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.cobble.ArrayUtils;
 import net.hasor.cobble.ClassUtils;
 import net.hasor.cobble.ExceptionUtils;
@@ -23,8 +33,9 @@ import net.hasor.cobble.loader.ResourceLoader;
 import net.hasor.cobble.provider.Scope;
 import net.hasor.cobble.setting.SettingNode;
 import net.hasor.cobble.setting.Settings;
-import net.hasor.core.EventListener;
 import net.hasor.core.*;
+import net.hasor.core.EventListener;
+import net.hasor.core.Module;
 import net.hasor.core.binder.ApiBinderCreator;
 import net.hasor.core.binder.ApiBinderInvocationHandler;
 import net.hasor.core.binder.BasicBinder;
@@ -34,18 +45,6 @@ import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.ContextShutdownListener;
 import net.hasor.core.spi.ContextStartListener;
 import net.hasor.core.spi.SpiTrigger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Proxy;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
-
-import static net.hasor.core.container.TemplateAppContext.AppContextStatus.*;
 
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
@@ -55,11 +54,11 @@ import static net.hasor.core.container.TemplateAppContext.AppContextStatus.*;
  * @version : 2013-4-9
  */
 public abstract class TemplateAppContext extends MetaDataAdapter implements AppContext {
-    protected static Logger                            logger       = LoggerFactory.getLogger(TemplateAppContext.class);
-    private final    ShutdownHook                      shutdownHook = new ShutdownHook(this);
-    private final    AtomicReference<AppContextStatus> status       = new AtomicReference<>(AppContextStatus.Stopped);
+    protected static Logger                         logger       = LoggerFactory.getLogger(TemplateAppContext.class);
+    private final ShutdownHook                      shutdownHook = new ShutdownHook(this);
+    private final AtomicReference<AppContextStatus> status       = new AtomicReference<>(AppContextStatus.Stopped);
 
-    protected static enum AppContextStatus {
+    protected enum AppContextStatus {
         Stopped,
         Processing,
         Started
@@ -328,7 +327,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             //
             try {
                 Class<?> moduleClass = this.getClassLoader().loadClass(moduleType);
-                moduleList.add((Module) moduleClass.newInstance());
+                moduleList.add((Module) net.hasor.cobble.ClassUtils.newInstance(moduleClass));
             } catch (Throwable e) {
                 if (!throwLoadError) {
                     logger.error("load module Type " + moduleType + " is failure. :" + e.getMessage(), e);
@@ -429,7 +428,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             if (implMap.containsKey(implKey)) {
                 continue;
             }
-            ApiBinderCreator creater = (ApiBinderCreator) implKey.newInstance();
+            ApiBinderCreator creater = (ApiBinderCreator) net.hasor.cobble.ClassUtils.newInstance(implKey);
             Object exter = creater.createBinder(binder);
             if (exter != null) {
                 implMap.put(implKey, exter);

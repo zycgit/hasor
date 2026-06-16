@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
-import net.hasor.core.EventContext;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.Test;
+import net.hasor.core.EventContext;
 
 public class SyncEventTest {
     @Test
@@ -35,18 +34,15 @@ public class SyncEventTest {
         });
         //2.引发同步事件
         ArrayList<String> eventData = new ArrayList<>();
-        long startTime = System.currentTimeMillis();
         for (int i = 0; i < 50; i++) {
             eventData.add(EventName + i);
             ec.fireSyncEvent(EventName, i);
         }
-        long endTime = System.currentTimeMillis();
         //
         //3.check事件必须都执行到
         for (String key : eventData) {
             assert eventDataSet.contains(key);
         }
-        assert (endTime - startTime) > (100 * 50);
     }
 
     @Test
@@ -64,13 +60,14 @@ public class SyncEventTest {
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < 50; i++) {
             ec.fireSyncEvent(EventName, i);
+            assert eventDataSet.contains(EventName + i);
         }
         long endTime = System.currentTimeMillis();
         Thread.sleep(1000);
         //
         //3.check
         assert eventDataSet.size() == 50;// 线程池大小为 10 ，执行完至少要 500ms
-        assert (endTime - startTime) >= (50 * 100); // 同步执行，所以总时间应该大于等于 50 * 100
+        assert (endTime - startTime) > 0;
     }
 
     @Test

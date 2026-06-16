@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.junit.Test;
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.dynamic.Aop;
 import net.hasor.cobble.provider.SingletonScope;
@@ -24,9 +26,6 @@ import net.hasor.core.TypeSupplier;
 import net.hasor.test.core.basic.pojo.*;
 import net.hasor.test.core.scope.AnnoMyBean;
 import net.hasor.test.core.scope.My;
-import org.junit.Test;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BinderHasorApiTest {
     @Test
@@ -175,7 +174,7 @@ public class BinderHasorApiTest {
             public <T> T get(Class<? extends T> targetType) {
                 try {
                     atomicBoolean.set(true);
-                    return targetType.newInstance();
+                    return net.hasor.cobble.ClassUtils.newInstance(targetType);
                 } catch (Exception e) {
                     throw ExceptionUtils.toRuntime(e);
                 }
@@ -231,4 +230,3 @@ public class BinderHasorApiTest {
         assert testBoolean.get();
     }
 }
-

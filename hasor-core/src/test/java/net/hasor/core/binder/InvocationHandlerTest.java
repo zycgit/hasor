@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.HasorUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Test;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ HasorUtils.class })
 public class InvocationHandlerTest extends AbstractBinderDataTest {
     @Test
     public void handlerTest() {

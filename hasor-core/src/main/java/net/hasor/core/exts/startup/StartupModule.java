@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.exts.startup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 简化“modules.module”的配置，提供整个应用程序的一个唯一入口 Module。
@@ -50,7 +50,7 @@ public class StartupModule implements Module {
             logger.debug("startup -> module is undefinition.");
         } else {
             Class<Module> startModuleClass = (Class<Module>) loader.loadClass(startupModuleName);
-            startupModule = startModuleClass.newInstance();
+            startupModule = net.hasor.cobble.ClassUtils.newInstance(startModuleClass);
             logger.debug("startup -> module is " + startupModuleName);
         }
         return startupModule;

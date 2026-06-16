@@ -47,7 +47,7 @@ public class FreemarkerRender implements RenderEngine {
 public class StartModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         // 扫描所有带有 @Render 特征类
-        Set<Class<?>> classSet = apiBinder.findClass(Render.class);
+        Set<Class<?>> classSet = apiBinder.findClass(Render.class, "com.example.web.render.*");
         // 配置渲染器
         apiBinder.loadRender(classSet);
     }

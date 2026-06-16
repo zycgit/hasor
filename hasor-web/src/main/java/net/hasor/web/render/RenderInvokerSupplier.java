@@ -35,7 +35,7 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
         //
         HttpServletRequest httpRequest = this.getHttpRequest();
         Enumeration<?> paramEnum = httpRequest.getParameterNames();
-        while (paramEnum.hasMoreElements()) {
+        while (paramEnum != null && paramEnum.hasMoreElements()) {
             Object paramKey = paramEnum.nextElement();
             String key = paramKey.toString();
             String val = httpRequest.getParameter(key);

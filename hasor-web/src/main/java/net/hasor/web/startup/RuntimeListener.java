@@ -14,31 +14,34 @@
  * limitations under the License.
  */
 package net.hasor.web.startup;
+
+import java.util.Objects;
+import java.util.function.Supplier;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.spi.SpiTrigger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-import java.util.Objects;
-import java.util.function.Supplier;
 
 /**
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-01-10
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener, ServletRequestListener {
-    protected           Logger               logger           = LoggerFactory.getLogger(getClass());
-    public static final String               AppContextName   = AppContext.class.getName();
-    private             boolean              contextIsOutsite = false;
-    private             Supplier<AppContext> appContext       = null;
-    private             SpiTrigger           spiTrigger       = null;
+    protected Logger             logger           = LoggerFactory.getLogger(getClass());
+    public static final String   AppContextName   = AppContext.class.getName();
+    private boolean              contextIsOutsite = false;
+    private Supplier<AppContext> appContext       = null;
+    private SpiTrigger           spiTrigger       = null;
 
     /*----------------------------------------------------------------------------------------------------*/
     public RuntimeListener() {
@@ -83,7 +86,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         } else {
             Class<Module> startModuleClass = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(rootModule);
             logger.info("web initModule is " + rootModule);
-            return startModuleClass.newInstance();
+            return net.hasor.cobble.ClassUtils.newInstance(startModuleClass);
         }
     }
 

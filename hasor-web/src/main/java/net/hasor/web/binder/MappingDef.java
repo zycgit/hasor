@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.Predicate;
+import javax.servlet.http.HttpServletRequest;
 import net.hasor.cobble.BeanUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.core.BindInfo;
@@ -22,13 +27,6 @@ import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
 import net.hasor.web.annotation.Produces;
 import net.hasor.web.invoker.AsyncSupported;
-
-import javax.servlet.http.HttpServletRequest;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.Predicate;
-
 /**
  * 一个请求地址只能是一个Action类进行处理，Action中的不同方法可以通过 @HttpMethod 等注解映射到 HTTP 协议中 GET、PUT 等行为上。
  * @version : 2013-6-5
@@ -42,7 +40,7 @@ public class MappingDef implements Mapping {
     private final Map<String, Method> httpMapping;
     private final Map<String, String> contentTypeMapping;
     private final Set<Method>         asyncMethod;
-    private       AsyncSupported      defaultAsync = AsyncSupported.no;
+    private AsyncSupported            defaultAsync = AsyncSupported.no;
 
     public MappingDef(int index, BindInfo<?> targetType, String mappingTo, Predicate<Method> methodMatcher) {
         this(index, targetType, mappingTo, methodMatcher, true);
@@ -90,8 +88,8 @@ public class MappingDef implements Mapping {
             Annotation[] annos = targetMethod.getAnnotations();
             if (annos != null) {
                 for (Annotation anno : annos) {
-                    if (anno instanceof HttpMethod) {
-                        String[] methodSet = ((HttpMethod) anno).value();
+                    if (anno instanceof HttpMethod m) {
+                        String[] methodSet = m.value();
                         for (String http : methodSet) {
                             this.httpMapping.put(http.toUpperCase(), targetMethod);
                             if (StringUtils.isNotBlank(metaType)) {

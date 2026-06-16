@@ -24,7 +24,7 @@ public class HelloAction {
 ```
 
 :::tip
-类型转换是使用的 `net.hasor.utils.convert.ConverterUtils` 工具，因此设置时间格式需要通过下面这段代码来配置 `ConverterUtils` 工具。
+类型转换是使用的 `net.hasor.cobble.convert.ConverterUtils` 工具，因此设置时间格式需要通过下面这段代码来配置 `ConverterUtils` 工具。
 
 整个程序启动时执行一次就可以。
 :::

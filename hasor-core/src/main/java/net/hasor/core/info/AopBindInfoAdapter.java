@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
+import java.lang.reflect.Method;
+import java.util.function.Predicate;
 import net.hasor.cobble.dynamic.MethodInterceptor;
 import net.hasor.cobble.dynamic.MethodInvocation;
 import net.hasor.core.AppContext;
 import net.hasor.core.spi.AppContextAware;
-
-import java.lang.reflect.Method;
-import java.util.function.Predicate;
 
 /**
  *
@@ -51,8 +50,8 @@ public class AopBindInfoAdapter implements MethodInterceptor, AppContextAware {
     }
 
     public void setAppContext(AppContext appContext) {
-        if (this.interceptor instanceof AppContextAware) {
-            ((AppContextAware) this.interceptor).setAppContext(appContext);
+        if (this.interceptor instanceof AppContextAware appContextAware) {
+            appContextAware.setAppContext(appContext);
         }
     }
 }

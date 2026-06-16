@@ -14,29 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.cobble.*;
-import net.hasor.cobble.convert.ConverterUtils;
-import net.hasor.cobble.dynamic.DynamicConfig;
-import net.hasor.cobble.dynamic.Proxy;
-import net.hasor.cobble.dynamic.ReadWriteType;
-import net.hasor.cobble.function.Property;
-import net.hasor.cobble.loader.CobbleClassScanner;
-import net.hasor.cobble.loader.ResourceClassLoader;
-import net.hasor.cobble.loader.ResourceLoader;
-import net.hasor.cobble.provider.PrototypeScope;
-import net.hasor.cobble.provider.Provider;
-import net.hasor.cobble.provider.Scope;
-import net.hasor.cobble.setting.Settings;
-import net.hasor.core.EventListener;
-import net.hasor.core.*;
-import net.hasor.core.binder.BindInfoBuilderFactory;
-import net.hasor.core.event.StandardEventManager;
-import net.hasor.core.info.AopBindInfoAdapter;
-import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.info.DelegateBindInfoAdapter;
-import net.hasor.core.spi.*;
-
-import javax.inject.Named;
+import static net.hasor.core.container.InnerUtils.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
@@ -45,8 +23,27 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static net.hasor.core.container.InnerUtils.*;
+import net.hasor.cobble.*;
+import net.hasor.cobble.convert.ConverterUtils;
+import net.hasor.cobble.dynamic.DynamicConfig;
+import net.hasor.cobble.dynamic.Proxy;
+import net.hasor.cobble.dynamic.ReadWriteType;
+import net.hasor.cobble.function.Property;
+import net.hasor.cobble.loader.CobbleClassLoader;
+import net.hasor.cobble.loader.CobbleClassScanner;
+import net.hasor.cobble.loader.ResourceLoader;
+import net.hasor.cobble.provider.PrototypeScope;
+import net.hasor.cobble.provider.Provider;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.core.*;
+import net.hasor.core.EventListener;
+import net.hasor.core.binder.BindInfoBuilderFactory;
+import net.hasor.core.event.StandardEventManager;
+import net.hasor.core.info.AopBindInfoAdapter;
+import net.hasor.core.info.DefaultBindInfoProviderAdapter;
+import net.hasor.core.info.DelegateBindInfoAdapter;
+import net.hasor.core.spi.*;
 
 /**
  * 负责创建 Bean
@@ -71,8 +68,8 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         this.bindInfoContainer = new BindInfoContainer(this.spiCallerContainer);
         this.scopeContainer = new ScopeContainer(this.spiCallerContainer);
         this.resourceLoader = resourceLoader;
-        this.classLoader = new ResourceClassLoader(parent, resourceLoader, null);
-        this.scanner = new CobbleClassScanner(resourceLoader);
+        this.classLoader = new CobbleClassLoader(parent, resourceLoader);
+        this.scanner = new CobbleClassScanner(parent, resourceLoader);
 
         int eventThreadPoolSize = settings.getInteger("hasor.eventThreadPoolSize");
         this.eventContext = new StandardEventManager(eventThreadPoolSize, "Hasor", Thread.currentThread().getContextClassLoader());
@@ -215,14 +212,14 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         if (anno == null) {
             return null;
         }
-        if (anno instanceof InjectSettings) {
-            return () -> (T) injSettings(appContext, (InjectSettings) anno, targetType);
+        if (anno instanceof InjectSettings injectSettings) {
+            return () -> (T) injSettings(appContext, injectSettings, targetType);
         }
-        if (anno instanceof ID) {
-            return () -> appContext.getInstance(((ID) anno).value());
+        if (anno instanceof ID id) {
+            return () -> appContext.getInstance(id.value());
         }
-        if (anno instanceof javax.inject.Named) {
-            String nameWith = ((Named) anno).value();
+        if (anno instanceof javax.inject.Named named) {
+            String nameWith = named.value();
             BindInfo<T> bindInfo = null;
             if (StringUtils.isBlank(nameWith)) {
                 if (StringUtils.isNotBlank(contextName)) {
@@ -420,28 +417,38 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         if (!aopList.isEmpty() || !delegateList.isEmpty()) {
             DynamicConfig engine = this.classEngineMap.get(targetType);
             if (engine == null) {
-                engine = new DynamicConfig(targetType);
+                DynamicConfig newEngine = null;
                 for (AopBindInfoAdapter aop : aopList) {
                     if (aop.getMatcherClass().test(targetType)) {
-                        engine.addAopInterceptor(aop.getMatcherMethod(), aop);
+                        if (newEngine == null) {
+                            newEngine = new DynamicConfig(targetType);
+                        }
+                        newEngine.addAopInterceptor(aop.getMatcherMethod(), aop);
                     }
                 }
                 for (DelegateBindInfoAdapter delegate : delegateList) {
                     if (delegate.getMatcherClass().test(targetType)) {
+                        if (newEngine == null) {
+                            newEngine = new DynamicConfig(targetType);
+                        }
                         ReadWriteType readWriteType = delegate.getRwType();
-                        engine.addProperty(delegate.getName(), delegate.getType(), delegate, readWriteType);
+                        newEngine.addProperty(delegate.getName(), delegate.getType(), delegate, readWriteType);
                     }
                 }
                 //
-                engine = this.classEngineMap.putIfAbsent(targetType, engine);
-                if (engine == null) {
-                    engine = this.classEngineMap.get(targetType);
+                if (newEngine != null) {
+                    engine = this.classEngineMap.putIfAbsent(targetType, newEngine);
+                    if (engine == null) {
+                        engine = this.classEngineMap.get(targetType);
+                    }
                 }
             }
-            try {
-                newType = Proxy.buildProxyClass(rootLoader, engine);
-            } catch (Exception e) {
-                throw ExceptionUtils.toRuntime(e);
+            if (engine != null) {
+                try {
+                    newType = Proxy.buildProxyClass(engine);
+                } catch (Exception e) {
+                    throw ExceptionUtils.toRuntime(e);
+                }
             }
         }
         //
@@ -468,18 +475,18 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
     private <T> void justInject(T targetBean, Class<?> targetType, BindInfo<?> bindInfo, AppContext appContext) {
         //
         // .Aware接口的执行
-        if (bindInfo != null && targetBean instanceof BindInfoAware) {
-            ((BindInfoAware) targetBean).setBindInfo(bindInfo);
+        if (bindInfo != null && targetBean instanceof BindInfoAware bindInfoAware) {
+            bindInfoAware.setBindInfo(bindInfo);
         }
-        if (targetBean instanceof AppContextAware) {
-            ((AppContextAware) targetBean).setAppContext(appContext);
+        if (targetBean instanceof AppContextAware appContextAware) {
+            appContextAware.setAppContext(appContext);
         }
         //
         // .依赖注入(InjectMembers接口)
         targetType = (targetType == null) ? targetBean.getClass() : targetType;
-        if (targetBean instanceof InjectMembers) {
+        if (targetBean instanceof InjectMembers injectMembers) {
             try {
-                ((InjectMembers) targetBean).doInject(appContext);
+                injectMembers.doInject(appContext);
             } catch (Throwable e) {
                 throw ExceptionUtils.toRuntime(e);
             }
@@ -488,8 +495,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         // a.配置注入
         Set<String> injectFileds = new HashSet<>();
         boolean isOverwriteAnnotation = false;
-        if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
-            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+        if (bindInfo instanceof DefaultBindInfoProviderAdapter<?> defBinder) {
             isOverwriteAnnotation = defBinder.isOverwriteAnnotation();
             //
             Map<String, Supplier<?>> propMaps = defBinder.getPropertyMap(appContext);

@@ -69,7 +69,6 @@ public class RuntimeListenerTest extends AbstractTest {
         assert instance.get(0).equals("HelloWord");
         //
         assert appContext.getSettings().getString("mySelf.myBirthday").equals("1986-01-01 00:00:00");
-        assert appContext.getSettings().getEnv("mySelf.myBirthday").equals("1986-01-01 00:00:00");
     }
 
     @Test

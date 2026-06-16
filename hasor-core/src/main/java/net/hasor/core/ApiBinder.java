@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.io.Closeable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.EventListener;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import javax.inject.Singleton;
 import net.hasor.cobble.ClassUtils;
 import net.hasor.cobble.ExceptionUtils;
-import net.hasor.cobble.dynamic.AsmTools;
 import net.hasor.cobble.dynamic.DynamicProperty;
 import net.hasor.cobble.dynamic.Matchers;
 import net.hasor.cobble.dynamic.MethodInterceptor;
@@ -26,18 +36,6 @@ import net.hasor.cobble.provider.Scope;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.SpiJudge;
-
-import javax.inject.Singleton;
-import java.io.Closeable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.EventListener;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * Hasor 的核心接口，主要用于收集Bean绑定信息。<p>
@@ -84,7 +82,7 @@ public interface ApiBinder {
      * @throws Throwable 在执行loadModule方法期间发生异常的。
      * @see net.hasor.core.Module#loadModule(ApiBinder)
      */
-    ApiBinder installModule(Module... module) throws Throwable;
+    ApiBinder installModule(net.hasor.core.Module... module) throws Throwable;
 
     /** same as {@link Module#onStop(AppContext)} */
     default <T extends Closeable> T onShutdown(T closeable) {
@@ -142,22 +140,22 @@ public interface ApiBinder {
     default ApiBinder loadModule(Class<?> moduleType, final TypeSupplier typeSupplier) {
         Objects.requireNonNull(moduleType, "class is null.");
         int modifier = moduleType.getModifiers();
-        if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || moduleType.isArray() || moduleType.isEnum()) {
+        if (Modifier.isInterface(modifier) || Modifier.isAbstract(modifier) || moduleType.isArray() || moduleType.isEnum()) {
             throw new IllegalStateException(moduleType.getName() + " must be normal Bean");
         }
         if (moduleType.getAnnotation(DimModule.class) == null) {
             throw new IllegalStateException(moduleType.getName() + " must be configure @DimModule");
         }
-        if (!Module.class.isAssignableFrom(moduleType)) {
+        if (!net.hasor.core.Module.class.isAssignableFrom(moduleType)) {
             throw new IllegalStateException(moduleType.getName() + " must be implements Module.");
         }
         //
         try {
-            Class<? extends Module> newModuleType = (Class<? extends Module>) moduleType;
+            Class<? extends net.hasor.core.Module> newModuleType = (Class<? extends net.hasor.core.Module>) moduleType;
             if (typeSupplier != null) {
                 installModule(typeSupplier.get(newModuleType));
             } else {
-                installModule(newModuleType.newInstance());
+                installModule(net.hasor.cobble.ClassUtils.newInstance(newModuleType));
             }
             return this;
         } catch (Throwable e) {
@@ -446,8 +444,8 @@ public interface ApiBinder {
     default <T> Supplier<T> getProvider(Class<T> targetType) {
         Objects.requireNonNull(targetType, "targetType is null.");
         class TargetSupplierByClass implements AppContextAware, Supplier<T> {
-            private final Class<T>   targetType;
-            private       AppContext appContext = null;
+            private final Class<T> targetType;
+            private AppContext     appContext = null;
 
             TargetSupplierByClass(Class<T> targetType) {
                 this.targetType = targetType;

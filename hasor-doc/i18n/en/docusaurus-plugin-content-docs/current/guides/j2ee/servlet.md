@@ -25,7 +25,7 @@ public class DemoHttpServlet extends HttpServlet {
 public class DemoModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         // 扫描所有带有 @MappingTo 注解类
-        Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class);
+        Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class, "com.example.web.servlet.*");
         // 对 aClass 集合进行发现并自动配置控制器
         apiBinder.loadType(aClass);
     }

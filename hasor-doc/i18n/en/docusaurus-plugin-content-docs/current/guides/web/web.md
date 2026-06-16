@@ -98,7 +98,7 @@ public class StartModule extends WebModule {
         //设置请求响应编码
         apiBinder.setEncodingCharacter("utf-8", "utf-8");
         // 扫描所有带有 @MappingTo 特征类
-        Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class);
+        Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class, "com.example.web.action.*");
         // 配置控制器
         apiBinder.loadMappingTo(aClass);
     }

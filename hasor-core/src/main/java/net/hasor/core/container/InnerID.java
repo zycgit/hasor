@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.core.ID;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
+import net.hasor.core.ID;
 
-class InnerID implements ID, Serializable {
-    private final String value;
+record InnerID(String value) implements ID, Serializable {
 
-    public InnerID(String value) {
+    InnerID(String value) {
         this.value = Objects.requireNonNull(value, "id");
-    }
-
-    @Override
-    public String value() {
-        return this.value;
     }
 
     @Override
@@ -40,10 +33,9 @@ class InnerID implements ID, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof ID)) {
+        if (!(o instanceof ID other)) {
             return false;
         }
-        ID other = (ID) o;
         return value.equals(other.value());
     }
 

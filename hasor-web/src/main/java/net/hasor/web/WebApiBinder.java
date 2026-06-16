@@ -14,20 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web;
-import net.hasor.cobble.ArrayUtils;
-import net.hasor.cobble.ResourcesUtils;
-import net.hasor.cobble.dynamic.AsmTools;
-import net.hasor.cobble.dynamic.Matchers;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
-import net.hasor.core.TypeSupplier;
-import net.hasor.web.annotation.MappingTo;
-import net.hasor.web.render.Render;
-import net.hasor.web.render.RenderEngine;
-
-import javax.servlet.Filter;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,7 +27,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
+import javax.servlet.Filter;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
+import net.hasor.cobble.ArrayUtils;
+import net.hasor.cobble.ResourcesUtils;
+import net.hasor.cobble.dynamic.Matchers;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
+import net.hasor.core.TypeSupplier;
+import net.hasor.web.annotation.MappingTo;
+import net.hasor.web.render.Render;
+import net.hasor.web.render.RenderEngine;
 /**
  * 提供了注册Servlet和Filter的方法。
  * @version : 2016-12-26
@@ -106,9 +103,10 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     default WebApiBinder loadMappingTo(Class<?> mappingType, final TypeSupplier typeSupplier) {
         Objects.requireNonNull(mappingType, "class is null.");
         int modifier = mappingType.getModifiers();
-        if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || mappingType.isArray() || mappingType.isEnum()) {
+        if (Modifier.isInterface(modifier) || Modifier.isAbstract(modifier) || mappingType.isArray() || mappingType.isEnum()) {
             throw new IllegalStateException(mappingType.getName() + " must be normal Bean");
         }
+
         MappingTo[] annotationsByType = mappingType.getAnnotationsByType(MappingTo.class);
         if (annotationsByType == null || annotationsByType.length == 0) {
             throw new IllegalStateException(mappingType.getName() + " must be configure @MappingTo");
@@ -364,7 +362,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     default WebApiBinder loadRender(Class<?> renderClass, TypeSupplier typeSupplier) {
         Objects.requireNonNull(renderClass, "class is null.");
         int modifier = renderClass.getModifiers();
-        if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
+        if (Modifier.isInterface(modifier) || Modifier.isAbstract(modifier) || renderClass.isArray() || renderClass.isEnum()) {
             throw new IllegalStateException(renderClass.getName() + " must be normal Bean");
         }
         if (!renderClass.isAnnotationPresent(Render.class)) {
