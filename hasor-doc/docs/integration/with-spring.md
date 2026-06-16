@@ -34,19 +34,17 @@ description: dbVisitor ORM 工具和 Spring Boot 整合使用。
 
 ## 共享Spring配置
 
-Hasor 在启动的时候会将 Spring Environment 中属性信息全部导入到 Hasor Environment 接口中。
+Hasor 可以在启动时读取 Spring Environment 中的属性信息。
 
-`useProperties` 属性的作用是告诉 Hasor 是否将 Hasor Environment 接口信息进一步导入到 Settings 接口里。默认值为 false 表示不导入。
+`useProperties` 属性用来控制是否将 Spring 属性导入 Hasor 的 Settings。默认值为 false，表示不导入。
 
 ```xml
 <h:hasor useProperties="true"/>
 ```
 
 ```java
-Environment environment = appContext.getEnvironment();
-Settings settings = environment.getSettings();
+Settings settings = appContext.getSettings();
 
-assert "HelloWord".equals(environment.getVariable("msg"));
 assert "HelloWord".equals(settings.getString("msg")); // 若 useProperties = false，这里获取不到任何值
 ```
 
@@ -109,7 +107,7 @@ assert "HelloWord".equals(settings.getString("msg")); // 若 useProperties = fal
 
 ## 传递属性给 Hasor
 
-Hasor 在启动的时候已经将 Spring Environment 中属性信息全部导入到 Hasor Environment 接口中。这里是说除了自动导入的这些属性之外其它的属性文件如何进行导入。
+除了 `useProperties` 导入 Spring Environment 之外，也可以把指定属性传递给 Hasor Settings。
 
 两种导入方式：
 - `h:property` 标签导入。

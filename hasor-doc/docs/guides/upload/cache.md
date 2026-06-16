@@ -33,7 +33,7 @@ public class FileUpLoad extends WebController {
 }
 ```
 
-框架中默认缓存路径是 `%USER.HOME%/hasor-work/temp/fragment` 这个路径可以通过下面这个配置改变：
+框架中默认缓存路径是 `${user.home}/hasor-work/temp/fragment`，这个路径可以通过下面这个配置改变：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -41,7 +41,7 @@ public class FileUpLoad extends WebController {
     <hasor>
         <fileupload>
             <!-- 上传文件缓存目录 -->
-            <cacheDirectory>%WORK_HOME%/temp/fragment</cacheDirectory>
+            <cacheDirectory>${user.home}/hasor-work/temp/fragment</cacheDirectory>
         </fileupload>
     </hasor>
 </config>
@@ -57,22 +57,21 @@ Hasor 在上传中可以配置的缓存信息有：
     <hasor>
         <fileupload>
             <!-- 上传文件缓存目录 -->
-            <cacheDirectory>%WORK_HOME%/temp/fragment</cacheDirectory>
+            <cacheDirectory>${user.home}/hasor-work/temp/fragment</cacheDirectory>
             <!-- 允许的请求大小 ( -1 表示不限制)-->
-            <maxRequestSize>${HASOR_UPLOAD_MAX_REQUEST_SIZE}</maxRequestSize>
+            <maxRequestSize>${HASOR_UPLOAD_MAX_REQUEST_SIZE:-1}</maxRequestSize>
             <!-- 允许上传的单个文件大小( -1 表示不限制) -->
-            <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE}</maxFileSize>
+            <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE:-1}</maxFileSize>
         </fileupload>
     </hasor>
 </config>
 ```
 
-其中环境变量的值关系为：
+其中占位符和值关系为：
 
-| 环境变量                          | 值                                            |
+| 占位符                            | 值                                            |
 |-------------------------------|----------------------------------------------|
-| WORK_HOME                     | `%USER.HOME%/hasor-work`，其是在 hasor-core 中定义的 |
-| USER.HOME                     | 系统环境变量，登录系统之后的用户主目录。例如：`/home/xxx/`          |
+| user.home                     | Java 系统属性，登录系统之后的用户主目录。例如：`/home/xxx/`        |
 | HASOR_UPLOAD_MAX_REQUEST_SIZE | 允许的请求大小 ( `-1` 表示不限制)，默认为：`-1`               |
 | HASOR_UPLOAD_MAX_FILE_SIZE    | 允许上传的单个文件大小( `-1` 表示不限制)，默认为：`-1`            |
 

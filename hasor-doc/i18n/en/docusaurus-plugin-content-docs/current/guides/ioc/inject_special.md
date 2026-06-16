@@ -29,8 +29,7 @@ public class AwareBean implements AppContextAware {
 | 接口                              | 功效                |
 |---------------------------------|-------------------|
 | `net.hasor.core.AppContext`     | 容器自身              |
-| `net.hasor.core.Settings`       | 读取配置接口            |
-| `net.hasor.core.Environment`    | 环境变量接口            |
+| `net.hasor.cobble.setting.Settings` | 读取配置接口        |
 | `net.hasor.core.spi.SpiTrigger` | SPI 触发器           |
 | `net.hasor.core.EventContext`   | 容器事件模型接口          |
 | `javax.servlet.ServletContext`  | J2EE 的 Servlet 容器 |

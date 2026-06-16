@@ -32,5 +32,4 @@ public class HelloAction {
 | `net.hasor.web.render.RenderInvoker`     | Invoker 扩展，用来处理页面渲染 |
 | `net.hasor.web.valid.ValidInvoker`       | Invoker 扩展，用来处理表单验证 |
 | `net.hasor.core.AppContext`              | 容器接口                |
-| `net.hasor.core.Environment`             | 环境接口                |
-| `net.hasor.core.Settings`                | 配置相关接口              |
+| `net.hasor.cobble.setting.Settings`      | 配置相关接口              |

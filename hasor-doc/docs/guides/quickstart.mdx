@@ -87,26 +87,20 @@ AppContext appContext = Hasor.create().build();
 需要注意的是，一个应用中可以存在多个 Hasor 环境。因此在同一个应用中多次调用上述代码会导致创建多个不同的 AppContext。它们彼此之间没有任何关系。
 :::
 
-## 启动模式
+## 启动配置
 
-Hasor 的启动有三种模式，所有模式都在 net.hasor.core.Hasor.Level 类中定义。
-- Hasor 默认运行在 Full 模式中，无需特意指定。
-- 明确指定 Hasor 启动模式的方法如下。
-
-| 模式   | 启动方式                               | 功效                                  |
-|------|------------------------------------|-------------------------------------|
-| Full | `Hasor.create().asFull().build();` | 完整加载框架和可以发现的所有插件模块。                 |
-| Core | `Hasor.create().asCore().build();` | 只完整的加载 hasor-core。                  |
-| Tiny | `Hasor.create().asTiny().build();` | 最小化启动。放弃一切插件加载包括 hasor-core 中的内置插件。 |
-
-:::tip
-Tiny 模式下，相当于设置 HASOR_LOAD_MODULE 和 HASOR_LOAD_EXTERNALBINDER 两个环境变量为 false。
-:::
-
-最后在启动的时候指定配置文件。
+Hasor 默认会加载 classpath 下的 `hconfig.xml`。如果配置文件使用其它名称，可以在启动时指定。
 
 ```java
 Hasor.create().mainSettingWith("my-hconfig.xml").build();
+```
+
+也可以在启动时直接写入配置项：
+
+```java
+AppContext appContext = Hasor.create()
+        .addSettings(Settings.DefaultNameSpace, "app.name", "demo")
+        .build();
 ```
 
 ## Module
@@ -149,10 +143,12 @@ public class RootModule implements Module {
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/main">
     <!-- 默认要装载的模块 -->
-    <hasor.modules>
-        <module>net.hasor.web.render.RenderWebPlugin</module>
-        <module>net.hasor.plugins.startup.StartupModule</module>
-        <module>net.hasor.plugins.aop.AopModule</module>
-    </hasor.modules>
+    <hasor>
+        <modules>
+            <module>net.hasor.web.render.RenderWebPlugin</module>
+            <module>net.hasor.core.exts.startup.StartupModule</module>
+            <module>net.hasor.core.exts.aop.AopModule</module>
+        </modules>
+    </hasor>
 </config>
 ```

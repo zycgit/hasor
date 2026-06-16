@@ -36,15 +36,13 @@ public class MyModule implements Module {
 
 ## 共享 Spring 配置
 
-Hasor 在启动之后会将 Spring 加载的属性文件全部作为 Hasor 的环境变量，例如：`application.properties` 文件。
+Hasor 可以读取 Spring 加载的属性文件，例如：`application.properties` 文件。
 
-Hasor 会自动将 Spring 的属性文件导入到环境变量中若想要进一步在 Settings 中使用 Spring 的属性文件可以通过配置 `@EnableHasor(useProperties = true)` 进一步的将环境变量导入到 Settings。
+如果要在 Hasor 的 Settings 中使用 Spring 属性，可以配置 `@EnableHasor(useProperties = true)`。
 
 ```java
-Environment environment = appContext.getEnvironment();
-Settings settings = environment.getSettings();
+Settings settings = appContext.getSettings();
 
-assert "HelloWord".equals(environment.getVariable("msg"));
 assert "HelloWord".equals(settings.getString("msg")); // 若 useProperties = false，这里获取不到任何值
 ```
 
@@ -61,13 +59,13 @@ EnableHasor 注解是 Spring Boot 启动 Hasor 的根本，下面是这个注解
 - 虽然共享 Spring 的配置已经解决了大部分配置文件读取的问题，但有时候还是需要更高级的 hconfig.xml 配置文件。这个时候就可以通过这个属性来指定 Hasor 的 hconfig.xml。
 
 **useProperties**
-- Hasor 在启动的时候会将 Spring Environment 中属性信息全部导入到 Hasor Environment 接口中。useProperties 属性的作用是告诉 Hasor ,是否将 Hasor Environment 接口信息进一步导入到 Settings 接口里。默认值为 false，表示不导入。
+- 是否将 Spring Environment 中的属性信息导入 Hasor Settings。默认值为 false，表示不导入。
 
 **startWith**
 - 用来声明启动入口。如果配置的启动入口类已经在 Spring 中托管，那么就会通过 Spring 进行创建。否则就直接 new 出这个对象。
 
 **customProperties**
-- 这个属性的意义是可以设定一些特殊的属性K/V信息传递给 Hasor Environment 中。这些特别的属性配置只会在 Hasor 中存在，不会污染 Spring。
+- 可以设定一些特殊的属性 K/V 信息传递给 Hasor Settings。这些属性只会在 Hasor 中存在，不会污染 Spring。
 
 ## @EnableHasorWeb 注解
 

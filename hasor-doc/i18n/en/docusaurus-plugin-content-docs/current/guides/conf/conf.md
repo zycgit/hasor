@@ -80,3 +80,37 @@ String myName = settings.getString("mySelf.myName");
 ```
 
 将配置文件的名字改为 “hconfig.xml” 并且放到 classpath 下面，这样就可以省去调用 `mainSettingWith` 方法。Hasor 会默认尝试加载它。
+
+## 占位符
+
+配置值可以使用 `${KEY}` 或 `${KEY:defaultValue}` 占位符。Hasor 在加载 Settings 时会从 JVM 系统属性和操作系统环境变量中解析占位符，未找到值时使用默认值。
+
+```properties title='属性文件格式'
+jdbc.user = ${JDBC_USER:sa}
+jdbc.password = ${JDBC_PASSWORD:password}
+```
+
+```xml title='XML 格式'
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.hasor.net/sechma/main">
+    <jdbc>
+        <user>${JDBC_USER:sa}</user>
+        <password>${JDBC_PASSWORD:password}</password>
+    </jdbc>
+</config>
+```
+
+```java
+AppContext appContext = Hasor.create().mainSettingWith("hconfig.xml").build();
+Settings settings = appContext.getSettings();
+String user = settings.getString("jdbc.user");
+```
+
+也可以在启动时通过代码写入配置：
+
+```java
+AppContext appContext = Hasor.create()
+        .addSettings(Settings.DefaultNameSpace, "jdbc.user", "sa")
+        .addSettings(Settings.DefaultNameSpace, "jdbc.password", "password")
+        .build();
+```

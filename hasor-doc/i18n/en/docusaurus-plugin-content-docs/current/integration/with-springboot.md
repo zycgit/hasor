@@ -103,16 +103,15 @@ public class ExampleModule implements SpringModule {
 }
 ```
 
-最后一步，将 Spring 使用的数据源导入到 Hasor 环境共 Dataway 使用。
+最后一步，将 Spring 使用的数据源通过 Module 注册给 Hasor，供 Dataway 使用。
 
 启动工程
 
 在启动日志中看到下列信息输出就表示 Dataway 已经可以正常访问了。
 
 ```log
-2020-04-01 09:13:18.502 [main] INFO  n.h.core.context.TemplateAppContext - loadModule class net.hasor.dataway.config.DatawayModule
+2020-04-01 09:13:18.502 [main] INFO  n.h.core.container.TemplateAppContext - loadModule class net.hasor.dataway.config.DatawayModule
 2020-04-01 09:13:18.502 [main] INFO  n.hasor.dataway.config.DatawayModule - dataway api workAt /api/
-2020-04-01 09:13:18.502 [main] INFO  n.h.c.e.AbstractEnvironment - var -> HASOR_DATAQL_DATAWAY_API_URL = /api/.
 2020-04-01 09:13:18.515 [main] INFO  n.hasor.dataway.config.DatawayModule - dataway admin workAt /interface-ui/
 ```
 

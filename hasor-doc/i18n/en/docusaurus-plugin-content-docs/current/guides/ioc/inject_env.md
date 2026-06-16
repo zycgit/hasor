@@ -1,43 +1,46 @@
 ---
 id: envioc
 sidebar_position: 8
-title: g.注入环境变量
+title: g.注入外部配置
 description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
 ---
 
-# 注入环境变量
+# 注入外部配置
 
-把敏感信息通过环境参数传递给应用是一个十分安全的做法，Hasor 支持注入一个环境参数。例如：
+`@InjectSettings` 可以注入配置项。配置文件中的值支持 `${KEY}` 占位符，因此敏感信息可以通过 JVM `-D` 参数或操作系统环境变量传入。
+
+配置文件：
+
+```properties
+db.user = ${DB_USER}
+db.pwd  = ${DB_PWD}
+```
+
+Bean：
 
 ```java
 public class DataBaseBean {
-    @InjectSettings("${db.user}")
+    @InjectSettings("db.user")
     private String user;
-    
-    @InjectSettings("${db.pwd}")
+
+    @InjectSettings("db.pwd")
     private String password;
-    
-    ...
 }
 ```
 
-然后当启动程序时，追加两个 `-D` 参数即可：`java TestMain -Ddb.user=username -Ddb.pwd=password`
+启动程序时传入参数：
 
-除了 `-D` 参数之外，环境变量还可以是系统环境变量。例如得到 `JAVA_HOME 位置。
+```bash
+java -DDB_USER=username -DDB_PWD=password -jar app.jar
+```
+
+`@InjectSettings("${db.user}")` 也会读取名为 `db.user` 的 Settings 配置项。这个写法适合需要把配置项名保持在占位符形式的场景。
+
+如果配置项不存在，可以在注解中设置默认值：
 
 ```java
 public class DataBaseBean {
-    @InjectSettings("${JAVA_HOME}")
-    private String javaHome;
+    @InjectSettings(value = "db.poolSize", defaultValue = "8")
+    private int poolSize;
 }
 ```
-
-:::tip
-这些位置可以成为 Hasor 环境变量的来源。
-:::
-
-位置
-- `System.getenv()`
-- `System.getProperties()`
-- `hconfig.xml` 配置文件中 `hasor.environmentVar` 的子节点
-- `Hasor.create().addVariable(...)`

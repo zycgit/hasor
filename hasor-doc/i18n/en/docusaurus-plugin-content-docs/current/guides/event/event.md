@@ -35,7 +35,7 @@ public class MyListener implements EventListener<Object> {
 
 ```java title='获取 EventContext 接口'
 ApiBinder apiBinder = ... 
-EventContext ec = apiBinder.getEnvironment().getEventContext();
+EventContext ec = apiBinder.getEventContext();
 
 or
 
@@ -44,7 +44,7 @@ EventContext eventContext = appContext.getInstance(EventContext.class);
 
 or
 
-EventContext eventContext = appContext.getEnvironment().getEventContext();
+EventContext eventContext = appContext.getEventContext();
 
 or
 

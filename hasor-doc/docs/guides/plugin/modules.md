@@ -30,7 +30,7 @@ description: DataQL 开发手册，QIL 指令集、构造指令、存储指令�
 
 ## 加载原理
 
-Hasor 会在启动的时候扫描所有jar包中的 `hasor.schemas` 文件，然后将其汇聚到一起去重后依次加载它们。最后并且封装成 `net.hasor.core.Settings` 接口。
+Hasor 会在启动的时候扫描所有jar包中的 `hasor.schemas` 文件，然后将其汇聚到一起去重后依次加载它们。最后并且封装成 `net.hasor.cobble.setting.Settings` 接口。
 
 ![](../_img/CC2_8633_6D5C_MK4L.png)
 

@@ -22,8 +22,8 @@ public class EventLinkTest {
     @Test
     public void syncEventTest() throws InterruptedException {
         System.out.println("--->>syncEventTest<<--");
-        AppContext appContext = Hasor.createAppContext();
-        EventContext ec = appContext.getEnvironment().getEventContext();
+        AppContext appContext = Hasor.create().build();
+        EventContext ec = appContext.getEventContext();
 
         //
         final String EventName = "MyEvent";//事件链的终端
@@ -33,7 +33,7 @@ public class EventLinkTest {
         ec.addListener(EventName, new MyListener());
         ec.addListener(SeedEvent, new EventListener<AppContext>() {
             public void onEvent(String event, AppContext app) throws Throwable {
-                EventContext localEC = app.getEnvironment().getEventContext();
+                EventContext localEC = app.getEventContext();
                 System.out.println("before MyEvent.");
                 localEC.fireAsyncEvent(EventName, 1);
                 localEC.fireAsyncEvent(EventName, 2);

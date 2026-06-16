@@ -23,6 +23,6 @@ eventContext.fireSyncEvent(EventName, ...);
 
 :::tip
 独享线程下，如果大量的事件抛出会导致 事件调度线程池线程不够用。此时可以通过修改配置来增加处理线程，默认执行事件线程池只有 8 个最大线程。
-- 方式A：环境变量 `HASOR_LOAD_EVENT_POOL` 来增加线程数。
-- 方式B：通过 `hasor.eventThreadPoolSize` 来增加线程数。
+- 通过 `hasor.eventThreadPoolSize` 配置线程数。
+- 配置值可以写成 `${HASOR_LOAD_EVENT_POOL:8}`，再通过 `-DHASOR_LOAD_EVENT_POOL=16` 在启动时指定。
 :::

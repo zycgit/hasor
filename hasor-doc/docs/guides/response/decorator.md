@@ -21,19 +21,19 @@ description: DataQL 开发手册，QIL 指令集、构造指令、存储指令�
 如果需要在布局模板中再次提炼公共布局模板，需要做的是将布局模板文件的内容模块化。而不是套用嵌套布局。
 :::
 
-默认情况下 Hasor 的母版页能力是关闭的，可以通过配置文件或者环境打开这个功能。在开启这个功能时，最好指明母版页及一般页面的资源文件位置：
+默认情况下 Hasor 的母版页能力是关闭的，可以通过配置文件打开这个功能。在开启这个功能时，最好指明母版页及一般页面的资源文件位置：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/main">
-    <hasor.environmentVar>
-        <!-- 启用母版页 -->
-        <HASOR_RESTFUL_LAYOUT>true</HASOR_RESTFUL_LAYOUT>
-        <!-- 母版页资源文件位置（可选，默认为：/layout） -->
-        <HASOR_RESTFUL_LAYOUT_PATH>/layout</HASOR_RESTFUL_LAYOUT_PATH>
-        <!-- 页面资源文件位置（可选，默认为：/templates） -->
-        <HASOR_RESTFUL_LAYOUT_TEMPLATES>/templates</HASOR_RESTFUL_LAYOUT_TEMPLATES>
-    </hasor.environmentVar>
+    <hasor>
+        <layout enable="true" placeholder="content_placeholder" defaultLayout="default.html">
+            <!-- 母版页资源文件位置（可选，默认为：/layout） -->
+            <layoutPath>/layout</layoutPath>
+            <!-- 页面资源文件位置（可选，默认为：/templates） -->
+            <templatePath>/templates</templatePath>
+        </layout>
+    </hasor>
 </config>
 ```
 
@@ -41,8 +41,8 @@ description: DataQL 开发手册，QIL 指令集、构造指令、存储指令�
 
 ```text
 webapp
-    layout      母版页（HASOR_RESTFUL_LAYOUT_PATH 环境变量指定）
-    templates   网站页面（HASOR_RESTFUL_LAYOUT_TEMPLATES 环境变量指定）
+    layout      母版页（hasor.layout.layoutPath 指定）
+    templates   网站页面（hasor.layout.templatePath 指定）
     control     页面模块（可选，存放页面中重复的模版）
     static      静态资源文件（可选，静态资源文件）
     WEB-INF     web.xml
