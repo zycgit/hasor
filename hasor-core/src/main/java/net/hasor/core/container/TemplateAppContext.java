@@ -54,9 +54,8 @@ import net.hasor.core.spi.SpiTrigger;
  * @version : 2013-4-9
  */
 public abstract class TemplateAppContext extends MetaDataAdapter implements AppContext {
-    protected static Logger                         logger       = LoggerFactory.getLogger(TemplateAppContext.class);
-    private final ShutdownHook                      shutdownHook = new ShutdownHook(this);
-    private final AtomicReference<AppContextStatus> status       = new AtomicReference<>(AppContextStatus.Stopped);
+    protected static Logger                         logger = LoggerFactory.getLogger(TemplateAppContext.class);
+    private final AtomicReference<AppContextStatus> status = new AtomicReference<>(AppContextStatus.Stopped);
 
     protected enum AppContextStatus {
         Stopped,
@@ -532,7 +531,6 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         logger.debug("appContext -> doInitializeCompleted");
         //
         //-------------------------------------------------------------------------------------------
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
         /*5.Start*/
         logger.debug("appContext -> doStart");
         doStart();
@@ -564,13 +562,6 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         logger.debug("shutdown - doShutdownCompleted.");
         this.getContainer().close();
         logger.info("Hasor ShutdownCompleted.");
-        try {
-            Runtime.getRuntime().removeShutdownHook(shutdownHook);
-        } catch (IllegalStateException e) {
-            if (!"Shutdown in progress".equals(e.getMessage())) {
-                logger.error(e.getMessage(), e);
-            }
-        }
         this.status.compareAndSet(Processing, Stopped);
     }
 

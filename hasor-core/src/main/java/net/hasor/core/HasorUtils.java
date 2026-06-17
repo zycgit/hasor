@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import net.hasor.core.spi.AppContextAware;
-
-import java.util.Objects;
-import java.util.function.Supplier;
-
 import static net.hasor.core.AppContext.ContextEvent_Shutdown;
 import static net.hasor.core.AppContext.ContextEvent_Started;
+import java.util.Objects;
+import java.util.function.Supplier;
+import net.hasor.core.spi.AppContextAware;
 
 /**
  * Hasor 基础工具包。

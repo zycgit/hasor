@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.loader.ResourceLoader;
-import net.hasor.cobble.provider.Scope;
-import net.hasor.cobble.setting.Settings;
-import net.hasor.core.container.TemplateAppContext;
 
 import java.io.Closeable;
 import java.lang.annotation.Annotation;
@@ -30,6 +25,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.loader.ResourceLoader;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.core.container.TemplateAppContext;
 
 /**
  * Hasor的核心接口，它为应用程序提供了一个统一的配置界面和运行环境。
@@ -217,7 +218,6 @@ public interface AppContext extends MetaInfo, Closeable {
     /** 对 object 对象仅执行依赖注入，要注入的属性等信息参照：bindInfo。
      * 如果参照信息为空，那么将直接 return object。 */
     <T> T justInject(T object, BindInfo<?> bindInfo);
-
 
     /*-------------------------------------------------------------------------------------Binder*/
 

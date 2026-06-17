@@ -169,10 +169,9 @@
 //    @Test
 //    public void test1() {
 //        AppContext appContext = Hasor.create().build();
-//        ShutdownHook hook = new ShutdownHook(appContext);
 //        //
 //        assert appContext.isStart();
-//        hook.run();
+//        appContext.shutdown();
 //        assert !appContext.isStart();
 //    }
 //

@@ -475,18 +475,18 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
     private <T> void justInject(T targetBean, Class<?> targetType, BindInfo<?> bindInfo, AppContext appContext) {
         //
         // .Aware接口的执行
-        if (bindInfo != null && targetBean instanceof BindInfoAware bindInfoAware) {
-            bindInfoAware.setBindInfo(bindInfo);
+        if (bindInfo != null && targetBean instanceof BindInfoAware aware) {
+            aware.setBindInfo(bindInfo);
         }
-        if (targetBean instanceof AppContextAware appContextAware) {
-            appContextAware.setAppContext(appContext);
+        if (targetBean instanceof AppContextAware aware) {
+            aware.setAppContext(appContext);
         }
         //
         // .依赖注入(InjectMembers接口)
         targetType = (targetType == null) ? targetBean.getClass() : targetType;
-        if (targetBean instanceof InjectMembers injectMembers) {
+        if (targetBean instanceof InjectMembers members) {
             try {
-                injectMembers.doInject(appContext);
+                members.doInject(appContext);
             } catch (Throwable e) {
                 throw ExceptionUtils.toRuntime(e);
             }
@@ -495,10 +495,10 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         // a.配置注入
         Set<String> injectFileds = new HashSet<>();
         boolean isOverwriteAnnotation = false;
-        if (bindInfo instanceof DefaultBindInfoProviderAdapter<?> defBinder) {
-            isOverwriteAnnotation = defBinder.isOverwriteAnnotation();
+        if (bindInfo instanceof DefaultBindInfoProviderAdapter<?> def) {
+            isOverwriteAnnotation = def.isOverwriteAnnotation();
             //
-            Map<String, Supplier<?>> propMaps = defBinder.getPropertyMap(appContext);
+            Map<String, Supplier<?>> propMaps = def.getPropertyMap(appContext);
             for (Map.Entry<String, Supplier<?>> propItem : propMaps.entrySet()) {
                 String propertyName = propItem.getKey();
                 Property property = BeanUtils.getPropertyFunc(targetType, propertyName);

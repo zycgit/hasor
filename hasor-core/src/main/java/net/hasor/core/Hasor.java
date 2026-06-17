@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import net.hasor.cobble.ExceptionUtils;
-import net.hasor.cobble.ResourcesUtils;
-import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.io.IOUtils;
-import net.hasor.cobble.loader.providers.ClassPathResourceLoader;
-import net.hasor.cobble.setting.DefaultSettings;
-import net.hasor.cobble.setting.Settings;
-import net.hasor.cobble.setting.provider.StreamType;
-import net.hasor.core.container.BeanContainer;
-import net.hasor.core.container.TemplateAppContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,22 +22,37 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import net.hasor.cobble.*;
+import net.hasor.cobble.io.IOUtils;
+import net.hasor.cobble.loader.providers.ClassPathResourceLoader;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
+import net.hasor.cobble.provider.Provider;
+import net.hasor.cobble.setting.DefaultSettings;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.cobble.setting.provider.StreamType;
+import net.hasor.core.container.BeanContainer;
+import net.hasor.core.container.TemplateAppContext;
+import net.hasor.core.info.Arguments;
+
 /**
  * Hasor 基础工具包。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2013-4-3
  */
 public final class Hasor {
-    protected final static Logger logger     = LoggerFactory.getLogger(Hasor.class);
-    public final static    String SchemaName = "/META-INF/hasor.schemas";
-
-    public        String                           mainSettings   = "hconfig.xml";
+    private final static Logger                    logger               = LoggerFactory.getLogger(Hasor.class);
+    public final static String                     SchemaName           = "/META-INF/hasor.schemas";
+    public String                                  mainSettings         = "hconfig.xml";
     private final Object                           context;
-    private final List<Module>                     moduleList     = new ArrayList<>();
-    private       ClassLoader                      loader;
-    private final Map<String, Map<String, Object>> initSettingMap = new HashMap<>();
+    private final List<Module>                     moduleList           = new ArrayList<>();
+    private final Set<Class<?>>                    primarySources       = new LinkedHashSet<>();
+    private ClassLoader                            loader;
+    private Arguments                              arguments            = new Arguments(null);
+    private boolean                                registerShutdownHook = true;
+    private final Map<String, Map<String, Object>> initSettingMap       = new HashMap<>();
 
-    protected Hasor(Object context) {
+    private Hasor(Object context) {
         this.context = context;
     }
 
@@ -58,10 +61,16 @@ public final class Hasor {
         return this;
     }
 
+    public Hasor classLoaderWith(ClassLoader loader) {
+        this.loader = loader;
+        return this;
+    }
+
     public Hasor addSettings(String namespace, String key, Object value) {
         if (StringUtils.isBlank(namespace) || StringUtils.isBlank(key)) {
             throw new IllegalArgumentException("namespace or key is null.");
         }
+
         Map<String, Object> stringMap = this.initSettingMap.computeIfAbsent(namespace, k -> new HashMap<>());
         stringMap.put(key, value);
         return this;
@@ -96,8 +105,22 @@ public final class Hasor {
         return this;
     }
 
-    public Hasor parentClassLoaderWith(ClassLoader loader) {
-        this.loader = loader;
+    public Hasor bindArguments(String... args) {
+        this.arguments = new Arguments(args);
+        return this;
+    }
+
+    public Hasor registerShutdownHook(boolean registerShutdownHook) {
+        this.registerShutdownHook = registerShutdownHook;
+        return this;
+    }
+
+    public Hasor addPrimarySources(Class<?>... primarySources) {
+        if (primarySources != null) {
+            for (Class<?> primarySource : primarySources) {
+                this.primarySources.add(Objects.requireNonNull(primarySource, "primarySource must not be null."));
+            }
+        }
         return this;
     }
 
@@ -136,20 +159,21 @@ public final class Hasor {
             InputStream schemaStream = ResourcesUtils.getResourceAsStream(schemaUrl);
             List<String> readLines = IOUtils.readLines(schemaStream, StandardCharsets.UTF_8);
             if (readLines.isEmpty()) {
-                logger.warn("found nothing , {}", schemaUrl);
+                logger.warn("found nothing , " + schemaUrl);
                 continue;
             }
             for (String schema : readLines) {
                 toLoading.put(schema, schemaUrl);
             }
         }
+
         for (Map.Entry<String, URL> entry : toLoading.entrySet()) {
             String resource = entry.getKey();
             URL schemaUrl = entry.getValue();
             if (loadSettings(configSetting, resource)) {
-                logger.info("config loaded '{}' from '{}'", resource, schemaUrl);
+                logger.info("config loaded '" + resource + "' from '" + schemaUrl + "'");
             } else {
-                logger.info("config cannot be read '{}' from '{}'", resource, schemaUrl);
+                logger.info("config cannot be read '" + resource + "' from '" + schemaUrl + "'");
             }
         }
     }
@@ -187,26 +211,79 @@ public final class Hasor {
         if (modules != null) {
             this.addModules(modules);
         }
+
         //
         try {
             Settings settings = buildSettings();
 
-            if (this.loader == null) {
-                this.loader = Thread.currentThread().getContextClassLoader();
-            }
-
-            BeanContainer container = new BeanContainer(settings, this.loader, new ClassPathResourceLoader(this.loader), this.context);
+            ClassLoader classLoader = this.loader == null ? Thread.currentThread().getContextClassLoader() : this.loader;
+            BeanContainer container = new BeanContainer(settings, classLoader, new ClassPathResourceLoader(classLoader), this.context);
             AppContext appContext = new TemplateAppContext() {
                 @Override
                 protected BeanContainer getContainer() {
                     return container;
                 }
             };
-            appContext.start(this.moduleList.toArray(new Module[0]));
+
+            List<Module> ms = new ArrayList<>(this.moduleList);
+            this.addArgumentsModule(ms);
+            this.addPrimarySourcesModule(ms);
+            appContext.start(ms.toArray(new Module[0]));
+            this.registerShutdownHook(appContext);
             return appContext;
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntime(e);
         }
+    }
+
+    private void registerShutdownHook(AppContext appContext) {
+        if (!this.registerShutdownHook) {
+            return;
+        }
+        AutoCloseable shutdownHook = SystemUtils.registerShutdownHook(() -> {
+            ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+            try {
+                Thread.currentThread().setContextClassLoader(appContext.getClassLoader());
+                if (appContext.isStart()) {
+                    appContext.shutdown();
+                }
+            } finally {
+                Thread.currentThread().setContextClassLoader(oldLoader);
+            }
+            return null;
+        });
+        HasorUtils.pushShutdownListener(appContext.getEventContext(), (event, eventData) -> {
+            try {
+                shutdownHook.close();
+            } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
+            }
+        });
+    }
+
+    private void addArgumentsModule(List<Module> modules) {
+        modules.add(0, a -> {
+            a.bindType(Arguments.class).toInstance(this.arguments);
+            a.bindType(String[].class).nameWith(Arguments.MAIN_ARGS).toInstance(this.arguments.args());
+        });
+    }
+
+    private void addPrimarySourcesModule(List<Module> modules) {
+        modules.add(a -> {
+            for (Class<?> primarySource : this.primarySources) {
+                Provider<Object> primaryProvider = ((Provider<Object>) () -> ClassUtils.newInstance(primarySource)).asSingle();
+                BindInfo<?> info = a.bindType((Class) primarySource).toProvider(primaryProvider).toInfo();
+
+                a.lazyLoad(app -> {
+                    Object primaryObj = app.getInstance(info);
+                    app.justInject(primaryObj, primarySource);
+                });
+
+                if (Module.class.isAssignableFrom(primarySource)) {
+                    a.installModule(((Module) primaryProvider.get()));
+                }
+            }
+        });
     }
 
     /** 用Builder的方式创建{@link AppContext}容器。 */
@@ -217,5 +294,10 @@ public final class Hasor {
     /** 用Builder的方式创建{@link AppContext}容器。 */
     public static Hasor create(Object context) {
         return new Hasor(context);
+    }
+
+    /** 用简易的方式创建{@link AppContext}容器。 */
+    public static AppContext run(String[] args, Class<?>... primarySources) {
+        return Hasor.create().bindArguments(args).addPrimarySources(primarySources).build();
     }
 }

@@ -87,7 +87,7 @@ public abstract class BasicBinder implements ApiBinder {
     @Override
     public ApiBinder installModule(final net.hasor.core.Module... modules) throws Throwable {
         for (net.hasor.core.Module module : modules) {
-            logger.info("installModule ->" + module);
+            logger.info("installModule -> " + module);
             /*加载*/
             module.loadModule(self());
             /*启动*/
