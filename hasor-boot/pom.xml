@@ -20,5 +20,8 @@
         <module>hasor-boot-loader</module>
         <module>hasor-boot-maven-plugin</module>
         <module>hasor-boot-gradle-plugin</module>
+        <module>hasor-boot-tomcat</module>
+        <module>hasor-boot-jetty</module>
+        <module>hasor-boot-undertow</module>
     </modules>
 </project>
