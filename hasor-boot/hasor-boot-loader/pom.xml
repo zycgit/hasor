@@ -16,49 +16,4 @@
     <name>Hasor-Boot-Loader</name>
     <description>runtime launcher for Hasor executable archives.</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>cobble-loader</artifactId>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <!-- Hasor Boot loader must be self-contained before the application ClassLoader exists. -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createSourcesJar>true</createSourcesJar>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <artifactSet>
-                                <includes>
-                                    <include>net.hasor:hasor-boot-loader</include>
-                                    <include>net.hasor:cobble-loader</include>
-                                    <include>net.hasor:cobble-lang</include>
-                                </includes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/MANIFEST.MF</exclude>
-                                        <exclude>module-info.class</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>

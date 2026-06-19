@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.boot.loader;
-
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.CodeSource;
-import java.util.concurrent.Callable;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.Manifest;
-import net.hasor.cobble.loader.CobbleClassLoader;
-import net.hasor.cobble.loader.ResourceLoader;
-import net.hasor.cobble.loader.jar.JarFile;
-import net.hasor.cobble.loader.providers.JarResourceLoader;
-import net.hasor.cobble.loader.providers.MultiResourceLoader;
-import net.hasor.cobble.loader.providers.PrefixResourceLoader;
-
+import net.hasor.boot.loader.jar.JarFile;
 /**
  * Main entry for Hasor Boot executable jars.
  * @author 赵永春 (zyc@hasor.net)
@@ -51,32 +43,18 @@ public class JarLauncher {
         try {
             appLoader = createAppLoader(archiveFile, archiveLoader);
             String mainClass = getStartClass(archiveLoader.getManifest());
-            CobbleClassLoader classLoader = appLoader.toClassLoader(getClass().getClassLoader());
-            configureClassLoader(classLoader);
+            BootClassLoader classLoader = new BootClassLoader(getClass().getClassLoader(), appLoader);
             Thread.currentThread().setContextClassLoader(classLoader);
             invokeMain(classLoader, mainClass, args);
-            registerCloseHook(classLoader, appLoader);
             completed = true;
         } finally {
-            if (!completed && appLoader != null) {
-                appLoader.close();
-            } else if (!completed) {
-                archiveLoader.close();
+            if (!completed) {
+                if (appLoader != null) {
+                    appLoader.close();
+                } else {
+                    archiveLoader.close();
+                }
             }
-        }
-    }
-
-    protected void registerCloseHook(ClassLoader classLoader, ResourceLoader appLoader) {
-        try {
-            Class<?> systemUtils = Class.forName("net.hasor.cobble.SystemUtils", true, classLoader);
-            Method registerShutdownHook = systemUtils.getMethod("registerShutdownHook", Callable.class);
-            Callable<?> closeHook = () -> {
-                appLoader.close();
-                return null;
-            };
-            registerShutdownHook.invoke(null, closeHook);
-        } catch (Throwable ignored) {
-            // If the application does not expose SystemUtils, the process exit will release jar handles.
         }
     }
 
@@ -89,19 +67,6 @@ public class JarLauncher {
     protected boolean isNestedLibrary(JarEntry jarEntry) {
         String name = jarEntry.getName();
         return !jarEntry.isDirectory() && name.startsWith(HasorBootLayout.APP_LIB) && name.endsWith(".jar");
-    }
-
-    protected void configureClassLoader(CobbleClassLoader classLoader) {
-        classLoader.addIncludePackages("*");
-        classLoader.addExcludePackages("java.");
-        classLoader.addExcludePackages("jdk.");
-        classLoader.addExcludePackages("sun.");
-        classLoader.addExcludePackages("com.sun.");
-        classLoader.addExcludePackages("javax.xml.");
-        classLoader.addExcludePackages("org.w3c.");
-        classLoader.addExcludePackages("org.xml.");
-        classLoader.addExcludePackages("net.hasor.cobble.loader.");
-        classLoader.addExcludePackages("net.hasor.boot.loader.");
     }
 
     protected String getStartClass(Manifest manifest) {
