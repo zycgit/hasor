@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.web.startup;
-
 import java.util.Objects;
 import java.util.function.Supplier;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.spi.SpiTrigger;
-
+import net.hasor.web.http.WebServerConfig;
 /**
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-01-10
@@ -39,13 +35,13 @@ import net.hasor.core.spi.SpiTrigger;
 public class RuntimeListener implements ServletContextListener, HttpSessionListener, ServletRequestListener {
     protected Logger             logger           = LoggerFactory.getLogger(getClass());
     public static final String   AppContextName   = AppContext.class.getName();
-    private boolean              contextIsOutsite = false;
+    private boolean              contextIsOutSite = false;
     private Supplier<AppContext> appContext       = null;
     private SpiTrigger           spiTrigger       = null;
 
     /*----------------------------------------------------------------------------------------------------*/
     public RuntimeListener() {
-        this.contextIsOutsite = false;
+        this.contextIsOutSite = false;
     }
 
     public RuntimeListener(AppContext appContext) {
@@ -54,7 +50,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
 
     public RuntimeListener(Supplier<AppContext> appContext) {
         this.appContext = Objects.requireNonNull(appContext, "appContext is null.");
-        this.contextIsOutsite = true;
+        this.contextIsOutSite = true;
     }
 
     private static Supplier<AppContext> appContextSupplier(AppContext appContext) {
@@ -74,6 +70,10 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         //
         if (StringUtils.isNotBlank(configName)) {
             webHasor.mainSettingWith(configName);
+        }
+        Object args = sc.getAttribute(WebServerConfig.HASOR_MAIN_ARGS);
+        if (args instanceof String[] mainArgs) {
+            webHasor.bindArguments(mainArgs);
         }
         return webHasor;
     }
@@ -127,7 +127,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         this.spiTrigger.notifySpiWithoutResult(ServletContextListener.class, listener -> {
             listener.contextDestroyed(servletContextEvent);
         });
-        if (!this.contextIsOutsite) {
+        if (!this.contextIsOutSite) {
             this.appContext.get().shutdown();
             this.logger.info("shutdown.");
         }

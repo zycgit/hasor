@@ -23,12 +23,21 @@
         <!-- 文件上传 -->
         <fileupload>
             <!-- 上传文件缓存目录 -->
-            <cacheDirectory>%WORK_HOME%/temp/fragment</cacheDirectory>
+            <cacheDirectory>${RUN_PATH}/temp/fragment</cacheDirectory>
             <!-- 允许的请求大小 ( -1 表示不限制)-->
             <maxRequestSize>${HASOR_UPLOAD_MAX_REQUEST_SIZE:-1}</maxRequestSize>
             <!-- 允许上传的单个文件大小( -1 表示不限制) -->
             <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE:-1}</maxFileSize>
         </fileupload>
+
+        <!-- 内嵌 HTTP 容器配置，由 hasor-boot-tomcat/jetty/undertow 等模块使用 -->
+        <http>
+            <!-- 容器名称。为空时会按 Java SPI 自动发现可用的 WebServerProvider。 -->
+            <server>${HASOR_HTTP_SERVER}</server>
+            <host>${HASOR_HTTP_HOST:0.0.0.0}</host>
+            <port>${HASOR_HTTP_PORT:8080}</port>
+            <contextPath>${HASOR_HTTP_CONTEXT_PATH:/}</contextPath>
+        </http>
 
         <!-- 布局管理
                 - enable        是否启用布局管理功能，默认为 false。

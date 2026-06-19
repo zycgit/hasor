@@ -32,6 +32,10 @@
             <artifactId>hasor-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>cobble-all</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <scope>provided</scope>
