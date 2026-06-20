@@ -1,20 +1,20 @@
 ---
 id: hasor-boot
 sidebar_position: 5
-title: Hasor Boot 可执行包
-description: 使用 Hasor Boot 打包可执行 Fat Jar，并通过 Hasor.run 启动 Hasor 应用。
+title: Hasor Boot Executable Packages
+description: Use Hasor Boot to package executable fat jars and start Hasor applications with Hasor.run.
 ---
 
-# Hasor Boot 可执行包
+# Hasor Boot Executable Packages
 
-Hasor Boot 用来把普通 Hasor 应用打包成可以直接执行的 Fat Jar。它负责两件事：
+Hasor Boot packages a regular Hasor application as a directly executable fat jar. It is responsible for two things:
 
-- 构建期参与 Maven 打包，将应用 class 和运行期依赖重新组织到可执行归档中。
-- 运行期通过 Hasor Boot Loader 创建应用 ClassLoader，并从嵌套 jar 中加载类和资源。
+- During build time, it participates in Maven packaging and reorganizes application classes and runtime dependencies into an executable archive.
+- During runtime, Hasor Boot Loader creates the application `ClassLoader` and loads classes and resources from nested jars.
 
-## 启动入口
+## Startup Entry
 
-Hasor Boot 推荐使用 `Hasor.run(args, PrimarySource.class)` 作为启动入口。
+Hasor Boot recommends `Hasor.run(args, PrimarySource.class)` as the startup entry.
 
 ```java
 public class DemoHasorBootApplication implements Module {
@@ -29,7 +29,7 @@ public class DemoHasorBootApplication implements Module {
 }
 ```
 
-`Hasor.run` 等价于下面的构建方式：
+`Hasor.run` is equivalent to the following builder usage:
 
 ```java
 Hasor.create()
@@ -40,16 +40,16 @@ Hasor.create()
 
 ## primarySources
 
-`primarySources` 是 Hasor Boot 的主启动来源。它和普通 Module 的区别在于：
+`primarySources` are the main startup sources for Hasor Boot. They differ from ordinary modules in the following ways:
 
-- 它一定会被注册为 Hasor Bean。
-- 它由 Hasor 创建，因此类型需要提供可访问的无参构造方法。如果已经定义了其它构造方法，也需要保留一个无参构造方法。
-- 它会以单例方式创建，并由 `AppContext` 获取后执行完整依赖注入。
-- 如果它实现了 `Module`，同一个实例也会参与 `loadModule`、`onStart`、`onStop` 生命周期。
-- `loadModule` 被调用时还处于模块配置阶段，此时不会对 primarySource 执行依赖注入，因此不要在 `loadModule` 中使用 `@Inject` 字段或依赖注入结果。
-- 对 primarySource 自身而言，依赖注入会发生在 `loadModule` 之后、`onStart` 之前。
+- A primary source is always registered as a Hasor bean.
+- It is created by Hasor, so the type must provide an accessible no-argument constructor. If other constructors are defined, keep a no-argument constructor as well.
+- It is created as a singleton, and the `AppContext` obtains it before full dependency injection is performed.
+- If it implements `Module`, the same instance also participates in the `loadModule`, `onStart`, and `onStop` lifecycle.
+- When `loadModule` is called, the container is still in the module-configuration phase. Dependency injection has not yet been performed on the primary source, so do not use `@Inject` fields or injected values in `loadModule`.
+- For the primary source itself, dependency injection happens after `loadModule` and before `onStart`.
 
-因此一个启动类可以同时承担模块配置和启动生命周期逻辑：
+A startup class can therefore handle module configuration and lifecycle logic at the same time:
 
 ```java
 import net.hasor.cobble.logging.Logger;
@@ -93,14 +93,14 @@ public class DemoHasorBootApplication implements Module {
 }
 ```
 
-## 启动参数
+## Startup Arguments
 
-`Hasor.run` 会把 `main` 方法的 `args` 绑定到容器中：
+`Hasor.run` binds the `main` method arguments into the container:
 
 - `net.hasor.core.info.Arguments`
-- 命名为 `Arguments.MAIN_ARGS` 的 `String[]`
+- A named `String[]` whose name is `Arguments.MAIN_ARGS`
 
-业务 Bean 或 primarySource 可以直接注入 `Arguments`：
+Business beans or the primary source can inject `Arguments` directly:
 
 ```java
 public class HelloService {
@@ -110,9 +110,9 @@ public class HelloService {
 }
 ```
 
-## Web 启动
+## Web Startup
 
-Hasor Web 应用可以使用 `WebServers.run(args, RootModule.class)` 启动内嵌容器。应用入口不需要创建 `TomcatWebServer`、`JettyWebServer` 或 `UndertowWebServer`，`WebServers` 会从 `hasor.http` 配置读取启动参数，并在 classpath 中自动发现可用的容器实现。
+Hasor Web applications can start an embedded container with `WebServers.run(args, RootModule.class)`. The application entry does not need to create `TomcatWebServer`, `JettyWebServer`, or `UndertowWebServer` manually. `WebServers` reads startup parameters from `hasor.http` configuration and discovers available container implementations on the classpath through Java SPI.
 
 ```java
 import net.hasor.web.WebApiBinder;
@@ -131,7 +131,7 @@ public class DemoHasorBootWebApplication implements WebModule {
 }
 ```
 
-`hasor-web` 的 `web-hconfig.xml` 中已经提供了默认的 `hasor.http` 小节，应用只需要在自己的 `hconfig.xml` 中覆盖少数运行参数。Hasor Web 的 `RuntimeFilter` 名称、匹配路径、boot 入口配置文件以及 ServletContext 静态资源根目录由框架内部固定处理，不需要暴露为 HTTP 配置项。`hasor.layout.layoutPath` 和 `hasor.layout.templatePath` 只用于渲染模板查找，不作为内嵌容器的静态资源根目录。
+`hasor-web` already provides a default `hasor.http` section in `web-hconfig.xml`. Applications only need to override a few runtime parameters in their own `hconfig.xml`. The Hasor Web `RuntimeFilter` name, match path, boot entry configuration file, and ServletContext static resource root are fixed internally by the framework and do not need to be exposed as HTTP configuration items. `hasor.layout.layoutPath` and `hasor.layout.templatePath` are only used for template lookup during rendering; they are not used as the static resource root for the embedded container.
 
 ```xml
 <config>
@@ -145,7 +145,7 @@ public class DemoHasorBootWebApplication implements WebModule {
 </config>
 ```
 
-`server` 可以按名称显式指定；如果为空，会通过 Java SPI 自动发现 classpath 中的 `WebServerProvider`。官方容器名称为 `tomcat`、`jetty`、`undertow`。
+`server` can explicitly select a container by name. If it is empty, the classpath is scanned through Java SPI for a `WebServerProvider`. The official container names are `tomcat`, `jetty`, and `undertow`.
 
 ```xml
 <server>tomcat</server>
@@ -153,13 +153,13 @@ public class DemoHasorBootWebApplication implements WebModule {
 
 ## Shutdown Hook
 
-默认情况下，Hasor 会注册 JVM shutdown hook。当进程正常退出、收到 `SIGTERM` 或 `SIGINT` 时，Hasor 会触发 `AppContext.shutdown()`，并执行 `Module#onStop`。
+By default, Hasor registers a JVM shutdown hook. When the process exits normally or receives `SIGTERM` or `SIGINT`, Hasor calls `AppContext.shutdown()` and executes `Module#onStop`.
 
 ```java
 Hasor.run(args, DemoHasorBootApplication.class);
 ```
 
-如果应用需要自己控制关闭时机，可以关闭自动注册：
+If an application needs to control shutdown by itself, disable automatic registration:
 
 ```java
 AppContext appContext = Hasor.create()
@@ -172,12 +172,12 @@ appContext.shutdown();
 ```
 
 :::tip
-`kill -0 <pid>` 只用于探测进程是否存在和当前用户是否有权限，不会通知进程退出。常见的退出通知是 `kill <pid>` 或 `kill -15 <pid>`，它们会触发 JVM shutdown hook。
+`kill -0 <pid>` only checks whether the process exists and whether the current user has permission to signal it. It does not notify the process to exit. Common exit notifications are `kill <pid>` and `kill -15 <pid>`, both of which trigger the JVM shutdown hook.
 :::
 
-## Maven 打包
+## Maven Packaging
 
-Hasor Boot Maven 插件会在 `package` 阶段把普通 jar 重打包成 Hasor Boot 可执行归档。
+The Hasor Boot Maven plugin repackages a regular jar into a Hasor Boot executable archive during the `package` phase.
 
 ```xml
 <build>
@@ -210,7 +210,7 @@ Hasor Boot Maven 插件会在 `package` 阶段把普通 jar 重打包成 Hasor B
 </build>
 ```
 
-如果不想通过 `maven-jar-plugin` 写入 `Main-Class`，也可以直接配置插件参数：
+If you do not want to write `Main-Class` through `maven-jar-plugin`, configure the plugin parameter directly:
 
 ```xml
 <configuration>
@@ -218,16 +218,16 @@ Hasor Boot Maven 插件会在 `package` 阶段把普通 jar 重打包成 Hasor B
 </configuration>
 ```
 
-构建并运行：
+Build and run:
 
 ```bash
 mvn -pl demo-hasor-boot/demo-hasor-boot-basic -am package
 java -jar demo-hasor-boot/demo-hasor-boot-basic/target/demo-hasor-boot-basic-5.0.0-SNAPSHOT.jar demo
 ```
 
-## 归档结构
+## Archive Layout
 
-Hasor Boot 可执行包主要使用下面的布局，其中 `APP-INF/hasor/` 是预留配置目录：
+Hasor Boot executable archives mainly use the following layout. `APP-INF/hasor/` is a reserved configuration directory.
 
 ```text
 META-INF/MANIFEST.MF
@@ -236,20 +236,20 @@ APP-INF/lib/
 APP-INF/hasor/
 ```
 
-Manifest 中的 `Main-Class` 会指向 Hasor Boot Loader，真实应用入口会写入 `Hasor-Main-Class`：
+The `Main-Class` in the manifest points to Hasor Boot Loader, and the real application entry is written to `Hasor-Main-Class`:
 
 ```text
 Main-Class: net.hasor.boot.loader.JarLauncher
 Hasor-Main-Class: net.hasor.demo.boot.DemoHasorBootApplication
 ```
 
-运行时，`JarLauncher` 会创建应用 ClassLoader：
+At runtime, `JarLauncher` creates the application `ClassLoader`:
 
-- `APP-INF/classes/` 作为应用 classpath。
-- `APP-INF/lib/*.jar` 作为嵌套依赖 jar。
-- 使用 Cobble Loader 读取嵌套 jar 中的 class、资源和 `META-INF/hasor.schemas`。
+- `APP-INF/classes/` is used as the application classpath.
+- `APP-INF/lib/*.jar` is used as nested dependency jars.
+- The loader reads classes, resources, and `META-INF/hasor.schemas` from nested jars.
 
-这样应用可以通过一条命令启动：
+The application can then be started with one command:
 
 ```bash
 java -jar demo-hasor-boot-basic-5.0.0-SNAPSHOT.jar

@@ -1,26 +1,26 @@
 ---
 id: complexlevel
 sidebar_position: 5
-title: d.复合拦截器
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: d. Composite Interceptors
+description: Combine multiple AOP interceptors on the same or different join points.
 ---
 
-# 复合拦截器
+# Composite Interceptors
 
-复合拦截器，有两层含义
-- 可以写多个拦截器，同时拦截同一个切点。
-- 多个拦截器同时生效在不同的位置。
+Composite interceptors have two meanings:
+- Multiple interceptors can intercept the same join point at the same time.
+- Multiple interceptors can take effect at different locations at the same time.
 
-第一点，多个拦截器同时拦截一个切点。它们的生效顺序是先 A 后 B。代码如下：
+First, multiple interceptors can intercept one join point. Their effective order is A first, then B. The code is shown below:
 
-```java title='例如'
+```java title='Example'
 @Aop({SimpleInterceptorA.class, SimpleInterceptorB.class })
 public class AopBean {
     ...
 }
 ```
 
-第二点，多个拦截器生效在不同位置：
+Second, multiple interceptors can take effect at different locations:
 
 ```java
 @Aop(ClassInterceptor.class)
@@ -36,6 +36,6 @@ public class AopBean {
 }
 ```
 
-在这个 case 中 print 方法调用时 ClassInterceptor 拦截器生效，当调用 echo 方法时 `ClassInterceptor` 和 `MethodInterceptor` 会同时生效，生效顺序为，先 Class 后 Method。
+In this case, `ClassInterceptor` takes effect when `print` is called. When `echo` is called, both `ClassInterceptor` and `MethodInterceptor` take effect, in the order class first, then method.
 
-如果还有一个全局 Aop 也在配置中，那么拦截器的生效顺序是：`全局级` -> `类级` -> `方法级`
+If a global AOP interceptor is also configured, the effective order is: `global level` -> `class level` -> `method level`.

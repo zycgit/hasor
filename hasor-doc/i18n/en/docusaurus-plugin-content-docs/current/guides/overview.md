@@ -1,22 +1,23 @@
 ---
 id: overview
 sidebar_position: 1
-title: 介绍
-description: DataQL 全称为 Data Query Language，它是一种查询语言，旨在通过提供直观、灵活的语法来描述获取数据的需求。
+title: Introduction
+description: Hasor is a framework system composed of multiple framework families, covering IoC, AOP, Web MVC, database access, and more.
 ---
-# 介绍
+# Introduction
 
-Hasor 本身是由多个不同系列框架组合而成的一个框架体系。这些子框架的能力涵盖了 IoC、Aop、WebMVC、数据库以及其它方方面面。这一切的基础要归功于 Hasor 的插件化能力。
+Hasor itself is a framework system composed of several different framework families. These sub-frameworks cover IoC, AOP, Web MVC, database access, and many other areas. All of this is built on Hasor's plugin capability.
 
-Hasor 帮助您设计更好的 API，它独有的框架扩展能力可以使新的能力完全无缝的集成到统一的 API 体系中。我们构建了通用功能，使您能够扩展 Hasor，而不是向核心框架添加每个特性。
+Hasor helps you design better APIs. Its unique framework-extension capability lets new features integrate seamlessly into a unified API system. We build common capabilities so you can extend Hasor through plugins instead of adding every feature directly to the core framework.
 
-Hasor 的扩展能力更像是一个乐高玩具的接口，任何人都可以通过非常简单的方式提供乐高积木，然后轻松的将它们融合到一起。在使用的过程中完全感受不到背后是多个不同的框架在协作。Hasor API 本身就是一个很好的例子。
+Hasor's extension mechanism is like an interface for building blocks: anyone can provide new blocks in a very simple way and then combine them easily. During use, you do not feel that multiple different frameworks are cooperating behind the scenes. The Hasor API itself is a good example of this idea.
 
-Hasor 的目标是使开发和调试变得更容易和更快，而不是更困难和更慢。
+Hasor's goal is to make development and debugging easier and faster, not harder and slower.
 
-## 特点
-Hasor 的设计思想是 “微内核+插件”。微内核是指提供少量必要的功能支持，其余功能全部通过插件化方式实现。这样一来扩展 Hasor 就只需要无限制的添加插件而不是修改核心框架。
+## Features
 
-Hasor 独有的 API 融合机制会，让框架新的能力完全无缝的集成到统一的 API 体系中。下面这张图是 Hasor 的现有框架体系
+Hasor is designed around a "microkernel + plugins" model. The microkernel provides only a small set of necessary capabilities, while everything else is implemented through plugins. As a result, extending Hasor means adding plugins without changing the core framework.
 
-![特点](_img/CC2_403A_3BD5_D581.png)
+Hasor's unique API fusion mechanism lets new framework capabilities integrate seamlessly into the unified API system. The following diagram shows the current Hasor framework system.
+
+![Features](_img/CC2_403A_3BD5_D581.png)

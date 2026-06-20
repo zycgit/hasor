@@ -1,21 +1,21 @@
 ---
 id: yaml
 sidebar_position: 3
-title: b.YAML 格式差异性
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. YAML Format Differences
+description: Notes about using YAML configuration with Hasor Settings.
 ---
 
-# 配置文件
+# Configuration Files
 
-YAML 格式也是较为流行的一种配置文件格式，它的最大优点是 `可以表述数组类型`。并且在阅读层面比属性文件更加有效直观。\
+YAML is also a popular configuration-file format. Its biggest advantage is that it can express array types, and it is more readable and intuitive than properties files.
 
 :::caution
-唯一要说明的是，当加载多个属性文件之后。如遇到相同的 key 配置会被覆盖。如果要避免这一点可以选择 XML 格式并通过命名空间加以隔离。
+The only point to note is that when multiple properties files are loaded, duplicate keys overwrite earlier values. To avoid this, use XML and isolate configuration with namespaces.
 :::
 
-```yaml title='YAML 格式'
+```yaml title='YAML format'
 mySelf:
-  myName: '赵永春'
+  myName: 'Yongchun Zhao'
   myAge: 12
   myBirthday: '1986-01-01 00:00:00'
   myWork: 'Software Engineer'
@@ -27,7 +27,7 @@ arrays: [ 'a','b' ]
 ```java
 Settings settings = ...
 String myName = settings.getString("mySelf.myName");
-// myName 值为 ‘赵永春’
+// myName is 'Yongchun Zhao'.
 
 assert settings.getString("arrays").equals("b");
 assert settings.getStringArray("arrays")[0].equals("a");

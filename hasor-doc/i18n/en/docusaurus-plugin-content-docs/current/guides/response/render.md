@@ -1,38 +1,38 @@
 ---
 id: render
 sidebar_position: 1
-title: a.渲染器
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Renderers
+description: Render response data into visible view content.
 ---
 
-# 渲染器
+# Renderers
 
-Hasor 的渲染器实际上是 View 层的组件，它的最大意义是帮助应用把数据渲染成可见的样子。一个典型场景是请求处理器在执行完毕后，产生一个数据然后交给 JSP 生成 HTML 页面。
+A Hasor renderer is essentially a view-layer component. Its main purpose is to help an application render data into a visible form. A typical scenario is that a request handler produces data after execution and passes it to JSP to generate an HTML page.
 
-这里 JSP 就是渲染引擎，和 Hasor 所指的渲染器是同一个东西。一个渲染器必须是来自 `net.hasor.web.render.RenderEngine` 接口。
+Here, JSP is the rendering engine, which is the same concept as a renderer in Hasor. A renderer must come from the `net.hasor.web.render.RenderEngine` interface.
 
-举个例子：一个请求在处理之后要使用 Freemarker 来渲染成 HTML，这时候需要一个渲染器。例如：
+For example, after a request is processed, it needs to be rendered into HTML with Freemarker. In that case, a renderer is needed:
 
 ```java
-// 渲染器名字叫 flt
+// The renderer name is flt.
 @Render("flt")
 public class FreemarkerRender implements RenderEngine {
     protected Configuration freemarker;
 
     public void initEngine(AppContext appContext) throws Throwable {
-        // 初始化过程，只会执行一次。在这里初始化 freemarker
+        // Initialization runs only once. Initialize freemarker here.
         this.freemarker = ...
     }
 
     public boolean exist(String template) throws IOException {
-        // 表示渲染器是否要将渲染过程交还给 Servlet 容器。
-        // 如果渲染器不准备处理这个视图，那么返回 false。
-        //  - 如果模版不存在那么交还给 Servlet 容器
+        // Indicates whether the renderer should return rendering to the Servlet container.
+        // If the renderer does not plan to handle this view, return false.
+        //  - If the template does not exist, return it to the Servlet container.
         return freemarker.getTemplateLoader().findTemplateSource(template) != null;
     }
 
     public void process(RenderInvoker renderData, Writer writer) throws Throwable {
-        // 执行 Freemarker 渲染
+        // Execute Freemarker rendering.
         Template temp = this.freemarker.getTemplate(renderData.renderTo());
         HashMap<String, Object> data = new HashMap<>();
         renderData.forEach(data::put);
@@ -41,20 +41,20 @@ public class FreemarkerRender implements RenderEngine {
 }
 ```
 
-渲染器在编写好之后需要被注册到框架中
+After a renderer is written, it must be registered in the framework.
 
 ```java
 public class StartModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        // 扫描所有带有 @Render 特征类
+        // Scan all classes annotated with @Render.
         Set<Class<?>> classSet = apiBinder.findClass(Render.class, "com.example.web.render.*");
-        // 配置渲染器
+        // Configure renderers.
         apiBinder.loadRender(classSet);
     }
 }
 ```
 
-最后在请求处理器中指明使用具体的渲染器是什么
+Finally, specify the concrete renderer in the request handler.
 
 ```java
 @MappingTo("/my.html")

@@ -1,60 +1,60 @@
 ---
 id: decorator
 sidebar_position: 3
-title: c.母版页技术
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: c. Layout Templates
+description: Use layout-template technology to decorate rendered pages.
 ---
 
-# 母版页技术
+# Layout Templates
 
 :::tip
-延伸阅读：Sitemesh 就是专注于母版页的一款框架。
+Further reading: Sitemesh is a framework focused on layout templates.
 :::
 
-母版页技术较为成熟，它的工作原理是一个典型的 装饰器模式 一个启用了装饰器的页面在渲染时，会先渲染目标页面到一个临时的缓冲区。
+Layout-template technology is mature. Its working principle is a typical decorator pattern. When a decorated page is rendered, the target page is first rendered into a temporary buffer.
 
-然后会再次渲染母版页，这个时候预先渲染的页面就会被安插到母版页的特定位置上。最后把合成的新页面一同返回给浏览器。
+Then the layout page is rendered again. At that point, the pre-rendered page is inserted into a specific position in the layout page. Finally, the combined new page is returned to the browser.
 
 :::caution
-在 Hasor 中一次请求页面过程中，只会有一个母版页生效。因此不支持嵌套的布局模板。
+During one page request in Hasor, only one layout page takes effect. Nested layout templates are not supported.
 
-如果需要在布局模板中再次提炼公共布局模板，需要做的是将布局模板文件的内容模块化。而不是套用嵌套布局。
+If common layout sections need to be extracted inside a layout template, modularize the layout-template file content instead of applying nested layouts.
 :::
 
-默认情况下 Hasor 的母版页能力是关闭的，可以通过配置文件打开这个功能。在开启这个功能时，最好指明母版页及一般页面的资源文件位置：
+By default, Hasor's layout-template capability is disabled. It can be enabled through configuration. When enabling it, it is best to specify the resource-file locations for the layout pages and regular pages:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/main">
     <hasor>
         <layout enable="true" placeholder="content_placeholder" defaultLayout="default.html">
-            <!-- 母版页资源文件位置（可选，默认为：/layout） -->
+            <!-- Layout page resource location. Optional; default: /layout. -->
             <layoutPath>/layout</layoutPath>
-            <!-- 页面资源文件位置（可选，默认为：/templates） -->
+            <!-- Page resource location. Optional; default: /templates. -->
             <templatePath>/templates</templatePath>
         </layout>
     </hasor>
 </config>
 ```
 
-依照上面的默认配置 Web工程的目录结构大致会变成这样：
+With the default configuration above, the web project directory structure roughly becomes:
 
 ```text
 webapp
-    layout      母版页（hasor.layout.layoutPath 指定）
-    templates   网站页面（hasor.layout.templatePath 指定）
-    control     页面模块（可选，存放页面中重复的模版）
-    static      静态资源文件（可选，静态资源文件）
+    layout      Layout pages, specified by hasor.layout.layoutPath.
+    templates   Site pages, specified by hasor.layout.templatePath.
+    control     Page modules, optional; stores repeated templates in pages.
+    static      Static resource files, optional.
     WEB-INF     web.xml
 ```
 
-## 加页脚
+## Adding a Footer
 
-假定网站所有页面都统一加上一个页脚，首先创建母版页并将其保存到 `/webapp/layout/default.html`
+Assume all pages on a site need a unified footer. First, create the layout page and save it as `/webapp/layout/default.html`.
 
 ```html
 <!DOCTYPE html>
-<html lang="cn">
+<html lang="en">
     <head>
         <title>${rootData.pageTitle!}</title>
     </head>
@@ -65,27 +65,27 @@ webapp
 </html>
 ```
 
-在这个母版页中含有的变量和含义是：
+The variables in this layout page mean:
 
-| 变量名                 | 含义                               |
-|---------------------|----------------------------------|
-| content_placeholder | 表示的是用户实际访问的目标页面内容                |
-| rootData            | 是请求处理器用于保存数据的全局对象，其作用范围是 request |
+| Variable             | Meaning                                                        |
+|----------------------|----------------------------------------------------------------|
+| content_placeholder  | The actual target page content visited by the user             |
+| rootData             | A global request-scoped object used by the request handler to store data |
 
-然后创建目标页并将其保存到 `/webapp/templates/target.html`
+Then create the target page and save it as `/webapp/templates/target.html`.
 
 ```html
-${rootData.put('pageTitle','首页')}
+${rootData.put('pageTitle','Home')}
 <p>this page form user</p>
 ```
 
-最后启动 Web 容器，访问：http://localhost:8080/target.html 就会看到完整的结果：
+Finally, start the web container and visit `http://localhost:8080/target.html` to see the complete result:
 
 ```html
 <!DOCTYPE html>
-<html lang="cn">
+<html lang="en">
     <head>
-        <title>首页</title>
+        <title>Home</title>
     </head>
     <body>
         <p>this page form user</p>

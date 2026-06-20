@@ -1,13 +1,13 @@
 ---
 id: refenv
 sidebar_position: 5
-title: d.引用外部参数
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: d. Referencing External Parameters
+description: Use placeholders to reference JVM and environment values in Hasor configuration.
 ---
 
-# 引用外部参数
+# Referencing External Parameters
 
-以配置数据库链接配置作为例子：
+Use database connection configuration as an example:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -20,7 +20,7 @@ description: DataQL 开发手册，QIL 指令集、构造指令、存储指令�
 </config>
 ```
 
-如果想把数据库连接的帐号和密码剥离出来，可以在配置值中使用 `${KEY}` 占位符。占位符会在配置加载时从 JVM `-D` 参数或操作系统环境变量中读取。
+If you want to separate the database account and password from the configuration file, use `${KEY}` placeholders in configuration values. Placeholders are read from JVM `-D` parameters or operating-system environment variables when configuration is loaded.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -33,13 +33,13 @@ description: DataQL 开发手册，QIL 指令集、构造指令、存储指令�
 </config>
 ```
 
-启动时可以通过下面任意一种方式传入：
+Pass values in either of the following ways during startup:
 
 ```bash
 java -DJDBC_USER_NAME=sa -DJDBC_USER_PWD=password -jar app.jar
 ```
 
-也可以使用代码方式在启动前写入 Settings：
+You can also write settings through code before startup:
 
 ```java
 AppContext appContext = Hasor.create()

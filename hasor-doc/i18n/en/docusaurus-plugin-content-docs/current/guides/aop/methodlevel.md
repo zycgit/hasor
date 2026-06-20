@@ -1,15 +1,15 @@
 ---
 id: methodlevel
 sidebar_position: 2
-title: a.方法级拦截器
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Method-Level Interceptors
+description: Configure AOP interceptors on specific methods.
 ---
 
-# 方法级拦截器
+# Method-Level Interceptors
 
-在某个类中只有某些特定的方法需要被拦截，那么就要使用方法级拦截器。
+When only certain methods in a class need interception, use method-level interceptors.
 
-```java title='例如'
+```java title='Example'
 public class AopBean {
     public String print() {
         ...
@@ -22,7 +22,7 @@ public class AopBean {
 }
 ```
 
-```java title='定义方法拦截器'
+```java title='Define a method interceptor'
 public class SimpleInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         try {
@@ -38,7 +38,7 @@ public class SimpleInterceptor implements MethodInterceptor {
 }
 ```
 
-```java title='创建 Aop Bean'
+```java title='Create an AOP bean'
 AppContext appContext = Hasor.create().build();
 appContext.getInstance(AopBean.class).echo("sss");
 ```

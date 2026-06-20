@@ -1,25 +1,25 @@
 ---
 id: pool
 sidebar_position: 6
-title: e.事件线程池
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: e. Event Thread Pool
+description: Configure the Hasor event execution thread pool.
 ---
 
-# 事件线程池
+# Event Thread Pool
 
-默认配置下，Hasor 执行事件的线程池大小是 8。可以在配置文件中修改这个设定：
+By default, Hasor uses a thread pool size of 8 for event execution. This setting can be changed in the configuration file:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/main">
     <hasor>
-        <!-- 执行事件的线程池大小 -->
+        <!-- Thread pool size for event execution. -->
         <eventThreadPoolSize>16</eventThreadPoolSize>
     </hasor>
 </config>
 ```
 
-也可以把配置值交给启动参数控制：
+You can also let startup parameters control the configuration value:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

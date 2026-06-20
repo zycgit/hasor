@@ -1,13 +1,13 @@
 ---
 id: chain
 sidebar_position: 5
-title: d.事件链
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: d. Event Chains
+description: Fire one or more events from inside another event.
 ---
 
-# 事件链
+# Event Chains
 
-事件链，指的是在事件中引发另一个或多个事件，一个完整的事件链的例子如下：
+An event chain means firing one or more additional events from inside an event. A complete event-chain example is shown below:
 
 ```java
 public class MyListener implements EventListener<Object> {
@@ -26,10 +26,10 @@ public class EventLinkTest {
         EventContext ec = appContext.getEventContext();
 
         //
-        final String EventName = "MyEvent";//事件链的终端
-        final String SeedEvent = "SeedEvent";//种子事件
+        final String EventName = "MyEvent"; // The terminal event in the event chain.
+        final String SeedEvent = "SeedEvent"; // Seed event.
 
-        //1.添加事件监听器
+        // 1. Add event listeners.
         ec.addListener(EventName, new MyListener());
         ec.addListener(SeedEvent, new EventListener<AppContext>() {
             public void onEvent(String event, AppContext app) throws Throwable {
@@ -40,10 +40,10 @@ public class EventLinkTest {
             }
         });
 
-        //2.引发种子事件
+        // 2. Fire the seed event.
         ec.fireAsyncEvent(SeedEvent, appContext);
 
-        //3.由于是异步事件，因此下面这条日志会在所有事件之前喷出
+        // 3. Because this is an asynchronous event, this log is printed before all event processing.
         System.out.println("before All Event.");
         Thread.sleep(1000);
     }

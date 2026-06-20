@@ -1,39 +1,39 @@
 ---
 id: proxyprop
 sidebar_position: 3
-title: b.委托型动态属性
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. Delegated Dynamic Properties
+description: Delegate dynamic property reads and writes to an interface.
 ---
 
-# 委托型动态属性
+# Delegated Dynamic Properties
 
-前两两个小结中演示了什么叫动态属性以及它的简单用法，动态属性的精华部分是属性值的委托。
+The previous two sections showed what dynamic properties are and how to use them simply. The most powerful part of dynamic properties is delegated property values.
 
 :::tip
-所谓属性值的委托是指。当程序调用属性的 get/set 方法时，会将方法的调用映射到一个对应的接口。属性的读写完全由接口自己来实现：
+Delegating a property value means that when the program calls the property's get/set methods, the method call is mapped to a corresponding interface. Reading and writing the property is implemented entirely by that interface.
 :::
 
 ```java
 public interface PropertyDelegate {
-    /** 该委托属性的get方法，参数是属性所处的对象 */
+    /** The get method of this delegated property. The parameter is the object that owns the property. */
     public Object get(Object target) throws Throwable;
 
-    /** 该委托属性的set方法，第一个参数是属性所处的对象，第二个参数代表设置的新值 */
+    /** The set method of this delegated property. The first parameter is the owning object, and the second is the new value. */
     public void set(Object target, Object newValue) throws Throwable;
 }
 ```
 
-一个典型的应用场景是，在多个 Bean 之间共享同一个属性：
+A typical use case is sharing the same property between multiple beans:
 
 ```java
-// 注册两个 Bean 并且共享同一个 name 属性。
+// Register two beans and share the same name property.
 AppContext appContext = Hasor.create().build(apiBinder -> {
     SimplePropertyDelegate delegate = new SimplePropertyDelegate("helloWord");
     apiBinder.bindType(PojoBean1.class).dynamicProperty("name", String.class, delegate);
     apiBinder.bindType(PojoBean2.class).dynamicProperty("name", String.class, delegate);
 });
 
-// 创建两个 Bean
+// Create two beans.
 PojoBean1 pojoBean1 = appContext.getInstance(PojoBean1.class);
 PojoBean2 pojoBean2 = appContext.getInstance(PojoBean2.class);
 //

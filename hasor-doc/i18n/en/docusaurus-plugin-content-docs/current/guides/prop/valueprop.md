@@ -1,54 +1,54 @@
 ---
 id: valueprop
 sidebar_position: 2
-title: a.值型动态属性
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Value-Based Dynamic Properties
+description: Add simple get/set dynamic properties to beans.
 ---
 
-# 值型动态属性
+# Value-Based Dynamic Properties
 
 :::tip
-值型是指，附加的动态属性只能简单的进行 get/set。其行为相当于类型多了一个私有字段而已
+Value-based means the attached dynamic property only supports simple get/set behavior. It behaves as if the type simply had one more private field.
 :::
 
-在某些较难处理的代码逻辑中 “附加属性透传” 是一个很好的解决问题思路，利用动态属性可以在不修改原有类型的情况下，将一个附加的信息进行透传。例如：
+In some difficult code paths, passing through additional properties is a useful approach. Dynamic properties let you pass additional information without modifying the original type. For example:
 
 ```java
-// 原始类
+// Original class.
 public class PojoBean {
     private String name;
     private int    age;
 
-	// name 的 get/set
+    // get/set for name.
     public String getName() { ... }
     public void setName(String name) { ... }
 
-	// age 的 get/set
+    // get/set for age.
     public int getAge() { ... }
     public void setAge(int age) { ... }
 }
 
-// 在不修改代码情况下增加一个属性 type，例如下面样子
+// Add a property named type without changing the code, as if the class looked like this.
 public class PojoBean {
     private String name;
     private int    age;
     private int    type;
 
-	// name 的 get/set
+    // get/set for name.
     public String getName() { ... }
     public void setName(String name) { ... }
 
-	// age 的 get/set
+    // get/set for age.
     public int getAge() { ... }
     public void setAge(int age) { ... }
 
-	// type 的 get/set
+    // get/set for type.
     public int getType() { ... }
     public void setType(int type) { ... }
 }
 ```
 
-首先有一个简单的 Bean。
+First, define a simple bean.
 
 ```java
 public class PojoBean {
@@ -64,27 +64,27 @@ public class PojoBean {
 }
 ```
 
-接着创建 Hasor 容器，然后注册这个 Bean。并且为这个 Bean 增加 name 属性。
+Then create the Hasor container, register this bean, and add a `name` property to it.
 
 ```java
-// 创建容器，并且注册Bean
+// Create the container and register the bean.
 AppContext appContext = Hasor.create().build(apiBinder -> {
-    apiBinder.bindType(PojoBean.class)// 注册Bean。
-             .dynamicProperty("name", String.class); // 增加名称为 name 类型为 String 的属性。
+    apiBinder.bindType(PojoBean.class) // Register the bean.
+             .dynamicProperty("name", String.class); // Add a property named name with type String.
 });
 
-// 创建Bean
+// Create the bean.
 PojoBean pojoBean = appContext.getInstance(PojoBean.class);
 
-// 获取 get/set方法
+// Obtain get/set methods.
 Method getMethod = pojoBean.getClass().getMethod("getName");
 Method setMethod = pojoBean.getClass().getMethod("setName", String.class);
 
-// 反射的方式注入 name 属性
+// Inject the name property through reflection.
 setMethod.invoke(pojoBean, "Hello");
 
-// 反射方式获取 name 属性
+// Read the name property through reflection.
 System.out.println("data = " + getMethod.invoke(pojoBean));
 ```
 
-执行结果会在控制台上打印出 "data = Hello"
+The console prints `data = Hello`.

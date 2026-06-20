@@ -1,15 +1,15 @@
 ---
 id: stream
 sidebar_position: 2
-title: b.流式上传
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. Streaming Upload
+description: Process large uploads without caching the whole file.
 ---
 
-# 流式上传
+# Streaming Upload
 
-流式文件上传，流式上传最大的好处就是不需要缓存就可以处理大文件的上传：
+The biggest advantage of streaming file upload is that large files can be processed without caching:
 
-```java title='例子'
+```java title='Example'
 @MappingTo("/fileupload.do")
 public class FileUpLoad extends WebController {
     public void execute() throws IOException {

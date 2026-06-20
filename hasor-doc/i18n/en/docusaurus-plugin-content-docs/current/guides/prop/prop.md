@@ -1,17 +1,16 @@
 ---
 id: prop
 sidebar_position: 1
-title: 动态属性
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: Dynamic Properties
+description: Add properties to beans dynamically through proxy capabilities.
 ---
 
-# 动态属性
+# Dynamic Properties
 
 :::tip
-- 这个特性是 4.2.1 中加入的新特性。
-- “动态属性” 是指一个 Bean 在类型定义之后，通过动态代理的能力为其动态的添加一个原本不存在的属性。
-- 这个属性就像幽灵一样附加在对象身上。属性会一直跟随 Bean，而用户在使用 Bean 时毫无感知。
+- This feature was added in version 4.2.1.
+- A "dynamic property" means that after a bean type is defined, a property that did not originally exist can be dynamically added to it through dynamic proxy capability.
+- The property is attached to the object like an invisible companion. It follows the bean for its lifetime, while users of the bean do not need to be aware of it.
 :::
 
-在某些较难处理的代码逻辑中 “透传” 是一个很好的解决问题思路，利用动态属性可以在不修改原有类型的情况下，将一个附加的信息在不同分层上进行透传。
-
+In some difficult code paths, transparent pass-through is a useful way to solve problems. Dynamic properties let you pass additional information through different layers without modifying the original type.

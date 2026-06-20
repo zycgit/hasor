@@ -1,21 +1,21 @@
 ---
 id: injectmembersioc
 sidebar_position: 5
-title: d.InjectMembers方式
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: d. InjectMembers Mode
+description: Delegate the full injection process to InjectMembers.
 ---
 
-# InjectMembers方式
+# InjectMembers Mode
 
 :::tip
-Bean 一旦实现 `net.hasor.core.spi.InjectMembers` 接口，那么其它所有注入方式全部失效
+Once a bean implements `net.hasor.core.spi.InjectMembers`, all other injection methods become invalid.
 :::
 
-具体的注入的全部过程会被委托给 InjectMembers 接口处理。
+The complete injection process is delegated to the `InjectMembers` interface.
 
-```java title='例如'
+```java title='Example'
 public class OrderManager implements InjectMembers {
-    @Inject  // <-因为实现了InjectMembers接口，因此@Inject注解将会失效。
+    @Inject  // <- Because InjectMembers is implemented, the @Inject annotation is ignored.
     public StockManager stockBeanTest;
     public StockManager stockBean;
 

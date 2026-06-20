@@ -1,24 +1,23 @@
 ---
 id: async
 sidebar_position: 4
-title: d.异步请求(Servlet3.0)
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: d. Asynchronous Requests (Servlet 3.0)
+description: Use Servlet 3.0 asynchronous requests in Hasor Web.
 ---
 
-# 异步请求(Servlet3.0)
+# Asynchronous Requests (Servlet 3.0)
 
-在Servlet 3.0之前，Servlet采用 Thread-Per-Request 的方式处理请求，即每一次Http请求都由某一个线程从头到尾负责处理。
-如果一个请求需要进行IO操作，比如访问数据库、调用第三方服务接口等，那么其所对应的线程将同步地等待IO操作完成。而IO操作是非常慢的，所以此时的线程并不能及时地释放回线程池以供后续使用，在并发量越来越大的情况下，这将带来严重的性能问题。
+Before Servlet 3.0, Servlets used a thread-per-request model: every HTTP request was handled from start to finish by one thread. If a request needed I/O, such as accessing a database or calling a third-party service API, the corresponding thread synchronously waited for that I/O operation to finish. I/O operations are very slow, so the thread could not be returned to the thread pool in time for later use. As concurrency increased, this caused serious performance problems.
 
-即便是像Spring、Struts 这样的高层框架也脱离不了这样的桎梏，因为他们都是建立在Servlet之上的。为了解决这样的问题，Servlet 3.0 引入了异步处理，然后在Servlet 3.1中又引入了非阻塞IO来进一步增强异步处理的性能。
+Even higher-level frameworks such as Spring and Struts could not escape this constraint because they were built on top of Servlet. To solve this problem, Servlet 3.0 introduced asynchronous processing, and Servlet 3.1 later introduced non-blocking I/O to further improve asynchronous-processing performance.
 
-Hasor 会自动识别容器的 Servlet 版本。因此 Hasor 在自动识别的帮助下可以做到 Servlet 2.x 和 Servlet 3.x 标准互容，这似的 Hasor 可以同时工作在两种 Servlet 平台之上。
+Hasor automatically detects the Servlet version of the container. With automatic detection, Hasor can be compatible with both Servlet 2.x and Servlet 3.x standards, allowing it to work on both Servlet platforms.
 
-如果你想使用 Servlet 3.0 的异步请求，先要确保你的 Web 容器支持 Servlet 3.0，否则异步请求会当做普通请求处理。
+If you want to use Servlet 3.0 asynchronous requests, first make sure your web container supports Servlet 3.0. Otherwise, asynchronous requests are handled as ordinary requests.
 
-然后像如下这样标记一个 `@Async` 就可以了，Hasor 会自动在 Servlet 3.0 容器下通过 `javax.servlet.AsyncContext.start` 方法启动异步处理。
+Then mark the class with `@Async` as shown below. In a Servlet 3.0 container, Hasor automatically starts asynchronous processing through `javax.servlet.AsyncContext.start`.
 
-```java title='例子'
+```java title='Example'
 @Async
 @MappingTo("/helloAction.do")
 public class HelloAction {
@@ -29,9 +28,9 @@ public class HelloAction {
 }
 ```
 
-或者标记在方法上
+Or mark the method:
 
-```java title='配置拦截器'
+```java title='Configure the interceptor'
 @MappingTo("/helloAction.do")
 public class HelloAction {
     @Async

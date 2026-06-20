@@ -1,13 +1,13 @@
 ---
 id: uniqueid
 sidebar_position: 2
-title: a.唯一ID
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Unique ID
+description: Assign unique IDs to Hasor beans.
 ---
 
-# 唯一ID
+# Unique ID
 
-与 Spring一样，可以为 Bean 指定唯一的名称。也就是Bean的 ID。
+As in Spring, you can assign a unique name to a bean. This name is the bean ID.
 
 ```java
 public class MyModule implements Module {
@@ -18,7 +18,7 @@ public class MyModule implements Module {
 }
 ```
 
-获得带名称的 Bean 可以通过 `appContext.getInstance("beanA")` 或者在依赖注入中指定名字：
+A named bean can be obtained with `appContext.getInstance("beanA")`, or the name can be specified during dependency injection:
 
 ```java
 public class UseBean {

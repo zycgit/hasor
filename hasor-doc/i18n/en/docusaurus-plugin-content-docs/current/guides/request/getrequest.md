@@ -1,13 +1,13 @@
 ---
 id: getrequest
 sidebar_position: 3
-title: b.获得Request接口
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. Obtaining the Request Interface
+description: Receive Servlet request-related objects as action method parameters.
 ---
 
-# 获得Request接口
+# Obtaining the Request Interface
 
-由于 Request 的存在周期很特殊，因此不能通过 @Inject 方式进行常规的注入。Hasor 提供了一种便捷的方式拿到它：
+Because the lifecycle of a request is special, it cannot be injected normally through `@Inject`. Hasor provides a convenient way to obtain it:
 
 ```java
 @MappingTo("/helloAction.do")
@@ -18,18 +18,18 @@ public class HelloAction {
 }
 ```
 
-可以在方法中被注入的类型有：
+Types that can be injected into methods include:
 
-| 接口                                       | 说明                  |
-|------------------------------------------|---------------------|
-| `javax.servlet.ServletRequest`           | ServletRequest      |
-| `javax.servlet.http.HttpServletRequest`  | HttpServletRequest  |
-| `javax.servlet.ServletResponse`          | ServletResponse     |
-| `javax.servlet.http.HttpServletResponse` | HttpServletResponse |
-| `javax.servlet.http.HttpSession`         | HttpSession         |
-| `javax.servlet.ServletContext`           | ServletContext      |
-| `net.hasor.web.Invoker` 或自定义扩展子类型        | 用来表示一次请求调用          |
-| `net.hasor.web.render.RenderInvoker`     | Invoker 扩展，用来处理页面渲染 |
-| `net.hasor.web.valid.ValidInvoker`       | Invoker 扩展，用来处理表单验证 |
-| `net.hasor.core.AppContext`              | 容器接口                |
-| `net.hasor.cobble.setting.Settings`      | 配置相关接口              |
+| Interface                                | Description                                      |
+|------------------------------------------|--------------------------------------------------|
+| `javax.servlet.ServletRequest`           | `ServletRequest`                                 |
+| `javax.servlet.http.HttpServletRequest`  | `HttpServletRequest`                             |
+| `javax.servlet.ServletResponse`          | `ServletResponse`                                |
+| `javax.servlet.http.HttpServletResponse` | `HttpServletResponse`                            |
+| `javax.servlet.http.HttpSession`         | `HttpSession`                                    |
+| `javax.servlet.ServletContext`           | `ServletContext`                                 |
+| `net.hasor.web.Invoker` or a custom subtype | Represents one request invocation             |
+| `net.hasor.web.render.RenderInvoker`     | `Invoker` extension for page rendering           |
+| `net.hasor.web.valid.ValidInvoker`       | `Invoker` extension for form validation          |
+| `net.hasor.core.AppContext`              | Container interface                              |
+| `net.hasor.cobble.setting.Settings`      | Configuration-related interface                  |

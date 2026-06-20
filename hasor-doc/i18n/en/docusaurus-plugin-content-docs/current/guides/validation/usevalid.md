@@ -1,17 +1,17 @@
 ---
 id: usevalid
 sidebar_position: 1
-title: a.使用验证器
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Using Validators
+description: Validate request parameters before request handling.
 ---
 
-# 使用验证器
+# Using Validators
 
-一个请求在递交到后台之后正式处理之前会做一些参数合法性校验。比如：年龄大于1，性别必须是：男或女，帐号密码输入不能为空等。
+After a request is submitted to the backend and before it is formally processed, parameter validity is often checked. For example: age must be greater than 1, gender must be male or female, and account/password fields cannot be empty.
 
-最后还要把验证的信息反馈到页面上，Hasor 的验证器可以帮助实现这些功能。
+Validation information also needs to be fed back to the page. Hasor validators help implement these features.
 
-以登录场景为例，首先定义请求参数组：
+Using login as an example, first define a request parameter group:
 
 ```java
 @ValidBy(LoginFormValidation.class)
@@ -24,7 +24,7 @@ public class LoginForm {
 }
 ```
 
-编写验证器
+Write the validator:
 
 ```java
 public class LoginFormValidation implements Validation<LoginForm> {
@@ -32,18 +32,18 @@ public class LoginFormValidation implements Validation<LoginForm> {
             LoginForm dataForm,
             ValidInvoker errors) {
         if (StringUtils.isBlank(dataForm.getLogin())) {
-            errors.addError("login", "帐号不能为空！");
+            errors.addError("login", "Account cannot be empty.");
             return;
         }
         if (StringUtils.isBlank(dataForm.getPassword())) {
-            errors.addError("password", "密码不能为空！");
+            errors.addError("password", "Password cannot be empty.");
             return;
         }
     }
 }
 ```
 
-最后通过 `@Valid` 注解配置请求在接收处理之前先做一次验证：
+Finally, configure the request with the `@Valid` annotation so validation runs once before the request is received and processed:
 
 ```java
 @MappingTo("/login.htm")
@@ -61,21 +61,21 @@ public class Login {
 }
 ```
 
-剩下的就是页面处理验证信息回显（freemarker 模板语法）
+The remaining work is displaying validation information on the page. The example below uses FreeMarker template syntax.
 
 ```html
 <form action="/login.do" method="post">
-    <!-- 帐号的验证结果 -->
-    帐号:<input name="account" type="text" value="${loginForm.account}">
+    <!-- Validation result for the account field. -->
+    Account:<input name="account" type="text" value="${loginForm.account}">
     <#if validData["account"]?? >
         ${validData["account"]?join(",")}
     </#if>
 
-    <!-- 密码的验证结果 -->
-    密码:<input name="password" type="password" value="${loginForm.password}">
+    <!-- Validation result for the password field. -->
+    Password:<input name="password" type="password" value="${loginForm.password}">
     <#if validData["password"]?? >
         ${validData["password"]?join(",")}
     </#if>
-    <input type="submit" value="递交"/>
+    <input type="submit" value="Submit"/>
 </form>
 ```

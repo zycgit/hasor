@@ -1,15 +1,15 @@
 ---
 id: startbean
 sidebar_position: 3
-title: b.启动创建 Bean
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. Creating Beans at Startup
+description: Create singleton beans eagerly during Hasor startup.
 ---
 
-# 启动创建 Bean
+# Creating Beans at Startup
 
-## 方式一
+## Method One
 
-如果您组合使用 `@Singleton` 注解和 `@Init` 注解，同时这个类在 Hasor 启动时通过 Module 预先注册了。那么 Hasor 会在启动时自动创建这个类并调用 init 方法。例如：
+If you use `@Singleton` and `@Init` together, and the class is pre-registered through a module during Hasor startup, Hasor automatically creates the class and calls its `init` method. For example:
 
 ```java
 @Singleton
@@ -27,9 +27,9 @@ public class MyModule implements Module {
 }
 ```
 
-方式二
+Method two:
 
-通过编码方式在 Module 初始化时指定，例如下面这样：
+Specify it in code during module initialization, as shown below:
 
 ```java
 public class PojoBean {
@@ -41,8 +41,8 @@ public class PojoBean {
 public class MyModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         apiBinder.bindType(PojoBean.class)
-                .initMethod("init")    // 初始化方法，相当于 @Init 注解
-                .asEagerSingleton();   // 单例，相当于 @Singleton 注解
+                .initMethod("init")    // Initialization method, equivalent to @Init.
+                .asEagerSingleton();   // Singleton, equivalent to @Singleton.
     }
 }
 ```

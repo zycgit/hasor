@@ -1,45 +1,45 @@
 ---
 id: apibinder
 sidebar_position: 1
-title: a.ApiBinder
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. ApiBinder
+description: Extend ApiBinder to provide unified framework extension APIs.
 ---
 
 # ApiBinder
 
 :::tip
-ApiBinder 扩展机制是从 Hasor 2.3 之后加入的。这个扩展机制可以帮助应用或工具框架在 init 阶段构建自己的交互接口。
+The `ApiBinder` extension mechanism was added after Hasor 2.3. It helps applications or tool frameworks build their own interaction interfaces during the init phase.
 
-它存在最大的意义在于可以统一开发体验，即基于 ApiBinder 的扩展的程序，其加载和初始化方式可以融合在 Module 之中。
+Its greatest value is a unified development experience. Programs extended through `ApiBinder` can have their loading and initialization flow integrated into modules.
 
-这种能力使得扩展工具即便是第三方工具，使用者在使用的时候感受犹如 Hasor 原生一般。
+This capability makes extension tools feel native to Hasor, even when they are third-party tools.
 :::
 
-## 原理
+## Principle
 
-在 Hasor init 过程的 newApiBinder 阶段，Hasor 会从配置文件中收集所有 ApiBinder 扩展点并创建它们。
+During Hasor's init process, in the `newApiBinder` phase, Hasor collects all `ApiBinder` extension points from configuration files and creates them.
 
 ![](../_img/CC2_E1VA_864B_GCI5.png)
 
-被创建的扩展点对象会存放在一个叫 supportMap 的 Map 对象中，Map 的 key 是用户自定义的 ApiBinder 接口。
+The created extension-point objects are stored in a map named `supportMap`. The map key is the user-defined `ApiBinder` interface.
 
-最后这些扩展点类型会通过 Java 的动态代理机制归纳到一个代理对象身上，然后每次方法调用会自动路由到对应的 Api 提供者中。
+Finally, these extension-point types are combined into one proxy object through Java's dynamic proxy mechanism. Every method call is then automatically routed to the corresponding API provider.
 
-## 例子
+## Example
 
-在下面例子中这个类型是 `net.test.binder.TestBinder`。首先在 Hasor 的配置文件中注册一个 ApiBinder 扩展。其中 `TestBinderCreator` 类实现了 `net.hasor.core.binder.ApiBinderCreator` 接口。
+In the following example, the type is `net.test.binder.TestBinder`. First, register an `ApiBinder` extension in the Hasor configuration file. The `TestBinderCreator` class implements the `net.hasor.core.binder.ApiBinderCreator` interface.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/main">
     <hasor.apiBinderSet>
-        <!-- 注册扩展 -->
+        <!-- Register the extension. -->
         <binder type="net.test.binder.TestBinder">net.test.binder.TestBinderCreator</binder>
     </hasor.apiBinderSet>
 </config>
 ```
 
-TestBinderCreator 实现如下：
+The `TestBinderCreator` implementation is shown below:
 
 ```java
 public interface TestBinder extends ApiBinder {
@@ -63,7 +63,7 @@ public class TestBinderCreator implements ApiBinderCreator {
 }
 ```
 
-最后启动 Hasor 并加载配置文件来使用这个扩展：
+Finally, start Hasor and load the configuration file to use this extension:
 
 ```java
 Hasor.create().mainSettingWith("my-hconfig.xml").build(apiBinder -> {
@@ -72,11 +72,11 @@ Hasor.create().mainSettingWith("my-hconfig.xml").build(apiBinder -> {
 });
 ```
 
-当程序运行到 `myBinder.hello()` 之后，控制台就会打印出 `"Hello Binder"`。
+After the program runs to `myBinder.hello()`, the console prints `"Hello Binder"`.
 
-## 关于tryCast
+## About tryCast
 
-`tryCast` 会做尝试转换，如果 `apiBinder` 并未加载 `TestBinder` 扩展，`tryCast` 会返回 null。因此 `tryCast` 函数的功效等同于：
+`tryCast` attempts a cast. If `apiBinder` has not loaded the `TestBinder` extension, `tryCast` returns `null`. Therefore, `tryCast` is equivalent to:
 
 ```java
 if (apiBinder instanceof TestBinder) {

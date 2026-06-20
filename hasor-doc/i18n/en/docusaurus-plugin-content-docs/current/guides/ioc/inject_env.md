@@ -1,22 +1,22 @@
 ---
 id: envioc
 sidebar_position: 8
-title: g.注入外部配置
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: g. Injecting External Configuration
+description: Inject external values through Settings placeholders.
 ---
 
-# 注入外部配置
+# Injecting External Configuration
 
-`@InjectSettings` 可以注入配置项。配置文件中的值支持 `${KEY}` 占位符，因此敏感信息可以通过 JVM `-D` 参数或操作系统环境变量传入。
+`@InjectSettings` can inject configuration items. Values in the configuration file support `${KEY}` placeholders, so sensitive information can be provided through JVM `-D` parameters or operating-system environment variables.
 
-配置文件：
+Configuration file:
 
 ```properties
 db.user = ${DB_USER}
 db.pwd  = ${DB_PWD}
 ```
 
-Bean：
+Bean:
 
 ```java
 public class DataBaseBean {
@@ -28,15 +28,15 @@ public class DataBaseBean {
 }
 ```
 
-启动程序时传入参数：
+Pass parameters when starting the program:
 
 ```bash
 java -DDB_USER=username -DDB_PWD=password -jar app.jar
 ```
 
-`@InjectSettings("${db.user}")` 也会读取名为 `db.user` 的 Settings 配置项。这个写法适合需要把配置项名保持在占位符形式的场景。
+`@InjectSettings("${db.user}")` also reads the `Settings` item named `db.user`. This form is useful when the configuration key itself needs to remain in placeholder form.
 
-如果配置项不存在，可以在注解中设置默认值：
+If a configuration item does not exist, set a default value on the annotation:
 
 ```java
 public class DataBaseBean {

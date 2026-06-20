@@ -3,12 +3,17 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const {translate} = require('@docusaurus/Translate');
 const analyticsPlugin = require('./plugins/analytics.js');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
     title: 'Hasor',
-    tagline: 'Hasor 框架',
+    tagline: translate({
+        id: 'site.tagline',
+        message: 'Hasor 框架',
+        description: 'The site tagline',
+    }),
     url: 'http://www.hasor.net',
     baseUrl: '/',
     onBrokenLinks: 'throw',
@@ -40,8 +45,22 @@ const config = {
 
     themeConfig: /** @type {import('@docusaurus/preset-classic').ThemeConfig} */ {
         metadata: [
-            {name: 'keywords', content: 'sql,dataway,hasor,dataql,开源,开源软件,java开源,开源项目,开源代码'},
-            {name: 'description', content: 'Hasor 本身是由多个不同系列框架组合而成的一个框架体系。这些子框架的能力涵盖了 IoC、Aop、WebMVC、数据库以及其它方方面面。'}
+            {
+                name: 'keywords',
+                content: translate({
+                    id: 'site.keywords',
+                    message: 'sql,dataway,hasor,dataql,开源,开源软件,java开源,开源项目,开源代码',
+                    description: 'The site keywords',
+                }),
+            },
+            {
+                name: 'description',
+                content: translate({
+                    id: 'site.description',
+                    message: 'Hasor 本身是由多个不同系列框架组合而成的一个框架体系。这些子框架的能力涵盖了 IoC、Aop、WebMVC、数据库以及其它方方面面。',
+                    description: 'The site description',
+                }),
+            }
         ],
         colorMode: {
             disableSwitch: true,
@@ -56,26 +75,49 @@ const config = {
                     type: 'doc',
                     docId: 'guides/quickstart',
                     position: 'left',
-                    label: '文档手册',
+                    label: translate({
+                        id: 'navbar.docs',
+                        message: '文档手册',
+                        description: 'The navbar documentation link',
+                    }),
                 },
                 {
                     type: 'doc',
                     docId: 'integration/overview',
                     position: 'left',
-                    label: '框架集成',
+                    label: translate({
+                        id: 'navbar.integration',
+                        message: '框架集成',
+                        description: 'The navbar integration link',
+                    }),
                 },
                 {
                     type: 'dropdown',
-                    label: '源代码',
+                    label: translate({
+                        id: 'navbar.source',
+                        message: '源代码',
+                        description: 'The navbar source code dropdown',
+                    }),
                     position: 'left',
                     items: [
-                        {label: '码云',href: 'https://gitee.com/zycgit/hasor'},
+                        {
+                            label: translate({
+                                id: 'navbar.gitee',
+                                message: '码云',
+                                description: 'The Gitee link label',
+                            }),
+                            href: 'https://gitee.com/zycgit/hasor'
+                        },
                         {label: 'Github',href: 'https://github.com/zycgit/hasor'}
                     ]
                 },
                 {
                     position: 'right',
-                    label: 'DataQL 语言',
+                    label: translate({
+                        id: 'navbar.dataql',
+                        message: 'DataQL 语言',
+                        description: 'The DataQL language link label',
+                    }),
                     href: 'https://www.dataql.net/'
                 },
                 {

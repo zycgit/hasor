@@ -1,22 +1,22 @@
 ---
 id: properties
 sidebar_position: 2
-title: a.Properties 格式差异性
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Properties Format Differences
+description: Notes about using properties files with Hasor Settings.
 ---
 
-# 配置文件
+# Configuration Files
 
-属性文件格式上没有什么特殊要说明的，就是常见的 Key/Value 格式。
+There is nothing special about the properties-file format. It is the common key/value format.
 
 :::caution
-唯一要说明的是，当加载多个属性文件之后。如遇到相同的 key 配置会被覆盖。如果要避免这一点可以选择 XML 格式并通过命名空间加以隔离。
+The only point to note is that when multiple properties files are loaded, duplicate keys overwrite earlier values. To avoid this, use XML and isolate configuration with namespaces.
 :::
 
-配置文件被加载之后按照 key 的值读取即可。例如：
+After a configuration file is loaded, read values by key. For example:
 
-```properties title='属性文件格式'
-mySelf.myName       = 赵永春
+```properties title='Properties format'
+mySelf.myName       = Yongchun Zhao
 mySelf.myAge        = 12
 mySelf.myBirthday   = 1986-01-01 00:00:00
 mySelf.myWork       = Software Engineer
@@ -28,5 +28,5 @@ mySelf.source       = Prop
 Settings settings = ...
 String myName = settings.getString("mySelf.myName");
  
-// myName 值为 ‘赵永春’
+// myName is 'Yongchun Zhao'.
 ```

@@ -1,13 +1,13 @@
 ---
 id: specialioc
 sidebar_position: 8
-title: h.注入容器类型
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: h. Injecting Container Types
+description: Inject Hasor container objects and other special framework types.
 ---
 
-# 注入容器类型
+# Injecting Container Types
 
-例如：得到容器自身
+For example, obtain the container itself:
 
 ```java
 public class AwareBean {
@@ -15,7 +15,7 @@ public class AwareBean {
     private AppContext appContext
 }
 
-//或
+// Or:
 
 public class AwareBean implements AppContextAware {
     public void setAppContext(AppContext appContext) {
@@ -24,14 +24,14 @@ public class AwareBean implements AppContextAware {
 }
 ```
 
-其它容器可以被注入的特殊类型：
+Other special types that can be injected by the container:
 
-| 接口                              | 功效                |
-|---------------------------------|-------------------|
-| `net.hasor.core.AppContext`     | 容器自身              |
-| `net.hasor.cobble.setting.Settings` | 读取配置接口        |
-| `net.hasor.core.spi.SpiTrigger` | SPI 触发器           |
-| `net.hasor.core.EventContext`   | 容器事件模型接口          |
-| `javax.servlet.ServletContext`  | J2EE 的 Servlet 容器 |
-| `net.hasor.web.ServletVersion`  | Servlet 容器版本      |
-| `net.hasor.web.MimeType`        | 可以根据扩展名查询对应的 mime |
+| Interface                         | Purpose                                      |
+|-----------------------------------|----------------------------------------------|
+| `net.hasor.core.AppContext`       | The container itself                         |
+| `net.hasor.cobble.setting.Settings` | Configuration-reading interface            |
+| `net.hasor.core.spi.SpiTrigger`   | SPI trigger                                  |
+| `net.hasor.core.EventContext`     | Container event model interface             |
+| `javax.servlet.ServletContext`    | J2EE Servlet container                       |
+| `net.hasor.web.ServletVersion`    | Servlet container version                    |
+| `net.hasor.web.MimeType`          | Looks up the corresponding MIME type by file extension |

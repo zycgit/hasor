@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
-import Translate from '@docusaurus/Translate';
+import Translate, {translate} from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '../components/HomepageFeatures';
@@ -25,10 +25,34 @@ function HomepageHeader() {
                         <img src="https://img.shields.io/badge/Email-zyc%40byshell.org-blue" alt="mailto"/>
                     </a>
                     <a className="button-padding" target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=o4Ue0lHqdr7oLq8ga0vvauXuw41nudbo&jump_from=webapi">
-                        <img border="0" src="https://img.shields.io/badge/QQ%E7%BE%A41-193943114-orange" alt="dbVisitor ORM 交流群1" title="DataQL 交流群1"/>
+                        <img border="0" src={translate({
+                            id: 'homepage.qqGroup1Badge',
+                            message: 'https://img.shields.io/badge/QQ%E7%BE%A41-193943114-orange',
+                            description: 'The QQ group 1 badge URL',
+                        })} alt={translate({
+                            id: 'homepage.qqGroup1Alt',
+                            message: 'Hasor 交流群1',
+                            description: 'The QQ group 1 image alt text',
+                        })} title={translate({
+                            id: 'homepage.qqGroup1Title',
+                            message: 'Hasor 交流群1',
+                            description: 'The QQ group 1 image title',
+                        })}/>
                     </a>
                     <a className="button-padding" target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=wMahYnxpVZPjrJp0ghQQLJmwM2Lmpmjl&jump_from=webapi">
-                        <img border="0" src="https://img.shields.io/badge/QQ%E7%BE%A42-641341864-orange" alt="dbVisitor ORM 交流群2" title="DataQL 交流群2"/>
+                        <img border="0" src={translate({
+                            id: 'homepage.qqGroup2Badge',
+                            message: 'https://img.shields.io/badge/QQ%E7%BE%A42-641341864-orange',
+                            description: 'The QQ group 2 badge URL',
+                        })} alt={translate({
+                            id: 'homepage.qqGroup2Alt',
+                            message: 'Hasor 交流群2',
+                            description: 'The QQ group 2 image alt text',
+                        })} title={translate({
+                            id: 'homepage.qqGroup2Title',
+                            message: 'Hasor 交流群2',
+                            description: 'The QQ group 2 image title',
+                        })}/>
                     </a>
                 </p>
                 <div className={styles.buttons}>

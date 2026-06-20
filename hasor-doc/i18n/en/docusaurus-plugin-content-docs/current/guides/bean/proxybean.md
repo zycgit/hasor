@@ -1,22 +1,22 @@
 ---
 id: proxybean
 sidebar_position: 4
-title: c.委托创建Bean
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: c. Delegated Bean Creation
+description: Delegate Hasor bean creation to another IoC container.
 ---
 
-# 委托创建Bean
+# Delegated Bean Creation
 
-Bean 委托创建能力是在 4.2.1 版本之后才提供的，利用 `TypeSupplier` 可以将注册到 Hasor 中到 Bean 委托给其它 IoC 容器来创建。
+Delegated bean creation was added after version 4.2.1. With `TypeSupplier`, beans registered in Hasor can be delegated to another IoC container for creation.
 
-在此之前 Hasor 的 Bean 创建只有工厂方式。如下：
+Before this, Hasor bean creation only supported the factory approach, as shown below:
 
 ```java
 public class TypeBean1Factory implements Supplier<TypeBean1> {
     private TypeBean1 target = new TypeBean1();
 
     public TypeBean1 get() {
-        return target;//工厂方式创建 TypeBean1
+        return target; // Create TypeBean1 through the factory.
     }
 }
 
@@ -24,20 +24,20 @@ public class TypeBean2Factory implements Supplier<TypeBean2> {
     private TypeBean2 target = new TypeBean2();
 
     public TypeBean2 get() {
-        return target;//工厂方式创建 TypeBean2
+        return target; // Create TypeBean2 through the factory.
     }
 }
 
 AppContext appContext = Hasor.create().build(apiBinder -> {
-    // .创建工厂
+    // Create factories.
     TypeBean1Factory factory1 = new TypeBean1Factory();
     TypeBean2Factory factory2 = new TypeBean2Factory();
-    // .注册 Bean，并指明工厂
+    // Register beans and specify their factories.
     apiBinder.bindType(TypeBean1.class).toProvider(factory1);
     apiBinder.bindType(TypeBean2.class).toProvider(factory2);
 });
 
-// .工厂方式创建 Bean
+// Create beans through factories.
 TypeBean1 typeBean1 = appContext.getInstance(TypeBean1.class);
 TypeBean2 typeBean2 = appContext.getInstance(TypeBean2.class);
 ```

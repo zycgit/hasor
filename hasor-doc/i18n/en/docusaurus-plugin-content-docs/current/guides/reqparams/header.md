@@ -1,13 +1,13 @@
 ---
 id: header
 sidebar_position: 3
-title: c.获取请求头
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: c. Reading Request Headers
+description: Read request headers with @HeaderParameter.
 ---
 
-# 获取请求头
+# Reading Request Headers
 
-获取请求头信息使用 `@HeaderParameter` 注解：
+Use the `@HeaderParameter` annotation to read request header information:
 
 ```java
 @MappingTo("/helloAction.do")

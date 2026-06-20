@@ -1,13 +1,13 @@
 ---
 id: useioc
 sidebar_position: 2
-title: a.使用IoC
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Using IoC
+description: Use dependency injection in request handlers.
 ---
 
-# 使用IoC
+# Using IoC
 
-请求处理的类的属性可以被依赖注入：
+Fields of request-handler classes can be injected through dependency injection:
 
 ```java
 @MappingTo("/helloAction.do")
@@ -22,5 +22,5 @@ public class HelloAction {
 ```
 
 :::tip
-具体依赖注入部分内容可以在【依赖注入(IoC)】查阅。
+For dependency injection details, see the Dependency Injection (IoC) section.
 :::

@@ -1,17 +1,17 @@
 ---
 id: initbean
 sidebar_position: 2
-title: a.初始化 Bean
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Initializing Beans
+description: Configure initialization methods for Hasor beans.
 ---
 
-# 初始化 Bean
+# Initializing Beans
 
-有时候我们希望有 Bean 可以在被创建时自动调用一个 init 方法，本小节就来向大家展示一下 Hasor 这方面的能力。
+Sometimes you want a bean to automatically call an `init` method when it is created. This section shows Hasor's support for that capability.
 
-## 方式一
+## Method One
 
-通过 `net.hasor.core.Init` 或 `javax.annotation.PostConstruct` 注解，例如下面这样：
+Use the `net.hasor.core.Init` or `javax.annotation.PostConstruct` annotation, as shown below:
 
 ```java
 public class PojoBean {
@@ -22,11 +22,11 @@ public class PojoBean {
 }
 ```
 
-方式二
+Method two:
 
 ```java
 public class PojoBean {
-    // 不使用注解，通过 apiBinder 来指定。
+    // Do not use an annotation; specify it through apiBinder instead.
     public void init(){
         ...
     }

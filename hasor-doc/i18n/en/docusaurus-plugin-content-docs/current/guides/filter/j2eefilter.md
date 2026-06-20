@@ -1,27 +1,27 @@
 ---
 id: j2eefilter
 sidebar_position: 2
-title: b.Filter形式
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. Filter Form
+description: Implement request interception with a traditional J2EE Filter.
 ---
 
-# Filter形式
+# Filter Form
 
-传统的 J2EE的 Filter 充当拦截器。例如：
+A traditional J2EE `Filter` can act as an interceptor. For example:
 
-```java title='例子'
+```java title='Example'
 public class MyFilter implements Filter {
     ...
 }
 ```
 
-最后对拦截器进行声明注册就可以正常使用了。
+Finally, declare and register the interceptor to use it normally.
 
-```java title='配置拦截器'
+```java title='Configure the interceptor'
 public class StartModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         ...
-        apiBinder.jeeFilter("/*").through(MyFilter.class);     // Filter形式
+        apiBinder.jeeFilter("/*").through(MyFilter.class);     // Filter form.
         ...
     }
 }

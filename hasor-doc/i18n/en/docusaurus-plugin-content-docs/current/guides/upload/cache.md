@@ -1,15 +1,15 @@
 ---
 id: cache
 sidebar_position: 3
-title: c.上传缓存
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: c. Upload Cache
+description: Configure temporary cache storage for non-streaming uploads.
 ---
 
-# 上传缓存
+# Upload Cache
 
-在非流式上传中，大一点的文件在上传过程中都需要缓存上传数据。Hasor 可以在代码中处理上传时临时指定上传路径：
+In non-streaming uploads, larger files need cached upload data during the upload process. Hasor can temporarily specify an upload path in code while handling an upload:
 
-```java title='例子'
+```java title='Example'
 @MappingTo("/fileupload.do")
 public class FileUpLoad extends WebController {
     public void execute() throws IOException {
@@ -20,7 +20,7 @@ public class FileUpLoad extends WebController {
 }
 ```
 
-如果使用默认缓存路径来保存上传的临时数据那么程序代码可以简化为：
+If you use the default cache path to store temporary upload data, the program code can be simplified as follows:
 
 ```java
 @MappingTo("/fileupload.do")
@@ -33,49 +33,49 @@ public class FileUpLoad extends WebController {
 }
 ```
 
-框架中默认缓存路径是 `${user.home}/hasor-work/temp/fragment`，这个路径可以通过下面这个配置改变：
+The default cache path in the framework is `${user.home}/hasor-work/temp/fragment`. This path can be changed with the following configuration:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/main">
     <hasor>
         <fileupload>
-            <!-- 上传文件缓存目录 -->
+            <!-- Upload file cache directory. -->
             <cacheDirectory>${user.home}/hasor-work/temp/fragment</cacheDirectory>
         </fileupload>
     </hasor>
 </config>
 ```
 
-## 缓存配置
+## Cache Configuration
 
-Hasor 在上传中可以配置的缓存信息有：
+The upload cache information configurable in Hasor is:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/main">
     <hasor>
         <fileupload>
-            <!-- 上传文件缓存目录 -->
+            <!-- Upload file cache directory. -->
             <cacheDirectory>${user.home}/hasor-work/temp/fragment</cacheDirectory>
-            <!-- 允许的请求大小 ( -1 表示不限制)-->
+            <!-- Allowed request size (-1 means unlimited). -->
             <maxRequestSize>${HASOR_UPLOAD_MAX_REQUEST_SIZE:-1}</maxRequestSize>
-            <!-- 允许上传的单个文件大小( -1 表示不限制) -->
+            <!-- Allowed size of a single uploaded file (-1 means unlimited). -->
             <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE:-1}</maxFileSize>
         </fileupload>
     </hasor>
 </config>
 ```
 
-其中占位符和值关系为：
+The placeholder-value relationship is:
 
-| 占位符                            | 值                                            |
-|-------------------------------|----------------------------------------------|
-| user.home                     | Java 系统属性，登录系统之后的用户主目录。例如：`/home/xxx/`        |
-| HASOR_UPLOAD_MAX_REQUEST_SIZE | 允许的请求大小 ( `-1` 表示不限制)，默认为：`-1`               |
-| HASOR_UPLOAD_MAX_FILE_SIZE    | 允许上传的单个文件大小( `-1` 表示不限制)，默认为：`-1`            |
+| Placeholder                   | Value                                                           |
+|-------------------------------|-----------------------------------------------------------------|
+| user.home                     | Java system property: the user's home directory after login, such as `/home/xxx/` |
+| HASOR_UPLOAD_MAX_REQUEST_SIZE | Allowed request size (`-1` means unlimited). Default: `-1`       |
+| HASOR_UPLOAD_MAX_FILE_SIZE    | Allowed size of a single uploaded file (`-1` means unlimited). Default: `-1` |
 
 :::tip
-- 用户主目录如果是 linux 系统那么这个目录通常在这里：`“/home/xxx/hasor-work/temp/fragment”`
-- 用户主目录如果是 window 用户住目录会在：`“c:/users/xxx/hasor-work/temp/fragment”`
+- On Linux, the user home path is usually similar to `/home/xxx/hasor-work/temp/fragment`.
+- On Windows, the user home path is usually similar to `c:/users/xxx/hasor-work/temp/fragment`.
 :::

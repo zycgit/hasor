@@ -1,17 +1,17 @@
 ---
 id: json
 sidebar_position: 4
-title: d.JSON渲染引擎
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: d. JSON Rendering Engine
+description: Implement and use a JSON rendering engine.
 ---
 
-# JSON渲染引擎
+# JSON Rendering Engine
 
 ```java
 /**
- * 使用 FastJson 作为序列化工具的 Json 渲染器
- * @version : 2016年1月3日
- * @author 赵永春 (zyc@hasor.net)
+ * JSON renderer using FastJson as the serialization tool.
+ * @version : January 3, 2016
+ * @author Yongchun Zhao (zyc@hasor.net)
  */
 @Render("json")
 public class JsonRender implements RenderEngine {
@@ -26,7 +26,7 @@ public class JsonRender implements RenderEngine {
 }
 ```
 
-使用 Json 渲染器，execute 方法返回的对象使用 Json 渲染器自动序列化并输出给前端，同时设置 ContentType。
+When using the JSON renderer, the object returned by the `execute` method is automatically serialized by the JSON renderer and output to the frontend, while `ContentType` is set.
 
 ```java
 @MappingTo("/helloAction.json")
@@ -39,7 +39,7 @@ public class HelloAction {
 }
 ```
 
-进一步还可以利用 `InvokerFilter` 把设置渲染器的工作统一处理：
+You can further use `InvokerFilter` to handle renderer selection uniformly:
 
 ```java
 @MappingTo("/helloAction.json")
@@ -50,4 +50,3 @@ public class UseJsonInvokerFilter implements InvokerFilter {
     }
 }
 ```
-

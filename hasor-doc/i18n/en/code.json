@@ -1,24 +1,80 @@
 {
+  "site.tagline": {
+    "message": "Hasor Framework",
+    "description": "The site tagline"
+  },
+  "site.keywords": {
+    "message": "sql,dataway,hasor,dataql,open source,open source software,java open source,open source project,open source code",
+    "description": "The site keywords"
+  },
+  "site.description": {
+    "message": "Hasor is a framework ecosystem composed of several framework families. These sub-frameworks cover IoC, AOP, Web MVC, databases, and many other areas.",
+    "description": "The site description"
+  },
+  "navbar.docs": {
+    "message": "Documentation",
+    "description": "The navbar documentation link"
+  },
+  "navbar.integration": {
+    "message": "Integration",
+    "description": "The navbar integration link"
+  },
+  "navbar.source": {
+    "message": "Source Code",
+    "description": "The navbar source code dropdown"
+  },
+  "navbar.gitee": {
+    "message": "Gitee",
+    "description": "The Gitee link label"
+  },
+  "navbar.dataql": {
+    "message": "DataQL Language",
+    "description": "The DataQL language link label"
+  },
   "homepage.feature1_title": {
-    "message": "Full-featured"
+    "message": "Complete Framework"
   },
   "homepage.feature1_desc": {
-    "message": "Entity mapping, TypeHandler, dynamic SQL, Stored procedures, Paging Queries, Transactions, Isolation, multiple DataSource"
+    "message": "IoC, AOP, Web MVC, and more."
   },
   "homepage.feature2_title": {
-    "message": "Familiar"
+    "message": "Microkernel + Plugins"
   },
   "homepage.feature2_desc": {
-    "message": "Compatible with Spring JdbcTemplate, Compatible with MyBatis Mapping File, Single Table CRUD"
+    "message": "Provides a small set of essential features, while all other capabilities are implemented through plugins."
   },
-  "homepage.feature3_title": {
-    "message": "Feature"
+  "homepage.feature6_title": {
+    "message": "Unified API"
   },
-  "homepage.feature3_desc": {
-    "message": "Independent, More TypeHandler, Dialect 20+, Conditional Builder, INSERT Strategy, Multi-Statement/Multi-ResultSet"
+  "homepage.feature6_desc": {
+    "message": "Hasor's unique API integration mechanism lets new framework capabilities integrate seamlessly into a unified API system."
   },
   "homepage.dataql": {
     "message": "Quick Start"
+  },
+  "homepage.qqGroup1Badge": {
+    "message": "https://img.shields.io/badge/QQ%20Group%201-193943114-orange",
+    "description": "The QQ group 1 badge URL"
+  },
+  "homepage.qqGroup1Alt": {
+    "message": "Hasor QQ Group 1",
+    "description": "The QQ group 1 image alt text"
+  },
+  "homepage.qqGroup1Title": {
+    "message": "Hasor QQ Group 1",
+    "description": "The QQ group 1 image title"
+  },
+  "homepage.qqGroup2Badge": {
+    "message": "https://img.shields.io/badge/QQ%20Group%202-641341864-orange",
+    "description": "The QQ group 2 badge URL"
+  },
+  "homepage.qqGroup2Alt": {
+    "message": "Hasor QQ Group 2",
+    "description": "The QQ group 2 image alt text"
+  },
+  "homepage.qqGroup2Title": {
+    "message": "Hasor QQ Group 2",
+    "description": "The QQ group 2 image title"
   },
   "theme.ErrorPageContent.title": {
     "message": "This page crashed.",
@@ -217,6 +273,6 @@
     "description": "The title of the tag list page"
   },
   "homepage.tagline": {
-    "message": "HasorDB is a Full-featured database access tool, Multiple usage, and compatible with Spring JDBC, MyBatis usage"
+    "message": "Hasor is a framework ecosystem composed of several framework families. These sub-frameworks cover IoC, AOP, Web MVC, databases, and many other areas."
   }
 }

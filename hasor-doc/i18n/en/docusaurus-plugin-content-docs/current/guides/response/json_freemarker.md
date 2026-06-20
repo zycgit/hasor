@@ -1,23 +1,23 @@
 ---
 id: freemarker
 sidebar_position: 5
-title: e.FreeMarker渲染引擎
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: e. FreeMarker Rendering Engine
+description: Implement a FreeMarker rendering engine for Hasor Web.
 ---
 
-# FreeMarker渲染引擎
+# FreeMarker Rendering Engine
 
 ```java
 /**
- * Freemarker 渲染器
- * @version : 2016年1月3日
- * @author 赵永春 (zyc@hasor.net)
+ * Freemarker renderer.
+ * @version : January 3, 2016
+ * @author Yongchun Zhao (zyc@hasor.net)
  */
 @Render("flt")
 public class FreemarkerRender implements RenderEngine {
     protected Configuration freemarker;
 
-    /** 内置创建 Freemarker 对象的方法，您也可以通过 apiBinder.bind(Configuration.class).... 来设置您自定义的。 */
+    /** Built-in method for creating the Freemarker object. You can also set your own object through apiBinder.bind(Configuration.class).... */
     protected Configuration newConfiguration(AppContext appContext, ServletContext servletContext) throws IOException {
         String realPath = servletContext.getRealPath("/");
         TemplateLoader templateLoader = new FileTemplateLoader(new File(realPath), true);
@@ -30,13 +30,13 @@ public class FreemarkerRender implements RenderEngine {
         }
         configuration.setDefaultEncoding(responseEncoding);
         configuration.setOutputEncoding(responseEncoding);
-        configuration.setLocalizedLookup(false);//是否开启国际化false
-        configuration.setClassicCompatible(true);//null值测处理配置
+        configuration.setLocalizedLookup(false); // Whether to enable internationalization: false.
+        configuration.setClassicCompatible(true); // Configuration for null-value handling.
 
         return configuration;
     }
 
-    /** 各种工具&变量 */
+    /** Various utilities and variables. */
     protected void configSharedVariable(AppContext appContext, ServletContext servletContext, Configuration freemarker)
             throws TemplateModelException {
         freemarker.setSharedVariable("stringUtils", new StringUtils());

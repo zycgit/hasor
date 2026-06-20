@@ -1,23 +1,23 @@
 ---
 id: filter
 sidebar_position: 2
-title: b.Filter
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. Filter
+description: Register and use Filters in Hasor Web.
 ---
 
 # Filter
 
-使用 Filter 如下所示：
+Use a filter as shown below:
 
-```java title='例子'
+```java title='Example'
 public class MyFilter implements Filter {
     ...
 }
 ```
 
-然后注册 Filter：
+Then register the filter:
 
-```java title='配置拦截器'
+```java title='Configure the interceptor'
 public class StartModule extends WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         ...

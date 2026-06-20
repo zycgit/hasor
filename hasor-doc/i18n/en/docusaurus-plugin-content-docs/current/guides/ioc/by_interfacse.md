@@ -1,22 +1,22 @@
 ---
 id: interfacseioc
 sidebar_position: 4
-title: c. 接口注入
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: c. Interface Injection
+description: Declare implementation types for injected interfaces.
 ---
 
-# 接口注入
+# Interface Injection
 
-如果要注入的对象类型是一个接口，那么需要在这个接口上设置设置 `net.hasor.core.ImplBy` 注解。已确定其具体实现类是谁。
+If the type to inject is an interface, configure the `net.hasor.core.ImplBy` annotation on that interface to determine its concrete implementation class.
 
-```java title='例如'
+```java title='Example'
 @ImplBy(PayServiceImpl.class)
 public interface PayService {
     ...
 }
 ```
 
-也可以使用代码方式在 Module 初始化过程中声明接口和实现类的关系。
+You can also declare the relationship between an interface and its implementation in code during module initialization.
 
 ```java
 AppContext appContext = Hasor.create().build(apiBinder -> {
@@ -25,6 +25,6 @@ AppContext appContext = Hasor.create().build(apiBinder -> {
 ```
 
 :::tip
-`@ImplBy` 注解具有传导性。ImplBy 的那个目标类型也可以再次被 @ImplBy
-`@ImplBy` 可以标记在：接口、抽象类、实体类 上。
+The `@ImplBy` annotation is transitive. The target type of an `ImplBy` annotation can itself be annotated with `@ImplBy` again.
+`@ImplBy` can be placed on interfaces, abstract classes, and concrete classes.
 :::

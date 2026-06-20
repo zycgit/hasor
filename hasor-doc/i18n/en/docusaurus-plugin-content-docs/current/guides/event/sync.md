@@ -1,28 +1,28 @@
 ---
 id: sync
 sidebar_position: 2
-title: a.同步事件
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Synchronous Events
+description: Fire synchronous Hasor events with shared or dedicated threads.
 ---
 
-# 同步事件
+# Synchronous Events
 
-同步事件是指当主流程引发事件时，是否阻塞主流程执行，等待所有事件监听器都执行完毕之后在恢复主流程的执行。主流程的调用等待事件执行完毕，根据执行事件监听器线程模型的不同还可以分为：
-- 独享线程：指的是当 Hasor 开始执行事件监听器时，使用一个全新的线程去执行监听器。
-- 共享线程：指的是当 Hasor 开始执行事件监听器时，使用当前线程执行监听器。
+A synchronous event determines whether the main flow blocks when it fires the event and waits until all event listeners have finished before continuing. Depending on the listener thread model, synchronous events can be divided into:
+- Dedicated thread: when Hasor starts executing event listeners, it uses a new thread to execute them.
+- Shared thread: when Hasor starts executing event listeners, it uses the current thread to execute them.
 
 ```java
-// 独享线程
+// Dedicated thread.
 EventContext eventContext = ...
 eventContext.fireSyncEventWithEspecial(EventName, ...);
 
-// 共享线程
+// Shared thread.
 EventContext eventContext = ...
 eventContext.fireSyncEvent(EventName, ...);
 ```
 
 :::tip
-独享线程下，如果大量的事件抛出会导致 事件调度线程池线程不够用。此时可以通过修改配置来增加处理线程，默认执行事件线程池只有 8 个最大线程。
-- 通过 `hasor.eventThreadPoolSize` 配置线程数。
-- 配置值可以写成 `${HASOR_LOAD_EVENT_POOL:8}`，再通过 `-DHASOR_LOAD_EVENT_POOL=16` 在启动时指定。
+With dedicated threads, firing a large number of events may exhaust the event-dispatch thread pool. Increase the number of processing threads through configuration. The default event thread pool has only 8 maximum threads.
+- Configure the thread count with `hasor.eventThreadPoolSize`.
+- The configuration value can be written as `${HASOR_LOAD_EVENT_POOL:8}` and specified at startup with `-DHASOR_LOAD_EVENT_POOL=16`.
 :::

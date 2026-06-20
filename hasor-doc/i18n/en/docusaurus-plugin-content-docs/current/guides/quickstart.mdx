@@ -1,19 +1,19 @@
 ---
 sidebar_position: 2
-title: 快速上手
-description: 开箱即用的 dbVisitor ORM 工具快速上手教程。
+title: Quick Start
+description: A quick-start guide for using Hasor out of the box.
 ---
 
-# 快速上手
+# Quick Start
 
-## 引入依赖
+## Adding the Dependency
 
 export const Highlight = ({children, color}) => (
   <span style={{ backgroundColor: color, borderRadius: '2px', color: '#fff', padding: '0.2rem', }}>{children}</span>
 );
 
-截止到目前为止 hasor 的最新版本为：**<Highlight color="rgb(227 17 108)">4.2.5</Highlight>**
-- 在 https://mvnrepository.com/artifact/net.hasor/core 上也可以查询到最新版本
+At the time this document was written, the latest Hasor version was: **<Highlight color="rgb(227 17 108)">4.2.5</Highlight>**
+- You can also check the latest version at https://mvnrepository.com/artifact/net.hasor/core
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -35,7 +35,7 @@ import TabItem from '@theme/TabItem';
 // Gradle
 implementation group: 'net.hasor', name: 'hasor-core', version: '4.2.5'
 
-// Gradle(Short)
+// Gradle (short form)
 implementation 'net.hasor:hasor-core:4.2.5'
 
 // Gradle (Kotlin)
@@ -77,25 +77,25 @@ libraryDependencies += "net.hasor" % "hasor-core" % "4.2.5"
 </Tabs>
 
 
-引入依赖包之后通过一行代码即可创建 Hasor
+After adding the dependency, you can create Hasor with one line of code.
 
 ```java
 AppContext appContext = Hasor.create().build();
 ```
 
 :::tip
-需要注意的是，一个应用中可以存在多个 Hasor 环境。因此在同一个应用中多次调用上述代码会导致创建多个不同的 AppContext。它们彼此之间没有任何关系。
+An application can contain multiple Hasor environments. Calling the code above multiple times in the same application creates multiple independent `AppContext` instances, and those instances have no relationship with each other.
 :::
 
-## 启动配置
+## Startup Configuration
 
-Hasor 默认会加载 classpath 下的 `hconfig.xml`。如果配置文件使用其它名称，可以在启动时指定。
+By default, Hasor loads `hconfig.xml` from the classpath. If the configuration file uses another name, specify it during startup.
 
 ```java
 Hasor.create().mainSettingWith("my-hconfig.xml").build();
 ```
 
-也可以在启动时直接写入配置项：
+You can also write configuration items directly during startup:
 
 ```java
 AppContext appContext = Hasor.create()
@@ -105,44 +105,44 @@ AppContext appContext = Hasor.create()
 
 ## Module
 
-在 Hasor 里大部分的工作都是从 net.hasor.core.Module 接口开始。使用 Module 您需要编写一个类实现这个接口，下面这段代码就是我们实现的第一个 Module
+In Hasor, most work starts from the `net.hasor.core.Module` interface. To use a module, write a class that implements this interface. The following code is the first module we implement.
 
 ```java
 public class FirstModule implements Module {
-	public void loadModule(ApiBinder apiBinder) {
-		...
-	}
+    public void loadModule(ApiBinder apiBinder) {
+        ...
+    }
 }
 ```
 
-接着在启动的中加载这个 Module
+Then load this module during startup.
 
 ```java
 Hasor.create().build(new FirstModule());
 ```
 
-Hasor 会在启动过程中调用上面那个 Module 方法。
+Hasor calls the module method above during startup.
 
 
-```java title='加载多个 Module'
-Hasor.create().build(new UserModule(),new ClassModule() ...);
+```java title='Loading multiple modules'
+Hasor.create().build(new UserModule(), new ClassModule() ...);
 ```
 
-```java title='Module 加载 Module'
+```java title='A module loading other modules'
 public class RootModule implements Module {
-	public void loadModule(ApiBinder apiBinder) throws Throwable {
-		...
-		apiBinder.installModule(new UserModule());
-		apiBinder.installModule(new ClassModule());
-		...
-	}
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        ...
+        apiBinder.installModule(new UserModule());
+        apiBinder.installModule(new ClassModule());
+        ...
+    }
 }
 ```
 
-```xml title='配置文件加载 Module'
+```xml title='Loading modules from a configuration file'
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/main">
-    <!-- 默认要装载的模块 -->
+    <!-- Modules loaded by default. -->
     <hasor>
         <modules>
             <module>net.hasor.web.render.RenderWebPlugin</module>

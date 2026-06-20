@@ -1,13 +1,13 @@
 ---
 id: group
 sidebar_position: 6
-title: f.请求参数组
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: f. Request Parameter Groups
+description: Bind many request parameters into a grouped object.
 ---
 
-# 请求参数组
+# Request Parameter Groups
 
-当一个请求递交了大量参数时，为了减少编写参数列表可以使用 `@ParameterGroup`
+When a request submits many parameters, use `@ParameterGroup` to reduce long parameter lists.
 
 ```java
 @MappingTo("/helloAction.do")
@@ -32,7 +32,7 @@ public class UserInfo {
 }
 ```
 
-前端如果递交的内容是一个 JSON ，还可以通过 @RequestBody 获取请求Body。这在当下比较常见。
+If the frontend submits JSON content, you can also use `@RequestBody` to read the request body. This is common today.
 
 ```java
 @MappingTo("/helloAction.do")

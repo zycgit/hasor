@@ -1,48 +1,48 @@
 ---
 id: spi
 sidebar_position: 2
-title: b.SPI
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. SPI
+description: Use Hasor SPI extension points to insert custom behavior into framework flows.
 ---
 
 # SPI
 
 :::tip
-SPI 全称 Service Plugin Interface，它的本真意图是在应用执行流程过程中，安插一些扩展点。
-通过这些扩展点让一个看似固定的代码流程变得可以动态扩展。甚至影响执行流程中的状态。
+SPI stands for Service Plugin Interface. Its original intent is to insert extension points into an application's execution flow.
+These extension points let an otherwise fixed code flow become dynamically extensible and can even affect execution state.
 
-提示：4.2.2 版本开始可以使用 Java 标准方式来声明 SPI （即：`META-INF/services/xxxx` 方式）
+Starting from version 4.2.2, Java's standard SPI declaration style can be used as well, namely `META-INF/services/xxxx`.
 :::
 
-SPI 分为两种模式，它们的工作原理如下：
+SPI has two modes. Their working principles are shown below:
 
 ![](../_img/spi-theory.png)
 
-## notifySpi（通知型）
+## notifySpi (Notification Type)
 
-每个SPI在被调用的时彼此并不能互相影响。notifySpi 在执行的时候如果带有返回值，那么这个返回值会被用作发起调用 SPI 之后的返回值返回。
+When each SPI is called, listeners cannot affect each other. If a `notifySpi` execution has a return value, that return value is used as the return value after the SPI call is initiated.
 
-但当一个 notifySpi 注册了多个监听器时。由于发起 SPI 调用只能有一个返回值，因此需要 SpiJudge 来协助返回值的选择，默认 SpiJudge 是选取最后一个。
+However, when one `notifySpi` has multiple listeners, the SPI call can still have only one return value. Therefore, `SpiJudge` is needed to select the return value. The default `SpiJudge` selects the last value.
 
-## chainSpi（链型）
+## chainSpi (Chain Type)
 
-链型的类似 AOP 拦截器或者叫做 Filter 过滤器，它存在的目的是让 Spi监听器 允许出现前后依赖关系。利用这个关系 SPI 监听器可以实现更为复杂的逻辑。
+A chain-type SPI is similar to an AOP interceptor or a filter. Its purpose is to allow SPI listeners to have before/after dependencies. With this relationship, SPI listeners can implement more complex logic.
 
 :::tip
-关于SPI命名
-- 通常而言 notifySpi 监听器的命名会以 xxxListener 形式出现。
-- 而 chainSpi 监听器的命名则 xxxxChainSpi 形式居多。
+SPI naming:
+- Normally, `notifySpi` listeners are named in the form `xxxListener`.
+- `chainSpi` listeners are often named in the form `xxxxChainSpi`.
 :::
 
-## SPI 监听器
+## SPI Listeners
 
-无论是 `notifySpi` 还是 `chainSpi` 一个 SPI 监听器必须是继承或者实现 `java.util.EventListener` 接口。除此之外两种类型的 SPI 在定义的时候并无实质区别。
+Whether it is `notifySpi` or `chainSpi`, an SPI listener must extend or implement the `java.util.EventListener` interface. Beyond that, there is no essential difference between the two SPI types when they are defined.
 
-## SPI 触发器
+## SPI Triggers
 
-`ChainSpi` 和 `NotifySpi` 的主要区别就在于使用了不同的 SPI 触发器方法进行触发，进而执行不同的 SPI 处理流程。
+The main difference between `ChainSpi` and `NotifySpi` is that different SPI trigger methods are used, which then execute different SPI processing flows.
 
-我们假设一个简单的例子，一共要打印三行控制台输出。这个程序是这个样子的：
+Assume a simple example that prints three lines to the console. The program looks like this:
 
 ```java
 System.out.println("A");
@@ -50,7 +50,7 @@ System.out.println("B");
 System.out.println("C");
 ```
 
-现在，我们希望在不影响代码流程的情况下。在输出 B 这个代码之前插入若干流程，流程是通过 SPI 的方式动态注册的。首先声明一个 SPI 接口。
+Now we want to insert several steps before printing B without affecting the code flow. These steps are dynamically registered through SPI. First, declare an SPI interface.
 
 ```java
 public interface MySpiListener extends EventListener {
@@ -58,11 +58,11 @@ public interface MySpiListener extends EventListener {
 }
 ```
 
-然后改动现有代码，在适当的地方安插调用 SPI 的逻辑。
+Then modify the existing code and insert the SPI invocation logic at the appropriate location.
 
 ```java
 @Inject
-private SpiTrigger spiTrigger；
+private SpiTrigger spiTrigger;
 
 System.out.println("A");
 // do spi
@@ -76,7 +76,7 @@ System.out.println("B");
 System.out.println("C");
 ```
 
-最后可以在 Module 的加载过程中注册 `MySpiListener`。
+Finally, register `MySpiListener` during module loading.
 
 ```java
 public class RootModule implements Module {
@@ -88,14 +88,14 @@ public class RootModule implements Module {
 }
 ```
 
-# SPI 仲裁器
+# SPI Judge
 
-冲裁器有两个作用
-- 一个是可以决定最终执行的 SPI 监听器是哪些，以及它们的顺序。
-- 另一个作用是帮助 NotifySpi 型 SPI 调用决定采用哪个返回值。
+A judge has two responsibilities:
+- It can decide which SPI listeners finally execute and in what order.
+- It helps notification-type SPI calls decide which return value to use.
 
 ```java
-// 注册监听器
+// Register listeners.
 AppContext appContext = Hasor.create().build(apiBinder -> {
     apiBinder.bindSpiListener(TestSpi.class, (obj) -> {
         ...
@@ -108,19 +108,19 @@ AppContext appContext = Hasor.create().build(apiBinder -> {
     });
 
     apiBinder.bindSpiJudge(TestSpi.class, new SpiJudge() {
-        // 改变仲裁默认行为，可以选取第一个值
+        // Change the default judge behavior and select the first value.
         public <R> R judgeResult(List<R> result, R defaultResult) {
             return result.get(0);
         }
 
-        // 决定那些 SPI 有效，并且它们的顺序
+        // Decide which SPI listeners are effective and their order.
         public <T extends java.util.EventListener> List<T> judgeSpi(List<T> spiListener) {
             return spiListener;
         }
     });
 });
 
-// 触发 SPI 调用
+// Trigger the SPI call.
 SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
 Object resultSpi = spiTrigger.notifySpi(TestSpi.class, new SpiCaller<TestSpi, Object>() {
     public Object doResultSpi(TestSpi listener, Object lastResult) throws Throwable {
@@ -128,6 +128,6 @@ Object resultSpi = spiTrigger.notifySpi(TestSpi.class, new SpiCaller<TestSpi, Ob
     }
 }, defaultResult);
 
-// 2个SPI，默认仲裁会返回最后一个 dataB 而不是 dataA
+// With two SPI listeners, the default judge returns the last value, dataB, rather than dataA.
 assert resultSpi == dataA;
 ```

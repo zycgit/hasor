@@ -1,50 +1,50 @@
 ---
 id: custom
 sidebar_position: 6
-title: e.自定义拦截器
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: e. Custom Interceptors
+description: Define custom AOP matchers and annotations.
 ---
 
-# 自定义拦截器
+# Custom Interceptors
 
-拦截器的匹配器
-- 类型：`net.hasor.core.exts.aop.Matchers`
+Interceptor matcher:
+- Type: `net.hasor.core.exts.aop.Matchers`
 
-匹配所有类
+Match all classes:
 - `Matchers.anyClass();`
 
-匹配所有方法
+Match all methods:
 - `Matchers.anyMethod();`
 
-匹配标记了 `@MyAop` 注解的类
+Match classes annotated with `@MyAop`:
 - `Matchers.annotatedWithClass(MyAop.class);`
 
-匹配标记了 `@MyAop` 注解的方法
+Match methods annotated with `@MyAop`:
 - `Matchers.annotatedWithMethod(MyAop.class)`
 
-匹配 `List` 类型的子类
-- `Matchers.subClassesOf(List.class);
+Match subclasses of `List`:
+- `Matchers.subClassesOf(List.class);`
 
-按照通配符匹配类
-- 格式为：`<包名>.<类名>`
-- 通配符符号为：`?` 表示任意一个字符；`*`  表示任意多个字符。
+Match classes by wildcard:
+- Format: `<package-name>.<class-name>`
+- Wildcards: `?` means any single character; `*` means any number of characters.
 - `Matchers.expressionClass("abc.foo.*");`
 
-## 通配符匹配方法样例
+## Wildcard Method Matching Examples
 
 ```text
-* *.*()                  匹配：任意无参方法
-* *.*(*)                 匹配：任意方法
-* *.add*(*)              匹配：任意add开头的方法
-* *.add*(*,*)            匹配：任意add开头并且具有两个参数的方法。
-* net.test.hasor.*(*)    匹配：包“net.test.hasor”下的任意类，任意方法。
-* net.test.hasor.add*(*) 匹配：包“net.test.hasor”下的任意类，任意add开头的方法。
-java.lang.String *.*(*)  匹配：任意返回值为String类型的方法。
+* *.*()                  Matches: any no-argument method.
+* *.*(*)                 Matches: any method.
+* *.add*(*)              Matches: any method whose name starts with add.
+* *.add*(*,*)            Matches: any method whose name starts with add and has two parameters.
+* net.test.hasor.*(*)    Matches: any method on any class under the net.test.hasor package.
+* net.test.hasor.add*(*) Matches: any method whose name starts with add on any class under the net.test.hasor package.
+java.lang.String *.*(*)  Matches: any method whose return type is String.
 ```
 
-## 自定义Aop注解
+## Custom AOP Annotation
 
-首先声明自己的注解。
+First, declare your own annotation.
 
 ```java
 @Retention(RetentionPolicy.RUNTIME)
@@ -53,7 +53,7 @@ public @interface MyAop {
 }
 ```
 
-其次编写拦截器
+Second, write the interceptor.
 
 ```java
 public class SimpleInterceptor implements MethodInterceptor {
@@ -74,16 +74,16 @@ public class SimpleInterceptor implements MethodInterceptor {
 }
 ```
 
-最后，配置拦截器的筛选器。筛选所有标记了 MyAop 注解的 Bean 都使用我们的拦截器，我们在 Module 中进行如下声明：
+Finally, configure the interceptor filter. To make our interceptor apply to all beans marked with the `MyAop` annotation, declare the following in a module:
 
 ```java
 public class MyAopSetup implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        //1.任意类
+        // 1. Any class.
         Matcher<Class<?>> atClass = AopMatchers.anyClass();
-        //2.有MyAop注解的方法
+        // 2. Methods annotated with MyAop.
         Matcher<Method> atMethod = AopMatchers.annotatedWithMethod(MyAop.class);
-        //3.让@MyAop注解生效
+        // 3. Enable the @MyAop annotation.
         apiBinder.bindInterceptor(atClass, atMethod, new SimpleInterceptor());
     }
 }

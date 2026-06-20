@@ -1,15 +1,15 @@
 ---
 id: classlevel
 sidebar_position: 3
-title: b.类级拦截器
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. Class-Level Interceptors
+description: Configure AOP interceptors on all methods of a class.
 ---
 
-# 类级拦截器
+# Class-Level Interceptors
 
-在 Hasor 中为 Bean 配置拦截器只需要一个注解即可，被标注类的所有方法就都被拦截了。
+In Hasor, configuring an interceptor for a bean only requires one annotation. All methods of the annotated class are intercepted.
 
-```java title='例如'
+```java title='Example'
 @Aop(SimpleInterceptor.class)
 public class AopBean {
     public String echo(String sayMessage) {
@@ -18,7 +18,7 @@ public class AopBean {
 }
 ```
 
-```java title='定义方法拦截器'
+```java title='Define a method interceptor'
 public class SimpleInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         try {
@@ -34,7 +34,7 @@ public class SimpleInterceptor implements MethodInterceptor {
 }
 ```
 
-```java title='创建 Aop Bean'
+```java title='Create an AOP bean'
 AppContext appContext = Hasor.create().build();
 appContext.getInstance(AopBean.class).echo("sss");
 ```

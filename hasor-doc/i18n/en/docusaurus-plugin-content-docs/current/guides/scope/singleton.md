@@ -1,13 +1,13 @@
 ---
 id: singleton
 sidebar_position: 2
-title: a.单例模式(Singleton)
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Singleton Mode
+description: Configure singleton beans in Hasor.
 ---
 
-# 单例模式(Singleton)
+# Singleton Mode
 
-声明 Bean 的单例一般通过下面这种注解方式：
+A bean singleton is usually declared with the following annotation:
 
 ```java
 @Singleton()
@@ -16,7 +16,7 @@ public class AopBean {
 }
 ```
 
-如果您使用的 `ApiBinder` 方式进行代码形式声明单例，那么需要这样：
+If you use `ApiBinder` to declare a singleton in code, use the following form:
 
 ```java
 public class MyModule implements Module {
@@ -26,38 +26,38 @@ public class MyModule implements Module {
 }
 ```
 
-## 改为默认单例模式
+## Changing the Default to Singleton Mode
 
 :::tip
-Hasor 不是默认单例的，默认单例可以借助 SPI 实现这个功能。首先创建SPI监听器：
+Hasor does not use singleton mode by default. You can use SPI to make singleton the default. First, create an SPI listener:
 :::
 
 ```java
 public class MyCollectScopeListener implements CollectScopeListener {
     public Supplier<Scope>[] collectScope(BindInfo<?> bindInfo, AppContext appContext,
-										  Supplier<Scope>[] suppliers) {
-        // 注册的 Bean 无论是否已经单例，都追加一个单例。
+                                          Supplier<Scope>[] suppliers) {
+        // Add a singleton scope for every registered bean, whether or not it is already singleton.
         return ArrayUtils.add(suppliers, appContext.findScope(Singleton.class));
     }
 
     public Supplier<Scope>[] collectScope(Class<?> targetType, AppContext appContext,
-										  Supplier<Scope>[] suppliers) {
-        // 非注册的 Bean 无论是否已经单例，都追加一个单例。
+                                          Supplier<Scope>[] suppliers) {
+        // Add a singleton scope for every unregistered bean, whether or not it is already singleton.
         return ArrayUtils.add(suppliers, appContext.findScope(Singleton.class));
     }
 }
 ```
 
-然后创建容器并且设置 SPI：
+Then create the container and set up the SPI:
 
 ```java
 AppContext appContext = Hasor.create().build(apiBinder -> {
-    // 设置默认单例SPI
+    // Set the default singleton SPI.
     apiBinder.bindSpiListener(CollectScopeListener.class, new MyCollectScopeListener());
 });
 ```
 
-最后测试两次创建的 Bean 就是一样的了：
+Finally, test that two created beans are the same instance:
 
 ```java
 PojoBean pojoBean1 = appContext.getInstance(PojoBean.class);

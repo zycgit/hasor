@@ -1,19 +1,19 @@
 ---
 id: constructorioc
 sidebar_position: 2
-title: a.构造方法注入
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Constructor Injection
+description: Use constructors to inject dependencies in Hasor.
 ---
 
-# 构造方法注入
+# Constructor Injection
 
-当类中有且只有一个无参的构造方法时，是不需要通过 `@ConstructorBy` 来指明构建 `Bean` 的构造方法。
+When a class has exactly one no-argument constructor, you do not need to use `@ConstructorBy` to indicate which constructor should be used to build the bean.
 
-首先，在要被注入的构造方法上标记 `net.hasor.core.ConstructorBy` 注解，以表示在创建 `Bean` 的时候使用这个构造方法。
+First, annotate the constructor to be injected with `net.hasor.core.ConstructorBy`. This tells Hasor to use that constructor when creating the bean.
 
-然后，如果有参数要被注入，那么在需要注入的参数前面加上 `net.hasor.core.Inject` 注解。以表示某个参数的来源是通过依赖注入进来的。
+Then, if parameters need to be injected, add the `net.hasor.core.Inject` annotation before the parameters. This indicates that the parameter value comes from dependency injection.
 
-```java title='例如'
+```java title='Example'
 public class CustomBean {
     private FunBean funBean = null;
 
@@ -28,7 +28,7 @@ public class CustomBean {
 }
 ```
 
-创建 Bean 也很简单，无需任何注册或者声明Bean的步骤。只需要从容器中按类型获取即可，Hasor 会自动在创建 Bean 过程中解析配置。
+Creating the bean is also simple. There is no need to register or declare the bean. Just obtain it from the container by type, and Hasor automatically resolves the configuration while creating the bean.
 
 ```java
 AppContext appContext = Hasor.create().build();
@@ -36,6 +36,6 @@ CustomBean myBean = appContext.getInstance(CustomBean.class);
 ```
 
 :::tip
-`net.hasor.core.ConstructorBy` 注解和 `javax.inject.Inject` 注解具有相同功效。
-如果类上出现多个 `ConstructorBy` 注解，那么将会按照构造方法参数个数排序。最后取参数最少的那个作为最终的构造方法。
+The `net.hasor.core.ConstructorBy` annotation has the same effect as `javax.inject.Inject`.
+If multiple constructors are annotated with `ConstructorBy`, they are sorted by parameter count, and the constructor with the fewest parameters is used as the final constructor.
 :::

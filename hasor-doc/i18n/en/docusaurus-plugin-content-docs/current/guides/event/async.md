@@ -1,24 +1,24 @@
 ---
 id: async
 sidebar_position: 3
-title: b.异步事件
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. Asynchronous Events
+description: Fire asynchronous Hasor events without blocking the main flow.
 ---
 
-# 异步事件
+# Asynchronous Events
 
-异步事件，异步事件是指当主流程引发事件时，不阻塞主流程。事件的执行完全交给事件线程进行异步调用。
+Asynchronous events do not block the main flow when the main flow fires an event. Event execution is completely delegated to event threads and invoked asynchronously.
 
 ```java
 EventContext eventContext = ...
 eventContext.fireAsyncEvent(EventName, ...);
 ```
 
-异步事件有一个参数可以控制执行过程中遇到突发状况下的行为，由 FireType 枚举定义：
-- Interrupt（顺序执行所有监听器，如果中途出错，那么终止执行）
-- Continue（顺序执行所有监听器，如果中途出错，那么继续执行下一个监听器）
+Asynchronous events have a parameter that controls behavior when unexpected conditions occur during execution. It is defined by the `FireType` enum:
+- `Interrupt`: execute all listeners in order; stop if an error occurs.
+- `Continue`: execute all listeners in order; continue to the next listener if an error occurs.
 
-`fireSyncEvent` 方法默认的执行方式是 `Interrupt`，下面是两者的触发方式：
+The default execution mode of `fireSyncEvent` is `Interrupt`. The following shows both trigger methods:
 
 ```java
 EventContext eventContext = ...

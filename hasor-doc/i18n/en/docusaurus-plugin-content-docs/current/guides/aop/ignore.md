@@ -1,15 +1,15 @@
 ---
 id: ignore
 sidebar_position: 7
-title: f.忽略动态代理
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: f. Ignoring Dynamic Proxy
+description: Use @IgnoreProxy to exclude classes or packages from dynamic proxying.
 ---
 
-# 忽略动态代理
+# Ignoring Dynamic Proxy
 
-## 标记到类上
+## Marking a Class
 
-任何类或者包上都可以通过标记 `@IgnoreProxy` 注解来达到不进行动态代理的目的。
+Any class or package can be annotated with `@IgnoreProxy` to prevent dynamic proxying.
 
 ```java
 @IgnoreProxy
@@ -18,79 +18,79 @@ public class CoreService {
 }
 ```
 
-此时在通过 AppContext 的方法创建这个 Bean 对象时候，无论我们是否配置了什么样的拦截器。这个类都不会被进行动态代理。
+At this point, when this bean is created through `AppContext`, the class will not be dynamically proxied no matter what interceptors are configured.
 
-比如下面这个例子：
+For example:
 
 ```java
-// 定义了一个全局拦截器，任何通过 Hasor 创建的 Bean 都会被 SimpleInterceptor 进行代理。
+// A global interceptor is defined. Any bean created by Hasor will be proxied by SimpleInterceptor.
 public class MyModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        //1.任意类
+        // 1. Any class.
         Matcher<Class<?>> atClass = Matchers.anyClass();
-        //2.任意方法
+        // 2. Any method.
         Matcher<Method> atMethod = Matchers.anyMethod();
-        //3.注册拦截器
+        // 3. Register the interceptor.
         apiBinder.bindInterceptor(atClass, atMethod, new SimpleInterceptor());
     }
 }
 
-// 有一个 Service 标记了 IgnoreProxy 表示不参与动态代理
+// A service is marked with IgnoreProxy, meaning it does not participate in dynamic proxying.
 @IgnoreProxy
 public class CoreService {
     ....
 }
 
-// 此时在通过 Hasor 创建这个对象时候即便存在全局拦截器也不会对 CoreService 产生任何效果。
+// When Hasor creates this object, the global interceptor has no effect on CoreService.
 AppContext appContext = Hasor.create().build();
 
 appContext.getInstance(CoreService.class)
 ```
 
-## 标记到包上
+## Marking a Package
 
-如果想控制更大范围内的忽略还可以新建一个 package-info.java 文件将其标记到包上。例如：
+To ignore a wider range, create a `package-info.java` file and place the annotation on the package. For example:
 
 ```java
 @IgnoreProxy
 package net.hasor.core;
 ```
 
-## 传递性
+## Propagation
 
-默认情况下 `IgnoreProxy` 的生效范围是其标注的位置以及其所有下属范围都会受到影响。
-- 标注到类上被标注的类型及其所有子类都不参与动态代理。
-- 通过 `package-info.java` 标注到包上之后：被标注的包下所有类型，及其子包下所有类型都不参与动态代理。
+By default, the effective range of `IgnoreProxy` is the annotated location and all subordinate ranges.
+- When placed on a class, the annotated type and all its subclasses do not participate in dynamic proxying.
+- When placed on a package through `package-info.java`, all types under the annotated package and all types under its subpackages do not participate in dynamic proxying.
 
 :::tip
-在 `@IgnoreProxy` 生效的地方，即便是某些类型上指明了 `@Aop` 这样的注解，动态代理也会被忽略。
+Where `@IgnoreProxy` is effective, dynamic proxying is ignored even if some types explicitly specify annotations such as `@Aop`.
 :::
 
-这种无差别的向下传播能力有时候并不是想要的，因此可以通过注解的 propagate 属性来控制是否禁止向下传播。这样就可以将忽略范围功效控制在一个可控的范围内。
+This indiscriminate downward propagation is not always desired. Use the `propagate` attribute of the annotation to control whether downward propagation is disabled, keeping the ignore range under control.
 
 ```java
-@IgnoreProxy(propagate = false) // 设置 propagate 属性表示 IgnoreProxy 仅仅在当前类型有效，不影响子类
+@IgnoreProxy(propagate = false) // Set propagate to make IgnoreProxy effective only on the current type, without affecting subclasses.
 public class CoreService {
     ....
 }
 ```
 
-## 重写行为
+## Overriding Behavior
 
-重写行为的前提是我们已经有一个父类或者包上通过 `@IgnoreProxy` 标明了行为，但想在子类或子包中重新定义 `@IgnoreProxy` 的行为。
+Overriding behavior applies when a parent class or package already declares behavior through `@IgnoreProxy`, but a subclass or subpackage needs to redefine that behavior.
 
 ```java
-@IgnoreProxy() // 默认会影响到所有子类
+@IgnoreProxy() // By default, this affects all subclasses.
 public class FruitService {
     ....
 }
 
-// 父类声明了 IgnoreProxy， 禁止行为会传播到 AppleService
+// The parent class declares IgnoreProxy, so the disabled behavior propagates to AppleService.
 public class AppleService extends FruitService {
     ....
 }
 
-@IgnoreProxy(ignore = false) // 即便父类禁止了动态代理，子类依然可以通过 ignore 重写控制策略。 
+@IgnoreProxy(ignore = false) // Even if the parent disables dynamic proxying, the subclass can override the policy through ignore.
 public class SubCoreService extends FruitService {
     ....
 }

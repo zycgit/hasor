@@ -1,13 +1,13 @@
 ---
 id: query
 sidebar_position: 4
-title: d.获取URL查询参数
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: d. Reading URL Query Parameters
+description: Read URL query parameters with @QueryParameter.
 ---
 
-# 获取URL查询参数
+# Reading URL Query Parameters
 
-需要使用 `@QueryParameter` 注解，例如：
+Use the `@QueryParameter` annotation. For example:
 
 ```java
 @MappingTo("/helloAction.do")
@@ -18,4 +18,4 @@ public class HelloAction {
 }
 ```
 
-请求URL地址：`http://localhost:8080/helloAction.do?value=true`\
+Request URL: `http://localhost:8080/helloAction.do?value=true`

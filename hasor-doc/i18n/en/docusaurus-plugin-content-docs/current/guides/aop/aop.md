@@ -1,35 +1,33 @@
 ---
 id: aop
 sidebar_position: 1
-title: 动态代理(Aop)
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: Dynamic Proxy (AOP)
+description: Introduces aspect-oriented programming and dynamic proxy support in Hasor.
 ---
 
-# 什么是Aop？
+# What Is AOP?
 
-“面向切面编程” 也被称为 “Aop” 是目前非常活跃的一个开发思想。利用 AOP 可以对业务逻辑的各个部分进行隔离，
-从而使得业务逻辑各部分之间的耦合度降低，提高程序的 可重用性，同时提高了开发的效率。
+"Aspect-oriented programming", also known as "AOP", is a very active development idea. AOP can isolate different parts of business logic, reduce coupling between those parts, improve code reuse, and improve development efficiency.
 
-Aop 编程的目的是将例如日志记录、性能统计、安全控制、事务、异常处理等代码从业 务逻辑代码中划分出来。
+The purpose of AOP programming is to separate cross-cutting code, such as logging, performance statistics, security control, transactions, and exception handling, from business logic.
 
-比方说我有一个查询用户信息的接口，现在要为这个接口添加记录的功能。每当执行一 次查询都记录下查询消耗时间。
-如果我要实现这个功能，一般情况下需要在接口实现类的每 一个方法前后都要安插代码来收集数据。如果这样做的话会比较繁琐，但是通过 Aop 的方式 就显得非常优雅。
+For example, suppose there is an interface for querying user information and you now need to add logging to it. Every query should record its execution time. Normally, implementing this feature means inserting code before and after every method in the interface implementation class to collect data. That is cumbersome, while AOP makes the solution elegant.
 
-实现 Aop 编程模型分为（**静态代理**、**动态代理**）两种方式，其中：
-- **静态代理** 多以代理模式（Proxy Pattern）的形式出现。
-- **动态代理** 则花样繁多，常见的有：Java 原生的 Propxy、 CGLib、JBossAOP、等等。
+There are two ways to implement the AOP programming model: **static proxy** and **dynamic proxy**.
+- **Static proxy** usually appears as the Proxy Pattern.
+- **Dynamic proxy** has many forms, such as Java's native `Proxy`, CGLib, JBossAOP, and others.
 
-## 静态代理
+## Static Proxy
 
-假设有一个工厂，工厂里的工人上下班每次都需要打卡。那么这个工厂的工人可以抽象为 `Worker` 接口、工作可以被抽象成为 `doWork` 方法。
+Assume there is a factory where workers need to clock in when they start and clock out when they leave. A worker can be represented by the `Worker` interface, and the work action can be represented by the `doWork` method.
 
-```java title='一个对象化的工人如下'
+```java title='An object-oriented worker'
 public interface Worker {
     public void doWork();
 }
 ```
 
-打卡分为上班打卡和下班打卡，为此抽象一个打卡机，并将上下班打卡使用 `beforeWork` 和 `afterWork` 方法表示。如下：
+Clocking in and clocking out are separated into two actions. We can model a time clock and represent those actions with `beforeWork` and `afterWork`:
 
 ```java
 public class Machine {
@@ -43,9 +41,7 @@ public class Machine {
 }
 ```
 
-工厂规定每个员工只要来到工厂就视为上班打卡、当离开工厂就被认为下班打卡。
-为了人性化考勤，公司使用了一种现代化的技术可以让员工不必自己动手去打卡，犹如配备了一 名贴身小秘书。
-其实不难看出这项新技术仅仅是围绕着工人（Worker）在工作（doWork）前后实现了自动打卡。下面是这个技术的抽象：
+The factory considers an employee clocked in as soon as the employee enters the factory, and clocked out when leaving. To make attendance friendlier, the company uses a modern technique that lets employees avoid manual clocking, as if each person had a personal assistant. This technique simply surrounds the worker's `doWork` execution with automatic clock-in and clock-out logic. Its abstraction is shown below:
 
 ```java
 public class WorkerProxy implements Worker {
@@ -60,16 +56,15 @@ public class WorkerProxy implements Worker {
 }
 ```
 
-## 动态代理
+## Dynamic Proxy
 
-在程序执行时，代理类(WorkerProxy)的 class 文件已经预先存在。在动态代理中这却恰恰相反的，代理类不会预先存在，当需要它的时候通过一些专门的类库创建这个代理程序。
+With static proxy, the proxy class (`WorkerProxy`) already exists as a class file when the program runs. Dynamic proxy is the opposite: the proxy class does not exist ahead of time. It is created by specialized libraries when needed.
 
-比方说一个程序中有多种不同的 Servies 类。我们要打印出调用每个业务方法所占用的 时间。如果使用静态代理方式会发现，程序中根本不存在衡定的“doWorker”方法。
+For example, suppose a program has many different service classes, and we need to print how long each business method takes. With static proxy, there is no fixed `doWorker` method in the program.
 
-虽然不存在衡定的“doWorker”方法，但是调用行为是存在的。而且可以将其行为抽象 出来这就是 Aop 中的“切面”，负责执行这个切面的类就叫“拦截器”。
-下面这个代码展示 了如何用 Java 的原生支持实现动态代理。
+Even though there is no fixed `doWorker` method, the invocation behavior exists. That behavior can be abstracted as an "aspect" in AOP, and the class responsible for executing the aspect is called an "interceptor". The following code shows how to implement dynamic proxy with Java's native support.
 
-```java title='例如'
+```java title='Example'
 ClassLoader lod = Thread.currentThread().getContextClassLoader();
 
 Class<?>[] faceSet = new Class[] { TestBean2_Face.class };
@@ -83,7 +78,7 @@ TestBean2_Face face = (TestBean2_Face) proxy;
 System.out.println(face.toString());
 ```
 
-下面的拦截器就是上面例子中用到的：“JavaInvocationHandler”类。
+The interceptor used in the example above is the `JavaInvocationHandler` class.
 
 ```java
 class JavaInvocationHandler implements InvocationHandler {
@@ -93,5 +88,4 @@ class JavaInvocationHandler implements InvocationHandler {
 }
 ```
 
-由此可见在 Java 中实现一个动态代理还算很简单的，但是有的时候我们想把所有 Bean 都管理起来。
-并且按照自己的意愿来对其进行动态代理，在这种要求下我们不得不自己去开发一套 Bean 容器，Hasor 就提供了这样一种能力。
+This shows that implementing a dynamic proxy in Java is not very difficult. Sometimes, however, we want to manage all beans and apply dynamic proxies to them according to our own rules. That requirement means building a bean container, and Hasor provides exactly that capability.

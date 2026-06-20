@@ -1,13 +1,13 @@
 ---
 id: contenttype
 sidebar_position: 2
-title: b.ContentType
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: b. ContentType
+description: Set response ContentType values with @Produces.
 ---
 
 # ContentType
 
-作为 html 为结果的响应，设置 `ContentType` 需要通过 `@Produces` 注解。如下：
+For a response whose result is HTML, set `ContentType` with the `@Produces` annotation, as shown below:
 
 ```java
 @MappingTo("/my.html")
@@ -20,6 +20,6 @@ public class HtmlProduces {
 }
 ```
 
-::;tip
-如果没有指定 `@Produces` 注释，Hasor 也不会主动设置 `ContentType`。
+:::tip
+If the `@Produces` annotation is not specified, Hasor does not actively set `ContentType`.
 :::

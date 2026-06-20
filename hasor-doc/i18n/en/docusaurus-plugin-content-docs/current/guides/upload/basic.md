@@ -1,17 +1,17 @@
 ---
 id: basic
 sidebar_position: 1
-title: a.表单上传
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: a. Form Upload
+description: Upload files from forms with Hasor Web.
 ---
 
-# 表单上传
+# Form Upload
 
-Hasor 内置了 apache 的 fileuplaod 组件，并且对该组件做了精简优化。因此在使用 Hasor 的文件上传时您无需也不会引入任何第三方 jar。
+Hasor includes Apache FileUpload internally and simplifies and optimizes it. Therefore, when using Hasor file upload, you do not need to introduce any third-party jar.
 
-首先使用文件上传，必须通过 `WebController` 类进行操作，这里有文件上传例子：
+To use file upload, you must operate through the `WebController` class. The following is a file upload example:
 
-```java title='例子'
+```java title='Example'
 @MappingTo("/fileupload.do")
 public class FileUpLoad extends WebController {
     public void execute() throws IOException {
@@ -22,11 +22,11 @@ public class FileUpLoad extends WebController {
 }
 ```
 
-而对应的 html 页面是一个普通的表单上传，但是要注意 form 标签的 enctype 属性要改成 `multipart/form-data`
+The corresponding HTML page is an ordinary upload form, but note that the `enctype` attribute of the `form` tag must be changed to `multipart/form-data`.
 
 ```html
 <form action="/fileupload.do" method="post" enctype="multipart/form-data">
     <input type="file" name="upfile"/>
-    <input type="submit" value="上传"/>
+    <input type="submit" value="Upload"/>
 </form>
 ```
