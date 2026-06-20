@@ -10,55 +10,14 @@
 
     <!-- Maven Info -->
     <artifactId>demo-hasor-boot</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <!-- Project Info -->
     <name>Demo-Hasor-Boot</name>
-    <description>demo project for Hasor Boot executable archives.</description>
+    <description>demo projects for Hasor Boot executable archives.</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.30</version>
-            <scope>runtime</scope>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>net.hasor.demo.boot.DemoHasorBootApplication</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>net.hasor</groupId>
-                <artifactId>hasor-boot-maven-plugin</artifactId>
-                <version>${project.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <modules>
+        <module>demo-hasor-boot-basic</module>
+        <module>demo-hasor-boot-web</module>
+    </modules>
 </project>

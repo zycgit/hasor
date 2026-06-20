@@ -56,6 +56,8 @@
     <modules>
         <module>hasor-core</module>
         <module>hasor-web</module>
+        <module>hasor-boot</module>
+        <module>demo-hasor-boot</module>
     </modules>
 
     <!-- 构建描述 -->
@@ -271,6 +273,36 @@
             <dependency>
                 <groupId>net.hasor</groupId>
                 <artifactId>hasor-web</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-boot-tomcat</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-boot-jetty</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-boot-undertow</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-boot-loader</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>demo-hasor-boot-basic</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>demo-hasor-boot-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
