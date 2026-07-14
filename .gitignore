@@ -30,9 +30,14 @@ target
 *.njsproj
 *.sln
 pom.xml.versionsBackup
+pom.xml.releaseBackup
+release.properties
 
 # codes
 gen/
 logs/*
-hasor-dataql/logs/*
-hasor-rsf/logs/*
+
+# docs
+.docusaurus
+.cache-loader
+dbvisitor-doc/build/

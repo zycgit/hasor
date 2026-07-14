@@ -1,0 +1,8 @@
+{
+  "label": "接收 Web 请求",
+  "position": 2,
+  "link": {
+    "type": "doc",
+    "id": "request"
+  }
+}

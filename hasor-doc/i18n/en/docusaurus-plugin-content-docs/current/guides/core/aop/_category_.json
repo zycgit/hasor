@@ -1,0 +1,8 @@
+{
+  "label": "Dynamic Proxy (AOP)",
+  "position": 5,
+  "link": {
+    "type": "doc",
+    "id": "aop"
+  }
+}

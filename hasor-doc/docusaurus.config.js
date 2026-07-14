@@ -1,23 +1,23 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-const {translate} = require('@docusaurus/Translate');
+const prismReactRenderer = require('prism-react-renderer');
+const lightCodeTheme = prismReactRenderer.themes ? prismReactRenderer.themes.github : require('prism-react-renderer/themes/github');
+const darkCodeTheme = prismReactRenderer.themes ? prismReactRenderer.themes.dracula : require('prism-react-renderer/themes/dracula');
 const analyticsPlugin = require('./plugins/analytics.js');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
     title: 'Hasor',
-    tagline: translate({
-        id: 'site.tagline',
-        message: 'Hasor 框架',
-        description: 'The site tagline',
-    }),
+    tagline: 'Hasor 框架',
     url: 'http://www.hasor.net',
     baseUrl: '/',
     onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'warn',
+    markdown: {
+        hooks: {
+            onBrokenMarkdownLinks: 'warn',
+        },
+    },
     favicon: 'img/favicon.ico',
     organizationName: 'zycgit', // Usually your GitHub org/user name.
     projectName: 'hasor',   // Usually your repo name.
@@ -36,6 +36,7 @@ const config = {
                     sidebarPath: require.resolve('./sidebars.js'),
                     editUrl: 'https://gitee.com/zycgit/hasor-doc/tree/master/',
                 },
+                blog: false,
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
                 },
@@ -47,19 +48,11 @@ const config = {
         metadata: [
             {
                 name: 'keywords',
-                content: translate({
-                    id: 'site.keywords',
-                    message: 'hasor,hasor-core,hasor-web,hasor-boot,ioc,aop,webmvc,java开源,开源项目',
-                    description: 'The site keywords',
-                }),
+                content: 'hasor,hasor-core,hasor-web,hasor-boot,ioc,aop,webmvc,java开源,开源项目',
             },
             {
                 name: 'description',
-                content: translate({
-                    id: 'site.description',
-                    message: 'Hasor 是一个轻量级 Java 框架，当前核心能力由 hasor-core、hasor-web、hasor-boot 组成。',
-                    description: 'The site description',
-                }),
+                content: 'Hasor 是一个轻量级 Java 框架，当前核心能力由 hasor-core、hasor-web、hasor-boot 组成。',
             }
         ],
         colorMode: {
@@ -73,43 +66,31 @@ const config = {
             items: [
                 {
                     type: 'doc',
-                    docId: 'guides/quickstart',
+                    docId: 'guides/getting-started/quickstart',
                     position: 'left',
-                    label: translate({
-                        id: 'navbar.docs',
-                        message: '文档手册',
-                        description: 'The navbar documentation link',
-                    }),
-                },
-                {
-                    type: 'doc',
-                    docId: 'integration/overview',
-                    position: 'left',
-                    label: translate({
-                        id: 'navbar.integration',
-                        message: '框架集成',
-                        description: 'The navbar integration link',
-                    }),
+                    label: '文档手册',
                 },
                 {
                     type: 'dropdown',
-                    label: translate({
-                        id: 'navbar.source',
-                        message: '源代码',
-                        description: 'The navbar source code dropdown',
-                    }),
+                    label: '源代码',
                     position: 'left',
                     items: [
                         {
-                            label: translate({
-                                id: 'navbar.gitee',
-                                message: '码云',
-                                description: 'The Gitee link label',
-                            }),
+                            label: '码云',
                             href: 'https://gitee.com/zycgit/hasor'
                         },
                         {label: 'Github',href: 'https://github.com/zycgit/hasor'}
                     ]
+                },
+                {
+                    label: 'DataQL 语言',
+                    href: 'https://www.dataql.net/',
+                    position: 'right',
+                },
+                {
+                    label: 'Dataway',
+                    href: 'https://www.dataql.net/docs/dataway/overview',
+                    position: 'right',
                 },
                 {
                     type: 'localeDropdown',
@@ -132,16 +113,18 @@ const config = {
         },
     },
     plugins: [
-        analyticsPlugin,
+        analyticsPlugin
+    ],
+    themes: [
         [
-            require.resolve("@cmfcmf/docusaurus-search-local"),
-            {
-                indexPages: true,
-                // When applying `zh` in language, please install `nodejieba` in your project.
+            require.resolve("@easyops-cn/docusaurus-search-local"),
+            /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
+            ({
+                hashed: true,
+                indexBlog: false,
                 language: ["en", "zh"],
-                maxSearchResults: 8
-            }
-        ]
+            }),
+        ],
     ]
 };
 

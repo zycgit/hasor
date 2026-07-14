@@ -1,0 +1,8 @@
+{
+  "label": "结果响应",
+  "position": 4,
+  "link": {
+    "type": "doc",
+    "id": "render"
+  }
+}

@@ -18,9 +18,6 @@ function HomepageHeader() {
                     <a className="button-padding" target="_blank" href="https://www.apache.org/licenses/LICENSE-2.0.html">
                         <img src="https://img.shields.io/badge/license-Apache%202-4EB1BA.svg" alt="License"/>
                     </a>
-                    <a className="button-padding" target="_blank" href="https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core">
-                        <img src="https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core/badge.svg" alt="Maven"/>
-                    </a>
                     <a className="button-padding" target="_blank" href="mailto:zyc@byshell.org">
                         <img src="https://img.shields.io/badge/Email-zyc%40byshell.org-blue" alt="mailto"/>
                     </a>
@@ -56,7 +53,7 @@ function HomepageHeader() {
                     </a>
                 </p>
                 <div className={styles.buttons}>
-                    <Link className="button button--secondary button--lg" to="/docs/guides/quickstart"><Translate id="homepage.quickstart">快速上手</Translate></Link>
+                    <Link className="button button--secondary button--lg" to="/docs/guides/getting-started/quickstart"><Translate id="homepage.quickstart">快速上手</Translate></Link>
                 </div>
             </div>
         </header>
