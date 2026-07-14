@@ -8,7 +8,7 @@ description: Define custom AOP matchers and annotations.
 # Custom Interceptors
 
 Interceptor matcher:
-- Type: `net.hasor.core.exts.aop.Matchers`
+- Type: `net.hasor.cobble.dynamic.Matchers`
 
 Match all classes:
 - `Matchers.anyClass();`
@@ -80,9 +80,9 @@ Finally, configure the interceptor filter. To make our interceptor apply to all 
 public class MyAopSetup implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         // 1. Any class.
-        Matcher<Class<?>> atClass = AopMatchers.anyClass();
+        Predicate<Class<?>> atClass = Matchers.anyClass();
         // 2. Methods annotated with MyAop.
-        Matcher<Method> atMethod = AopMatchers.annotatedWithMethod(MyAop.class);
+        Predicate<Method> atMethod = Matchers.annotatedWithMethod(MyAop.class);
         // 3. Enable the @MyAop annotation.
         apiBinder.bindInterceptor(atClass, atMethod, new SimpleInterceptor());
     }

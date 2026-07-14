@@ -2,7 +2,7 @@
 id: cache
 sidebar_position: 3
 title: c.上传缓存
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 上传缓存
@@ -12,10 +12,11 @@ description: DataQL 开发手册，QIL 指令集、构造指令、存储指令�
 ```java title='例子'
 @MappingTo("/fileupload.do")
 public class FileUpLoad extends WebController {
+    @Any
     public void execute() throws IOException {
         String cacheDirectory = "...";
         Integer maxPostSize = 1024 * 1024;
-        FileItem multipart1 = this.getOneMultipart("upfile", cacheDirectory, maxPostSize);
+        List<FileItem> multipartList = this.getMultipart("upfile", cacheDirectory, maxPostSize);
     }
 }
 ```
@@ -25,23 +26,27 @@ public class FileUpLoad extends WebController {
 ```java
 @MappingTo("/fileupload.do")
 public class FileUpLoad extends WebController {
+    @Any
     public void execute() throws IOException {
-        FileItem multipart = this.getOneMultipart("upfile");
-        multipart.writeTo(new File(""));
-        multipart.deleteOrSkip();
+        for (FileItem multipart : this.getMultipart("upfile")) {
+            try (FileOutputStream out = new FileOutputStream(new File("upload.bin"))) {
+                multipart.writeTo(out);
+            }
+            multipart.deleteOrSkip();
+        }
     }
 }
 ```
 
-框架中默认缓存路径是 `${user.home}/hasor-work/temp/fragment`，这个路径可以通过下面这个配置改变：
+框架中默认缓存路径是 `${RUN_PATH}/temp/fragment`，这个路径可以通过下面这个配置改变：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://www.hasor.net/sechma/main">
+<config xmlns="http://www.hasor.net/sechma/hasor-web">
     <hasor>
         <fileupload>
             <!-- 上传文件缓存目录 -->
-            <cacheDirectory>${user.home}/hasor-work/temp/fragment</cacheDirectory>
+            <cacheDirectory>${RUN_PATH}/temp/fragment</cacheDirectory>
         </fileupload>
     </hasor>
 </config>
@@ -53,11 +58,11 @@ Hasor 在上传中可以配置的缓存信息有：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://www.hasor.net/sechma/main">
+<config xmlns="http://www.hasor.net/sechma/hasor-web">
     <hasor>
         <fileupload>
             <!-- 上传文件缓存目录 -->
-            <cacheDirectory>${user.home}/hasor-work/temp/fragment</cacheDirectory>
+            <cacheDirectory>${RUN_PATH}/temp/fragment</cacheDirectory>
             <!-- 允许的请求大小 ( -1 表示不限制)-->
             <maxRequestSize>${HASOR_UPLOAD_MAX_REQUEST_SIZE:-1}</maxRequestSize>
             <!-- 允许上传的单个文件大小( -1 表示不限制) -->
@@ -71,11 +76,6 @@ Hasor 在上传中可以配置的缓存信息有：
 
 | 占位符                            | 值                                            |
 |-------------------------------|----------------------------------------------|
-| user.home                     | Java 系统属性，登录系统之后的用户主目录。例如：`/home/xxx/`        |
+| RUN_PATH                      | 应用启动目录，Hasor 创建 Settings 时会写入该系统属性。        |
 | HASOR_UPLOAD_MAX_REQUEST_SIZE | 允许的请求大小 ( `-1` 表示不限制)，默认为：`-1`               |
 | HASOR_UPLOAD_MAX_FILE_SIZE    | 允许上传的单个文件大小( `-1` 表示不限制)，默认为：`-1`            |
-
-:::tip
-- 用户主目录如果是 linux 系统那么这个目录通常在这里：`“/home/xxx/hasor-work/temp/fragment”`
-- 用户主目录如果是 window 用户住目录会在：`“c:/users/xxx/hasor-work/temp/fragment”`
-:::

@@ -57,14 +57,16 @@ public class LoginFormValidation4Scene implements Validation<LoginForm4Scene> {
 }
 ```
 
-Finally, when using validation, set the scenario name on the `@Valid` annotation.
+Finally, pass the scenario name through `ValidInvoker#doValid(scene, object)`.
 
 ```java
 @MappingTo("/scene/login.do")
 public class Login4Scene {
-    public void execute(@Valid("login") @ParameterGroup LoginForm4Scene loginForm,
+    @Any
+    public void execute(@ParameterGroup LoginForm4Scene loginForm,
             RenderInvoker invoker,
             ValidInvoker valid) {
+        valid.doValid("login", loginForm);
         ...
     }
 }

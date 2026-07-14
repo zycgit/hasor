@@ -2,7 +2,7 @@
 id: filter
 sidebar_position: 2
 title: b.Filter
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # Filter
@@ -18,7 +18,7 @@ public class MyFilter implements Filter {
 然后注册 Filter：
 
 ```java title='配置拦截器'
-public class StartModule extends WebModule {
+public class StartModule implements WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         ...
         apiBinder.jeeFilter("/*").through(MyFilter.class);

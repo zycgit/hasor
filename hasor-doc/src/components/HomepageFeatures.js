@@ -5,10 +5,10 @@ import Translate, {translate} from '@docusaurus/Translate';
 
 const FeatureList = [
     {
-        title: translate({id: 'homepage.feature1_title', message: '体系完整'}),
+        title: translate({id: 'homepage.feature1_title', message: '核心清晰'}),
         Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
         description: (
-            <><Translate id="homepage.feature1_desc">IoC、Aop、WebMVC等</Translate></>
+            <><Translate id="homepage.feature1_desc">hasor-core、hasor-web、hasor-boot 三个核心模块覆盖容器、Web 和可执行包。</Translate></>
         ),
     },
     {
@@ -22,7 +22,7 @@ const FeatureList = [
         title: translate({id: 'homepage.feature6_title', message: '统一API'}),
         Svg: require('../../static/img/undraw_docusaurus_react.svg').default,
         description: (
-            <><Translate id="homepage.feature6_desc">独有的 API 融合机制会，让框架新的能力完全无缝的集成到统一的 API 体系中</Translate></>
+            <><Translate id="homepage.feature6_desc">普通应用使用 ApiBinder，Web 应用使用 WebApiBinder，在同一套容器模型下扩展能力。</Translate></>
         ),
     },
 ];

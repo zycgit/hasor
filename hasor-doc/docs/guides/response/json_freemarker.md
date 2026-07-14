@@ -2,7 +2,7 @@
 id: freemarker
 sidebar_position: 5
 title: e.FreeMarker渲染引擎
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # FreeMarker渲染引擎
@@ -44,14 +44,20 @@ public class FreemarkerRender implements RenderEngine {
     }
 
     public void initEngine(AppContext appContext) throws Throwable {
-        ServletContext servletContext = Hasor.assertIsNotNull(appContext.getInstance(ServletContext.class));
+        ServletContext servletContext = appContext.getInstance(ServletContext.class);
+        if (servletContext == null) {
+            throw new IllegalStateException("ServletContext is required.");
+        }
         BindInfo<Configuration> bindInfo = appContext.getBindInfo(Configuration.class);
         if (bindInfo == null) {
             this.freemarker = this.newConfiguration(appContext, servletContext);
         } else {
             this.freemarker = appContext.getInstance(bindInfo);
         }
-        this.configSharedVariable(appContext, servletContext, Hasor.assertIsNotNull(this.freemarker));
+        if (this.freemarker == null) {
+            throw new IllegalStateException("Freemarker Configuration is required.");
+        }
+        this.configSharedVariable(appContext, servletContext, this.freemarker);
     }
 
     public boolean exist(String template) throws IOException {

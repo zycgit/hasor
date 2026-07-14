@@ -40,7 +40,7 @@ function trackView(){
 
 function setTitle(){
     trackView();
-    //document.title = 'dbVisitor Project';
+    //document.title = 'Hasor Project';
     window.setTimeout(setTitle,100);
 }
 window.setTimeout(setTitle,100);

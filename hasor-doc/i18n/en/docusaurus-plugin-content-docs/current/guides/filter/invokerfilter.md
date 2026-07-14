@@ -9,11 +9,12 @@ description: Implement request interception with InvokerFilter.
 
 ```java title='Example'
 public class MyInvokerFilter implements InvokerFilter {
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
+    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         try {
             // before
-            chain.doNext(invoker);
+            Object result = chain.doNext(invoker);
             // after
+            return result;
         } catch (Throwable e) {
             // error
             throw e;
@@ -25,7 +26,7 @@ public class MyInvokerFilter implements InvokerFilter {
 Finally, declare and register the interceptor to use it normally.
 
 ```java title='Configure the interceptor'
-public class StartModule extends WebModule {
+public class StartModule implements WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         ...
         apiBinder.filter("/*").through(MyInvokerFilter.class); // InvokerFilter form.

@@ -12,6 +12,7 @@ Because the lifecycle of a request is special, it cannot be injected normally th
 ```java
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(HttpServletRequest request) {
         ...
     }

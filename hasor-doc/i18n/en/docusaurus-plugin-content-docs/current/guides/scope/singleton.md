@@ -33,7 +33,7 @@ Hasor does not use singleton mode by default. You can use SPI to make singleton 
 :::
 
 ```java
-public class MyCollectScopeListener implements CollectScopeListener {
+public class MyCollectScopeChainSpi implements CollectScopeChainSpi {
     public Supplier<Scope>[] collectScope(BindInfo<?> bindInfo, AppContext appContext,
                                           Supplier<Scope>[] suppliers) {
         // Add a singleton scope for every registered bean, whether or not it is already singleton.
@@ -53,7 +53,7 @@ Then create the container and set up the SPI:
 ```java
 AppContext appContext = Hasor.create().build(apiBinder -> {
     // Set the default singleton SPI.
-    apiBinder.bindSpiListener(CollectScopeListener.class, new MyCollectScopeListener());
+    apiBinder.bindSpiListener(CollectScopeChainSpi.class, new MyCollectScopeChainSpi());
 });
 ```
 

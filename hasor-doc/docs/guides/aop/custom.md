@@ -2,13 +2,13 @@
 id: custom
 sidebar_position: 6
 title: e.自定义拦截器
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 自定义拦截器
 
 拦截器的匹配器
-- 类型：`net.hasor.core.exts.aop.Matchers`
+- 类型：`net.hasor.cobble.dynamic.Matchers`
 
 匹配所有类
 - `Matchers.anyClass();`
@@ -23,7 +23,7 @@ description: DataQL 开发手册，QIL 指令集、构造指令、存储指令�
 - `Matchers.annotatedWithMethod(MyAop.class)`
 
 匹配 `List` 类型的子类
-- `Matchers.subClassesOf(List.class);
+- `Matchers.subClassesOf(List.class);`
 
 按照通配符匹配类
 - 格式为：`<包名>.<类名>`
@@ -80,9 +80,9 @@ public class SimpleInterceptor implements MethodInterceptor {
 public class MyAopSetup implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //1.任意类
-        Matcher<Class<?>> atClass = AopMatchers.anyClass();
+        Predicate<Class<?>> atClass = Matchers.anyClass();
         //2.有MyAop注解的方法
-        Matcher<Method> atMethod = AopMatchers.annotatedWithMethod(MyAop.class);
+        Predicate<Method> atMethod = Matchers.annotatedWithMethod(MyAop.class);
         //3.让@MyAop注解生效
         apiBinder.bindInterceptor(atClass, atMethod, new SimpleInterceptor());
     }

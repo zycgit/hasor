@@ -49,7 +49,7 @@ const config = {
                 name: 'keywords',
                 content: translate({
                     id: 'site.keywords',
-                    message: 'sql,dataway,hasor,dataql,开源,开源软件,java开源,开源项目,开源代码',
+                    message: 'hasor,hasor-core,hasor-web,hasor-boot,ioc,aop,webmvc,java开源,开源项目',
                     description: 'The site keywords',
                 }),
             },
@@ -57,7 +57,7 @@ const config = {
                 name: 'description',
                 content: translate({
                     id: 'site.description',
-                    message: 'Hasor 本身是由多个不同系列框架组合而成的一个框架体系。这些子框架的能力涵盖了 IoC、Aop、WebMVC、数据库以及其它方方面面。',
+                    message: 'Hasor 是一个轻量级 Java 框架，当前核心能力由 hasor-core、hasor-web、hasor-boot 组成。',
                     description: 'The site description',
                 }),
             }
@@ -112,25 +112,6 @@ const config = {
                     ]
                 },
                 {
-                    position: 'right',
-                    label: translate({
-                        id: 'navbar.dataql',
-                        message: 'DataQL 语言',
-                        description: 'The DataQL language link label',
-                    }),
-                    href: 'https://www.dataql.net/'
-                },
-                {
-                    position: 'right',
-                    label: 'Dataway',
-                    href: 'https://www.dataql.net/'
-                },
-                {
-                    position: 'right',
-                    label: 'dbVisitor ORM',
-                    href: 'https://www.dbvisitor.net/'
-                },
-                {
                     type: 'localeDropdown',
                     position: 'right',
                 }
@@ -143,7 +124,7 @@ const config = {
         },
         footer: {
             style: 'dark',
-            copyright: `Copyright © ${new Date().getFullYear()} dbVisitor. Built with Docusaurus.<br/>
+            copyright: `Copyright © ${new Date().getFullYear()} Hasor. Built with Docusaurus.<br/>
 <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=33011002013536">
 <img src="/img/beian.png" style="display: inline-block;">浙公网安备 33011002013536号
 </a>&nbsp;&nbsp;<a target="_blank" href="https://beian.miit.gov.cn/#/Integrated/index">浙ICP备18034797号-1</a>

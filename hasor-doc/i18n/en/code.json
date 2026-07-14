@@ -4,11 +4,11 @@
     "description": "The site tagline"
   },
   "site.keywords": {
-    "message": "sql,dataway,hasor,dataql,open source,open source software,java open source,open source project,open source code",
+    "message": "hasor,hasor-core,hasor-web,hasor-boot,ioc,aop,webmvc,java open source,open source project",
     "description": "The site keywords"
   },
   "site.description": {
-    "message": "Hasor is a framework ecosystem composed of several framework families. These sub-frameworks cover IoC, AOP, Web MVC, databases, and many other areas.",
+    "message": "Hasor is a lightweight Java framework currently centered on hasor-core, hasor-web, and hasor-boot.",
     "description": "The site description"
   },
   "navbar.docs": {
@@ -27,15 +27,11 @@
     "message": "Gitee",
     "description": "The Gitee link label"
   },
-  "navbar.dataql": {
-    "message": "DataQL Language",
-    "description": "The DataQL language link label"
-  },
   "homepage.feature1_title": {
-    "message": "Complete Framework"
+    "message": "Focused Core"
   },
   "homepage.feature1_desc": {
-    "message": "IoC, AOP, Web MVC, and more."
+    "message": "hasor-core, hasor-web, and hasor-boot cover the container, Web MVC, and executable packaging."
   },
   "homepage.feature2_title": {
     "message": "Microkernel + Plugins"
@@ -47,9 +43,9 @@
     "message": "Unified API"
   },
   "homepage.feature6_desc": {
-    "message": "Hasor's unique API integration mechanism lets new framework capabilities integrate seamlessly into a unified API system."
+    "message": "Ordinary applications use ApiBinder, while Web applications use WebApiBinder on the same container model."
   },
-  "homepage.dataql": {
+  "homepage.quickstart": {
     "message": "Quick Start"
   },
   "homepage.qqGroup1Badge": {

@@ -25,7 +25,7 @@ By default, Hasor's layout-template capability is disabled. It can be enabled th
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://www.hasor.net/sechma/main">
+<config xmlns="http://www.hasor.net/sechma/hasor-web">
     <hasor>
         <layout enable="true" placeholder="content_placeholder" defaultLayout="default.html">
             <!-- Layout page resource location. Optional; default: /layout. -->

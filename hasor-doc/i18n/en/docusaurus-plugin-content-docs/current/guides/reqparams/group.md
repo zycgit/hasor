@@ -12,6 +12,7 @@ When a request submits many parameters, use `@ParameterGroup` to reduce long par
 ```java
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(@ParameterGroup() UserInfo userInfo) {
         ...
     }

@@ -14,7 +14,7 @@ A synchronous event determines whether the main flow blocks when it fires the ev
 ```java
 // Dedicated thread.
 EventContext eventContext = ...
-eventContext.fireSyncEventWithEspecial(EventName, ...);
+eventContext.fireSyncEventWithAlone(EventName, ...);
 
 // Shared thread.
 EventContext eventContext = ...

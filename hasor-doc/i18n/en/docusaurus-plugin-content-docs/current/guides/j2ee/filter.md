@@ -18,7 +18,7 @@ public class MyFilter implements Filter {
 Then register the filter:
 
 ```java title='Configure the interceptor'
-public class StartModule extends WebModule {
+public class StartModule implements WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         ...
         apiBinder.jeeFilter("/*").through(MyFilter.class);

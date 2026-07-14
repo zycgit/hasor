@@ -15,6 +15,7 @@ public class HelloAction {
     @Inject
     private PayService payService
 
+    @Any
     public void execute() {
         ...
     }

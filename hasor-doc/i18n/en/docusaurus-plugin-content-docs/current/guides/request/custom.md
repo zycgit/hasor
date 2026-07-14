@@ -24,7 +24,7 @@ Then specify it when receiving a request:
 ```java
 @MappingTo("/helloAction.do")
 public class HelloAction {
-    @Abc
+    @ABC
     public void doAbc() {
         ...
     }

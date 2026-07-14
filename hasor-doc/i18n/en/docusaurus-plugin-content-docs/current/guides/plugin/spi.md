@@ -11,7 +11,7 @@ description: Use Hasor SPI extension points to insert custom behavior into frame
 SPI stands for Service Plugin Interface. Its original intent is to insert extension points into an application's execution flow.
 These extension points let an otherwise fixed code flow become dynamically extensible and can even affect execution state.
 
-Starting from version 4.2.2, Java's standard SPI declaration style can be used as well, namely `META-INF/services/xxxx`.
+The current version supports Java's standard SPI declaration style, namely `META-INF/services/xxxx`.
 :::
 
 SPI has two modes. Their working principles are shown below:

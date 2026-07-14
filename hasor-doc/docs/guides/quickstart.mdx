@@ -1,22 +1,23 @@
 ---
 sidebar_position: 2
 title: 快速上手
-description: 开箱即用的 dbVisitor ORM 工具快速上手教程。
+description: 使用 hasor-core 创建 AppContext，并按需接入 hasor-web、hasor-boot。
 ---
-
-# 快速上手
-
-## 引入依赖
-
-export const Highlight = ({children, color}) => (
-  <span style={{ backgroundColor: color, borderRadius: '2px', color: '#fff', padding: '0.2rem', }}>{children}</span>
-);
-
-截止到目前为止 hasor 的最新版本为：**<Highlight color="rgb(227 17 108)">4.2.5</Highlight>**
-- 在 https://mvnrepository.com/artifact/net.hasor/core 上也可以查询到最新版本
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+
+# 快速上手
+
+Hasor 当前核心模块是 `hasor-core`、`hasor-web`、`hasor-boot`。普通 Java 应用从 `hasor-core` 开始；Web MVC 使用 `hasor-web`；需要可执行 Fat Jar 或内嵌容器时再加入 `hasor-boot`。
+
+:::info 运行环境
+从下个版本开始，Hasor 预计会进入 `5.0.0` 版本线，并且只支持 JDK 17 及以上版本。新项目建议直接使用 JDK 17+。
+:::
+
+## 引入 hasor-core
+
+当前源码版本为 `5.0.0-SNAPSHOT`。如果使用正式发布版本，请替换为 Maven Central 上的对应版本。
 
 <Tabs>
   <TabItem value="Maven" label="Maven" default>
@@ -25,130 +26,106 @@ import TabItem from '@theme/TabItem';
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-core</artifactId>
-    <version>4.2.5</version>
+    <version>5.0.0-SNAPSHOT</version>
 </dependency>
 ```
+
   </TabItem>
   <TabItem value="Gradle" label="Gradle">
 
 ```text
-// Gradle
-implementation group: 'net.hasor', name: 'hasor-core', version: '4.2.5'
-
-// Gradle(Short)
-implementation 'net.hasor:hasor-core:4.2.5'
-
-// Gradle (Kotlin)
-implementation("net.hasor:hasor-core:4.2.5")
+implementation "net.hasor:hasor-core:5.0.0-SNAPSHOT"
 ```
-  </TabItem>
-  <TabItem value="SBT" label="SBT">
 
-```text
-libraryDependencies += "net.hasor" % "hasor-core" % "4.2.5"
-```
-  </TabItem>
-  <TabItem value="Ivy" label="Ivy">
-
-```xml
-<dependency org="net.hasor" name="hasor-core" rev="4.2.5"/>
-```
-  </TabItem>
-  <TabItem value="Grape" label="Grape">
-
-```text
-@Grapes(
-    @Grab(group='net.hasor', module='hasor-core', version='4.2.5')
-)
-```
-  </TabItem>
-  <TabItem value="Leiningen" label="Leiningen">
-
-```text
-[net.hasor/hasor-core "4.2.5"]
-```
-  </TabItem>
-  <TabItem value="Buildr" label="Buildr">
-
-```text
-'net.hasor:dbvisitor:jar:4.2.5'
-```
   </TabItem>
 </Tabs>
 
+## 创建容器
 
-引入依赖包之后通过一行代码即可创建 Hasor
+最小启动方式是一行代码：
 
 ```java
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+
 AppContext appContext = Hasor.create().build();
 ```
 
-:::tip
-需要注意的是，一个应用中可以存在多个 Hasor 环境。因此在同一个应用中多次调用上述代码会导致创建多个不同的 AppContext。它们彼此之间没有任何关系。
-:::
+一个应用中可以创建多个 `AppContext`，它们彼此独立。通常一个进程只需要一个主 `AppContext`。
 
-## 启动配置
+## 编写 Module
 
-Hasor 默认会加载 classpath 下的 `hconfig.xml`。如果配置文件使用其它名称，可以在启动时指定。
+Hasor 的配置入口是 `net.hasor.core.Module`。在 `loadModule` 中使用 `ApiBinder` 声明 Bean、SPI、作用域、AOP 等能力。
 
 ```java
-Hasor.create().mainSettingWith("my-hconfig.xml").build();
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Module;
+
+public class AppModule implements Module {
+    @Override
+    public void loadModule(ApiBinder apiBinder) {
+        apiBinder.bindType(HelloService.class).toInstance(new HelloService());
+    }
+}
+```
+
+启动时传入 Module：
+
+```java
+AppContext appContext = Hasor.create().build(new AppModule());
+HelloService helloService = appContext.getInstance(HelloService.class);
+```
+
+Module 也可以继续安装其它 Module：
+
+```java
+public class RootModule implements Module {
+    @Override
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        apiBinder.installModule(new UserModule());
+        apiBinder.installModule(new WebFeatureModule());
+    }
+}
+```
+
+## 读取配置
+
+默认情况下 Hasor 会从 classpath 读取 `hconfig.xml`。如果配置文件使用其它名称，可以在启动时指定：
+
+```java
+AppContext appContext = Hasor.create()
+        .mainSettingWith("my-hconfig.xml")
+        .build(new AppModule());
 ```
 
 也可以在启动时直接写入配置项：
 
 ```java
 AppContext appContext = Hasor.create()
-        .addSettings(Settings.DefaultNameSpace, "app.name", "demo")
-        .build();
+        .addSettings("hasor", "app.name", "demo")
+        .build(new AppModule());
 ```
 
-## Module
+## 选择 Web 或 Boot
 
-在 Hasor 里大部分的工作都是从 net.hasor.core.Module 接口开始。使用 Module 您需要编写一个类实现这个接口，下面这段代码就是我们实现的第一个 Module
+如果应用需要 Web MVC，引入 `hasor-web`：
 
-```java
-public class FirstModule implements Module {
-	public void loadModule(ApiBinder apiBinder) {
-		...
-	}
-}
+```xml
+<dependency>
+    <groupId>net.hasor</groupId>
+    <artifactId>hasor-web</artifactId>
+    <version>5.0.0-SNAPSHOT</version>
+</dependency>
 ```
 
-接着在启动的中加载这个 Module
+如果应用需要直接打包成可执行 Fat Jar，使用 `hasor-boot-maven-plugin`，并根据运行方式选择一个内嵌容器模块：
 
-```java
-Hasor.create().build(new FirstModule());
+```xml
+<dependency>
+    <groupId>net.hasor</groupId>
+    <artifactId>hasor-boot-tomcat</artifactId>
+    <version>5.0.0-SNAPSHOT</version>
+</dependency>
 ```
 
-Hasor 会在启动过程中调用上面那个 Module 方法。
-
-
-```java title='加载多个 Module'
-Hasor.create().build(new UserModule(),new ClassModule() ...);
-```
-
-```java title='Module 加载 Module'
-public class RootModule implements Module {
-	public void loadModule(ApiBinder apiBinder) throws Throwable {
-		...
-		apiBinder.installModule(new UserModule());
-		apiBinder.installModule(new ClassModule());
-		...
-	}
-}
-```
-
-```xml title='配置文件加载 Module'
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://www.hasor.net/sechma/main">
-    <!-- 默认要装载的模块 -->
-    <hasor>
-        <modules>
-            <module>net.hasor.web.render.RenderWebPlugin</module>
-            <module>net.hasor.core.exts.startup.StartupModule</module>
-            <module>net.hasor.core.exts.aop.AopModule</module>
-        </modules>
-    </hasor>
-</config>
-```
+Web Boot 应用可以通过 `WebServers.run(args, RootModule.class)` 启动。详细说明见“Hasor Boot 可执行包”。

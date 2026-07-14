@@ -12,6 +12,7 @@ Use the `@QueryParameter` annotation. For example:
 ```java
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(@QueryParameter("value") boolean ajaxTo) {
         ...
     }

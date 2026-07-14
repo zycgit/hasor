@@ -44,14 +44,20 @@ public class FreemarkerRender implements RenderEngine {
     }
 
     public void initEngine(AppContext appContext) throws Throwable {
-        ServletContext servletContext = Hasor.assertIsNotNull(appContext.getInstance(ServletContext.class));
+        ServletContext servletContext = appContext.getInstance(ServletContext.class);
+        if (servletContext == null) {
+            throw new IllegalStateException("ServletContext is required.");
+        }
         BindInfo<Configuration> bindInfo = appContext.getBindInfo(Configuration.class);
         if (bindInfo == null) {
             this.freemarker = this.newConfiguration(appContext, servletContext);
         } else {
             this.freemarker = appContext.getInstance(bindInfo);
         }
-        this.configSharedVariable(appContext, servletContext, Hasor.assertIsNotNull(this.freemarker));
+        if (this.freemarker == null) {
+            throw new IllegalStateException("Freemarker Configuration is required.");
+        }
+        this.configSharedVariable(appContext, servletContext, this.freemarker);
     }
 
     public boolean exist(String template) throws IOException {

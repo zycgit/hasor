@@ -2,7 +2,7 @@
 id: spi
 sidebar_position: 2
 title: b.SPI
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # SPI
@@ -11,7 +11,7 @@ description: DataQL 开发手册，QIL 指令集、构造指令、存储指令�
 SPI 全称 Service Plugin Interface，它的本真意图是在应用执行流程过程中，安插一些扩展点。
 通过这些扩展点让一个看似固定的代码流程变得可以动态扩展。甚至影响执行流程中的状态。
 
-提示：4.2.2 版本开始可以使用 Java 标准方式来声明 SPI （即：`META-INF/services/xxxx` 方式）
+提示：当前版本支持使用 Java 标准方式来声明 SPI（即：`META-INF/services/xxxx` 方式）。
 :::
 
 SPI 分为两种模式，它们的工作原理如下：

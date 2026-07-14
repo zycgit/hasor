@@ -2,7 +2,7 @@
 id: basic
 sidebar_position: 1
 title: a.表单上传
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 表单上传
@@ -14,10 +14,12 @@ Hasor 内置了 apache 的 fileuplaod 组件，并且对该组件做了精简优
 ```java title='例子'
 @MappingTo("/fileupload.do")
 public class FileUpLoad extends WebController {
+    @Any
     public void execute() throws IOException {
-        FileItem multipart = this.getOneMultipart("upfile");
-        multipart.writeTo(...);
-        multipart.deleteOrSkip();
+        for (FileItem multipart : this.getMultipart("upfile")) {
+            multipart.writeTo(...);
+            multipart.deleteOrSkip();
+        }
     }
 }
 ```

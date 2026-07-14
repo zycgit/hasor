@@ -16,6 +16,7 @@ Hasor Web can help perform simple type conversion. Supported types include:
 ```java
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(@RequestParameter("name") String name,
             @RequestParameter("age") int age) {
         ...

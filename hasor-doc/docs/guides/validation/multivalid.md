@@ -2,7 +2,7 @@
 id: multivalid
 sidebar_position: 2
 title: b.多验证器共同验证
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 多验证器共同验证
@@ -57,14 +57,16 @@ public class LoginFormValidation4Scene implements Validation<LoginForm4Scene> {
 }
 ```
 
-最后，在使用验证时，在 @Valid 注解上设定好要使用的场景名称，就可以了。
+最后，在使用验证时，通过 `ValidInvoker#doValid(scene, object)` 传入场景名称即可。
 
 ```java
 @MappingTo("/scene/login.do")
 public class Login4Scene {
-    public void execute(@Valid("login") @ParameterGroup LoginForm4Scene loginForm,
+    @Any
+    public void execute(@ParameterGroup LoginForm4Scene loginForm,
             RenderInvoker invoker,
             ValidInvoker valid) {
+        valid.doValid("login", loginForm);
         ...
     }
 }

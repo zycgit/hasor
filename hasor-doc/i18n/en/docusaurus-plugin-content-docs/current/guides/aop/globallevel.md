@@ -13,9 +13,9 @@ A global interceptor is effectively an interceptor that matches any class and an
 public class MyModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         // 1. Any class.
-        Matcher<Class<?>> atClass = Matchers.anyClass();
+        Predicate<Class<?>> atClass = Matchers.anyClass();
         // 2. Any method.
-        Matcher<Method> atMethod = Matchers.anyMethod();
+        Predicate<Method> atMethod = Matchers.anyMethod();
         // 3. Register the interceptor.
         apiBinder.bindInterceptor(atClass, atMethod, new SimpleInterceptor());
     }

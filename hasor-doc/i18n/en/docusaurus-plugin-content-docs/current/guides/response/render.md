@@ -44,7 +44,7 @@ public class FreemarkerRender implements RenderEngine {
 After a renderer is written, it must be registered in the framework.
 
 ```java
-public class StartModule extends WebModule {
+public class StartModule implements WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         // Scan all classes annotated with @Render.
         Set<Class<?>> classSet = apiBinder.findClass(Render.class, "com.example.web.render.*");
@@ -60,7 +60,7 @@ Finally, specify the concrete renderer in the request handler.
 @MappingTo("/my.html")
 public class HtmlProduces {
     @Any
-    public void testProduces1() {
+    public void testProduces1(RenderInvoker invoker) {
         invoker.renderTo("flt", "/my.flt");
     }
 }

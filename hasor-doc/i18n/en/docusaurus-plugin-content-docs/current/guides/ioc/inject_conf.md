@@ -40,10 +40,10 @@ public class DataBaseBean {
     @InjectSettings("jdbcSettings.jdbcURL")
     private String jdbcURL;
 
-    @InjectSettings("jdbcSettings.user")
+    @InjectSettings("jdbcSettings.userName")
     private String user;
 
-    @InjectSettings("jdbcSettings.password")
+    @InjectSettings("jdbcSettings.userPassword")
     private String password;
 
     ...

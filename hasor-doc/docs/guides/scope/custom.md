@@ -2,7 +2,7 @@
 id: custom
 sidebar_position: 4
 title: c.自定义作用域
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 自定义作用域
@@ -14,7 +14,7 @@ public class SessionScope implements Scope {
     public static final ThreadLocal<HttpSession> session
             = new ThreadLocal<HttpSession>();
 
-    public <T> Provider<T> scope(Object key, Provider<T> provider) {
+    public <T> Supplier<T> scope(Object key, Supplier<T> provider) {
         HttpSession httpSession = session.get();
         if (httpSession == null) {
             return provider;
@@ -23,11 +23,11 @@ public class SessionScope implements Scope {
         // 出现冲突，增加一个前缀用于区分
         String keyStr = "session_scope_" + key.toString();
         Object attribute = httpSession.getAttribute(keyStr);
-        Provider<T> finalProvider = provider;
+        Supplier<T> finalProvider = provider;
         if (attribute == null) {
             httpSession.setAttribute(keyStr, provider);
         } else {
-            finalProvider = (Provider<T>) httpSession.getAttribute(keyStr);
+            finalProvider = (Supplier<T>) httpSession.getAttribute(keyStr);
         }
         return finalProvider;
     }
@@ -58,11 +58,11 @@ public class ConfigSession implements Filter {
 最后我们在创建 Hasor 的时候把 Scope 配置上，这里由于要配置 Filter 因此使用 WebModule
 
 ```java
-public class StartModule extends WebModule {
+public class StartModule implements WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         ...
         apiBinder.filter("/*").through(0, new ConfigSession());
-        apiBinder.registerScope("session", new SessionScope());
+        apiBinder.bindScope("session", new SessionScope());
         ...
     }
 }

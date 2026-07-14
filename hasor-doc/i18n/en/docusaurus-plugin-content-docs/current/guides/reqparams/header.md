@@ -12,6 +12,7 @@ Use the `@HeaderParameter` annotation to read request header information:
 ```java
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(@HeaderParameter("ajaxTo") boolean ajaxTo) {
         ...
     }

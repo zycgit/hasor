@@ -2,7 +2,7 @@
 id: render
 sidebar_position: 1
 title: a.渲染器
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 渲染器
@@ -44,7 +44,7 @@ public class FreemarkerRender implements RenderEngine {
 渲染器在编写好之后需要被注册到框架中
 
 ```java
-public class StartModule extends WebModule {
+public class StartModule implements WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         // 扫描所有带有 @Render 特征类
         Set<Class<?>> classSet = apiBinder.findClass(Render.class, "com.example.web.render.*");
@@ -60,7 +60,7 @@ public class StartModule extends WebModule {
 @MappingTo("/my.html")
 public class HtmlProduces {
     @Any
-    public void testProduces1() {
+    public void testProduces1(RenderInvoker invoker) {
         invoker.renderTo("flt", "/my.flt");
     }
 }

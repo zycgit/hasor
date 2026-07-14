@@ -16,6 +16,7 @@ Use the `@RequestParameter` annotation to read request parameters:
 ```java
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(@RequestParameter("name") String userName,
             @RequestParameter("pwd") String pwd) {
         ...

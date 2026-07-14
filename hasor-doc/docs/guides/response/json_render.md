@@ -2,7 +2,7 @@
 id: json
 sidebar_position: 4
 title: d.JSON渲染引擎
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # JSON渲染引擎
@@ -26,12 +26,12 @@ public class JsonRender implements RenderEngine {
 }
 ```
 
-使用 Json 渲染器，execute 方法返回的对象使用 Json 渲染器自动序列化并输出给前端，同时设置 ContentType。
+使用 Json 渲染器时，请求方法需要把渲染器设置为 `json`。返回值会被放入 `Invoker.RETURN_DATA_KEY`，供渲染器序列化输出。
 
 ```java
 @MappingTo("/helloAction.json")
 public class HelloAction {
-    @Produces("json")
+    @Any
     public Object execute(RenderInvoker invoker) {
         invoker.renderType("json");
         return ...
@@ -42,12 +42,16 @@ public class HelloAction {
 进一步还可以利用 `InvokerFilter` 把设置渲染器的工作统一处理：
 
 ```java
-@MappingTo("/helloAction.json")
 public class UseJsonInvokerFilter implements InvokerFilter {
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         ((RenderInvoker)invoker).renderType("json");
         return chain.doNext(invoker);
     }
 }
-```
 
+public class StartModule implements WebModule {
+    public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        apiBinder.filter("*.json").through(UseJsonInvokerFilter.class);
+    }
+}
+```

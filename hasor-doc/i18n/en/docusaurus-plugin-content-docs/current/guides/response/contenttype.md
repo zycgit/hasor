@@ -13,13 +13,13 @@ For a response whose result is HTML, set `ContentType` with the `@Produces` anno
 @MappingTo("/my.html")
 public class HtmlProduces {
     @Any
-    @Produces("test/html")
-    public void testProduces1() {
+    @Produces("text/html")
+    public void testProduces1(RenderInvoker invoker) {
         invoker.renderTo("flt", "/my.flt");
     }
 }
 ```
 
 :::tip
-If the `@Produces` annotation is not specified, Hasor does not actively set `ContentType`.
+If `@Produces` is not specified, Hasor Web first tries to resolve `ContentType` from the suffix of `renderTo` through the MIME mapping. If no MIME type matches, it does not actively set `ContentType`.
 :::

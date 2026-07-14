@@ -26,12 +26,12 @@ public class JsonRender implements RenderEngine {
 }
 ```
 
-When using the JSON renderer, the object returned by the `execute` method is automatically serialized by the JSON renderer and output to the frontend, while `ContentType` is set.
+When using the JSON renderer, the request method sets the renderer to `json`. The returned object is stored under `Invoker.RETURN_DATA_KEY` so the renderer can serialize it.
 
 ```java
 @MappingTo("/helloAction.json")
 public class HelloAction {
-    @Produces("json")
+    @Any
     public Object execute(RenderInvoker invoker) {
         invoker.renderType("json");
         return ...
@@ -42,11 +42,16 @@ public class HelloAction {
 You can further use `InvokerFilter` to handle renderer selection uniformly:
 
 ```java
-@MappingTo("/helloAction.json")
 public class UseJsonInvokerFilter implements InvokerFilter {
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         ((RenderInvoker)invoker).renderType("json");
         return chain.doNext(invoker);
+    }
+}
+
+public class StartModule implements WebModule {
+    public void loadModule(WebApiBinder apiBinder) throws Throwable {
+        apiBinder.filter("*.json").through(UseJsonInvokerFilter.class);
     }
 }
 ```

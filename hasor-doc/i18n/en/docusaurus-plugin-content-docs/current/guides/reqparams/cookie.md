@@ -16,6 +16,7 @@ Use the `@CookieParameter` annotation to read cookie data. Its usage is the same
 ```java
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(@CookieParameter("name") String userName,
             @CookieParameter("pwd") String pwd) {
         ...

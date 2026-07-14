@@ -2,7 +2,7 @@
 id: xml
 sidebar_position: 4
 title: c.XML 格式差异性
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # XML 格式差异性
@@ -74,7 +74,7 @@ Boolean[] debugArrays = settings.getBooleanArray("hasor.debug");
 :::tip
 Hasor 中配置文件的命名空间概念等同于 Xml 中的命名空间，其存在和设立的意义完全是为了传承 namespace 的概念。
 
-在 Hasor 中使用命名空间最典型的场景是基于 Hasor 体系下的各个自框架，例如：hasor-web、hasor-db、hasor-dataql 等等。
+在 Hasor 中使用命名空间最典型的场景是为不同模块隔离配置。当前 Hasor 仓库主要保留 `hasor-core` 和 `hasor-web` 两类配置命名空间。
 :::
 
 首先存在一个带有多个命名空间的 Xml 配置文件：
@@ -129,16 +129,11 @@ String url2 = mod2Settings.getString("serverLocal.url");
 - 按照字符串排序顺序决定，命名空间的索引顺序。
 - 所有 Hasor 官方出品，基于 Hasor 体系构建的框架，其配置空间都在 `http://www.hasor.net/sechma/` 下进行定义。
 
-下面是已经存在并且正在使用中的配置空间表：
+下面是当前 Hasor 文档覆盖的配置空间表：
 
-| 模块       | 命名空间                                         |
-|----------|----------------------------------------------|
-| 应用自身     | `http://www.hasor.net/sechma/main`           |
-| Core     | `http://www.hasor.net/sechma/hasor-core`     |
-| Jdbc     | `http://www.hasor.net/sechma/hasor-db`       |
-| Web      | `http://www.hasor.net/sechma/hasor-web`      |
-| web-mime | `http://www.hasor.net/sechma/mime-mapping`   |
-| tConsole | `http://www.hasor.net/sechma/hasor-tconsole` |
-| RSF      | `http://www.hasor.net/sechma/rsf-framework`  |
-| Registry | `http://www.hasor.net/sechma/rsf-registry`   |
-| Land     | `http://www.hasor.net/sechma/hasor-land`     |
+| 模块      | 命名空间                                      | 说明 |
+|---------|-------------------------------------------|------|
+| 应用自身    | `http://www.hasor.net/sechma/main`         | 应用自己的默认配置空间 |
+| Core    | `http://www.hasor.net/sechma/hasor-core`   | `hasor-core` 的基础容器、模块、SPI、配置能力 |
+| Web     | `http://www.hasor.net/sechma/hasor-web`    | `hasor-web` 的 Web MVC、文件上传、内嵌 HTTP 配置 |
+| web-mime | `http://www.hasor.net/sechma/mime-mapping` | Web MIME 映射配置 |

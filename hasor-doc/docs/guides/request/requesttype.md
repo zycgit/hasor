@@ -2,7 +2,7 @@
 id: requesttype
 sidebar_position: 4
 title: c.区分请求类型
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 区分请求类型
@@ -11,7 +11,7 @@ description: DataQL 开发手册，QIL 指令集、构造指令、存储指令�
 
 ![](../_img/CC2_11EF_EF69_F9BE.png)
 
-Hasor默认是接收所有类型的请求，如果想区分请求类型。可以如下例子：用不同方法接收 POST 和 GET
+如果一个方法希望接收所有类型的请求，可以标记 `@Any`。如果想区分请求类型，可以如下例子用不同方法接收 POST 和 GET：
 
 ```java
 @MappingTo("/helloAction.do")
@@ -39,5 +39,5 @@ Hasor 默认提供的请求类型注解有：
 | `@Options` | 表示 OPTION 类请求 |
 
 :::tip
-Hasor 中是支持同时标记多种请求类型处理标记的，例如：同时使用 @Get 和 @Post
+Hasor 中支持同时标记多种请求类型处理标记，例如：同时使用 `@Get` 和 `@Post`。
 :::

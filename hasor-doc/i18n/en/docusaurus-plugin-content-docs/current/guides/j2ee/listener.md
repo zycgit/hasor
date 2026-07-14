@@ -16,7 +16,7 @@ public class MyHttpSessionListener implements HttpSessionListener {
     ...
 }
 
-public class StartModule extends WebModule {
+public class StartModule implements WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         ...
         apiBinder.bindSpiListener(HttpSessionListener.class, new MyHttpSessionListener());

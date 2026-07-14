@@ -2,7 +2,7 @@
 id: async
 sidebar_position: 4
 title: d.异步请求(Servlet3.0)
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 异步请求(Servlet3.0)
@@ -22,6 +22,7 @@ Hasor 会自动识别容器的 Servlet 版本。因此 Hasor 在自动识别的�
 @Async
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(@RequestParameter("name") String userName,
                         @RequestParameter("pwd") String pwd) {
         ...
@@ -35,6 +36,7 @@ public class HelloAction {
 @MappingTo("/helloAction.do")
 public class HelloAction {
     @Async
+    @Any
     public void execute(@RequestParameter("name") String userName,
                         @RequestParameter("pwd") String pwd) {
         ...

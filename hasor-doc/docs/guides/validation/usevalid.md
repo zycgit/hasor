@@ -2,7 +2,7 @@
 id: usevalid
 sidebar_position: 1
 title: a.使用验证器
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 使用验证器
@@ -43,14 +43,17 @@ public class LoginFormValidation implements Validation<LoginForm> {
 }
 ```
 
-最后通过 `@Valid` 注解配置请求在接收处理之前先做一次验证：
+最后在请求方法中注入 `ValidInvoker`，然后显式调用 `doValid(...)` 触发验证。当前 Hasor Web 不提供 `@Valid` 参数注解，验证入口就是 `ValidInvoker`。
 
 ```java
 @MappingTo("/login.htm")
 public class Login {
-    public void execute(@Valid() @ParameterGroup LoginForm loginForm,
-                        RenderInvoker invoker,
-                        ValidInvoker valid) {
+    @Any
+    public void execute(@ParameterGroup LoginForm loginForm,
+            RenderInvoker invoker,
+            ValidInvoker valid) {
+        valid.doValid("login", loginForm);
+
         if (valid.isValid()) {
             invoker.renderTo("/userInfo.htm");
         } else {
@@ -61,7 +64,7 @@ public class Login {
 }
 ```
 
-剩下的就是页面处理验证信息回显（freemarker 模板语法）
+`ValidInvoker` 会把验证结果放到 `validData` 中，页面可以按模板引擎自己的语法读取它。例如下面是 Freemarker 模板语法：
 
 ```html
 <form action="/login.do" method="post">

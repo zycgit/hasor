@@ -2,7 +2,7 @@
 id: convert
 sidebar_position: 7
 title: g.参数自动类型转换
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 参数自动类型转换
@@ -16,6 +16,7 @@ Hasor Web 框架可以帮助你进行简单的类型转换，可以转换的类�
 ```java
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(@RequestParameter("name") String name,
             @RequestParameter("age") int age) {
         ...

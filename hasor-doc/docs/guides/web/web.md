@@ -1,122 +1,134 @@
 ---
 id: web
 sidebar_position: 1
-title: Web开发
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+title: Web 开发
+description: 使用 hasor-web 构建 Servlet Web MVC 应用。
 ---
 
-# Web开发
+# Web 开发
 
-## 工程配置
+`hasor-web` 在 `hasor-core` 之上提供 Web MVC 能力。它可以运行在传统 Servlet 容器中，也可以通过 `hasor-boot-tomcat`、`hasor-boot-jetty`、`hasor-boot-undertow` 启动内嵌容器。
 
-Hasor的Web支持是一个独立的框架，在使用它之前首先引入它。在您的项目中添加下面这个依赖，然后配置 web.xml 即可。
+## 引入依赖
 
 ```xml
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>4.2.2</version><!-- 查看最新版本：https://mvnrepository.com/artifact/net.hasor/hasor-web -->
+    <version>5.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
-接下来配置 web.xml 配置文件：
+## web.xml 启动
+
+传统 Servlet 应用通过 `RuntimeListener` 创建 Hasor `AppContext`，通过 `RuntimeFilter` 接管请求分发。
 
 ```xml
-<!-- 框架启动 -->
 <listener>
     <listener-class>net.hasor.web.startup.RuntimeListener</listener-class>
 </listener>
 
-<!-- 全局拦截器 -->
 <filter>
-    <filter-name>rootFilter</filter-name>
+    <filter-name>hasorFilter</filter-name>
     <filter-class>net.hasor.web.startup.RuntimeFilter</filter-class>
 </filter>
 <filter-mapping>
-    <filter-name>rootFilter</filter-name>
+    <filter-name>hasorFilter</filter-name>
     <url-pattern>/*</url-pattern>
 </filter-mapping>
 
-<!-- (建议)启动模块 -->
 <context-param>
     <param-name>hasor-root-module</param-name>
-    <param-value>com.xxx.you.project.StartModule</param-value>
+    <param-value>com.example.web.StartModule</param-value>
 </context-param>
 
-<!-- (可选)如果有配置文件在这里指定 -->
 <context-param>
     <param-name>hasor-hconfig-file</param-name>
-    <param-value>classpath:hasor-config.xml</param-value>
+    <param-value>classpath:hconfig.xml</param-value>
 </context-param>
 ```
 
-最后创建包 `com.xxx.you.project` 并在包中新增一个类 `StartModule` 该类，内容如下：
+`hasor-root-module` 指向应用的启动模块。`hasor-hconfig-file` 是可选项，用于指定 Hasor 配置文件。
+
+## 编写 WebModule
+
+Web 应用通常实现 `WebModule`，它会把普通 `ApiBinder` 扩展为 `WebApiBinder`。
 
 ```java
-package com.xxx.you.project;
-public class StartModule extends WebModule {
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        System.out.println("You Project Start.");
+package com.example.web;
+
+import net.hasor.web.WebApiBinder;
+import net.hasor.web.WebModule;
+
+public class StartModule implements WebModule {
+    @Override
+    public void loadModule(WebApiBinder apiBinder) {
+        apiBinder.setEncodingCharacter("utf-8", "utf-8");
+        apiBinder.loadMappingTo(HelloAction.class);
     }
 }
 ```
 
-启动您的的 Web 工程，如果控制台上看到 You Project Start. 则证明框架成功配置。
+## 接收请求
 
-配置项 hasor-root-module 可以在配置文件中进行等效配置，使用配置文件的好处是可以提供更丰富的配置。具体如下：
+使用 `@MappingTo` 声明请求路径，使用 `@Get`、`@Post` 等注解声明 HTTP 方法。
+
+```java
+package com.example.web;
+
+import java.io.IOException;
+import net.hasor.web.Invoker;
+import net.hasor.web.annotation.Get;
+import net.hasor.web.annotation.MappingTo;
+
+@MappingTo("/hello")
+public class HelloAction {
+    @Get
+    public void execute(Invoker invoker) throws IOException {
+        invoker.getHttpResponse().setContentType("text/plain;charset=UTF-8");
+        invoker.getHttpResponse().getWriter().write("hello Hasor Web");
+    }
+}
+```
+
+启动后访问：
+
+```text
+http://localhost:8080/hello
+```
+
+## 内嵌容器启动
+
+如果使用 Hasor Boot，可以直接通过 `WebServers` 启动内嵌容器：
+
+```java
+import net.hasor.web.http.WebServers;
+
+public class DemoWebApplication implements WebModule {
+    public static void main(String[] args) throws Exception {
+        WebServers.run(args, DemoWebApplication.class).join();
+    }
+
+    @Override
+    public void loadModule(WebApiBinder apiBinder) {
+        apiBinder.loadMappingTo(HelloAction.class);
+    }
+}
+```
+
+内嵌容器参数来自 `hasor.http` 配置，也可以通过环境变量覆盖：
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://www.hasor.net/sechma/main">
+<config xmlns="http://www.hasor.net/sechma/hasor-web">
     <hasor>
-        <!-- 项目所属包：减少类扫描范围 -->
-        <loadPackages>com.xxx.you.project.*</loadPackages>
-        <!-- 框架启动入口 -->
-        <startup>com.xxx.you.project.StartModule</startup>
+        <http>
+            <server>${HASOR_HTTP_SERVER}</server>
+            <host>${HASOR_HTTP_HOST:0.0.0.0}</host>
+            <port>${HASOR_HTTP_PORT:8080}</port>
+            <contextPath>${HASOR_HTTP_CONTEXT_PATH:/}</contextPath>
+        </http>
     </hasor>
 </config>
 ```
 
-## HelloWord
-
-这里展示基于 MVC 使用 Hasor 接收一个 Web 请求然后交给 jsp 显示的例子。首先创建请求处理器，一个请求处理器可以简单的只包含一个 execute 方法
-
-```java
-@MappingTo("/hello.jsp")
-public class HelloMessage {
-    public void execute(Invoker invoker) {
-        invoker.put("message", "this message form Project.");
-    }
-}
-```
-
-然后在启动模块中注册控制器
-
-```java
-public class StartModule extends WebModule {
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        //设置请求响应编码
-        apiBinder.setEncodingCharacter("utf-8", "utf-8");
-        // 扫描所有带有 @MappingTo 特征类
-        Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class, "com.example.web.action.*");
-        // 配置控制器
-        apiBinder.loadMappingTo(aClass);
-    }
-}
-```
-
-最后创建 hello.jsp 文件，我们把 message 打印出来：
-
-```html
-<%@page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-    <head>
-        <title>Hello Word</title>
-    </head>
-    <body>
-        ${message}
-    </body>
-</html>
-```
-
-当上面的一切都做好之后，启动您的 web 工程，访问： `http://localhost:8080/hello.jsp` 即可得到结果。
+`server` 为空时会通过 Java SPI 自动发现可用容器；也可以显式设置为 `tomcat`、`jetty`、`undertow`。

@@ -74,7 +74,7 @@ If you need to parse XML configuration files like the scenario above, use the bu
 :::tip
 The namespace concept in Hasor configuration files is equivalent to XML namespaces. It exists to inherit the namespace concept.
 
-A typical scenario for namespaces in Hasor is the sub-frameworks based on the Hasor system, such as `hasor-web`, `hasor-db`, and `hasor-dataql`.
+A typical namespace scenario in Hasor is separating configuration for different modules. The current Hasor repository mainly keeps the `hasor-core` and `hasor-web` namespaces.
 :::
 
 First, define an XML configuration file with multiple namespaces:
@@ -129,16 +129,11 @@ The default configuration namespace has priority in some scenarios. For example,
 - Namespace index order is determined by string sort order.
 - All official Hasor frameworks built on the Hasor system define their configuration namespaces under `http://www.hasor.net/sechma/`.
 
-The following table lists existing namespaces currently in use:
+The following table lists the namespaces covered by the current Hasor documentation:
 
-| Module       | Namespace                                      |
-|--------------|------------------------------------------------|
-| Application  | `http://www.hasor.net/sechma/main`             |
-| Core         | `http://www.hasor.net/sechma/hasor-core`       |
-| Jdbc         | `http://www.hasor.net/sechma/hasor-db`         |
-| Web          | `http://www.hasor.net/sechma/hasor-web`        |
-| web-mime     | `http://www.hasor.net/sechma/mime-mapping`     |
-| tConsole     | `http://www.hasor.net/sechma/hasor-tconsole`   |
-| RSF          | `http://www.hasor.net/sechma/rsf-framework`    |
-| Registry     | `http://www.hasor.net/sechma/rsf-registry`     |
-| Land         | `http://www.hasor.net/sechma/hasor-land`       |
+| Module      | Namespace                                    | Description |
+|-------------|----------------------------------------------|-------------|
+| Application | `http://www.hasor.net/sechma/main`           | Application default namespace |
+| Core        | `http://www.hasor.net/sechma/hasor-core`     | Core container, modules, SPI, and configuration |
+| Web         | `http://www.hasor.net/sechma/hasor-web`      | Web MVC, file upload, and embedded HTTP settings |
+| web-mime    | `http://www.hasor.net/sechma/mime-mapping`   | Web MIME mapping configuration |

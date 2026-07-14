@@ -21,6 +21,7 @@ Then mark the class with `@Async` as shown below. In a Servlet 3.0 container, Ha
 @Async
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(@RequestParameter("name") String userName,
                         @RequestParameter("pwd") String pwd) {
         ...
@@ -34,6 +35,7 @@ Or mark the method:
 @MappingTo("/helloAction.do")
 public class HelloAction {
     @Async
+    @Any
     public void execute(@RequestParameter("name") String userName,
                         @RequestParameter("pwd") String pwd) {
         ...

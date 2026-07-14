@@ -14,10 +14,12 @@ To use file upload, you must operate through the `WebController` class. The foll
 ```java title='Example'
 @MappingTo("/fileupload.do")
 public class FileUpLoad extends WebController {
+    @Any
     public void execute() throws IOException {
-        FileItem multipart = this.getOneMultipart("upfile");
-        multipart.writeTo(...);
-        multipart.deleteOrSkip();
+        for (FileItem multipart : this.getMultipart("upfile")) {
+            multipart.writeTo(...);
+            multipart.deleteOrSkip();
+        }
     }
 }
 ```

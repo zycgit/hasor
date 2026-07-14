@@ -43,14 +43,17 @@ public class LoginFormValidation implements Validation<LoginForm> {
 }
 ```
 
-Finally, configure the request with the `@Valid` annotation so validation runs once before the request is received and processed:
+Finally, inject `ValidInvoker` and explicitly call `doValid(...)`. The current Hasor Web codebase does not provide an `@Valid` parameter annotation; validation is triggered through `ValidInvoker`.
 
 ```java
 @MappingTo("/login.htm")
 public class Login {
-    public void execute(@Valid() @ParameterGroup LoginForm loginForm,
-                        RenderInvoker invoker,
-                        ValidInvoker valid) {
+    @Any
+    public void execute(@ParameterGroup LoginForm loginForm,
+            RenderInvoker invoker,
+            ValidInvoker valid) {
+        valid.doValid("login", loginForm);
+
         if (valid.isValid()) {
             invoker.renderTo("/userInfo.htm");
         } else {
@@ -61,7 +64,7 @@ public class Login {
 }
 ```
 
-The remaining work is displaying validation information on the page. The example below uses FreeMarker template syntax.
+`ValidInvoker` stores validation results in `validData`, which can be read by the template engine. The following example uses FreeMarker template syntax.
 
 ```html
 <form action="/login.do" method="post">

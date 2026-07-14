@@ -2,22 +2,26 @@
 id: overview
 sidebar_position: 1
 title: Introduction
-description: Hasor is a framework system composed of multiple framework families, covering IoC, AOP, Web MVC, database access, and more.
+description: Hasor currently consists of hasor-core, hasor-web, and hasor-boot.
 ---
 # Introduction
 
-Hasor itself is a framework system composed of several different framework families. These sub-frameworks cover IoC, AOP, Web MVC, database access, and many other areas. All of this is built on Hasor's plugin capability.
+Hasor is a lightweight framework for Java applications. The current repository is centered on three modules:
 
-Hasor helps you design better APIs. Its unique framework-extension capability lets new features integrate seamlessly into a unified API system. We build common capabilities so you can extend Hasor through plugins instead of adding every feature directly to the core framework.
+- `hasor-core`: IoC, AOP, scopes, events, lifecycle hooks, configuration, and plugin extension points.
+- `hasor-web`: Web MVC, request mapping, request parameters, response rendering, file upload, and Servlet integration on top of `hasor-core`.
+- `hasor-boot`: executable Fat Jar packaging plus embedded Tomcat, Jetty, and Undertow support for Hasor Web.
 
-Hasor's extension mechanism is like an interface for building blocks: anyone can provide new blocks in a very simple way and then combine them easily. During use, you do not feel that multiple different frameworks are cooperating behind the scenes. The Hasor API itself is a good example of this idea.
+This documentation is organized around those three capabilities. Older extension content that is no longer maintained in the current repository is no longer part of the Hasor documentation surface.
 
-Hasor's goal is to make development and debugging easier and faster, not harder and slower.
+Most Hasor applications are built around `Module`, `ApiBinder`, and `AppContext`: declare bindings and extension points in a `Module`, then create the runtime context with `Hasor.create().build(...)`.
+
+## Runtime Requirements
+
+Starting with the next version, Hasor is expected to move to the `5.0.0` line and support only JDK 17 or later. New projects should use JDK 17+ for both compilation and runtime.
 
 ## Features
 
-Hasor is designed around a "microkernel + plugins" model. The microkernel provides only a small set of necessary capabilities, while everything else is implemented through plugins. As a result, extending Hasor means adding plugins without changing the core framework.
+Hasor still follows a "microkernel + plugins" model. `hasor-core` keeps the core container small, `hasor-web` extends the binding API through `WebApiBinder`, and `hasor-boot` handles executable archive packaging and runtime loading.
 
-Hasor's unique API fusion mechanism lets new framework capabilities integrate seamlessly into the unified API system. The following diagram shows the current Hasor framework system.
-
-![Features](_img/CC2_403A_3BD5_D581.png)
+For ordinary Java applications, use `hasor-core`. For Servlet Web applications, add `hasor-web` and configure `RuntimeListener` and `RuntimeFilter`. For executable Fat Jar applications, add the Hasor Boot packaging plugin and one embedded container module.

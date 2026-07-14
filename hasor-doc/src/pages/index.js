@@ -13,13 +13,13 @@ function HomepageHeader() {
         <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
                 <h1 className="hero__title">{siteConfig.title}</h1>
-                <p className="hero__subtitle"><Translate id="homepage.tagline">Hasor 本身是由多个不同系列框架组合而成的一个框架体系。这些子框架的能力涵盖了 IoC、Aop、WebMVC、数据库以及其它方方面面。</Translate>
+                <p className="hero__subtitle"><Translate id="homepage.tagline">Hasor 是一个轻量级 Java 框架，当前核心能力由 hasor-core、hasor-web、hasor-boot 组成。</Translate>
                     <br/><br/>
                     <a className="button-padding" target="_blank" href="https://www.apache.org/licenses/LICENSE-2.0.html">
                         <img src="https://img.shields.io/badge/license-Apache%202-4EB1BA.svg" alt="License"/>
                     </a>
-                    <a className="button-padding" target="_blank" href="https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-dataql">
-                        <img src="https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-dataql/badge.svg" alt="Maven"/>
+                    <a className="button-padding" target="_blank" href="https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core">
+                        <img src="https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core/badge.svg" alt="Maven"/>
                     </a>
                     <a className="button-padding" target="_blank" href="mailto:zyc@byshell.org">
                         <img src="https://img.shields.io/badge/Email-zyc%40byshell.org-blue" alt="mailto"/>
@@ -56,7 +56,7 @@ function HomepageHeader() {
                     </a>
                 </p>
                 <div className={styles.buttons}>
-                    <Link className="button button--secondary button--lg" to="/docs/guides/quickstart"><Translate id="homepage.dataql">快速上手</Translate></Link>
+                    <Link className="button button--secondary button--lg" to="/docs/guides/quickstart"><Translate id="homepage.quickstart">快速上手</Translate></Link>
                 </div>
             </div>
         </header>

@@ -1,22 +1,23 @@
 ---
 sidebar_position: 2
 title: Quick Start
-description: A quick-start guide for using Hasor out of the box.
+description: Create an AppContext with hasor-core, then add hasor-web or hasor-boot when needed.
 ---
-
-# Quick Start
-
-## Adding the Dependency
-
-export const Highlight = ({children, color}) => (
-  <span style={{ backgroundColor: color, borderRadius: '2px', color: '#fff', padding: '0.2rem', }}>{children}</span>
-);
-
-At the time this document was written, the latest Hasor version was: **<Highlight color="rgb(227 17 108)">4.2.5</Highlight>**
-- You can also check the latest version at https://mvnrepository.com/artifact/net.hasor/core
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+
+# Quick Start
+
+The current Hasor codebase is centered on `hasor-core`, `hasor-web`, and `hasor-boot`. Ordinary Java applications start with `hasor-core`; Web MVC applications add `hasor-web`; executable Fat Jar or embedded-container applications add `hasor-boot`.
+
+:::info Runtime Requirements
+Starting with the next version, Hasor is expected to move to the `5.0.0` line and support only JDK 17 or later. New projects should use JDK 17+.
+:::
+
+## Add hasor-core
+
+The current source version is `5.0.0-SNAPSHOT`. Replace it with the released Maven Central version when using a stable release.
 
 <Tabs>
   <TabItem value="Maven" label="Maven" default>
@@ -25,130 +26,106 @@ import TabItem from '@theme/TabItem';
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-core</artifactId>
-    <version>4.2.5</version>
+    <version>5.0.0-SNAPSHOT</version>
 </dependency>
 ```
+
   </TabItem>
   <TabItem value="Gradle" label="Gradle">
 
 ```text
-// Gradle
-implementation group: 'net.hasor', name: 'hasor-core', version: '4.2.5'
-
-// Gradle (short form)
-implementation 'net.hasor:hasor-core:4.2.5'
-
-// Gradle (Kotlin)
-implementation("net.hasor:hasor-core:4.2.5")
+implementation "net.hasor:hasor-core:5.0.0-SNAPSHOT"
 ```
-  </TabItem>
-  <TabItem value="SBT" label="SBT">
 
-```text
-libraryDependencies += "net.hasor" % "hasor-core" % "4.2.5"
-```
-  </TabItem>
-  <TabItem value="Ivy" label="Ivy">
-
-```xml
-<dependency org="net.hasor" name="hasor-core" rev="4.2.5"/>
-```
-  </TabItem>
-  <TabItem value="Grape" label="Grape">
-
-```text
-@Grapes(
-    @Grab(group='net.hasor', module='hasor-core', version='4.2.5')
-)
-```
-  </TabItem>
-  <TabItem value="Leiningen" label="Leiningen">
-
-```text
-[net.hasor/hasor-core "4.2.5"]
-```
-  </TabItem>
-  <TabItem value="Buildr" label="Buildr">
-
-```text
-'net.hasor:dbvisitor:jar:4.2.5'
-```
   </TabItem>
 </Tabs>
 
+## Create the container
 
-After adding the dependency, you can create Hasor with one line of code.
+The minimal startup path is one line:
 
 ```java
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+
 AppContext appContext = Hasor.create().build();
 ```
 
-:::tip
-An application can contain multiple Hasor environments. Calling the code above multiple times in the same application creates multiple independent `AppContext` instances, and those instances have no relationship with each other.
-:::
+An application can create multiple independent `AppContext` instances, although most processes only need one main context.
 
-## Startup Configuration
+## Write a Module
 
-By default, Hasor loads `hconfig.xml` from the classpath. If the configuration file uses another name, specify it during startup.
+The configuration entry point is `net.hasor.core.Module`. Use `ApiBinder` inside `loadModule` to declare beans, SPI listeners, scopes, AOP, and other capabilities.
 
 ```java
-Hasor.create().mainSettingWith("my-hconfig.xml").build();
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Module;
+
+public class AppModule implements Module {
+    @Override
+    public void loadModule(ApiBinder apiBinder) {
+        apiBinder.bindType(HelloService.class).toInstance(new HelloService());
+    }
+}
 ```
 
-You can also write configuration items directly during startup:
+Load the module during startup:
+
+```java
+AppContext appContext = Hasor.create().build(new AppModule());
+HelloService helloService = appContext.getInstance(HelloService.class);
+```
+
+Modules can install other modules:
+
+```java
+public class RootModule implements Module {
+    @Override
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        apiBinder.installModule(new UserModule());
+        apiBinder.installModule(new WebFeatureModule());
+    }
+}
+```
+
+## Load configuration
+
+By default, Hasor reads `hconfig.xml` from the classpath. To use another file name, specify it during startup:
 
 ```java
 AppContext appContext = Hasor.create()
-        .addSettings(Settings.DefaultNameSpace, "app.name", "demo")
-        .build();
+        .mainSettingWith("my-hconfig.xml")
+        .build(new AppModule());
 ```
 
-## Module
-
-In Hasor, most work starts from the `net.hasor.core.Module` interface. To use a module, write a class that implements this interface. The following code is the first module we implement.
+You can also set configuration entries directly:
 
 ```java
-public class FirstModule implements Module {
-    public void loadModule(ApiBinder apiBinder) {
-        ...
-    }
-}
+AppContext appContext = Hasor.create()
+        .addSettings("hasor", "app.name", "demo")
+        .build(new AppModule());
 ```
 
-Then load this module during startup.
+## Choose Web or Boot
 
-```java
-Hasor.create().build(new FirstModule());
+For Web MVC applications, add `hasor-web`:
+
+```xml
+<dependency>
+    <groupId>net.hasor</groupId>
+    <artifactId>hasor-web</artifactId>
+    <version>5.0.0-SNAPSHOT</version>
+</dependency>
 ```
 
-Hasor calls the module method above during startup.
+For executable Fat Jar applications, use `hasor-boot-maven-plugin` and choose one embedded container module when needed:
 
-
-```java title='Loading multiple modules'
-Hasor.create().build(new UserModule(), new ClassModule() ...);
+```xml
+<dependency>
+    <groupId>net.hasor</groupId>
+    <artifactId>hasor-boot-tomcat</artifactId>
+    <version>5.0.0-SNAPSHOT</version>
+</dependency>
 ```
 
-```java title='A module loading other modules'
-public class RootModule implements Module {
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        ...
-        apiBinder.installModule(new UserModule());
-        apiBinder.installModule(new ClassModule());
-        ...
-    }
-}
-```
-
-```xml title='Loading modules from a configuration file'
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://www.hasor.net/sechma/main">
-    <!-- Modules loaded by default. -->
-    <hasor>
-        <modules>
-            <module>net.hasor.web.render.RenderWebPlugin</module>
-            <module>net.hasor.core.exts.startup.StartupModule</module>
-            <module>net.hasor.core.exts.aop.AopModule</module>
-        </modules>
-    </hasor>
-</config>
-```
+Web Boot applications can start with `WebServers.run(args, RootModule.class)`. See "Hasor Boot Executable Packages" for details.

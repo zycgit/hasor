@@ -12,6 +12,7 @@ The most basic way is to use `httpRequest.getAttribute`, but Hasor provides the 
 ```java
 @MappingTo("/helloAction.do")
 public class HelloAction {
+    @Any
     public void execute(@AttributeParameter("value") boolean value) {
         ...
     }

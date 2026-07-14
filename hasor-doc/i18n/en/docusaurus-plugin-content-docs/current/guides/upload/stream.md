@@ -12,6 +12,7 @@ The biggest advantage of streaming file upload is that large files can be proces
 ```java title='Example'
 @MappingTo("/fileupload.do")
 public class FileUpLoad extends WebController {
+    @Any
     public void execute() throws IOException {
         Iterator<FileItemStream> multiStream = this.getMultipartIterator();
         while (multiStream.hasNext()) {

@@ -2,7 +2,7 @@
 id: modules
 sidebar_position: 3
 title: c.配置模块化
-description: DataQL 开发手册，QIL 指令集、构造指令、存储指令、结束指令、运算指令、控制指令、函数指令、辅助指令
+description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
 # 配置模块化
@@ -20,7 +20,7 @@ description: DataQL 开发手册，QIL 指令集、构造指令、存储指令�
 - 创建一个多工程的 java 项目
 - 在每个工程的 classpath 下新建 META-INF 目录
 - 在 META-INF 目录下创建 hasor.schemas 文件
-- 填入 hconfig.xml 文件在 classpath 中的路径（以 hasor-core 自身为例，它的 hasor.schemas 内容如下）`http://www.hasor.net/sechma/hasor-land`     |
+- 填入 hconfig.xml 文件在 classpath 中的路径（以 hasor-core 自身为例，它的 hasor.schemas 内容如下）
 
 ```text
 /META-INF/hasor-framework/core-hconfig.xml

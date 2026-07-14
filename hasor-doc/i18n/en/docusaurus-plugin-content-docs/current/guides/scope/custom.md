@@ -14,7 +14,7 @@ public class SessionScope implements Scope {
     public static final ThreadLocal<HttpSession> session
             = new ThreadLocal<HttpSession>();
 
-    public <T> Provider<T> scope(Object key, Provider<T> provider) {
+    public <T> Supplier<T> scope(Object key, Supplier<T> provider) {
         HttpSession httpSession = session.get();
         if (httpSession == null) {
             return provider;
@@ -23,11 +23,11 @@ public class SessionScope implements Scope {
         // add a prefix to distinguish them.
         String keyStr = "session_scope_" + key.toString();
         Object attribute = httpSession.getAttribute(keyStr);
-        Provider<T> finalProvider = provider;
+        Supplier<T> finalProvider = provider;
         if (attribute == null) {
             httpSession.setAttribute(keyStr, provider);
         } else {
-            finalProvider = (Provider<T>) httpSession.getAttribute(keyStr);
+            finalProvider = (Supplier<T>) httpSession.getAttribute(keyStr);
         }
         return finalProvider;
     }
@@ -58,11 +58,11 @@ public class ConfigSession implements Filter {
 Finally, configure the scope when creating Hasor. Because a filter needs to be configured here, use `WebModule`.
 
 ```java
-public class StartModule extends WebModule {
+public class StartModule implements WebModule {
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         ...
         apiBinder.filter("/*").through(0, new ConfigSession());
-        apiBinder.registerScope("session", new SessionScope());
+        apiBinder.bindScope("session", new SessionScope());
         ...
     }
 }
