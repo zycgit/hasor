@@ -10,9 +10,9 @@ configurations {
 dependencies {
     api "org.slf4j:slf4j-api:${property('lib.slf4j')}"
     api "net.hasor:cobble-all:${property('lib.cobble')}"
+    api "javax.annotation:javax.annotation-api:${property('lib.annotation')}"
     shaded "javax.inject:javax.inject:${property('lib.inject')}"
 
-    compileOnly "javax.annotation:javax.annotation-api:${property('lib.annotation')}"
     compileOnly "javax.inject:javax.inject:${property('lib.inject')}"
 }
 
