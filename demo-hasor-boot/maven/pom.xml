@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.hasor.demo</groupId>
+    <artifactId>demo-hasor-boot</artifactId>
+    <version>5.0.1</version>
+    <packaging>pom</packaging>
+
+    <name>Demo-Hasor-Boot</name>
+
+    <properties>
+        <hasor.version>5.0.1</hasor.version>
+        <slf4j.version>1.7.30</slf4j.version>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+        <module>demo-hasor-boot-basic</module>
+        <module>demo-hasor-boot-web</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.14.0</version>
+                    <configuration>
+                        <release>${maven.compiler.release}</release>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>net.hasor</groupId>
+                    <artifactId>hasor-boot-maven-plugin</artifactId>
+                    <version>${hasor.version}</version>
+                    <configuration>
+                        <classifier>boot</classifier>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

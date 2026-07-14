@@ -1,26 +1,48 @@
 # Demo Hasor Boot
 
-This directory contains Hasor Boot demos.
+This directory contains Hasor Boot demos split by build tool.
 
-- `demo-hasor-boot-basic`: command-line Hasor Boot demo.
-- `demo-hasor-boot-web`: simple Hasor Web MVC demo running on embedded Tomcat.
+- `gradle/demo-hasor-boot-basic`: command-line Hasor Boot demo built with Gradle.
+- `gradle/demo-hasor-boot-web`: Hasor Web MVC demo built with Gradle.
+- `maven/demo-hasor-boot-basic`: command-line Hasor Boot demo built with Maven.
+- `maven/demo-hasor-boot-web`: Hasor Web MVC demo built with Maven.
 
-Build all executable archives:
+Build Gradle demos:
 
 ```bash
-../gradlew :demo-hasor-boot-basic:bootJar :demo-hasor-boot-web:bootJar
+cd gradle
+../../gradlew bootJar
 ```
 
-Run the command-line demo:
+Build Maven demos:
 
 ```bash
-java -jar demo-hasor-boot-basic/build/libs/demo-hasor-boot-basic-5.0.1-SNAPSHOT-boot.jar demo
+cd maven
+mvn package
 ```
 
-Run the Web demo:
+Run Gradle basic demo:
 
 ```bash
-java -jar demo-hasor-boot-web/build/libs/demo-hasor-boot-web-5.0.1-SNAPSHOT-boot.jar
+java -jar gradle/demo-hasor-boot-basic/build/libs/*-boot.jar demo
+```
+
+Run Gradle web demo:
+
+```bash
+java -jar gradle/demo-hasor-boot-web/build/libs/*-boot.jar
+```
+
+Run Maven basic demo:
+
+```bash
+java -jar maven/demo-hasor-boot-basic/target/*-boot.jar demo
+```
+
+Run Maven web demo:
+
+```bash
+java -jar maven/demo-hasor-boot-web/target/*-boot.jar
 ```
 
 The Web demo uses the `hasor.http` defaults from `hasor-web`; for example, set `HASOR_HTTP_PORT=18080` to change the port.

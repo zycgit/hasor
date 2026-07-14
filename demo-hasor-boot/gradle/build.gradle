@@ -1,0 +1,17 @@
+subprojects {
+    group = 'net.hasor.demo'
+    version = '5.0.1'
+
+    plugins.withType(JavaPlugin).configureEach {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+        }
+
+        tasks.withType(JavaCompile).configureEach {
+            options.encoding = 'UTF-8'
+            options.release = 17
+        }
+    }
+}

@@ -1,15 +1,15 @@
-# Demo Hasor Boot Web
+# Demo Hasor Boot Web Gradle
 
 Build the executable archive:
 
 ```bash
-../../gradlew :demo-hasor-boot-web:bootJar
+../../../gradlew bootJar
 ```
 
 Run it:
 
 ```bash
-java -jar build/libs/demo-hasor-boot-web-5.0.1-SNAPSHOT-boot.jar
+java -jar build/libs/*-boot.jar
 ```
 
 The HTTP server is started by `WebServers.run(...)`. Its defaults come from the `hasor.http` section in `hasor-web` and can be overridden with environment variables such as `HASOR_HTTP_PORT`.

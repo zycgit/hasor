@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+    id 'application'
+    id 'net.hasor.boot' version '5.0.1'
+}
+
+dependencies {
+    implementation 'net.hasor:hasor-core:5.0.1'
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
+}
+
+application {
+    mainClass = 'net.hasor.demo.boot.DemoHasorBootApplication'
+}
+
+tasks.named('bootJar') {
+    mainClass = application.mainClass
+    loaderClasspath.from(configurations.detachedConfiguration(dependencies.create('net.hasor:hasor-boot-loader:5.0.1')))
+}
