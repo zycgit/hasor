@@ -1,0 +1,89 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'signing'
+}
+
+def rootProperties = new Properties()
+file('../../gradle.properties').withInputStream { rootProperties.load(it) }
+
+group = 'net.hasor'
+version = rootProperties.getProperty('version')
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.encoding = 'UTF-8'
+    options.addStringOption('Xdoclint:none', '-quiet')
+    failOnError = false
+}
+
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
+}
+
+gradlePlugin {
+    plugins {
+        hasorBoot {
+            id = 'net.hasor.boot'
+            implementationClass = 'net.hasor.boot.gradle.HasorBootGradlePlugin'
+        }
+    }
+}
+
+publishing {
+    publications.withType(MavenPublication).configureEach {
+        pom {
+            name = 'Hasor-Boot-Gradle-Plugin'
+            description = 'Hasor Boot Gradle packaging plugin.'
+            url = 'https://www.hasor.net/'
+            licenses {
+                license {
+                    name = 'The Apache Software License, Version 2.0'
+                    url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                }
+            }
+            developers {
+                developer {
+                    name = '赵永春(Mr.Zhao)'
+                    email = 'zyc@hasor.net'
+                }
+            }
+            scm {
+                connection = 'scm:git:git@gitee.com:zycgit/hasor.git'
+                developerConnection = 'scm:git:git@gitee.com:zycgit/hasor.git'
+                url = 'https://gitee.com/zycgit/hasor'
+                tag = 'HEAD'
+            }
+        }
+    }
+    if (findProperty('centralBundleDir')) {
+        repositories {
+            maven {
+                name = 'centralBundle'
+                url = uri(findProperty('centralBundleDir'))
+            }
+        }
+    }
+}
+
+signing {
+    required { findProperty('centralRelease') == 'true' }
+    def signingKey = findProperty('maven.central.signing_key')
+    def signingPassword = findProperty('maven.central.signing_password')
+    if (signingKey) {
+        useInMemoryPgpKeys(signingKey.replace('\\n', '\n'), signingPassword)
+    }
+    sign publishing.publications
+}

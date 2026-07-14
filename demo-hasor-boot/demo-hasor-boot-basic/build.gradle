@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+    id 'application'
+    id 'net.hasor.boot'
+}
+
+dependencies {
+    implementation project(':hasor-core')
+    runtimeOnly "org.slf4j:slf4j-simple:${property('lib.slf4j')}"
+}
+
+application {
+    mainClass = 'net.hasor.demo.boot.DemoHasorBootApplication'
+}
+
+tasks.named('bootJar') {
+    mainClass = application.mainClass
+    loaderClasspath.from(project(':hasor-boot-loader').tasks.named('jar'))
+}

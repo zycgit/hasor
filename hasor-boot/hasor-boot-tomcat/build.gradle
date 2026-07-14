@@ -1,0 +1,9 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+dependencies {
+    api project(':hasor-web')
+    api "org.apache.tomcat.embed:tomcat-embed-core:9.0.83"
+}

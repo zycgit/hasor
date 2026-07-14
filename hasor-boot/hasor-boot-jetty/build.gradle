@@ -1,0 +1,10 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+dependencies {
+    api project(':hasor-web')
+    api "org.eclipse.jetty:jetty-server:9.4.54.v20240208"
+    api "org.eclipse.jetty:jetty-servlet:9.4.54.v20240208"
+}

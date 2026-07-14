@@ -1,0 +1,15 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'org.gradlex.maven-plugin-development'
+}
+
+def mavenVersion = '3.8.8'
+def mavenPluginToolsVersion = '3.9.0'
+
+dependencies {
+    implementation project(':hasor-boot-loader')
+    implementation "org.apache.maven:maven-plugin-api:${mavenVersion}"
+    implementation "org.apache.maven:maven-core:${mavenVersion}"
+    compileOnly "org.apache.maven.plugin-tools:maven-plugin-annotations:${mavenPluginToolsVersion}"
+}

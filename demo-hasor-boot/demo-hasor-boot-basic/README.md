@@ -3,11 +3,11 @@
 Build the executable archive:
 
 ```bash
-mvn -pl demo-hasor-boot/demo-hasor-boot-basic -am package
+../../gradlew :demo-hasor-boot-basic:bootJar
 ```
 
 Run it:
 
 ```bash
-java -jar demo-hasor-boot/demo-hasor-boot-basic/target/demo-hasor-boot-basic-5.0.0-SNAPSHOT.jar demo
+java -jar build/libs/demo-hasor-boot-basic-5.0.1-SNAPSHOT-boot.jar demo
 ```

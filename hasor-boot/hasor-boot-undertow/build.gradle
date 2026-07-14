@@ -1,0 +1,9 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+dependencies {
+    api project(':hasor-web')
+    api "io.undertow:undertow-servlet:2.2.26.Final"
+}

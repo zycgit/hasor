@@ -264,7 +264,7 @@ public interface AppContext extends MetaInfo, Closeable {
      * （Provider形式返回，真正创建 Bean 的时机是当调用 Provider.get 方法时，相当于Lazy）
      * @param withName 绑定名称。
      * @param bindType bean type
-     * @return 返回{@link Provider}形式对象。
+     * @return 返回{@link Supplier}形式对象。
      */
     default <T> Supplier<? extends T> findBindingProvider(final String withName, final Class<T> bindType) {
         Objects.requireNonNull(bindType, "bindType is null.");

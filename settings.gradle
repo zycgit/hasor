@@ -1,0 +1,38 @@
+pluginManagement {
+    includeBuild 'hasor-boot/hasor-boot-gradle-plugin'
+
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'hasor-parent'
+
+include 'hasor-core'
+include 'hasor-web'
+include 'hasor-boot-loader'
+include 'hasor-boot-maven-plugin'
+include 'hasor-boot-tomcat'
+include 'hasor-boot-jetty'
+include 'hasor-boot-undertow'
+
+project(':hasor-boot-loader').projectDir = file('hasor-boot/hasor-boot-loader')
+project(':hasor-boot-maven-plugin').projectDir = file('hasor-boot/hasor-boot-maven-plugin')
+project(':hasor-boot-tomcat').projectDir = file('hasor-boot/hasor-boot-tomcat')
+project(':hasor-boot-jetty').projectDir = file('hasor-boot/hasor-boot-jetty')
+project(':hasor-boot-undertow').projectDir = file('hasor-boot/hasor-boot-undertow')
+
+
+include 'demo-hasor-boot-basic'
+include 'demo-hasor-boot-web'
+project(':demo-hasor-boot-basic').projectDir = file('demo-hasor-boot/demo-hasor-boot-basic')
+project(':demo-hasor-boot-web').projectDir = file('demo-hasor-boot/demo-hasor-boot-web')

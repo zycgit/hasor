@@ -1,0 +1,17 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+dependencies {
+    api project(':hasor-core')
+    api "net.hasor:cobble-all:${property('lib.cobble')}"
+    api "javax.servlet:javax.servlet-api:${property('lib.servlet')}"
+    api "javax.servlet.jsp:jsp-api:2.2"
+
+    compileOnly "com.alibaba:fastjson:${property('lib.fastjson')}"
+    testImplementation "javax.el:javax.el-api:3.0.0"
+    testImplementation "javax.annotation:javax.annotation-api:${property('lib.annotation')}"
+    testImplementation "org.apache.httpcomponents:httpclient:4.5.3"
+    testImplementation "org.apache.httpcomponents:httpmime:4.5.3"
+}

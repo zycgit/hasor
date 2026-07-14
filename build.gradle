@@ -1,0 +1,113 @@
+plugins {
+    id 'org.gradlex.maven-plugin-development' version '1.0.3' apply false
+}
+
+allprojects {
+    group = 'net.hasor'
+}
+
+def pomInfo = [
+        'hasor-core'             : ['Hasor-Core', 'Hasor IoC and application framework core.'],
+        'hasor-web'              : ['Hasor-Web', 'Hasor Web MVC framework.'],
+        'hasor-boot-loader'      : ['Hasor-Boot-Loader', 'Hasor Boot executable archive loader.'],
+        'hasor-boot-maven-plugin': ['Hasor-Boot-Maven-Plugin', 'Hasor Boot Maven packaging plugin.'],
+        'hasor-boot-tomcat'      : ['Hasor-Boot-Tomcat', 'Hasor Boot embedded Tomcat launcher.'],
+        'hasor-boot-jetty'       : ['Hasor-Boot-Jetty', 'Hasor Boot embedded Jetty launcher.'],
+        'hasor-boot-undertow'    : ['Hasor-Boot-Undertow', 'Hasor Boot embedded Undertow launcher.']
+]
+
+subprojects {
+    plugins.withType(JavaPlugin).configureEach {
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
+        }
+
+        tasks.withType(JavaCompile).configureEach {
+            options.encoding = 'UTF-8'
+            options.release = 17
+        }
+
+        tasks.withType(Javadoc).configureEach {
+            options.encoding = 'UTF-8'
+            options.addStringOption('Xdoclint:none', '-quiet')
+            failOnError = false
+        }
+
+        tasks.withType(Test).configureEach {
+            useJUnit()
+            jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
+        }
+
+        tasks.withType(GenerateModuleMetadata).configureEach {
+            enabled = false
+        }
+
+        dependencies {
+            testImplementation "javax.inject:javax.inject:${property('lib.inject')}"
+            testImplementation "junit:junit:${property('lib.junit')}"
+            testImplementation "org.powermock:powermock-module-junit4:${property('lib.powermock')}"
+            testImplementation "org.powermock:powermock-api-mockito2:${property('lib.powermock')}"
+            testImplementation "ch.qos.logback:logback-classic:${property('lib.logback')}"
+            testImplementation "com.alibaba:fastjson:${property('lib.fastjson')}"
+        }
+
+        plugins.withId('maven-publish') {
+            apply plugin: 'signing'
+            java {
+                withSourcesJar()
+                withJavadocJar()
+            }
+
+            publishing {
+                publications {
+                    mavenJava(MavenPublication) {
+                        from components.java
+                        pom {
+                            name = pomInfo[project.name][0]
+                            description = pomInfo[project.name][1]
+                            url = 'https://www.hasor.net/'
+                            licenses {
+                                license {
+                                    name = 'The Apache Software License, Version 2.0'
+                                    url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                                }
+                            }
+                            developers {
+                                developer {
+                                    name = '赵永春(Mr.Zhao)'
+                                    email = 'zyc@hasor.net'
+                                }
+                            }
+                            scm {
+                                connection = 'scm:git:git@gitee.com:zycgit/hasor.git'
+                                developerConnection = 'scm:git:git@gitee.com:zycgit/hasor.git'
+                                url = 'https://gitee.com/zycgit/hasor'
+                                tag = 'HEAD'
+                            }
+                        }
+                    }
+                }
+                if (findProperty('centralBundleDir')) {
+                    repositories {
+                        maven {
+                            name = 'centralBundle'
+                            url = uri(findProperty('centralBundleDir'))
+                        }
+                    }
+                }
+            }
+
+            signing {
+                required { findProperty('centralRelease') == 'true' }
+                def signingKey = findProperty('maven.central.signing_key')
+                def signingPassword = findProperty('maven.central.signing_password')
+                if (signingKey) {
+                    useInMemoryPgpKeys(signingKey.replace('\\n', '\n'), signingPassword)
+                }
+                sign publishing.publications.mavenJava
+            }
+        }
+    }
+}
