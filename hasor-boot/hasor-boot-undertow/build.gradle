@@ -3,6 +3,9 @@ plugins {
     id 'maven-publish'
 }
 
+ext.pomName = 'Hasor-Boot-Undertow'
+description = 'Hasor Boot embedded Undertow launcher.'
+
 dependencies {
     api project(':hasor-web')
     api "io.undertow:undertow-servlet:2.2.26.Final"

@@ -2,3 +2,6 @@ plugins {
     id 'java-library'
     id 'maven-publish'
 }
+
+ext.pomName = 'Hasor-Boot-Loader'
+description = 'Hasor Boot executable archive loader.'

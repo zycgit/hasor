@@ -4,6 +4,9 @@ plugins {
     id 'org.gradlex.maven-plugin-development'
 }
 
+ext.pomName = 'Hasor-Boot-Maven-Plugin'
+description = 'Hasor Boot Maven packaging plugin.'
+
 def mavenVersion = '3.8.8'
 def mavenPluginToolsVersion = '3.9.0'
 

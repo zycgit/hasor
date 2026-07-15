@@ -3,6 +3,9 @@ plugins {
     id 'maven-publish'
 }
 
+ext.pomName = 'Hasor-Core'
+description = 'Hasor IoC and application framework core.'
+
 configurations {
     shaded
 }

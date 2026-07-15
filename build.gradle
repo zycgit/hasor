@@ -6,44 +6,25 @@ allprojects {
     group = 'net.hasor'
 }
 
-def pomInfo = [
-        'hasor-core'             : ['Hasor-Core', 'Hasor IoC and application framework core.'],
-        'hasor-web'              : ['Hasor-Web', 'Hasor Web MVC framework.'],
-        'hasor-boot-loader'      : ['Hasor-Boot-Loader', 'Hasor Boot executable archive loader.'],
-        'hasor-boot-maven-plugin': ['Hasor-Boot-Maven-Plugin', 'Hasor Boot Maven packaging plugin.'],
-        'hasor-boot-tomcat'      : ['Hasor-Boot-Tomcat', 'Hasor Boot embedded Tomcat launcher.'],
-        'hasor-boot-jetty'       : ['Hasor-Boot-Jetty', 'Hasor Boot embedded Jetty launcher.'],
-        'hasor-boot-undertow'    : ['Hasor-Boot-Undertow', 'Hasor Boot embedded Undertow launcher.']
-]
-
 subprojects {
     plugins.withType(JavaPlugin).configureEach {
         java {
-            toolchain {
-                languageVersion = JavaLanguageVersion.of(17)
-            }
+            toolchain.languageVersion = JavaLanguageVersion.of(17)
         }
-
         tasks.withType(JavaCompile).configureEach {
             options.encoding = 'UTF-8'
             options.release = 17
         }
-
         tasks.withType(Javadoc).configureEach {
             options.encoding = 'UTF-8'
             options.addStringOption('Xdoclint:none', '-quiet')
             failOnError = false
         }
-
         tasks.withType(Test).configureEach {
             useJUnit()
             jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
         }
-
-        tasks.withType(GenerateModuleMetadata).configureEach {
-            enabled = false
-        }
-
+        tasks.withType(GenerateModuleMetadata).configureEach { enabled = false }
         dependencies {
             testImplementation "javax.inject:javax.inject:${property('lib.inject')}"
             testImplementation "junit:junit:${property('lib.junit')}"
@@ -59,53 +40,50 @@ subprojects {
                 withSourcesJar()
                 withJavadocJar()
             }
-
             publishing {
                 publications {
                     mavenJava(MavenPublication) {
                         from components.java
                         pom {
-                            name = pomInfo[project.name][0]
-                            description = pomInfo[project.name][1]
+                            name = providers.provider { project.findProperty('pomName') ?: project.name }
+                            description = providers.provider { project.description ?: project.name }
                             url = 'https://www.hasor.net/'
-                            licenses {
-                                license {
-                                    name = 'The Apache Software License, Version 2.0'
-                                    url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
-                                }
-                            }
-                            developers {
-                                developer {
-                                    name = '赵永春(Mr.Zhao)'
-                                    email = 'zyc@hasor.net'
-                                }
-                            }
+                            licenses { license { name = 'The Apache Software License, Version 2.0'; url = 'https://www.apache.org/licenses/LICENSE-2.0.txt' } }
+                            developers { developer { name = '赵永春(Mr.Zhao)'; email = 'zyc@hasor.net' } }
                             scm {
                                 connection = 'scm:git:git@gitee.com:zycgit/hasor.git'
-                                developerConnection = 'scm:git:git@gitee.com:zycgit/hasor.git'
+                                developerConnection = connection
                                 url = 'https://gitee.com/zycgit/hasor'
                                 tag = 'HEAD'
+                            }
+                            withXml {
+                                def excluded = new LinkedHashSet(configurations.compileOnly.dependencies)
+                                excluded.addAll(configurations.testImplementation.dependencies)
+                                excluded.addAll(configurations.testRuntimeOnly.dependencies)
+                                if (configurations.findByName('shaded')) {
+                                    excluded.addAll(configurations.shaded.dependencies)
+                                }
+                                excluded.each { dep ->
+                                    def groupId = dep.group ?: project.group
+                                    def dependenciesNode = asNode().dependencies[0]
+                                    dependenciesNode?.dependency?.findAll {
+                                        it.groupId.text() == groupId.toString() && it.artifactId.text() == dep.name
+                                    }?.each {
+                                        dependenciesNode.remove(it)
+                                    }
+                                }
                             }
                         }
                     }
                 }
                 if (findProperty('centralBundleDir')) {
-                    repositories {
-                        maven {
-                            name = 'centralBundle'
-                            url = uri(findProperty('centralBundleDir'))
-                        }
-                    }
+                    repositories { maven { name = 'centralBundle'; url = uri(findProperty('centralBundleDir')) } }
                 }
             }
-
             signing {
                 required { findProperty('centralRelease') == 'true' }
-                def signingKey = findProperty('maven.central.signing_key')
-                def signingPassword = findProperty('maven.central.signing_password')
-                if (signingKey) {
-                    useInMemoryPgpKeys(signingKey.replace('\\n', '\n'), signingPassword)
-                }
+                def key = findProperty('maven.central.signing_key')
+                if (key) useInMemoryPgpKeys(key.replace('\\n', '\n'), findProperty('maven.central.signing_password'))
                 sign publishing.publications.mavenJava
             }
         }

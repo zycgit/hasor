@@ -3,6 +3,9 @@ plugins {
     id 'maven-publish'
 }
 
+ext.pomName = 'Hasor-Boot-Jetty'
+description = 'Hasor Boot embedded Jetty launcher.'
+
 dependencies {
     api project(':hasor-web')
     api "org.eclipse.jetty:jetty-server:9.4.54.v20240208"

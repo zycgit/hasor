@@ -3,6 +3,9 @@ plugins {
     id 'maven-publish'
 }
 
+ext.pomName = 'Hasor-Web'
+description = 'Hasor Web MVC framework.'
+
 dependencies {
     api project(':hasor-core')
     api "net.hasor:cobble-all:${property('lib.cobble')}"
