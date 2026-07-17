@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.spi.container;
-import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.TypeSupplier;
 import net.hasor.test.core.basic.pojo.PojoBean;
@@ -28,18 +27,5 @@ public class ExtendContextTest {
             apiBinder.bindType(PojoBean.class).toInstance(pojoBean);
         }).wrapTypeSupplier();
         assert objectTypeSupplier.get(PojoBean.class) == pojoBean;
-    }
-
-    @Test
-    public void test2() {
-        AppContext appContext1 = Hasor.create().mainSettingWith("/net_hasor_core_context/startup1_exter.xml").build();
-        assert appContext1.getInstance(String.class).equals("config");
-        //
-        AppContext appContext2 = Hasor.create().mainSettingWith("/net_hasor_core_context/startup2_exter.xml").build();
-        assert appContext2.getInstance(String.class).equals("config");
-        //
-        AppContext appContext3 = Hasor.create().mainSettingWith("/net_hasor_core_context/startup3_exter.xml").build();
-        assert appContext3.getInstance(String.class).equals("config");
-        //
     }
 }

@@ -41,16 +41,16 @@ import net.hasor.core.info.Arguments;
  * @version : 2013-4-3
  */
 public final class Hasor {
-    private final static Logger                    logger               = LoggerFactory.getLogger(Hasor.class);
-    public final static String                     SchemaName           = "/META-INF/hasor.schemas";
-    public String                                  mainSettings         = "hconfig.xml";
-    private final Object                           context;
-    private final List<Module>                     moduleList           = new ArrayList<>();
-    private final Set<Class<?>>                    primarySources       = new LinkedHashSet<>();
-    private ClassLoader                            loader;
-    private Arguments                              arguments            = new Arguments(null);
-    private boolean                                registerShutdownHook = true;
-    private final Map<String, Map<String, Object>> initSettingMap       = new HashMap<>();
+    private final static Logger                           logger               = LoggerFactory.getLogger(Hasor.class);
+    public final static  String                           SchemaName           = "/META-INF/hasor.schemas";
+    public               String                           mainSettings         = "hconfig.xml";
+    private final        Object                           context;
+    private final        List<Module>                     moduleList           = new ArrayList<>();
+    private final        Set<Class<?>>                    primarySources       = new LinkedHashSet<>();
+    private              ClassLoader                      loader;
+    private              Arguments                        arguments            = new Arguments(null);
+    private              boolean                          registerShutdownHook = true;
+    private final        Map<String, Map<String, Object>> initSettingMap       = new HashMap<>();
 
     private Hasor(Object context) {
         this.context = context;
@@ -271,6 +271,11 @@ public final class Hasor {
     private void addPrimarySourcesModule(List<Module> modules) {
         modules.add(a -> {
             for (Class<?> primarySource : this.primarySources) {
+                BindInfo<?> registered = a.findBindingRegister("", primarySource);
+                if (registered != null && Boolean.TRUE.equals(registered.getMetaData(Module.MODULE_INSTALLED))) {
+                    continue;
+                }
+
                 Provider<Object> primaryProvider = ((Provider<Object>) () -> ClassUtils.newInstance(primarySource)).asSingle();
                 BindInfo<?> info = a.bindType((Class) primarySource).toProvider(primaryProvider).toInfo();
 

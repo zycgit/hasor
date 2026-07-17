@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import static net.hasor.core.container.InnerUtils.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
@@ -44,6 +43,7 @@ import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.DelegateBindInfoAdapter;
 import net.hasor.core.spi.*;
+import static net.hasor.core.container.InnerUtils.*;
 
 /**
  * 负责创建 Bean
@@ -51,16 +51,17 @@ import net.hasor.core.spi.*;
  * @version : 2015-11-25
  */
 public class BeanContainer extends AbstractContainer implements BindInfoBuilderFactory {
-    private final Settings                     settings;
-    private final SpiCallerContainer           spiCallerContainer;
-    private final BindInfoContainer            bindInfoContainer;
-    private final ScopeContainer               scopeContainer;
-    private final ResourceLoader               resourceLoader;
-    private final ClassLoader                  classLoader;
-    private final CobbleClassScanner           scanner;
-    private final EventContext                 eventContext;
-    private final Object                       context;
-    private final Map<Class<?>, DynamicConfig> classEngineMap;
+    private static final ThreadLocal<Deque<CreationNode>> CREATION_PATH = ThreadLocal.withInitial(ArrayDeque::new);
+    private final        Settings                         settings;
+    private final        SpiCallerContainer               spiCallerContainer;
+    private final        BindInfoContainer                bindInfoContainer;
+    private final        ScopeContainer                   scopeContainer;
+    private final        ResourceLoader                   resourceLoader;
+    private final        ClassLoader                      classLoader;
+    private final        CobbleClassScanner               scanner;
+    private final        EventContext                     eventContext;
+    private final        Object                           context;
+    private final        Map<Class<?>, DynamicConfig>     classEngineMap;
 
     public BeanContainer(Settings settings, ClassLoader parent, ResourceLoader resourceLoader, Object context) {
         this.settings = Objects.requireNonNull(settings, "need Settings.");
@@ -149,7 +150,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         Supplier<Object[]> parameterSupplier = parameterSupplier(constructorSupplier, appContext, params, true);
         //
         // .创建对象
-        return (Supplier<T>) () -> createObject(implClass, constructorSupplier, parameterSupplier, null, appContext);
+        return guardedProvider("TYPE:" + targetType.getName(), "bean type '" + targetType.getName() + "'", () -> createObject(implClass, constructorSupplier, parameterSupplier, null, appContext));
     }
 
     /**
@@ -166,7 +167,8 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         Supplier<Object[]> parameterSupplier = parameterSupplier(constructorSupplier, appContext, params, true);
         //
         // .创建对象
-        return (Supplier<T>) () -> createObject(targetConstructor.getDeclaringClass(), constructorSupplier, parameterSupplier, null, appContext);
+        Class<T> targetType = targetConstructor.getDeclaringClass();
+        return guardedProvider("TYPE:" + targetType.getName(), "bean type '" + targetType.getName() + "'", () -> createObject(targetType, constructorSupplier, parameterSupplier, null, appContext));
     }
 
     /** 通过 BindInfo 类型创建Bean */
@@ -175,8 +177,10 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             return null;
         }
         DefaultBindInfoProviderAdapter<T> adapter = (DefaultBindInfoProviderAdapter) bindInfo;
+        String key = "BIND:" + bindInfo.getBindID();
+        String description = dependencyDescription(bindInfo);
         if (adapter.getCustomerProvider() != null) {
-            return adapter.getCustomerProvider();
+            return guardedProvider(key, description, adapter.getCustomerProvider());
         }
         //
         // .如果指定了 SourceType 那么使用 SourceType 作为 targetType
@@ -200,7 +204,53 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         };
         //
         // .创建对象
-        return (Supplier<T>) () -> createObject(targetType, constructorSupplier, parameterSupplier, bindInfo, appContext);
+        return guardedProvider(key, description, () -> createObject(targetType, constructorSupplier, parameterSupplier, bindInfo, appContext));
+    }
+
+    private String dependencyDescription(BindInfo<?> bindInfo) {
+        Object configured = bindInfo.getMetaData(CircularDependencyException.DEPENDENCY_DESCRIPTION);
+        if (configured != null && StringUtils.isNotBlank(configured.toString())) {
+            return "bean '" + bindInfo.getBindID() + "' (" + bindInfo.getBindType().getName() + ")\n    from " + configured;
+        }
+        return "bean '" + bindInfo.getBindID() + "' (" + bindInfo.getBindType().getName() + ")";
+    }
+
+    private <T> Supplier<? extends T> guardedProvider(String key, String description, Supplier<? extends T> provider) {
+        return () -> {
+            Deque<CreationNode> path = CREATION_PATH.get();
+            CreationNode repeated = path.stream().filter(node -> node.key.equals(key)).findFirst().orElse(null);
+            if (repeated != null) {
+                List<String> cycle = new ArrayList<>();
+                boolean copy = false;
+                for (CreationNode node : path) {
+                    copy = copy || node == repeated;
+                    if (copy) {
+                        cycle.add(node.description);
+                    }
+                }
+                cycle.add(description);
+                throw new CircularDependencyException(cycle);
+            }
+            path.addLast(new CreationNode(key, description));
+            try {
+                return provider.get();
+            } finally {
+                path.removeLast();
+                if (path.isEmpty()) {
+                    CREATION_PATH.remove();
+                }
+            }
+        };
+    }
+
+    private static class CreationNode {
+        private final String key;
+        private final String description;
+
+        private CreationNode(String key, String description) {
+            this.key = key;
+            this.description = description;
+        }
     }
 
     /** 仅通过 Annotation 来创建Bean。targetType 作为参考类型。 */

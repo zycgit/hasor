@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.objects;
+import java.io.InputStream;
+import java.util.Objects;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.io.FilenameUtils;
 import net.hasor.cobble.io.IOUtils;
@@ -22,11 +26,6 @@ import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-
 /**
  * 通过 ResourceLoader 来响应对于 Web 资源的请求。
  * @version : 2020-03-01
@@ -34,27 +33,75 @@ import java.io.InputStream;
  */
 public class ResourceFilter implements InvokerFilter {
     private final ResourceLoader loader;
+    private final String         urlPrefix;
+    private final String         welcomeFile;
 
     public ResourceFilter(ResourceLoader loader) {
-        this.loader = loader;
+        this(loader, null, null);
+    }
+
+    public ResourceFilter(ResourceLoader loader, String urlPrefix) {
+        this(loader, urlPrefix, "index.html");
+    }
+
+    public ResourceFilter(ResourceLoader loader, String urlPrefix, String welcomeFile) {
+        this.loader = Objects.requireNonNull(loader, "resource loader is null.");
+        this.urlPrefix = formatUrlPrefix(urlPrefix);
+        this.welcomeFile = StringUtils.isBlank(welcomeFile) ? null : trimLeftSlash(welcomeFile.trim());
+    }
+
+    private static String formatUrlPrefix(String urlPrefix) {
+        if (StringUtils.isBlank(urlPrefix)) {
+            return null;
+        }
+        urlPrefix = urlPrefix.trim().replace('\\', '/').replaceAll("/+", "/");
+        if (!urlPrefix.startsWith("/")) {
+            urlPrefix = "/" + urlPrefix;
+        }
+        while (urlPrefix.length() > 1 && urlPrefix.endsWith("/")) {
+            urlPrefix = urlPrefix.substring(0, urlPrefix.length() - 1);
+        }
+        return urlPrefix;
+    }
+
+    private static String trimLeftSlash(String path) {
+        if (path == null) {
+            return null;
+        }
+        while (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+        return path;
+    }
+
+    private String resolveResource(String requestPath) {
+        if (this.urlPrefix == null) {
+            return requestPath;
+        }
+        if (requestPath.equals(this.urlPrefix) || requestPath.equals(this.urlPrefix + "/")) {
+            return this.welcomeFile;
+        }
+        if (!requestPath.startsWith(this.urlPrefix + "/")) {
+            return null;
+        }
+        return trimLeftSlash(requestPath.substring(this.urlPrefix.length()));
     }
 
     @Override
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
-        HttpServletRequest httpRequest = invoker.getHttpRequest();
-        String requestURI = httpRequest.getRequestURI();
-        if (!this.loader.exist(requestURI)) {
+        String resource = resolveResource(invoker.getRequestPath());
+        if (StringUtils.isBlank(resource) || !this.loader.exist(resource)) {
             return chain.doNext(invoker);
         }
         //
         HttpServletResponse httpResponse = invoker.getHttpResponse();
-        String extension = FilenameUtils.getExtension(requestURI);
+        String extension = FilenameUtils.getExtension(resource);
         String mimeType = invoker.getMimeType(extension);
         if (StringUtils.isNotBlank(mimeType)) {
             httpResponse.setContentType(mimeType);
         }
         //
-        long size = this.loader.getResourceSize(requestURI);
+        long size = this.loader.getResourceSize(resource);
         if (size > 0) {
             if (size >= Integer.MAX_VALUE) {
                 httpResponse.setContentLengthLong(size);
@@ -64,7 +111,7 @@ public class ResourceFilter implements InvokerFilter {
         }
         //
         try (ServletOutputStream outputStream = httpResponse.getOutputStream()) {
-            try (InputStream inputStream = loader.getResourceAsStream(requestURI)) {
+            try (InputStream inputStream = loader.getResourceAsStream(resource)) {
                 IOUtils.copy(inputStream, outputStream);
             }
         }

@@ -12,15 +12,6 @@
         <!-- 执行事件的线程池大小，默认 8 -->
         <eventThreadPoolSize>${HASOR_LOAD_EVENT_POOL:8}</eventThreadPoolSize>
 
-        <!-- 程序入口模块类名 (由StartupModule插件提供) -->
-        <startup>${HASOR_LOAD_STARTUP}</startup>
-
-        <!-- 默认要装载的模块，默认 true -->
-        <modules throwLoadError="true">
-            <module>net.hasor.core.exts.startup.StartupModule</module>
-            <module>net.hasor.core.exts.aop.AopModule</module>
-        </modules>
-
         <!-- ApiBinder 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上），loadExternal 属性可以控制是否加载这些 binder -->
         <apiBinderSet>
             <!--<binder type="net.hasor.plugins.data.DataApiBinder">net.hasor.plugins.data.DataApiBinderCreater</binder>-->

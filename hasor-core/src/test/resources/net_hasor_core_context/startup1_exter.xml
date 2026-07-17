@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://www.hasor.net/sechma/main">
-    <hasor.startup>net.hasor.test.core.context.ConfigModule</hasor.startup>
-</config>

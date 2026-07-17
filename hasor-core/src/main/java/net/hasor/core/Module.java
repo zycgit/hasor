@@ -21,6 +21,9 @@ package net.hasor.core;
  */
 @FunctionalInterface
 public interface Module {
+    /** Bind metadata indicating that this type has already executed its Module initialization. */
+    String MODULE_INSTALLED = "hasor.module.installed";
+
     /** 表示放弃后续 onStart/onStop 的执行 */
     final class IgnoreModuleException extends RuntimeException {
     }
