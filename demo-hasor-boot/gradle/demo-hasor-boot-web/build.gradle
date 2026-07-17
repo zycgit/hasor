@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation 'net.hasor:hasor-boot-tomcat:5.0.1'
+    implementation 'net.hasor:hasor-boot-web-tomcat:5.0.1'
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
 }
 

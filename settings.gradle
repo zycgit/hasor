@@ -19,14 +19,17 @@ rootProject.name = 'hasor-parent'
 
 include 'hasor-core'
 include 'hasor-web'
+include 'hasor-config'
 include 'hasor-boot-loader'
+include 'hasor-boot-web'
 include 'hasor-boot-maven-plugin'
-include 'hasor-boot-tomcat'
-include 'hasor-boot-jetty'
-include 'hasor-boot-undertow'
+include 'hasor-boot-web-tomcat'
+include 'hasor-boot-web-jetty'
+include 'hasor-boot-web-undertow'
 
 project(':hasor-boot-loader').projectDir = file('hasor-boot/hasor-boot-loader')
+project(':hasor-boot-web').projectDir = file('hasor-boot/hasor-boot-web')
 project(':hasor-boot-maven-plugin').projectDir = file('hasor-boot/hasor-boot-maven-plugin')
-project(':hasor-boot-tomcat').projectDir = file('hasor-boot/hasor-boot-tomcat')
-project(':hasor-boot-jetty').projectDir = file('hasor-boot/hasor-boot-jetty')
-project(':hasor-boot-undertow').projectDir = file('hasor-boot/hasor-boot-undertow')
+project(':hasor-boot-web-tomcat').projectDir = file('hasor-boot/hasor-boot-web-tomcat')
+project(':hasor-boot-web-jetty').projectDir = file('hasor-boot/hasor-boot-web-jetty')
+project(':hasor-boot-web-undertow').projectDir = file('hasor-boot/hasor-boot-web-undertow')

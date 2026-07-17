@@ -30,7 +30,7 @@
             <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE:-1}</maxFileSize>
         </fileupload>
 
-        <!-- 内嵌 HTTP 容器配置，由 hasor-boot-tomcat/jetty/undertow 等模块使用 -->
+        <!-- 内嵌 HTTP 容器配置，由 hasor-boot-web-tomcat/jetty/undertow 等模块使用 -->
         <http>
             <!-- 容器名称。为空时会按 Java SPI 自动发现可用的 WebServerProvider。 -->
             <server>${HASOR_HTTP_SERVER}</server>

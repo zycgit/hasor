@@ -19,7 +19,7 @@ import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.hasor.web.http.WebServers;
+import net.hasor.boot.web.WebServers;
 
 /**
  * Minimal executable Hasor Boot Web demo.

@@ -19,25 +19,26 @@ import java.util.function.Supplier;
 import javax.servlet.*;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.web.http.WebServerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-01-10
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener, ServletRequestListener {
-    protected Logger             logger           = LoggerFactory.getLogger(getClass());
-    public static final String   AppContextName   = AppContext.class.getName();
-    private boolean              contextIsOutSite = false;
-    private Supplier<AppContext> appContext       = null;
-    private SpiTrigger           spiTrigger       = null;
+    protected           Logger               logger           = LoggerFactory.getLogger(getClass());
+    public static final String               AppContextName   = AppContext.class.getName();
+    public static final String               HASOR_MAIN_ARGS  = "hasor-main-args";
+    private             boolean              contextIsOutSite = false;
+    private             Supplier<AppContext> appContext       = null;
+    private             SpiTrigger           spiTrigger       = null;
 
     /*----------------------------------------------------------------------------------------------------*/
     public RuntimeListener() {
@@ -71,7 +72,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         if (StringUtils.isNotBlank(configName)) {
             webHasor.mainSettingWith(configName);
         }
-        Object args = sc.getAttribute(WebServerConfig.HASOR_MAIN_ARGS);
+        Object args = sc.getAttribute(HASOR_MAIN_ARGS);
         if (args instanceof String[] mainArgs) {
             webHasor.bindArguments(mainArgs);
         }
