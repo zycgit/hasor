@@ -18,15 +18,16 @@ import java.io.File;
 import java.util.EnumSet;
 import java.util.Map;
 import javax.servlet.DispatcherType;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import net.hasor.core.Module;
 import net.hasor.web.http.AbstractWebServer;
 import net.hasor.web.http.WebServerConfig;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+
 /**
  * Embedded Jetty server for Hasor Web MVC.
  * @author 赵永春 (zyc@hasor.net)
@@ -35,10 +36,6 @@ import net.hasor.web.startup.RuntimeListener;
 public class JettyWebServer extends AbstractWebServer {
     private Server          server;
     private ServerConnector connector;
-
-    public JettyWebServer() {
-        super();
-    }
 
     public JettyWebServer(Class<? extends Module> rootModule) {
         super(rootModule);

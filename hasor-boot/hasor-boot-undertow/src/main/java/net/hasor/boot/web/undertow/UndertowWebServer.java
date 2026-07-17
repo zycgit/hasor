@@ -40,10 +40,6 @@ public class UndertowWebServer extends AbstractWebServer {
     private Undertow          server;
     private DeploymentManager deploymentManager;
 
-    public UndertowWebServer() {
-        super();
-    }
-
     public UndertowWebServer(Class<? extends Module> rootModule) {
         super(rootModule);
     }

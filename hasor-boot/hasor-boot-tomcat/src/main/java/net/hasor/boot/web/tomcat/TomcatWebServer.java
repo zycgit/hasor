@@ -17,16 +17,16 @@ package net.hasor.boot.web.tomcat;
 import java.io.File;
 import java.util.Map;
 import javax.servlet.DispatcherType;
-import org.apache.catalina.Context;
-import org.apache.catalina.Wrapper;
-import org.apache.catalina.startup.Tomcat;
-import org.apache.tomcat.util.descriptor.web.FilterDef;
-import org.apache.tomcat.util.descriptor.web.FilterMap;
 import net.hasor.core.Module;
 import net.hasor.web.http.AbstractWebServer;
 import net.hasor.web.http.WebServerConfig;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
+import org.apache.catalina.Context;
+import org.apache.catalina.Wrapper;
+import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.util.descriptor.web.FilterDef;
+import org.apache.tomcat.util.descriptor.web.FilterMap;
 
 /**
  * Embedded Tomcat server for Hasor Web MVC.
@@ -35,10 +35,6 @@ import net.hasor.web.startup.RuntimeListener;
  */
 public class TomcatWebServer extends AbstractWebServer {
     private Tomcat tomcat;
-
-    public TomcatWebServer() {
-        super();
-    }
 
     public TomcatWebServer(Class<? extends Module> rootModule) {
         super(rootModule);
@@ -116,7 +112,7 @@ public class TomcatWebServer extends AbstractWebServer {
         filterMap.setDispatcher(DispatcherType.INCLUDE.name());
         filterMap.setDispatcher(DispatcherType.ERROR.name());
         filterMap.setDispatcher(DispatcherType.ASYNC.name());
-        context.addFilterMap(filterMap);
+        context.addFilterMapBefore(filterMap);
     }
 
     private static void destroy(Tomcat server) {

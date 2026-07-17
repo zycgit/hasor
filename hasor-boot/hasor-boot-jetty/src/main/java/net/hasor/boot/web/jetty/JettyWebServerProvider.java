@@ -17,6 +17,7 @@ package net.hasor.boot.web.jetty;
 import net.hasor.web.http.WebServer;
 import net.hasor.web.http.WebServerConfig;
 import net.hasor.web.http.WebServerProvider;
+
 /**
  * Java SPI provider for embedded Jetty.
  * @author 赵永春 (zyc@hasor.net)
@@ -25,7 +26,7 @@ import net.hasor.web.http.WebServerProvider;
 public class JettyWebServerProvider implements WebServerProvider {
     @Override
     public String name() {
-        return "jetty";
+        return "Jetty";
     }
 
     @Override

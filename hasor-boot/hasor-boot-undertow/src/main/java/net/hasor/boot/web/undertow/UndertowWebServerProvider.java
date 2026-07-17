@@ -26,7 +26,7 @@ import net.hasor.web.http.WebServerProvider;
 public class UndertowWebServerProvider implements WebServerProvider {
     @Override
     public String name() {
-        return "undertow";
+        return "Undertow";
     }
 
     @Override

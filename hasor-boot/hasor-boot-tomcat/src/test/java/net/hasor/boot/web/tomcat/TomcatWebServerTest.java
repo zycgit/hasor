@@ -15,8 +15,12 @@
  */
 package net.hasor.boot.web.tomcat;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import net.hasor.web.http.WebServer;
@@ -24,6 +28,22 @@ import net.hasor.web.http.WebServerConfig;
 import net.hasor.web.http.WebServers;
 
 public class TomcatWebServerTest {
+    @Test
+    public void jarShouldAutoStartAndStopWithHasor() {
+        AppContext appContext = Hasor.create()//
+                .addSettings(Settings.DefaultNameSpace, "hasor.http.port", 0)//
+                .build();
+        WebServer server = appContext.getInstance(WebServer.class);
+
+        assertTrue(server instanceof TomcatWebServer);
+        assertSame(server, appContext.findBindingBean("Tomcat", WebServer.class));
+        assertTrue(server.isStart());
+        assertTrue(server.getPort() > 0);
+
+        appContext.shutdown();
+        assertFalse(server.isStart());
+    }
+
     @Test
     public void startStop() throws Exception {
         WebServer server = WebServers.create(WebServerConfig.of(StartModule.class).server("tomcat").port(0));

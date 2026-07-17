@@ -26,7 +26,7 @@ import net.hasor.web.http.WebServerProvider;
 public class TomcatWebServerProvider implements WebServerProvider {
     @Override
     public String name() {
-        return "tomcat";
+        return "Tomcat";
     }
 
     @Override
