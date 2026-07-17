@@ -1,0 +1,13 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+ext.pomName = 'Hasor-Boot-Web-Jetty'
+description = 'Hasor Boot Web embedded Jetty server.'
+
+dependencies {
+    api project(':hasor-boot-web')
+    api "org.eclipse.jetty:jetty-server:9.4.54.v20240208"
+    api "org.eclipse.jetty:jetty-servlet:9.4.54.v20240208"
+}

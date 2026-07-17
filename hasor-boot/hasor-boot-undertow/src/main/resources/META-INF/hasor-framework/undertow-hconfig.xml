@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://www.hasor.net/sechma/hasor-core">
-    <hasor>
-        <modules>
-            <module>net.hasor.boot.web.undertow.UndertowWebServerModule</module>
-        </modules>
-    </hasor>
-</config>

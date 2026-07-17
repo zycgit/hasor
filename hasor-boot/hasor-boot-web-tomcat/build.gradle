@@ -1,0 +1,12 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+ext.pomName = 'Hasor-Boot-Web-Tomcat'
+description = 'Hasor Boot Web embedded Tomcat server.'
+
+dependencies {
+    api project(':hasor-boot-web')
+    api "org.apache.tomcat.embed:tomcat-embed-core:9.0.83"
+}

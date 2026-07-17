@@ -1,0 +1,12 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+ext.pomName = 'Hasor-Boot-Web-Undertow'
+description = 'Hasor Boot Web embedded Undertow server.'
+
+dependencies {
+    api project(':hasor-boot-web')
+    api "io.undertow:undertow-servlet:2.2.26.Final"
+}

@@ -1,0 +1,11 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+ext.pomName = 'Hasor-Boot-Web'
+description = 'Shared embedded Web server infrastructure for Hasor Boot.'
+
+dependencies {
+    api project(':hasor-web')
+}
