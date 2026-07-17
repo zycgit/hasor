@@ -1,17 +1,17 @@
 ---
 id: project-config
 sidebar_position: 2
-title: Project Configuration
-description: Configure Hasor Boot dependencies, embedded container dependencies, and the Maven executable package plugin.
+title: 工程配置
+description: 配置 Hasor Boot 依赖、内嵌容器依赖和 Maven 可执行包插件。
 ---
 
-# Project Configuration
+# 工程配置
 
-Hasor Boot project configuration has two parts: runtime dependencies and the Maven packaging plugin. Ordinary applications only need the core dependency and packaging plugin. Web applications also choose one embedded container module.
+Hasor Boot 的工程配置分为两部分：运行期依赖和 Maven 打包插件。普通应用只需要核心依赖和打包插件；Web 应用还需要选择一个内嵌容器模块。
 
-## Ordinary Application Dependencies
+## 普通应用依赖
 
-Ordinary Java applications need at least `hasor-core`:
+普通 Java 应用至少引入 `hasor-core`：
 
 ```xml
 <dependency>
@@ -21,11 +21,11 @@ Ordinary Java applications need at least `hasor-core`:
 </dependency>
 ```
 
-If you only run the `main` method during development, no extra runtime dependency is required. To package an executable fat jar, configure `hasor-boot-maven-plugin` in Maven.
+如果只是在开发阶段直接运行 `main` 方法，不需要额外运行期依赖。需要打包成可执行 Fat Jar 时，在 Maven 中配置 `hasor-boot-maven-plugin`。
 
-## Web Application Dependencies
+## Web 应用依赖
 
-Web applications need `hasor-web` and one embedded container module:
+Web 应用需要 `hasor-web`，并选择一个内嵌容器模块：
 
 ```xml
 <dependency>
@@ -35,20 +35,20 @@ Web applications need `hasor-web` and one embedded container module:
 </dependency>
 <dependency>
     <groupId>net.hasor</groupId>
-    <artifactId>hasor-boot-tomcat</artifactId>
+    <artifactId>hasor-boot-web-tomcat</artifactId>
     <version>5.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
-The embedded container module can be replaced as needed:
+内嵌容器模块可以按需要替换为：
 
-- `hasor-boot-tomcat`
-- `hasor-boot-jetty`
-- `hasor-boot-undertow`
+- `hasor-boot-web-tomcat`
+- `hasor-boot-web-jetty`
+- `hasor-boot-web-undertow`
 
-## Maven Packaging Plugin
+## Maven 打包插件
 
-The Hasor Boot Maven plugin repackages a regular jar into an executable archive during the `package` phase.
+Hasor Boot Maven 插件会在 `package` 阶段把普通 jar 重打包成可执行归档。
 
 ```xml
 <build>
@@ -81,7 +81,7 @@ The Hasor Boot Maven plugin repackages a regular jar into an executable archive 
 </build>
 ```
 
-If you do not want to write `Main-Class` through `maven-jar-plugin`, configure the Hasor Boot plugin parameter directly:
+如果不想通过 `maven-jar-plugin` 写入 `Main-Class`，也可以直接配置 Hasor Boot 插件参数：
 
 ```xml
 <configuration>
@@ -89,16 +89,16 @@ If you do not want to write `Main-Class` through `maven-jar-plugin`, configure t
 </configuration>
 ```
 
-## Build and Run
+## 构建和运行
 
-After Maven package, the target directory contains a Hasor Boot archive that can run directly.
+执行 Maven package 后，target 目录中会生成可以直接运行的 Hasor Boot 归档。
 
 ```bash
 mvn package
 java -jar target/demo-hasor-boot-basic-5.0.0-SNAPSHOT.jar
 ```
 
-Web applications use the same `java -jar` form:
+Web 应用也使用同样的 `java -jar` 方式运行：
 
 ```bash
 java -jar target/demo-hasor-boot-web-5.0.0-SNAPSHOT.jar

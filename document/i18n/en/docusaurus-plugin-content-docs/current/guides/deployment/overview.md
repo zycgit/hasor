@@ -18,7 +18,7 @@ It handles two responsibilities:
 
 Ordinary Java applications need `hasor-core` and `hasor-boot-maven-plugin`. The startup entry uses `Hasor.run(args, PrimarySource.class)`, and the packaged archive is launched by Hasor Boot Loader.
 
-Web applications also need `hasor-web` and one embedded container module, such as `hasor-boot-tomcat`. The startup entry uses `WebServers.run(args, RootModule.class)`, which creates the Web container and registers `RuntimeListener` and `RuntimeFilter`.
+Web applications also need `hasor-web` and one embedded container module, such as `hasor-boot-web-tomcat`. The startup entry uses `WebServers.run(args, RootModule.class)`, which creates the Web container and registers `RuntimeListener` and `RuntimeFilter`.
 
 ## Runtime Flow
 

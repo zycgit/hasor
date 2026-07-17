@@ -7,7 +7,7 @@ description: 使用 hasor-web 构建 Servlet Web MVC 应用。
 
 # Web 开发
 
-`hasor-web` 在 `hasor-core` 之上提供 Web MVC 能力。它可以运行在传统 Servlet 容器中，也可以通过 `hasor-boot-tomcat`、`hasor-boot-jetty`、`hasor-boot-undertow` 启动内嵌容器。
+`hasor-web` 在 `hasor-core` 之上提供 Web MVC 能力。它可以运行在传统 Servlet 容器中，也可以通过 `hasor-boot-web-tomcat`、`hasor-boot-web-jetty`、`hasor-boot-web-undertow` 启动内嵌容器。
 
 ## 引入依赖
 
@@ -102,7 +102,7 @@ http://localhost:8080/hello
 如果使用 Hasor Boot，可以直接通过 `WebServers` 启动内嵌容器：
 
 ```java
-import net.hasor.web.http.WebServers;
+import net.hasor.boot.web.WebServers;
 
 public class DemoWebApplication implements WebModule {
     public static void main(String[] args) throws Exception {

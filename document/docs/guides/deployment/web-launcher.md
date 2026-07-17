@@ -12,7 +12,7 @@ Web 应用使用 `WebServers.run(args, RootModule.class)` 启动内嵌 Servlet �
 ```java
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.hasor.web.http.WebServers;
+import net.hasor.boot.web.WebServers;
 
 public class DemoHasorBootWebApplication implements WebModule {
     public static void main(String[] args) throws Exception {
@@ -32,7 +32,7 @@ Web 启动至少需要加入一个内嵌容器模块：
 ```xml
 <dependency>
     <groupId>net.hasor</groupId>
-    <artifactId>hasor-boot-tomcat</artifactId>
+    <artifactId>hasor-boot-web-tomcat</artifactId>
     <version>5.0.0-SNAPSHOT</version>
 </dependency>
 ```
@@ -81,9 +81,9 @@ HASOR_HTTP_PORT=9090 java -jar demo-hasor-boot-web-5.0.0-SNAPSHOT.jar
 如果不希望从配置文件读取 HTTP 参数，可以显式构建 `WebServerConfig`：
 
 ```java
-import net.hasor.web.http.WebServer;
-import net.hasor.web.http.WebServerConfig;
-import net.hasor.web.http.WebServers;
+import net.hasor.boot.web.WebServer;
+import net.hasor.boot.web.WebServerConfig;
+import net.hasor.boot.web.WebServers;
 
 public class DemoHasorBootWebApplication implements WebModule {
     public static void main(String[] args) throws Exception {

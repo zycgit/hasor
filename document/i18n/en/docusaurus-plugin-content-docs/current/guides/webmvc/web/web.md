@@ -7,7 +7,7 @@ description: Build Servlet Web MVC applications with hasor-web.
 
 # Web Development
 
-`hasor-web` provides Web MVC capabilities on top of `hasor-core`. It can run in a traditional Servlet container or start an embedded container through `hasor-boot-tomcat`, `hasor-boot-jetty`, or `hasor-boot-undertow`.
+`hasor-web` provides Web MVC capabilities on top of `hasor-core`. It can run in a traditional Servlet container or start an embedded container through `hasor-boot-web-tomcat`, `hasor-boot-web-jetty`, or `hasor-boot-web-undertow`.
 
 ## Add the dependency
 
@@ -102,7 +102,7 @@ http://localhost:8080/hello
 With Hasor Boot, start an embedded container through `WebServers`:
 
 ```java
-import net.hasor.web.http.WebServers;
+import net.hasor.boot.web.WebServers;
 
 public class DemoWebApplication implements WebModule {
     public static void main(String[] args) throws Exception {

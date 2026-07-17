@@ -12,7 +12,7 @@ Web applications use `WebServers.run(args, RootModule.class)` to start an embedd
 ```java
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.hasor.web.http.WebServers;
+import net.hasor.boot.web.WebServers;
 
 public class DemoHasorBootWebApplication implements WebModule {
     public static void main(String[] args) throws Exception {
@@ -32,7 +32,7 @@ Web startup needs at least one embedded container module:
 ```xml
 <dependency>
     <groupId>net.hasor</groupId>
-    <artifactId>hasor-boot-tomcat</artifactId>
+    <artifactId>hasor-boot-web-tomcat</artifactId>
     <version>5.0.0-SNAPSHOT</version>
 </dependency>
 ```
@@ -81,9 +81,9 @@ HASOR_HTTP_PORT=9090 java -jar demo-hasor-boot-web-5.0.0-SNAPSHOT.jar
 If you do not want to read HTTP parameters from a configuration file, build `WebServerConfig` explicitly:
 
 ```java
-import net.hasor.web.http.WebServer;
-import net.hasor.web.http.WebServerConfig;
-import net.hasor.web.http.WebServers;
+import net.hasor.boot.web.WebServer;
+import net.hasor.boot.web.WebServerConfig;
+import net.hasor.boot.web.WebServers;
 
 public class DemoHasorBootWebApplication implements WebModule {
     public static void main(String[] args) throws Exception {

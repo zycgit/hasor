@@ -18,7 +18,7 @@ Hasor Boot 用来把普通 Hasor 应用打包成可以直接运行的 Fat Jar。
 
 普通 Java 应用只需要 `hasor-core` 和 `hasor-boot-maven-plugin`。启动入口使用 `Hasor.run(args, PrimarySource.class)`，打包后由 Hasor Boot Loader 调用真实入口。
 
-Web 应用需要再加入 `hasor-web` 和一个内嵌容器模块，例如 `hasor-boot-tomcat`。启动入口使用 `WebServers.run(args, RootModule.class)`，由 Hasor 创建 Web 容器并自动装配 `RuntimeListener`、`RuntimeFilter`。
+Web 应用需要再加入 `hasor-web` 和一个内嵌容器模块，例如 `hasor-boot-web-tomcat`。启动入口使用 `WebServers.run(args, RootModule.class)`，由 Hasor 创建 Web 容器并自动装配 `RuntimeListener`、`RuntimeFilter`。
 
 ## 运行流程
 
