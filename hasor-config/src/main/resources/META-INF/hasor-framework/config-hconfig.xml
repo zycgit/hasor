@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.hasor.net/sechma/hasor-core">
+    <hasor>
+        <config autoScan="${HASOR_CONFIG_AUTO_SCAN:true}">
+            <scanPackages>${HASOR_CONFIG_SCAN_PACKAGES}</scanPackages>
+            <web autoScan="${HASOR_CONFIG_WEB_AUTO_SCAN:true}">
+                <scanPackages>${HASOR_CONFIG_WEB_SCAN_PACKAGES}</scanPackages>
+            </web>
+        </config>
+
+        <!-- hasor-config 提供的默认扩展 -->
+        <modules throwLoadError="true">
+            <module>net.hasor.config.aop.AopModule</module>
+            <module>net.hasor.config.AutoConfigurationModule</module>
+        </modules>
+    </hasor>
+</config>

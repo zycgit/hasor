@@ -13,9 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 软件包 for net.hasor.plugins.aop
- * <p>Provide <code>{@link net.hasor.cobble.dynamic.Aop}</code>
- *  annotation way as the class or method statement Aop interceptors.</p>
- */
-package net.hasor.core.exts.aop;
+package net.hasor.config;
+
+import java.lang.annotation.*;
+
+/** Declares that a method creates a bean managed by Hasor. */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Bean {
+    /** Bean name. The factory method name is used when this value is empty. */
+    String value() default "";
+
+    /** Whether the bean is a singleton. */
+    boolean singleton() default true;
+
+    /** Optional initialization method on the returned bean. */
+    String initMethod() default "";
+
+    /** Optional destruction method on the returned bean. */
+    String destroyMethod() default "";
+}

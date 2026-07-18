@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 内置扩展插件。
- */
-package net.hasor.core.exts;
+package net.hasor.config;
+
+import java.lang.annotation.*;
+
+/** Marks a class that declares {@link Bean @Bean} factory methods. */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Configuration {
+}

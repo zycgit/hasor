@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+ext.pomName = 'Hasor-Config'
+description = 'Spring-style Java configuration support for Hasor.'
+
+dependencies {
+    api project(':hasor-core')
+    compileOnly project(':hasor-web')
+
+    testImplementation project(':hasor-web')
+}

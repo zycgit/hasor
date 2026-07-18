@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.exts.aop;
-import net.hasor.cobble.dynamic.Aop;
-import net.hasor.cobble.dynamic.MethodInterceptor;
-import net.hasor.cobble.dynamic.MethodInvocation;
-import net.hasor.core.AppContext;
-import net.hasor.core.spi.AppContextAware;
-
+package net.hasor.config.aop;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -29,6 +23,11 @@ import java.util.WeakHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import net.hasor.cobble.dynamic.Aop;
+import net.hasor.cobble.dynamic.MethodInterceptor;
+import net.hasor.cobble.dynamic.MethodInvocation;
+import net.hasor.core.AppContext;
+import net.hasor.core.spi.AppContextAware;
 
 /**
  * Aop拦截器
@@ -36,8 +35,8 @@ import java.util.stream.Stream;
  * @author 赵永春 (zyc@hasor.net)
  */
 class AopInterceptor implements MethodInterceptor, AppContextAware {
-    private WeakHashMap<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new WeakHashMap<>();
-    private AppContext                                                    appContext           = null;
+    private final WeakHashMap<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new WeakHashMap<>();
+    private       AppContext                                                    appContext           = null;
 
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
