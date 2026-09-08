@@ -24,6 +24,7 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.Manifest;
 import net.hasor.boot.loader.jar.JarFile;
+
 /**
  * Main entry for Hasor Boot executable jars.
  * @author 赵永春 (zyc@hasor.net)
@@ -59,7 +60,7 @@ public class JarLauncher {
     }
 
     protected ResourceLoader createAppLoader(File archiveFile, JarResourceLoader archiveLoader) throws Exception {
-        ResourceLoader classesLoader = new PrefixResourceLoader(archiveLoader, HasorBootLayout.APP_CLASSES);
+        ResourceLoader classesLoader = new JarResourceLoader(archiveFile, HasorBootLayout.APP_CLASSES);
         ResourceLoader libraryLoader = new JarResourceLoader(archiveFile, this::isNestedLibrary);
         return new MultiResourceLoader(classesLoader, libraryLoader);
     }

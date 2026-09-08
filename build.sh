@@ -277,6 +277,11 @@ if [[ "$has_max_workers_option" == "false" ]]; then
     gradle_defaults+=(--max-workers 8)
 fi
 
+if [[ "$mode" == "deploy" && "$dry_run" != "true" ]]; then
+    rm -rf -- "$central_dir"
+    rm -f -- "$central_zip"
+fi
+
 ./gradlew "${tasks[@]}" "${gradle_defaults[@]}" "${gradle_args[@]}"
 if [[ "${#plugin_tasks[@]}" -gt 0 ]]; then
     ./gradlew "${plugin_tasks[@]}" "${gradle_defaults[@]}" "${gradle_args[@]}"

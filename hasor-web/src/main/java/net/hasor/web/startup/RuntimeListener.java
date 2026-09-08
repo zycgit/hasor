@@ -15,10 +15,12 @@
  */
 package net.hasor.web.startup;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.servlet.*;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import net.hasor.cobble.ClassUtils;
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.core.AppContext;
@@ -33,12 +35,13 @@ import org.slf4j.LoggerFactory;
  * @version : 2017-01-10
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener, ServletRequestListener {
-    protected           Logger               logger           = LoggerFactory.getLogger(getClass());
-    public static final String               AppContextName   = AppContext.class.getName();
-    public static final String               HASOR_MAIN_ARGS  = "hasor-main-args";
-    private             boolean              contextIsOutSite = false;
-    private             Supplier<AppContext> appContext       = null;
-    private             SpiTrigger           spiTrigger       = null;
+    protected           Logger               logger                = LoggerFactory.getLogger(getClass());
+    public static final String               AppContextName        = AppContext.class.getName();
+    public static final String               AppContextFactoryName = AppContext.class.getName() + ".factory";
+    public static final String               HASOR_MAIN_ARGS       = "hasor-main-args";
+    private             boolean              contextIsOutSite      = false;
+    private             Supplier<AppContext> appContext            = null;
+    private             SpiTrigger           spiTrigger            = null;
 
     /*----------------------------------------------------------------------------------------------------*/
     public RuntimeListener() {
@@ -60,23 +63,25 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     }
 
     /** 获取{@link AppContext} */
-    public static AppContext getAppContext(ServletContext servletContext) {
-        return (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+    public static AppContext getAppContext(ServletContext sc) {
+        return (AppContext) sc.getAttribute(RuntimeListener.AppContextName);
     }
     /*----------------------------------------------------------------------------------------------------*/
 
     /** 创建{@link AppContext}对象 */
     protected Hasor newHasor(ServletContext sc, String configName) throws Throwable {
-        Hasor webHasor = Hasor.create(sc);
+        Hasor h = Hasor.create(sc);
         //
         if (StringUtils.isNotBlank(configName)) {
-            webHasor.mainSettingWith(configName);
+            h.mainSettingWith(configName);
         }
+
         Object args = sc.getAttribute(HASOR_MAIN_ARGS);
         if (args instanceof String[] mainArgs) {
-            webHasor.bindArguments(mainArgs);
+            h.bindArguments(mainArgs);
         }
-        return webHasor;
+
+        return h;
     }
 
     /** 获取启动模块 */
@@ -87,7 +92,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         } else {
             Class<Module> startModuleClass = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(rootModule);
             logger.info("web initModule is " + rootModule);
-            return net.hasor.cobble.ClassUtils.newInstance(startModuleClass);
+            return ClassUtils.newInstance(startModuleClass);
         }
     }
 
@@ -98,37 +103,50 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             //
             Module startModule = this.newRootModule(sc, rootModule);
             //
-            Hasor newHasor = this.newHasor(sc, configName);
+            Hasor h = this.newHasor(sc, configName);
             String webContextDir = sc.getRealPath("/");
             System.setProperty("HASOR_WEBROOT", webContextDir);
-            return newHasor.build(startModule);
+            return h.build(startModule);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntime(e);
         }
     }
 
     @Override
-    public final void contextInitialized(final ServletContextEvent servletContextEvent) {
+    @SuppressWarnings("unchecked")
+    public final void contextInitialized(final ServletContextEvent sce) {
         // 1. 初始化
         if (this.appContext == null) {
-            this.appContext = appContextSupplier(this.doInit(servletContextEvent.getServletContext()));
+            ServletContext sc = sce.getServletContext();
+            Object factory = sc.getAttribute(AppContextFactoryName);
+            if (factory instanceof Function<?, ?>) {
+                Function<ServletContext, AppContext> appContextFactory = (Function<ServletContext, AppContext>) factory;
+                this.appContext = appContextSupplier(appContextFactory.apply(sc));
+            } else {
+                this.appContext = appContextSupplier(this.doInit(sc));
+            }
         }
+
         this.spiTrigger = this.appContext.get().getInstance(SpiTrigger.class);
+
         // 2.放入ServletContext环境。
-        logger.info("ServletContext Attribut is " + RuntimeListener.AppContextName);
-        servletContextEvent.getServletContext().setAttribute(RuntimeListener.AppContextName, this.appContext.get());
+        logger.info("ServletContext Attribute is " + RuntimeListener.AppContextName);
+        sce.getServletContext().setAttribute(RuntimeListener.AppContextName, this.appContext.get());
         //
-        this.spiTrigger.notifySpiWithoutResult(ServletContextListener.class, listener -> {
-            listener.contextInitialized(servletContextEvent);
+        this.spiTrigger.notifySpiWithoutResult(ServletContextListener.class, l -> {
+            l.contextInitialized(sce);
         });
     }
 
     @Override
-    public final void contextDestroyed(final ServletContextEvent servletContextEvent) {
-        this.spiTrigger.notifySpiWithoutResult(ServletContextListener.class, listener -> {
-            listener.contextDestroyed(servletContextEvent);
-        });
-        if (!this.contextIsOutSite) {
+    public final void contextDestroyed(final ServletContextEvent se) {
+        if (this.spiTrigger != null) {
+            this.spiTrigger.notifySpiWithoutResult(ServletContextListener.class, l -> {
+                l.contextDestroyed(se);
+            });
+        }
+
+        if (!this.contextIsOutSite && this.appContext != null) {
             this.appContext.get().shutdown();
             this.logger.info("shutdown.");
         }
@@ -136,29 +154,29 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
 
     @Override
     public void sessionCreated(final HttpSessionEvent se) {
-        this.spiTrigger.notifySpiWithoutResult(HttpSessionListener.class, listener -> {
-            listener.sessionCreated(se);
+        this.spiTrigger.notifySpiWithoutResult(HttpSessionListener.class, l -> {
+            l.sessionCreated(se);
         });
     }
 
     @Override
     public void sessionDestroyed(final HttpSessionEvent se) {
-        this.spiTrigger.notifySpiWithoutResult(HttpSessionListener.class, listener -> {
-            listener.sessionDestroyed(se);
+        this.spiTrigger.notifySpiWithoutResult(HttpSessionListener.class, l -> {
+            l.sessionDestroyed(se);
         });
     }
 
     @Override
     public void requestDestroyed(ServletRequestEvent sre) {
-        this.spiTrigger.notifySpiWithoutResult(ServletRequestListener.class, listener -> {
-            listener.requestDestroyed(sre);
+        this.spiTrigger.notifySpiWithoutResult(ServletRequestListener.class, l -> {
+            l.requestDestroyed(sre);
         });
     }
 
     @Override
     public void requestInitialized(ServletRequestEvent sre) {
-        this.spiTrigger.notifySpiWithoutResult(ServletRequestListener.class, listener -> {
-            listener.requestInitialized(sre);
+        this.spiTrigger.notifySpiWithoutResult(ServletRequestListener.class, l -> {
+            l.requestInitialized(sre);
         });
     }
 }

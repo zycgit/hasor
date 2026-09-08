@@ -25,6 +25,7 @@ import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
+
 /**
  * Factory methods for embedded Hasor Web servers.
  * @author 赵永春 (zyc@hasor.net)
@@ -37,7 +38,14 @@ public final class WebServers {
     }
 
     public static WebServer run(String[] args, Class<? extends Module> rootModule) throws Exception {
-        WebServer server = create(args, rootModule);
+        return run(create(args, rootModule));
+    }
+
+    public static WebServer run(WebServerConfig config) throws Exception {
+        return run(create(config));
+    }
+
+    private static WebServer run(WebServer server) throws Exception {
         AutoCloseable shutdownHook = SystemUtils.registerShutdownHook(() -> {
             if (server.isStart()) {
                 server.stop();

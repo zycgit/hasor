@@ -16,7 +16,10 @@
 package net.hasor.config.web;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import net.hasor.config.AutoConfigurationModule;
 import net.hasor.core.DimModule;
 import net.hasor.core.TypeSupplier;
@@ -48,10 +51,19 @@ public class WebAutoConfigurationModule implements WebModule {
         }
 
         Set<Class<?>> mappingTypes = webBinder.findClass(MappingTo.class, scanPackages);
+        Map<Class<?>, Supplier<?>> mappingProviders = new HashMap<>();
+        for (Class<?> mappingType : mappingTypes) {
+            mappingProviders.put(mappingType, webBinder.getProvider(mappingType));
+        }
         TypeSupplier containerTypes = new TypeSupplier() {
             @Override
+            @SuppressWarnings("unchecked")
             public <T> T get(Class<? extends T> targetType) {
-                return webBinder.getProvider((Class<T>) targetType).get();
+                Supplier<?> provider = mappingProviders.get(targetType);
+                if (provider == null) {
+                    throw new IllegalStateException("No controller provider for " + targetType.getName());
+                }
+                return (T) provider.get();
             }
         };
         webBinder.loadMappingTo(mappingTypes, type -> true, containerTypes);

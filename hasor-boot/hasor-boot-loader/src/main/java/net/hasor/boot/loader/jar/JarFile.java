@@ -33,6 +33,7 @@ import java.util.jar.Manifest;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
+
 /**
  * Extended variant of {@link java.util.jar.JarFile} that behaves in the same way but
  * offers the following additional functionality.
@@ -47,24 +48,24 @@ import java.util.zip.ZipEntry;
  * @since 1.0.0
  */
 public class JarFile extends AbstractJarFile implements Iterable<java.util.jar.JarEntry> {
-    private static final String     PROTOCOL_HANDLER         = "java.protocol.handler.pkgs";
-    private static final String     HANDLERS_PACKAGE         = "net.hasor.boot.loader";
-    private static final String     MANIFEST_NAME            = "META-INF/MANIFEST.MF";
-    private static final AsciiBytes META_INF                 = new AsciiBytes("META-INF/");
-    private static final AsciiBytes SIGNATURE_FILE_EXTENSION = new AsciiBytes(".SF");
-    private static final String     READ_ACTION              = "read";
-    private final RandomFile        rootFile;
-    private final String            pathFromRoot;
-    private final RandomFile        data;
-    private final JarFileType       type;
-    private URL                     url;
-    private String                  urlString;
-    private final JarFileEntries          entries;
-    private final Supplier<Manifest>      manifestSupplier;
-    private SoftReference<Manifest> manifest;
-    private boolean                 signed;
-    private String                  comment;
-    private volatile boolean        closed;
+    private static final String                  PROTOCOL_HANDLER         = "java.protocol.handler.pkgs";
+    private static final String                  HANDLERS_PACKAGE         = "net.hasor.boot.loader";
+    private static final String                  MANIFEST_NAME            = "META-INF/MANIFEST.MF";
+    private static final AsciiBytes              META_INF                 = new AsciiBytes("META-INF/");
+    private static final AsciiBytes              SIGNATURE_FILE_EXTENSION = new AsciiBytes(".SF");
+    private static final String                  READ_ACTION              = "read";
+    private final        RandomFile              rootFile;
+    private final        String                  pathFromRoot;
+    private final        RandomFile              data;
+    private final        JarFileType             type;
+    private              URL                     url;
+    private              String                  urlString;
+    private final        JarFileEntries          entries;
+    private final        Supplier<Manifest>      manifestSupplier;
+    private              SoftReference<Manifest> manifest;
+    private              boolean                 signed;
+    private              String                  comment;
+    private volatile     boolean                 closed;
 
     /**
      * Create a new {@link JarFile} backed by the specified file.
@@ -255,6 +256,20 @@ public class JarFile extends AbstractJarFile implements Iterable<java.util.jar.J
         }
     }
 
+    public synchronized JarFile getNestedJarFile(String directory) throws IOException {
+        if (directory == null || directory.isEmpty()) {
+            throw new IllegalArgumentException("directory is empty.");
+        }
+        String normalized = directory.replace('\\', '/');
+        while (normalized.startsWith("/")) {
+            normalized = normalized.substring(1);
+        }
+        if (!normalized.endsWith("/")) {
+            normalized = normalized + "/";
+        }
+        return createJarFileFromDirectory(new AsciiBytes(normalized));
+    }
+
     private JarFile createJarFileFromEntry(JarEntry entry) throws IOException {
         if (entry.isDirectory()) {
             return createJarFileFromDirectoryEntry(entry);
@@ -263,14 +278,17 @@ public class JarFile extends AbstractJarFile implements Iterable<java.util.jar.J
     }
 
     private JarFile createJarFileFromDirectoryEntry(JarEntry entry) throws IOException {
-        AsciiBytes name = entry.getAsciiBytesName();
+        return createJarFileFromDirectory(entry.getAsciiBytesName());
+    }
+
+    private JarFile createJarFileFromDirectory(AsciiBytes name) throws IOException {
         JarEntryFilter filter = (candidate) -> {
             if (candidate.startsWith(name) && !candidate.equals(name)) {
                 return candidate.substring(name.length());
             }
             return null;
         };
-        return new JarFile(this.rootFile, this.pathFromRoot + "!/" + entry.getName().substring(0, name.length() - 1), this.data, filter, JarFileType.NESTED_DIRECTORY, this.manifestSupplier);
+        return new JarFile(this.rootFile, this.pathFromRoot + "!/" + name.toString().substring(0, name.length() - 1), this.data, filter, JarFileType.NESTED_DIRECTORY, this.manifestSupplier);
     }
 
     private JarFile createJarFileFromFileEntry(JarEntry entry) throws IOException {
@@ -369,18 +387,18 @@ public class JarFile extends AbstractJarFile implements Iterable<java.util.jar.J
     /**
      * An {@link Enumeration} on {@linkplain java.util.jar.JarEntry jar entries}.
      */
-        private record JarEntryEnumeration(Iterator<JarEntry> iterator) implements Enumeration<java.util.jar.JarEntry> {
+    private record JarEntryEnumeration(Iterator<JarEntry> iterator) implements Enumeration<java.util.jar.JarEntry> {
 
         @Override
-            public boolean hasMoreElements() {
-                return this.iterator.hasNext();
-            }
-
-            @Override
-            public java.util.jar.JarEntry nextElement() {
-                return this.iterator.next();
-            }
+        public boolean hasMoreElements() {
+            return this.iterator.hasNext();
         }
+
+        @Override
+        public java.util.jar.JarEntry nextElement() {
+            return this.iterator.next();
+        }
+    }
 
     /**
      * Register a {@literal 'java.protocol.handler.pkgs'} property so that a

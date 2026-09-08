@@ -75,6 +75,10 @@ public class JettyWebServer extends AbstractWebServer {
             for (Map.Entry<String, Object> entry : this.config.getServletContextAttributes().entrySet()) {
                 context.setAttribute(entry.getKey(), entry.getValue());
             }
+            if (this.config.getAppContextFactory() != null) {
+                context.setAttribute(RuntimeListener.AppContextFactoryName, this.config.getAppContextFactory());
+            }
+
             FilterHolder filterHolder = new FilterHolder(RuntimeFilter.class);
             filterHolder.setName(this.config.getFilterName());
             context.addFilter(filterHolder, this.config.getFilterPattern(), allDispatcherTypes());

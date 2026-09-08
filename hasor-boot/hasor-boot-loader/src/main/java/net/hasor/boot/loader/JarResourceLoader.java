@@ -27,6 +27,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import net.hasor.boot.loader.jar.JarFile;
+
 /**
  * Resource loader backed by a jar file and optional nested jar entries.
  * @author 赵永春 (zyc@hasor.net)
@@ -35,14 +36,16 @@ import net.hasor.boot.loader.jar.JarFile;
 public class JarResourceLoader implements ResourceLoader {
     private final JarFile               jarFile;
     private final List<JarFile>         nestedJarFiles = new ArrayList<>();
+    private final boolean               nestedMode;
     private final Map<String, Manifest> manifestCache  = new ConcurrentHashMap<>();
 
     public JarResourceLoader(File file) throws IOException {
-        this(file, null);
+        this(file, (Predicate<JarEntry>) null);
     }
 
     public JarResourceLoader(File file, Predicate<JarEntry> nestedPredicate) throws IOException {
         this.jarFile = new JarFile(file);
+        this.nestedMode = nestedPredicate != null;
         if (nestedPredicate != null) {
             for (JarEntry jarEntry : this.jarFile) {
                 if (jarEntry != null && nestedPredicate.test(jarEntry)) {
@@ -50,6 +53,12 @@ public class JarResourceLoader implements ResourceLoader {
                 }
             }
         }
+    }
+
+    public JarResourceLoader(File file, String nestedDirectory) throws IOException {
+        this.jarFile = new JarFile(file);
+        this.nestedMode = true;
+        this.nestedJarFiles.add(this.jarFile.getNestedJarFile(nestedDirectory));
     }
 
     public Manifest getManifest() throws IOException {
@@ -108,6 +117,15 @@ public class JarResourceLoader implements ResourceLoader {
     public List<URL> getResources(String resource) throws IOException {
         String resourceName = normalizeResource(resource);
         List<URL> result = new ArrayList<>();
+        if (resourceName.isEmpty()) {
+            if (!this.nestedMode) {
+                result.add(this.jarFile.getUrl());
+            }
+            for (JarFile nestedJar : this.nestedJarFiles) {
+                result.add(nestedJar.getUrl());
+            }
+            return result;
+        }
         ZipEntry zipEntry = this.jarFile.getEntry(resourceName);
         if (zipEntry != null) {
             result.add(new URL(this.jarFile.getUrl(), zipEntry.getName()));

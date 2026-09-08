@@ -17,9 +17,9 @@ package net.hasor.boot.web.tomcat;
 import java.io.File;
 import java.util.Map;
 import javax.servlet.DispatcherType;
-import net.hasor.core.Module;
 import net.hasor.boot.web.AbstractWebServer;
 import net.hasor.boot.web.WebServerConfig;
+import net.hasor.core.Module;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
 import org.apache.catalina.Context;
@@ -74,10 +74,16 @@ public class TomcatWebServer extends AbstractWebServer {
             for (Map.Entry<String, Object> entry : this.config.getServletContextAttributes().entrySet()) {
                 context.getServletContext().setAttribute(entry.getKey(), entry.getValue());
             }
+            if (this.config.getAppContextFactory() != null) {
+                context.getServletContext().setAttribute(RuntimeListener.AppContextFactoryName, this.config.getAppContextFactory());
+            }
             addDefaultServlet(context);
             addHasorFilter(context);
 
             server.start();
+            if (!context.getState().isAvailable()) {
+                throw new IllegalStateException("Tomcat Web context failed to start.");
+            }
             this.tomcat = server;
         } catch (Exception e) {
             destroy(server);

@@ -77,6 +77,9 @@ public class UndertowWebServer extends AbstractWebServer {
             for (Map.Entry<String, Object> entry : this.config.getServletContextAttributes().entrySet()) {
                 deploymentInfo.addServletContextAttribute(entry.getKey(), entry.getValue());
             }
+            if (this.config.getAppContextFactory() != null) {
+                deploymentInfo.addServletContextAttribute(RuntimeListener.AppContextFactoryName, this.config.getAppContextFactory());
+            }
             addHasorFilterMappings(deploymentInfo);
 
             manager = Servlets.defaultContainer().addDeployment(deploymentInfo);

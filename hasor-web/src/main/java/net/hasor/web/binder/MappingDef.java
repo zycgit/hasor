@@ -27,10 +27,11 @@ import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
 import net.hasor.web.annotation.Produces;
 import net.hasor.web.invoker.AsyncSupported;
+
 /**
  * 一个请求地址只能是一个Action类进行处理，Action中的不同方法可以通过 @HttpMethod 等注解映射到 HTTP 协议中 GET、PUT 等行为上。
- * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2013-6-5
  */
 public class MappingDef implements Mapping {
     private final int                 index;
@@ -40,7 +41,7 @@ public class MappingDef implements Mapping {
     private final Map<String, Method> httpMapping;
     private final Map<String, String> contentTypeMapping;
     private final Set<Method>         asyncMethod;
-    private AsyncSupported            defaultAsync = AsyncSupported.no;
+    private       AsyncSupported      defaultAsync = AsyncSupported.no;
 
     public MappingDef(int index, BindInfo<?> targetType, String mappingTo, Predicate<Method> methodMatcher) {
         this(index, targetType, mappingTo, methodMatcher, true);
@@ -51,7 +52,7 @@ public class MappingDef implements Mapping {
         if (StringUtils.isBlank(mappingTo)) {
             throw new NullPointerException("'" + targetType.getBindType() + "' Service path is empty.");
         }
-        if (!mappingTo.matches("/.+")) {
+        if (!mappingTo.startsWith("/")) {
             throw new IllegalStateException("'" + targetType.getBindType() + "' Service path format error, must be a '/' at the start.");
         }
         if (targetType.getBindType().getAnnotation(Async.class) != null) {

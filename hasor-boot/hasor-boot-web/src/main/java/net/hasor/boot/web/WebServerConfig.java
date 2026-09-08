@@ -18,8 +18,11 @@ import java.io.File;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
+import javax.servlet.ServletContext;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.setting.Settings;
+import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.web.startup.RuntimeListener;
 
@@ -29,21 +32,22 @@ import net.hasor.web.startup.RuntimeListener;
  * @version : 2026-06-17
  */
 public class WebServerConfig {
-    public static final String                  HASOR_ROOT_MODULE  = "hasor-root-module";
-    public static final String                  HASOR_HCONFIG_FILE = "hasor-hconfig-file";
-    public static final String                  HASOR_HCONFIG_NAME = "hasor-hconfig-name";
-    public static final String                  HASOR_MAIN_ARGS    = RuntimeListener.HASOR_MAIN_ARGS;
-    private             String                  host               = "0.0.0.0";
-    private             int                     port               = 8080;
-    private             String                  contextPath        = "/";
-    private             String                  filterName         = "hasorFilter";
-    private             String                  filterPattern      = "/*";
-    private             File                    documentRoot       = defaultDocumentRoot();
-    private             Class<? extends Module> rootModule;
-    private             String                  hconfigFile;
-    private             String                  server;
-    private             String[]                arguments          = new String[0];
-    private final       Map<String, String>     initParameters     = new LinkedHashMap<>();
+    public static final String                               HASOR_ROOT_MODULE  = "hasor-root-module";
+    public static final String                               HASOR_HCONFIG_FILE = "hasor-hconfig-file";
+    public static final String                               HASOR_HCONFIG_NAME = "hasor-hconfig-name";
+    public static final String                               HASOR_MAIN_ARGS    = RuntimeListener.HASOR_MAIN_ARGS;
+    private             String                               host               = "0.0.0.0";
+    private             int                                  port               = 8080;
+    private             String                               contextPath        = "/";
+    private             String                               filterName         = "hasorFilter";
+    private             String                               filterPattern      = "/*";
+    private             File                                 documentRoot       = defaultDocumentRoot();
+    private             Class<? extends Module>              rootModule;
+    private             String                               hconfigFile;
+    private             String                               server;
+    private             String[]                             arguments          = new String[0];
+    private             Function<ServletContext, AppContext> appContextFactory;
+    private final       Map<String, String>                  initParameters     = new LinkedHashMap<>();
 
     public WebServerConfig() {
     }
@@ -62,6 +66,7 @@ public class WebServerConfig {
         this.hconfigFile = source.hconfigFile;
         this.server = source.server;
         this.arguments = source.arguments == null ? null : source.arguments.clone();
+        this.appContextFactory = source.appContextFactory;
         this.initParameters.putAll(source.initParameters);
     }
 
@@ -209,6 +214,15 @@ public class WebServerConfig {
 
     public WebServerConfig arguments(String... arguments) {
         this.arguments = arguments == null ? new String[0] : arguments.clone();
+        return this;
+    }
+
+    public Function<ServletContext, AppContext> getAppContextFactory() {
+        return this.appContextFactory;
+    }
+
+    public WebServerConfig appContextFactory(Function<ServletContext, AppContext> appContextFactory) {
+        this.appContextFactory = appContextFactory;
         return this;
     }
 
