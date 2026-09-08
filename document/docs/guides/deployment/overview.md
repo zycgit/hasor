@@ -7,7 +7,7 @@ description: 了解 Hasor Boot 的打包模型、运行模型和可执行归档�
 
 # 讲解
 
-Hasor Boot 用来把普通 Hasor 应用打包成可以直接运行的 Fat Jar。开发阶段可以直接运行 `main` 方法；发布时通过 Maven 插件重新打包，最终使用 `java -jar app.jar` 启动。
+Hasor Boot 用来把普通 Hasor 应用打包成可以直接运行的 Fat Jar。开发阶段可以直接运行 `main` 方法；发布时通过 Maven 或 Gradle 插件打包，最终使用 `java -jar app.jar` 启动。
 
 它主要解决两件事：
 
@@ -48,10 +48,12 @@ APP-INF/hasor/
 - `APP-INF/lib/*.jar` 作为嵌套依赖 jar。
 - 嵌套 jar 中的 class、资源和 `META-INF/hasor.schemas` 会通过 Cobble Loader 读取。
 
+应用 classes 目录作为嵌套目录参与加载，即使归档没有显式的目录条目也可以建立目录视图。空资源名查询会返回应用目录和嵌套依赖的根 URL，供 classpath 资源发现使用。应用资源路径仍相对于 classpath 根，例如读取 `hconfig.xml`，无需写入 `APP-INF/classes/` 前缀。
+
 ## 章节路径
 
 完整接入通常按下面顺序完成：
 
-1. 在 [工程配置](./project-config.md) 中引入依赖并配置 Maven 打包。
+1. 在 [工程配置](./project-config.md) 中引入依赖并配置 Maven 或 Gradle 打包。
 2. 普通应用使用 [Boot 启动器](./boot-launcher.md) 编写启动入口。
 3. Web 应用使用 [Web 启动器](./web-launcher.md) 编写内嵌容器启动入口。

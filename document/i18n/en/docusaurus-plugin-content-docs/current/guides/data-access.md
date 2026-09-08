@@ -7,7 +7,7 @@ description: Use dbVisitor to provide database access capabilities for Hasor pro
 
 # Data Access
 
-Hasor now keeps its core modules focused on `hasor-core`, `hasor-web`, and `hasor-boot`. It no longer embeds an ORM or database access framework. Data access is provided by dbVisitor, a project in the same ecosystem that covers SQL execution, Mapper APIs, transactions, pagination, and multi-database adaptation.
+Hasor provides container, Java configuration, Web, and packaging capabilities through `hasor-core`, `hasor-config`, `hasor-web`, and the `hasor-boot` modules. It does not embed an ORM or database access framework. Data access is provided by dbVisitor, a project in the same ecosystem that covers SQL execution, Mapper APIs, transactions, pagination, and multi-database adaptation.
 
 In a Hasor project, Hasor provides the application container, dependency injection, bootstrapping, and Web integration, while dbVisitor provides the data access layer. This keeps Hasor lightweight and lets database access documentation continue to live with dbVisitor.
 

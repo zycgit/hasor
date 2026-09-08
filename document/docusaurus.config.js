@@ -48,11 +48,11 @@ const config = {
         metadata: [
             {
                 name: 'keywords',
-                content: 'hasor,hasor-core,hasor-web,hasor-boot,ioc,aop,webmvc,java开源,开源项目',
+                content: 'hasor,hasor-core,hasor-config,hasor-web,hasor-boot,ioc,aop,webmvc,java开源,开源项目',
             },
             {
                 name: 'description',
-                content: 'Hasor 是一个轻量级 Java 框架，当前核心能力由 hasor-core、hasor-web、hasor-boot 组成。',
+                content: 'Hasor 是一个轻量级 Java 框架，当前核心能力由 hasor-core、hasor-config、hasor-web、hasor-boot 组成。',
             }
         ],
         colorMode: {

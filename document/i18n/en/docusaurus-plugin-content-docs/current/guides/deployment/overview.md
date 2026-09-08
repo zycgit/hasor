@@ -7,7 +7,7 @@ description: Understand the Hasor Boot packaging model, runtime model, and execu
 
 # Overview
 
-Hasor Boot packages a regular Hasor application as a directly executable fat jar. During development, run the `main` method directly. For release, let the Maven plugin repackage the application and start it with `java -jar app.jar`.
+Hasor Boot packages a regular Hasor application as an executable fat jar. During development, run `main` directly. Use the Maven or Gradle plugin for packaging and start the archive with `java -jar app.jar`.
 
 It handles two responsibilities:
 
@@ -55,3 +55,7 @@ A complete setup usually follows this order:
 1. Add dependencies and Maven packaging in [Project Configuration](./project-config.md).
 2. Use [Boot Launcher](./boot-launcher.md) for ordinary applications.
 3. Use [Web Launcher](./web-launcher.md) for Web applications with embedded containers.
+
+## Resource Roots
+
+The loader treats `APP-INF/classes/` as a nested directory, even if explicit directory entries are missing. Empty resource-name queries expose application and nested-library root URLs for classpath discovery. Resource names remain relative to the classpath root: use `hconfig.xml`, without an `APP-INF/classes/` prefix.

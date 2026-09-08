@@ -9,15 +9,15 @@ import TabItem from '@theme/TabItem';
 
 # Quick Start
 
-The current Hasor codebase is centered on `hasor-core`, `hasor-web`, and `hasor-boot`. Ordinary Java applications start with `hasor-core`; Web MVC applications add `hasor-web`; executable Fat Jar or embedded-container applications add `hasor-boot`.
+Ordinary Java applications start with `hasor-core`; annotation configuration uses `hasor-config`; Web MVC uses `hasor-web`; executable packaging and embedded servers use individual `hasor-boot` modules. See [Java Configuration](../core/conf/java-config.md) for `ApplicationBoot`, `@Configuration`, and `@Bean`.
 
 :::info Runtime Requirements
-Starting with the next version, Hasor is expected to move to the `5.0.0` line and support only JDK 17 or later. New projects should use JDK 17+.
+Java compilation targets version 17. Applications require JDK 17 or later.
 :::
 
 ## Add hasor-core
 
-The current source version is `5.0.0-SNAPSHOT`. Replace it with the released Maven Central version when using a stable release.
+The current source version is `5.0.2-SNAPSHOT`. Replace it with the released Maven Central version when using a stable release.
 
 <Tabs>
   <TabItem value="Maven" label="Maven" default>
@@ -26,7 +26,7 @@ The current source version is `5.0.0-SNAPSHOT`. Replace it with the released Mav
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-core</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.2-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ The current source version is `5.0.0-SNAPSHOT`. Replace it with the released Mav
   <TabItem value="Gradle" label="Gradle">
 
 ```text
-implementation "net.hasor:hasor-core:5.0.0-SNAPSHOT"
+implementation "net.hasor:hasor-core:5.0.2-SNAPSHOT"
 ```
 
   </TabItem>
@@ -114,7 +114,7 @@ For Web MVC applications, add `hasor-web`:
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.2-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -124,7 +124,7 @@ For executable Fat Jar applications, use `hasor-boot-maven-plugin` and choose on
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-web-tomcat</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.2-SNAPSHOT</version>
 </dependency>
 ```
 

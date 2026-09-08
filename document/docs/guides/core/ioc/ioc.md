@@ -111,3 +111,9 @@ public class ClassA implements IClassA {
 ```
 
 上面我们讲解了什么是依赖注入，并且举例了一些依赖注入的表现形式。那么下一章我们来看看 Hasor 如何帮助我们你进行依赖注入。
+
+## 循环依赖诊断
+
+容器在 Bean 创建链中发现循环依赖时，会抛出 `net.hasor.core.CircularDependencyException`。异常消息按依赖顺序列出路径，并在末尾标记闭环；`getDependencyPath()` 可获取包含末尾重复节点的只读路径。
+
+使用 `hasor-config` 的 `@Bean` 工厂时，路径描述还包含配置类、工厂方法及参数类型。可据此拆分相互依赖的职责，或使用延迟 Provider；延迟对象不能在原创建链中立即求值，否则仍会形成循环。

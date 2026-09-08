@@ -13,7 +13,7 @@ function HomepageHeader() {
         <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
                 <h1 className="hero__title">{siteConfig.title}</h1>
-                <p className="hero__subtitle"><Translate id="homepage.tagline">Hasor 是一个轻量级 Java 框架，当前核心能力由 hasor-core、hasor-web、hasor-boot 组成。</Translate>
+                <p className="hero__subtitle"><Translate id="homepage.tagline">Hasor 是一个轻量级 Java 框架，当前核心能力由 hasor-core、hasor-config、hasor-web、hasor-boot 组成。</Translate>
                     <br/><br/>
                     <a className="button-padding" target="_blank" href="https://www.apache.org/licenses/LICENSE-2.0.html">
                         <img src="https://img.shields.io/badge/license-Apache%202-4EB1BA.svg" alt="License"/>

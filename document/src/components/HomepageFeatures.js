@@ -8,7 +8,7 @@ const FeatureList = [
         title: translate({id: 'homepage.feature1_title', message: '核心清晰'}),
         Svg: require('../../static/img/undraw_docusaurus_mountain.svg').default,
         description: (
-            <><Translate id="homepage.feature1_desc">hasor-core、hasor-web、hasor-boot 三个核心模块覆盖容器、Web 和可执行包。</Translate></>
+            <><Translate id="homepage.feature1_desc">hasor-core、hasor-config、hasor-web、hasor-boot 覆盖容器、注解配置、Web 和可执行包。</Translate></>
         ),
     },
     {

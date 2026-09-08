@@ -20,3 +20,5 @@ public class HelloAction {
 ```
 
 `@MappingTo` declares the request path, and the target method needs an HTTP method annotation such as `@Any`, `@Get`, or `@Post`. The `@Any` annotation above means the method accepts any HTTP method.
+
+Mapping paths must start with `/`; `@MappingTo("/")` handles the application root. Register Controllers explicitly through `WebApiBinder.loadMappingTo`, or configure bounded scanning with [hasor-config](../../core/conf/java-config.md).

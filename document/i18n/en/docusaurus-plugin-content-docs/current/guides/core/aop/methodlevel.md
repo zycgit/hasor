@@ -42,3 +42,7 @@ public class SimpleInterceptor implements MethodInterceptor {
 AppContext appContext = Hasor.create().build();
 appContext.getInstance(AopBean.class).echo("sss");
 ```
+
+## Required Module
+
+Add `hasor-config` for automatic annotation AOP. The `Aop` annotation and interceptor interfaces are in `net.hasor.cobble.dynamic`.

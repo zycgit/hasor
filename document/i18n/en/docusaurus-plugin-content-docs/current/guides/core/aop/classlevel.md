@@ -38,3 +38,7 @@ public class SimpleInterceptor implements MethodInterceptor {
 AppContext appContext = Hasor.create().build();
 appContext.getInstance(AopBean.class).echo("sss");
 ```
+
+## Required Module
+
+Annotation AOP requires `hasor-config`, which installs `AopModule` by default. `Aop`, `MethodInterceptor`, and `MethodInvocation` are in `net.hasor.cobble.dynamic`. With core alone, configure interceptors explicitly through `ApiBinder.bindInterceptor`.

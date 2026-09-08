@@ -33,7 +33,7 @@ Web startup needs at least one embedded container module:
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-web-tomcat</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.2-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -55,7 +55,7 @@ Web startup needs at least one embedded container module:
 </config>
 ```
 
-When `server` is empty, Hasor discovers an available container through Java SPI. The official container names are:
+When `server` is empty, Hasor uses the first provider discovered through Java SPI. Set the name explicitly when multiple implementations are present. Matching is case-insensitive; a missing provider or unknown name throws an exception. Official names are:
 
 - `tomcat`
 - `jetty`
@@ -73,7 +73,7 @@ The default `hasor-web` configuration already supports environment variable over
 You can therefore change the runtime port through an environment variable:
 
 ```bash
-HASOR_HTTP_PORT=9090 java -jar demo-hasor-boot-web-5.0.0-SNAPSHOT.jar
+HASOR_HTTP_PORT=9090 java -jar demo-hasor-boot-web-5.0.2-SNAPSHOT.jar
 ```
 
 ## Create WebServer Programmatically
@@ -101,4 +101,40 @@ public class DemoHasorBootWebApplication implements WebModule {
 }
 ```
 
-`hasor-web` already provides a default `hasor.http` section in `web-hconfig.xml`. Applications only need to override a few runtime parameters in their own `hconfig.xml`. The Hasor Web `RuntimeFilter` name, match path, boot entry configuration file, and ServletContext static resource root are fixed internally by the framework and do not need to be exposed as HTTP configuration items.
+`hasor-web/web-hconfig.xml` supplies HTTP defaults. `WebServerConfig.loadSettings` reads only `server`, `host`, `port`, and `contextPath`. Use `filterName`, `filterPattern`, `hconfigFile`, and `documentRoot(File)` for the other options. A new config uses its own defaults; call `loadSettings(Hasor.create().buildSettings())` to read application settings. Port `0` requests an available port; read it with `server.getPort()` after startup.
+
+## Custom AppContext Factory
+
+All three containers support `appContextFactory`, which receives the actual ServletContext and returns the AppContext used for requests:
+
+```java
+package com.example;
+
+import net.hasor.boot.web.WebServerConfig;
+import net.hasor.boot.web.WebServers;
+import net.hasor.config.ApplicationBoot;
+import net.hasor.config.Configuration;
+
+@Configuration
+public class Application {
+    public static void main(String[] args) throws Exception {
+        WebServerConfig config = new WebServerConfig()
+                .server("tomcat").port(8080)
+                .appContextFactory(sc -> ApplicationBoot.create(sc, Application.class)
+                        .bindArguments(args)
+                        .registerShutdownHook(false)
+                        .build());
+        WebServers.run(config).join();
+    }
+}
+```
+
+Add `hasor-config` and a container dependency. See [Java Configuration](../core/conf/java-config.md) for scanning rules. The factory replaces default root-module, config-file, and argument initialization: configure those inside the factory. The default path passes `String[]` in the `hasor-main-args` ServletContext attribute and binds it as `Arguments`; this factory binds arguments directly.
+
+`RuntimeListener` closes the factory-created context when the Web container is destroyed. Retrieve it with `RuntimeListener.getAppContext(servletContext)`. Tomcat checks Web Context availability after startup and cleans up and throws if initialization failed.
+
+## Lifecycle Ownership
+
+`WebServers.create(config)` requires the caller to start and stop the server. `run(config)` starts it and registers a JVM shutdown hook; `join()` waits for it to stop.
+
+Container dependencies also register Modules that start the server during an ordinary AppContext's `onStart` and stop it during `onStop`. These Modules skip initialization when Hasor already has a ServletContext. In automatic startup, the listener creates a separate Web AppContext; do not assume it is the outer context. Use the factory for explicit Web context configuration. Include one container or set `hasor.http.server` explicitly.

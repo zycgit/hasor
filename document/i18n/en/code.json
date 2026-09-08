@@ -4,11 +4,11 @@
     "description": "The site tagline"
   },
   "site.keywords": {
-    "message": "hasor,hasor-core,hasor-web,hasor-boot,ioc,aop,webmvc,java open source,open source project",
+    "message": "hasor,hasor-core,hasor-config,hasor-web,hasor-boot,ioc,aop,webmvc,java open source,open source project",
     "description": "The site keywords"
   },
   "site.description": {
-    "message": "Hasor is a lightweight Java framework currently centered on hasor-core, hasor-web, and hasor-boot.",
+    "message": "Hasor is a lightweight Java framework currently centered on hasor-core, hasor-config, hasor-web, and hasor-boot.",
     "description": "The site description"
   },
   "navbar.docs": {
@@ -31,7 +31,7 @@
     "message": "Focused Core"
   },
   "homepage.feature1_desc": {
-    "message": "hasor-core, hasor-web, and hasor-boot cover the container, Web MVC, and executable packaging."
+    "message": "hasor-core, hasor-config, hasor-web, and hasor-boot cover the container, Java configuration, Web MVC, and executable packaging."
   },
   "homepage.feature2_title": {
     "message": "Microkernel + Plugins"

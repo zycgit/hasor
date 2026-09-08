@@ -7,6 +7,8 @@ description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-bo
 
 # 类级拦截器
 
+以下 `@Aop` 用法需要引入 `hasor-config`，由其默认安装的 `AopModule` 处理。`Aop`、`MethodInterceptor`、`MethodInvocation` 均位于 `net.hasor.cobble.dynamic` 包；仅使用 `hasor-core` 时可以通过 `ApiBinder.bindInterceptor` 显式配置拦截器。
+
 在 Hasor 中为 Bean 配置拦截器只需要一个注解即可，被标注类的所有方法就都被拦截了。
 
 ```java title='例如'

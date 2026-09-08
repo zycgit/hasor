@@ -16,3 +16,5 @@ This chapter covers common Web application capabilities:
 - Parameter reading, parameter groups, and type conversion.
 - Response rendering, Content-Type, templates, and JSON output.
 - Request validation, upload, interceptors, and J2EE compatibility.
+
+Embedded-container APIs are in `net.hasor.boot.web`; implementations are provided by the `hasor-boot-web-tomcat`, `hasor-boot-web-jetty`, and `hasor-boot-web-undertow` modules. See [Java Configuration](../core/conf/java-config.md) for Controller scanning, static resources, CORS, and JSON customization.

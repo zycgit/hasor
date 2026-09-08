@@ -9,15 +9,15 @@ import TabItem from '@theme/TabItem';
 
 # 快速上手
 
-Hasor 当前核心模块是 `hasor-core`、`hasor-web`、`hasor-boot`。普通 Java 应用从 `hasor-core` 开始；Web MVC 使用 `hasor-web`；需要可执行 Fat Jar 或内嵌容器时再加入 `hasor-boot`。
+普通 Java 应用从 `hasor-core` 开始；注解配置使用 `hasor-config`；Web MVC 使用 `hasor-web`；需要可执行 Fat Jar 或内嵌容器时再加入对应的 `hasor-boot` 子模块。
 
 :::info 运行环境
-从下个版本开始，Hasor 预计会进入 `5.0.0` 版本线，并且只支持 JDK 17 及以上版本。新项目建议直接使用 JDK 17+。
+当前源码的 Java 编译目标为 17，应用需要使用 JDK 17 或以上版本。
 :::
 
 ## 引入 hasor-core
 
-当前源码版本为 `5.0.0-SNAPSHOT`。如果使用正式发布版本，请替换为 Maven Central 上的对应版本。
+当前源码版本为 `5.0.2-SNAPSHOT`。如果使用正式发布版本，请替换为 Maven Central 上的对应版本。
 
 <Tabs>
   <TabItem value="Maven" label="Maven" default>
@@ -26,7 +26,7 @@ Hasor 当前核心模块是 `hasor-core`、`hasor-web`、`hasor-boot`。普通 J
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-core</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.2-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ Hasor 当前核心模块是 `hasor-core`、`hasor-web`、`hasor-boot`。普通 J
   <TabItem value="Gradle" label="Gradle">
 
 ```text
-implementation "net.hasor:hasor-core:5.0.0-SNAPSHOT"
+implementation "net.hasor:hasor-core:5.0.2-SNAPSHOT"
 ```
 
   </TabItem>
@@ -114,18 +114,22 @@ AppContext appContext = Hasor.create()
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.2-SNAPSHOT</version>
 </dependency>
 ```
 
-如果应用需要直接打包成可执行 Fat Jar，使用 `hasor-boot-maven-plugin`，并根据运行方式选择一个内嵌容器模块：
+如果应用需要直接打包成可执行 Fat Jar，使用 Maven 或 Gradle 打包插件。Web 应用还需要选择一个内嵌容器模块：
 
 ```xml
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-web-tomcat</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.2-SNAPSHOT</version>
 </dependency>
 ```
 
 Web Boot 应用可以通过 `WebServers.run(args, RootModule.class)` 启动。详细说明见 [打包和部署](../deployment/overview.md)、[工程配置](../deployment/project-config.md) 和 [Web 启动器](../deployment/web-launcher.md)。
+
+## 使用注解配置
+
+加入 `net.hasor:hasor-config` 后，可以用 `@Configuration` 和 `@Bean` 声明对象，并通过 `ApplicationBoot.run(Application.class, args)` 从启动类所在包扫描配置。启动类不必实现 `Module`。完整示例、扫描范围和 Bean 生命周期见 [Java 注解配置](../core/conf/java-config.md)。
