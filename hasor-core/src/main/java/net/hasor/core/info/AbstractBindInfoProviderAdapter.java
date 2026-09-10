@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.provider.Scope;
-import net.hasor.core.BindInfo;
-import net.hasor.core.binder.BindInfoBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
+import net.hasor.cobble.provider.Scope;
+import net.hasor.core.BindInfo;
+import net.hasor.core.binder.BindInfoBuilder;
 
 /**
  * 用于定义Bean，实现了Bean配置接口{@link BindInfoBuilder}，配置的信息通过{@link BindInfo}接口展现出来。
@@ -33,15 +32,15 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements//
         BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T>, ScopeProvider {
-    protected static Logger                logger           = LoggerFactory.getLogger(AbstractBindInfoProviderAdapter.class);
+    protected static Logger logger = LoggerFactory.getLogger(AbstractBindInfoProviderAdapter.class);
     //1.基本属性
-    private          String                bindID           = null;
-    private          String                bindName         = null;
-    private          Class<T>              bindType         = null;
-    private          Class<? extends T>    sourceType       = null;
+    private String             bindID     = null;
+    private String             bindName   = null;
+    private Class<T>           bindType   = null;
+    private Class<? extends T> sourceType = null;
     //2.系统属性
-    private          Supplier<? extends T> customerProvider = null;
-    private          List<Supplier<Scope>> scopeProvider    = null;
+    private Supplier<? extends T> customerProvider = null;
+    private List<Supplier<Scope>> scopeProvider    = null;
 
     public String getBindID() {
         if (this.bindID == null) {

@@ -17,9 +17,9 @@ package net.hasor.core.container;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
@@ -63,7 +63,7 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
     public <T> List<BindInfo<T>> findBindInfoList(final Class<T> bindType) {
         List<String> idList = this.indexTypeMapping.get(bindType.getName());
         if (idList == null || idList.isEmpty()) {
-            logger.debug("getBindInfoByType , never define this type = {}", bindType);
+            logger.debug(String.format("getBindInfoByType , never define this type = %s", bindType));
             return Collections.emptyList();
         }
         List<BindInfo<T>> resultList = new ArrayList<>();

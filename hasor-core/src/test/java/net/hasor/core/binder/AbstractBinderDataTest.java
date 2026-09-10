@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import org.junit.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.cobble.loader.providers.ClassPathResourceLoader;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.ApiBinder;
@@ -31,7 +29,6 @@ import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.GenerateBeanID;
 
 public class AbstractBinderDataTest {
-    protected Logger                                          logger = LoggerFactory.getLogger(getClass());
     protected Predicate<Class<?>>                             ignoreMatcher;
     protected AtomicReference<DefaultBindInfoProviderAdapter> reference;
     protected ApiBinderWrap                                   binder;

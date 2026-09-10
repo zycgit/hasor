@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.test.core.mods;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * 在模块中处理容器启动
  * @version : 2013-9-14
  * @author 赵永春 (zyc@byshell.org)
  */
 public class OnLifeModule implements Module {
-    protected           Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger           logger = LoggerFactory.getLogger(getClass());
     public static final String STR    = "say form Mod_1.";
 
     public void loadModule(ApiBinder apiBinder) throws Throwable {

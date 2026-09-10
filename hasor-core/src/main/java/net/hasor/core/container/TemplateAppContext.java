@@ -22,14 +22,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.cobble.ArrayUtils;
 import net.hasor.cobble.ClassUtils;
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.concurrent.future.BasicFuture;
 import net.hasor.cobble.loader.ResourceLoader;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.cobble.provider.Scope;
 import net.hasor.cobble.setting.SettingNode;
 import net.hasor.cobble.setting.Settings;
@@ -535,7 +535,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         logger.debug("appContext -> doStart");
         doStart();
         /*6.发送启动事件*/
-        logger.debug("appContext -> fireSyncEvent ,eventType = {}", ContextEvent_Started);
+        logger.debug(String.format("appContext -> fireSyncEvent ,eventType = %s", ContextEvent_Started));
         this.getEventContext().fireSyncEvent(ContextEvent_Started, this);
         /*7.通知启动成功*/
         doStartCompleted();/*用于扩展*/
