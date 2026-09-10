@@ -9,6 +9,11 @@
         <!-- 包扫描覆盖范围，逗号间隔 -->
         <loadPackages>net.hasor.*</loadPackages>
 
+        <!-- Core 内置的注解 AOP 支持 -->
+        <modules>
+            <module>net.hasor.core.aop.AopModule</module>
+        </modules>
+
         <!-- 执行事件的线程池大小，默认 8 -->
         <eventThreadPoolSize>${HASOR_LOAD_EVENT_POOL:8}</eventThreadPoolSize>
 

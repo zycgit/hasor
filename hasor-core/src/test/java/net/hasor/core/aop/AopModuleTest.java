@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.config.aop;
+package net.hasor.core.aop;
 
 import java.util.ArrayList;
 import java.util.List;
 import net.hasor.cobble.dynamic.DynamicClass;
-import net.hasor.config.aop.fixture.AopBean;
-import net.hasor.config.aop.fixture.ClassAnnoInterceptor;
-import net.hasor.config.aop.fixture.MethodAnnoInterceptor;
+import net.hasor.core.aop.fixture.AopBean;
+import net.hasor.core.aop.fixture.ClassAnnoInterceptor;
+import net.hasor.core.aop.fixture.MethodAnnoInterceptor;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import org.junit.Test;
 
 public class AopModuleTest {
     @Test
-    public void annotationAopShouldBeEnabledByConfigModule() {
+    public void annotationAopShouldBeEnabledByCore() {
         try (AppContext appContext = Hasor.create().build()) {
             AopBean instance = appContext.getInstance(AopBean.class);
             assert instance instanceof DynamicClass;

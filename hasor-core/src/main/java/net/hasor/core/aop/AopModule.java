@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.config.aop;
+package net.hasor.core.aop;
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
 import net.hasor.cobble.dynamic.Aop;
 import net.hasor.cobble.dynamic.Matchers;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.HasorUtils;
 import net.hasor.core.Module;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * 提供 <code>@Aop</code>注解 功能支持。
  * @version : 2013-9-13
@@ -37,7 +36,7 @@ public class AopModule implements Module {
         Predicate<Class<?>> matcherClass = Matchers.annotatedWithClass(Aop.class);//
         Predicate<Method> matcherMethod = Matchers.annotatedWithMethod(Aop.class);//
         //
-        logger.debug("aop -> matcherClass = {}, matcherMethod ={}.", matcherClass, matcherMethod);
+        logger.debug(String.format("aop -> matcherClass = %s, matcherMethod =%s.", matcherClass, matcherMethod));
         AopInterceptor aopInterceptor = HasorUtils.autoAware(apiBinder.getEventContext(), new AopInterceptor());
         apiBinder.bindInterceptor(matcherClass, matcherMethod, aopInterceptor);
     }

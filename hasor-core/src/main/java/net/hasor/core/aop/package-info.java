@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 /**
- * 软件包 for net.hasor.plugins.aop
- * <p>Provide <code>{@link net.hasor.cobble.dynamic.Aop}</code>
- *  annotation way as the class or method statement Aop interceptors.</p>
+ * Core 内置的注解 AOP 支持。
+ * <p>通过 {@link net.hasor.cobble.dynamic.Aop} 在类或方法上声明拦截器。</p>
  */
-package net.hasor.config.aop;
+package net.hasor.core.aop;
