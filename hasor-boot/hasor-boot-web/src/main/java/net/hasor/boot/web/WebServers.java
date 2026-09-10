@@ -24,7 +24,6 @@ import net.hasor.cobble.logging.Logger;
 import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.Hasor;
-import net.hasor.core.Module;
 
 /**
  * Factory methods for embedded Hasor Web servers.
@@ -37,7 +36,7 @@ public final class WebServers {
     private WebServers() {
     }
 
-    public static WebServer run(String[] args, Class<? extends Module> rootModule) throws Exception {
+    public static WebServer run(String[] args, Class<?> rootModule) throws Exception {
         return run(create(args, rootModule));
     }
 
@@ -62,7 +61,7 @@ public final class WebServers {
         }
     }
 
-    public static WebServer create(String[] args, Class<? extends Module> rootModule) {
+    public static WebServer create(String[] args, Class<?> rootModule) {
         Settings settings = Hasor.create().buildSettings();
         WebServerConfig config = WebServerConfig.of(settings, rootModule).arguments(args);
         return create(config);

@@ -16,6 +16,7 @@
 package net.hasor.web.render.json;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Objects;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.hasor.web.Invoker;
 import net.hasor.web.render.RenderEngine;
@@ -23,7 +24,16 @@ import net.hasor.web.render.RenderInvoker;
 
 /** Optional Jackson 2 JSON renderer. */
 public final class JacksonRenderEngine implements RenderEngine {
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
+
+    public JacksonRenderEngine() {
+        this(new ObjectMapper());
+    }
+
+    /** 复用业务配置好的 ObjectMapper；应在处理请求前完成配置。 */
+    public JacksonRenderEngine(ObjectMapper mapper) {
+        this.mapper = Objects.requireNonNull(mapper, "mapper");
+    }
 
     @Override
     public void process(RenderInvoker invoker, Writer writer) throws IOException {

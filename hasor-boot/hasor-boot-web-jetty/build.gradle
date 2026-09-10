@@ -10,4 +10,7 @@ dependencies {
     api project(':hasor-boot-web')
     api "org.eclipse.jetty:jetty-server:9.4.54.v20240208"
     api "org.eclipse.jetty:jetty-servlet:9.4.54.v20240208"
+
+    testImplementation project(':test-web-containers')
+    testRuntimeOnly 'com.google.code.gson:gson:2.14.0'
 }

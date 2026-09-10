@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.config.web;
-
+import net.hasor.config.web.cors.CorsRegistry;
+import net.hasor.config.web.render.JsonRenderConfigurer;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 
@@ -24,23 +25,9 @@ import net.hasor.web.WebModule;
  * @version : 2026-07-18
  */
 public interface WebMvcConfigurer extends WebModule {
-    /** Configure static resource mappings. */
-    default void addResourceHandlers(ResourceHandlerRegistry registry) {
-    }
-
-    /** Configure cross-origin request mappings. */
-    default void addCorsMappings(CorsRegistry registry) {
-    }
-
-    /** Configure the JSON render engine. */
-    default void configureJson(JsonRenderConfigurer configurer) {
-    }
-
     @Override
     default void loadModule(WebApiBinder webBinder) {
-        ResourceHandlerRegistry resourceRegistry = new ResourceHandlerRegistry(webBinder);
-        this.addResourceHandlers(resourceRegistry);
-        resourceRegistry.register();
+        this.addResourceHandlers(webBinder);
 
         CorsRegistry corsRegistry = new CorsRegistry(webBinder);
         this.addCorsMappings(corsRegistry);
@@ -49,5 +36,17 @@ public interface WebMvcConfigurer extends WebModule {
         JsonRenderConfigurer jsonConfigurer = new JsonRenderConfigurer(webBinder);
         this.configureJson(jsonConfigurer);
         jsonConfigurer.register();
+    }
+
+    /** Configure static resource mappings. */
+    default void addResourceHandlers(WebApiBinder binder) {
+    }
+
+    /** Configure cross-origin request mappings. */
+    default void addCorsMappings(CorsRegistry registry) {
+    }
+
+    /** Configure the JSON render engine. */
+    default void configureJson(JsonRenderConfigurer configurer) {
     }
 }

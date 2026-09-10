@@ -1,11 +1,11 @@
 package net.hasor.config.webconfig;
-
 import java.util.concurrent.atomic.AtomicInteger;
+import net.hasor.cobble.loader.providers.PrefixResourceLoader;
 import net.hasor.config.Configuration;
-import net.hasor.config.web.CorsRegistry;
-import net.hasor.config.web.JsonRenderConfigurer;
-import net.hasor.config.web.ResourceHandlerRegistry;
 import net.hasor.config.web.WebMvcConfigurer;
+import net.hasor.config.web.cors.CorsRegistry;
+import net.hasor.config.web.render.JsonRenderConfigurer;
+import net.hasor.web.WebApiBinder;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
@@ -14,12 +14,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public static final AtomicInteger JSON_CONFIGURES     = new AtomicInteger();
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(WebApiBinder binder) {
         RESOURCE_CONFIGURES.incrementAndGet();
-        registry.addResourceHandler("/assets/**")//
-                .addResourceLocations("classpath:/web-assets/")//
-                .setWelcomeFile("home.html")//
-                .setOrder(-100);
+        binder.addResource("/assets/**", new PrefixResourceLoader(binder.getResourceLoader(), "web-assets"))//
+                .welcomeFile("home.html")//
+                .order(-100);
     }
 
     @Override
@@ -37,6 +36,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void configureJson(JsonRenderConfigurer configurer) {
         JSON_CONFIGURES.incrementAndGet();
-        configurer.useDefaultJsonRenderEngine();
+        configurer.renderEngine(net.hasor.web.render.json.JsonRenderEngine.class);
     }
 }

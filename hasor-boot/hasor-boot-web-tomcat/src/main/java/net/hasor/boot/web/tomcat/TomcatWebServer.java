@@ -17,16 +17,17 @@ package net.hasor.boot.web.tomcat;
 import java.io.File;
 import java.util.Map;
 import javax.servlet.DispatcherType;
-import net.hasor.boot.web.AbstractWebServer;
-import net.hasor.boot.web.WebServerConfig;
-import net.hasor.core.Module;
-import net.hasor.web.startup.RuntimeFilter;
-import net.hasor.web.startup.RuntimeListener;
 import org.apache.catalina.Context;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.tomcat.util.descriptor.web.FilterDef;
 import org.apache.tomcat.util.descriptor.web.FilterMap;
+import net.hasor.boot.web.AbstractWebServer;
+import net.hasor.boot.web.BootRuntimeListener;
+import net.hasor.boot.web.WebServerConfig;
+import net.hasor.core.Module;
+import net.hasor.web.startup.RuntimeFilter;
+import net.hasor.web.startup.RuntimeListener;
 
 /**
  * Embedded Tomcat server for Hasor Web MVC.
@@ -67,7 +68,7 @@ public class TomcatWebServer extends AbstractWebServer {
             Context context = server.addContext(tomcatContextPath(), documentRoot.getAbsolutePath());
             context.setParentClassLoader(Thread.currentThread().getContextClassLoader());
             context.addLifecycleListener(new Tomcat.FixContextListener());
-            context.addApplicationListener(RuntimeListener.class.getName());
+            context.addApplicationListener(BootRuntimeListener.class.getName());
             for (Map.Entry<String, String> entry : getInitParameters().entrySet()) {
                 context.addParameter(entry.getKey(), entry.getValue());
             }

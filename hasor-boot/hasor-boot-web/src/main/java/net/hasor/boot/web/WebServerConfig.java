@@ -18,12 +18,14 @@ import java.io.File;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import javax.servlet.ServletContext;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.setting.Settings;
+import net.hasor.config.web.WebDefaultsModule;
+import net.hasor.config.web.WebOptions;
 import net.hasor.core.AppContext;
-import net.hasor.core.Module;
 import net.hasor.web.startup.RuntimeListener;
 
 /**
@@ -32,22 +34,23 @@ import net.hasor.web.startup.RuntimeListener;
  * @version : 2026-06-17
  */
 public class WebServerConfig {
-    public static final String                               HASOR_ROOT_MODULE  = "hasor-root-module";
-    public static final String                               HASOR_HCONFIG_FILE = "hasor-hconfig-file";
-    public static final String                               HASOR_HCONFIG_NAME = "hasor-hconfig-name";
-    public static final String                               HASOR_MAIN_ARGS    = RuntimeListener.HASOR_MAIN_ARGS;
-    private             String                               host               = "0.0.0.0";
-    private             int                                  port               = 8080;
-    private             String                               contextPath        = "/";
-    private             String                               filterName         = "hasorFilter";
-    private             String                               filterPattern      = "/*";
-    private             File                                 documentRoot       = defaultDocumentRoot();
-    private             Class<? extends Module>              rootModule;
-    private             String                               hconfigFile;
-    private             String                               server;
-    private             String[]                             arguments          = new String[0];
-    private             Function<ServletContext, AppContext> appContextFactory;
-    private final       Map<String, String>                  initParameters     = new LinkedHashMap<>();
+    public static final String                   HASOR_ROOT_MODULE  = "hasor-root-module";
+    public static final String                   HASOR_HCONFIG_FILE = "hasor-hconfig-file";
+    public static final String                   HASOR_HCONFIG_NAME = "hasor-hconfig-name";
+    public static final String                   HASOR_MAIN_ARGS    = RuntimeListener.HASOR_MAIN_ARGS;
+    private String                               host               = "0.0.0.0";
+    private int                                  port               = 8080;
+    private String                               contextPath        = "/";
+    private String                               filterName         = "hasorFilter";
+    private String                               filterPattern      = "/*";
+    private File                                 documentRoot       = defaultDocumentRoot();
+    private Class<?>                             rootModule;
+    private String                               hconfigFile;
+    private String                               server;
+    private String[]                             arguments          = new String[0];
+    private Function<ServletContext, AppContext> appContextFactory;
+    private final Map<String, String>            initParameters     = new LinkedHashMap<>();
+    private WebOptions                           webOptions         = new WebOptions();
 
     public WebServerConfig() {
     }
@@ -68,13 +71,14 @@ public class WebServerConfig {
         this.arguments = source.arguments == null ? null : source.arguments.clone();
         this.appContextFactory = source.appContextFactory;
         this.initParameters.putAll(source.initParameters);
+        this.webOptions = source.webOptions.copy();
     }
 
-    public static WebServerConfig of(Class<? extends Module> rootModule) {
+    public static WebServerConfig of(Class<?> rootModule) {
         return new WebServerConfig().rootModule(rootModule);
     }
 
-    public static WebServerConfig of(Settings settings, Class<? extends Module> rootModule) {
+    public static WebServerConfig of(Settings settings, Class<?> rootModule) {
         return of(rootModule).loadSettings(settings);
     }
 
@@ -83,6 +87,7 @@ public class WebServerConfig {
         if (webapp.isDirectory()) {
             return webapp;
         }
+
         return new File(System.getProperty("java.io.tmpdir"), "hasor-webroot");
     }
 
@@ -110,6 +115,9 @@ public class WebServerConfig {
         if (StringUtils.isNotBlank(contextPath)) {
             this.contextPath(contextPath);
         }
+
+        WebDefaultsModule.loadOptions(this.webOptions, settings, "hasor.boot.web.");
+        WebDefaultsModule.loadOptions(this.webOptions, settings);
         return this;
     }
 
@@ -117,7 +125,67 @@ public class WebServerConfig {
         if (StringUtils.isBlank(host)) {
             throw new IllegalArgumentException("host is blank.");
         }
+
         this.host = host.trim();
+        return this;
+    }
+
+    /** A defensive snapshot of the container-independent Web settings. */
+    public WebOptions getWebOptions() {
+        return this.webOptions.copy();
+    }
+
+    public String[] getNoStorePaths() {
+        return this.webOptions.getNoStorePaths();
+    }
+
+    public WebServerConfig noStorePaths(String... paths) {
+        this.webOptions.noStorePaths(paths);
+        return this;
+    }
+
+    public Set<String> getScanExcludes() {
+        return this.webOptions.getScanExcludes();
+    }
+
+    public WebServerConfig excludeScan(Class<?>... types) {
+        this.webOptions.excludeScan(types);
+        return this;
+    }
+
+    public boolean isStaticResources() {
+        return this.webOptions.isStaticResources();
+    }
+
+    public WebServerConfig staticResources(boolean enabled) {
+        this.webOptions.staticResources(enabled);
+        return this;
+    }
+
+    public String getStaticLocation() {
+        return this.webOptions.getStaticLocation();
+    }
+
+    public WebServerConfig staticLocation(String location) {
+        this.webOptions.staticLocation(location);
+        return this;
+    }
+
+    public String[] getSpaPaths() {
+        return this.webOptions.getSpaPaths();
+    }
+
+    public WebServerConfig spaPaths(String... paths) {
+        this.webOptions.spaPaths(paths);
+        return this;
+    }
+
+    public String[] getResourceExcludes() {
+        return this.webOptions.getResourceExcludes();
+    }
+
+    public WebServerConfig resourceExcludes(String... prefixes) {
+        this.webOptions.resourceExcludes(prefixes);
         return this;
     }
 
@@ -129,6 +197,7 @@ public class WebServerConfig {
         if (port < 0 || port > 65535) {
             throw new IllegalArgumentException("port must be between 0 and 65535.");
         }
+
         this.port = port;
         return this;
     }
@@ -162,6 +231,7 @@ public class WebServerConfig {
         if (StringUtils.isBlank(filterPattern)) {
             throw new IllegalArgumentException("filterPattern is blank.");
         }
+
         this.filterPattern = filterPattern.trim();
         return this;
     }
@@ -174,18 +244,20 @@ public class WebServerConfig {
         if (documentRoot == null) {
             throw new IllegalArgumentException("documentRoot is null.");
         }
+
         this.documentRoot = documentRoot;
         return this;
     }
 
-    public Class<? extends Module> getRootModule() {
+    public Class<?> getRootModule() {
         return this.rootModule;
     }
 
-    public WebServerConfig rootModule(Class<? extends Module> rootModule) {
+    public WebServerConfig rootModule(Class<?> rootModule) {
         if (rootModule == null) {
             throw new IllegalArgumentException("rootModule is null.");
         }
+
         this.rootModule = rootModule;
         return this;
     }
@@ -235,6 +307,7 @@ public class WebServerConfig {
         } else {
             this.initParameters.put(name, value);
         }
+
         return this;
     }
 
@@ -247,12 +320,14 @@ public class WebServerConfig {
             initParams.putIfAbsent(HASOR_HCONFIG_FILE, this.hconfigFile);
             initParams.putIfAbsent(HASOR_HCONFIG_NAME, this.hconfigFile);
         }
+
         return Collections.unmodifiableMap(initParams);
     }
 
     public Map<String, Object> getServletContextAttributes() {
         Map<String, Object> attributes = new LinkedHashMap<>();
         attributes.put(HASOR_MAIN_ARGS, getArguments());
+        attributes.put(WebServerConfig.class.getName(), copy());
         return Collections.unmodifiableMap(attributes);
     }
 
@@ -264,6 +339,7 @@ public class WebServerConfig {
         if (StringUtils.isBlank(contextPath) || "/".equals(contextPath.trim())) {
             return "/";
         }
+
         String normalized = contextPath.trim();
         if (!normalized.startsWith("/")) {
             normalized = "/" + normalized;
@@ -271,6 +347,7 @@ public class WebServerConfig {
         while (normalized.length() > 1 && normalized.endsWith("/")) {
             normalized = normalized.substring(0, normalized.length() - 1);
         }
+
         return normalized;
     }
 }

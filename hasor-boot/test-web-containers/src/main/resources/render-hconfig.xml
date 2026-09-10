@@ -1,0 +1,16 @@
+<config xmlns="https://www.hasor.net/sechma/main">
+    <hasor.loadPackages>net.hasor.boot.fixtures.render</hasor.loadPackages>
+    <hasor.render.defaults>
+        <objectEngine>json</objectEngine>
+        <stringEngine>json</stringEngine>
+    </hasor.render.defaults>
+    <hasor>
+        <boot>
+            <web>
+                <response>
+                    <noStorePaths>/render/*</noStorePaths>
+                </response>
+            </web>
+        </boot>
+    </hasor>
+</config>

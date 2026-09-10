@@ -14,26 +14,51 @@
  * limitations under the License.
  */
 package net.hasor.config;
-
+import static org.junit.Assert.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.hasor.cobble.setting.Settings;
-import net.hasor.config.core.ConfigurationModule;
-import net.hasor.core.AppContext;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.CircularDependencyException;
-import net.hasor.core.Hasor;
-import net.hasor.core.Inject;
-import net.hasor.core.Module;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.core.*;
+import net.hasor.core.Module;
 
 public class ConfigurationModuleTest {
+    @Test
+    public void publicDefaultConstructorAndProtectedSubclassConstructor() throws Exception {
+        assertEquals(1, ConfigurationModule.class.getConstructors().length);
+        assertNotNull(ConfigurationModule.class.getConstructor().newInstance());
+        assertTrue(java.lang.reflect.Modifier.isProtected(ConfigurationModule.class.getDeclaredConstructor(Class[].class).getModifiers()));
+        try (AppContext context = manualHasor().build(new DerivedConfigurationModule())) {
+            assertEquals("hello Hasor", context.getInstance(MessageService.class).message());
+        }
+    }
+
+    private static class DerivedConfigurationModule extends ConfigurationModule {
+        DerivedConfigurationModule() {
+            super(AppConfig.class);
+        }
+    }
+
+    @Test
+    public void binderScanUsesExplicitScope() throws Exception {
+        try (AppContext context = manualHasor().build(binder -> binder.installModule(ConfigurationModule.of(binder.findClass(Configuration.class, "net.hasor.config.autoscan").toArray(Class<?>[]::new))))) {
+            assertEquals("module-loaded", context.getInstance(net.hasor.config.autoscan.AutoScanService.class).getValue());
+        }
+    }
+
+    @Test
+    public void explicitModesDoNotDiscoverExtensionModules() throws Throwable {
+        ApiBinder binder = org.mockito.Mockito.mock(ApiBinder.class);
+        ConfigurationModule.of().loadModule(binder);
+        org.mockito.Mockito.verifyNoMoreInteractions(binder);
+    }
+
+    @Test
+    public void autoFactoryUsesCoreScope() throws Exception {
+        try (AppContext context = manualHasor().addSettings(Settings.DefaultNameSpace, "hasor.loadPackages", "net.hasor.config.autoscan").build(ConfigurationModule.auto())) {
+            assertEquals("module-loaded", context.getInstance(net.hasor.config.autoscan.AutoScanService.class).getValue());
+        }
+    }
+
     @Test
     public void configurationShouldCreateBeansAndInjectMethodParameters() {
         AppContext context = manualHasor().build(ConfigurationModule.of(AppConfig.class));
@@ -101,7 +126,7 @@ public class ConfigurationModuleTest {
     }
 
     private Hasor manualHasor() {
-        return Hasor.create().addSettings(Settings.DefaultNameSpace, AutoConfigurationModule.AUTO_SCAN_ENABLED, false);
+        return Hasor.create().addSettings(Settings.DefaultNameSpace, "hasor.loadPackages", "example.no_autoscan");
     }
 
     @Configuration
@@ -215,8 +240,8 @@ public class ConfigurationModuleTest {
 
     public static class LifecycleBean {
         private static final AtomicInteger initialized = new AtomicInteger();
-        private static final AtomicInteger destroyed = new AtomicInteger();
-        private boolean ready;
+        private static final AtomicInteger destroyed   = new AtomicInteger();
+        private boolean                    ready;
 
         public void init() {
             this.ready = true;

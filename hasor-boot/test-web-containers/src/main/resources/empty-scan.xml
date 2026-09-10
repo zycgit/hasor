@@ -1,0 +1,3 @@
+<config xmlns="https://www.hasor.net/sechma/main">
+    <hasor.loadPackages>example.no_autoscan</hasor.loadPackages>
+</config>

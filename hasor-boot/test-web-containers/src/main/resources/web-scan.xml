@@ -1,0 +1,3 @@
+<config xmlns="https://www.hasor.net/sechma/main">
+    <hasor.loadPackages>net.hasor.boot.fixtures.defaults</hasor.loadPackages>
+</config>

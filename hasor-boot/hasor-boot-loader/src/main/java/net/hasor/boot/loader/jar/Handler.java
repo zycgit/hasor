@@ -16,13 +16,15 @@
 package net.hasor.boot.loader.jar;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.ref.SoftReference;
 import java.net.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 /**
  * {@link URLStreamHandler} for Spring Boot loader {@link JarFile}s.
  * @author Phillip Webb
@@ -159,9 +161,17 @@ public class Handler extends URLStreamHandler {
 
     private void log(boolean warning, String message, Exception cause) {
         try {
-            Level level = warning ? Level.WARNING : Level.FINEST;
-            Logger.getLogger(getClass().getName()).log(level, message, cause);
-        } catch (Exception ex) {
+            Logger logger = LoggerFactory.getLogger(getClass());
+            if (warning) {
+                logger.warn(message, cause);
+            } else if (logger.isTraceEnabled()) {
+                StringWriter stack = new StringWriter();
+                cause.printStackTrace(new PrintWriter(stack));
+                logger.trace(message + System.lineSeparator() + stack);
+            }
+        } catch (Exception | LinkageError ex) {
+            // Cobble may still be inside an unopened nested application JAR.
+            // Logging must never prevent the bootstrap loader from opening that JAR.
             if (warning) {
                 System.err.println("WARNING: " + message);
             }

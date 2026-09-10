@@ -225,9 +225,17 @@ final class JarURLConnection extends java.net.JarURLConnection {
             JarEntryName entryName = JarEntryName.get(spec.subSequence(index, separator));
             JarEntry jarEntry = jarFile.getJarEntry(entryName.toCharSequence());
             if (jarEntry == null) {
-                return JarURLConnection.notFound(jarFile, entryName);
+                // Executable archives need not contain explicit directory entries.
+                // Reconstructed URLs must resolve the same directory view as the class loader.
+                JarFile directory = jarFile.getNestedJarFile(entryName.toString());
+                if (directory.size() == 0) {
+                    directory.close();
+                    return JarURLConnection.notFound(jarFile, entryName);
+                }
+                jarFile = directory;
+            } else {
+                jarFile = jarFile.getNestedJarFile(jarEntry);
             }
-            jarFile = jarFile.getNestedJarFile(jarEntry);
             index = separator + SEPARATOR.length();
         }
         JarEntryName jarEntryName = JarEntryName.get(spec, index);

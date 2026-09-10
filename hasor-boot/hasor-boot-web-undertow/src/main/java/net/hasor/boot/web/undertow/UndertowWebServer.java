@@ -26,6 +26,7 @@ import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import net.hasor.boot.web.AbstractWebServer;
+import net.hasor.boot.web.BootRuntimeListener;
 import net.hasor.boot.web.WebServerConfig;
 import net.hasor.core.Module;
 import net.hasor.web.startup.RuntimeFilter;
@@ -68,7 +69,7 @@ public class UndertowWebServer extends AbstractWebServer {
                     .setContextPath(this.config.getContextPath())//
                     .setDeploymentName("hasor-web")//
                     .setResourceManager(new FileResourceManager(documentRoot, 1024))//
-                    .addListener(Servlets.listener(RuntimeListener.class))//
+                    .addListener(Servlets.listener(BootRuntimeListener.class))//
                     .addFilter(Servlets.filter(this.config.getFilterName(), RuntimeFilter.class).setAsyncSupported(true));
 
             for (Map.Entry<String, String> entry : getInitParameters().entrySet()) {

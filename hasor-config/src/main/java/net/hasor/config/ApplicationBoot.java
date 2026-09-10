@@ -15,11 +15,10 @@
  */
 package net.hasor.config;
 import java.util.Objects;
-import net.hasor.cobble.setting.Settings;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 
-/** Starts Hasor with the package of a primary {@link Configuration} class as its scan root. */
+/** Starts Hasor with a primary {@link Configuration} class and the configured Core scan scope. */
 public final class ApplicationBoot {
     private ApplicationBoot() {
     }
@@ -46,11 +45,6 @@ public final class ApplicationBoot {
             throw new IllegalArgumentException(primarySource.getName() + " must be annotated with @Configuration.");
         }
 
-        String basePackage = primarySource.getPackageName();
-        if (basePackage.isBlank()) {
-            throw new IllegalArgumentException("The primary @Configuration class must not be declared in the default package: " + primarySource.getName());
-        }
-
-        return hasor.addSettings(Settings.DefaultNameSpace, AutoConfigurationModule.SCAN_PACKAGES, basePackage).addPrimarySources(primarySource);
+        return hasor.addPrimarySources(primarySource);
     }
 }

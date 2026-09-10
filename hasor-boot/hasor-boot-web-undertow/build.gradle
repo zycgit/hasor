@@ -9,4 +9,7 @@ description = 'Hasor Boot Web embedded Undertow server.'
 dependencies {
     api project(':hasor-boot-web')
     api "io.undertow:undertow-servlet:2.2.26.Final"
+
+    testImplementation project(':test-web-containers')
+    testRuntimeOnly 'com.google.code.gson:gson:2.14.0'
 }

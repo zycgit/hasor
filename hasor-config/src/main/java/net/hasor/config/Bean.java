@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.config;
-
 import java.lang.annotation.*;
 
 /** Declares that a method creates a bean managed by Hasor. */

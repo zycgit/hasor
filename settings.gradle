@@ -26,6 +26,7 @@ include 'hasor-boot-maven-plugin'
 include 'hasor-boot-web-tomcat'
 include 'hasor-boot-web-jetty'
 include 'hasor-boot-web-undertow'
+include 'test-web-containers'
 
 project(':hasor-boot-loader').projectDir = file('hasor-boot/hasor-boot-loader')
 project(':hasor-boot-web').projectDir = file('hasor-boot/hasor-boot-web')
@@ -33,3 +34,4 @@ project(':hasor-boot-maven-plugin').projectDir = file('hasor-boot/hasor-boot-mav
 project(':hasor-boot-web-tomcat').projectDir = file('hasor-boot/hasor-boot-web-tomcat')
 project(':hasor-boot-web-jetty').projectDir = file('hasor-boot/hasor-boot-web-jetty')
 project(':hasor-boot-web-undertow').projectDir = file('hasor-boot/hasor-boot-web-undertow')
+project(':test-web-containers').projectDir = file('hasor-boot/test-web-containers')

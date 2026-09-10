@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.config;
-
 import java.lang.annotation.*;
 
 /** Marks a class that declares {@link Bean @Bean} factory methods. */

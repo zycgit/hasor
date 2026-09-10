@@ -15,7 +15,10 @@
  */
 package net.hasor.web.render.json;
 import java.io.Writer;
+import java.util.Objects;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import net.hasor.core.Singleton;
 import net.hasor.web.Invoker;
 import net.hasor.web.render.RenderEngine;
@@ -27,9 +30,25 @@ import net.hasor.web.render.RenderInvoker;
  */
 @Singleton
 public class JsonRenderEngine implements RenderEngine {
+    private final SerializeConfig     config;
+    private final SerializerFeature[] features;
+
+    public JsonRenderEngine() {
+        this(SerializeConfig.getGlobalInstance());
+    }
+
+    /** 使用指定配置，不修改 Fastjson 全局配置。 */
+    public JsonRenderEngine(SerializeConfig config, SerializerFeature... features) {
+        this.config = Objects.requireNonNull(config, "config");
+        this.features = Objects.requireNonNull(features, "features").clone();
+        for (SerializerFeature feature : this.features) {
+            Objects.requireNonNull(feature, "feature");
+        }
+    }
+
     @Override
     public void process(RenderInvoker invoker, Writer writer) throws Throwable {
         Object obj = invoker.get(Invoker.RETURN_DATA_KEY);
-        writer.write(JSON.toJSONString(obj));
+        writer.write(JSON.toJSONString(obj, this.config, this.features));
     }
 }

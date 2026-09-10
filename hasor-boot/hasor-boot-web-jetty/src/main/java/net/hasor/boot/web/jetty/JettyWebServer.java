@@ -18,15 +18,16 @@ import java.io.File;
 import java.util.EnumSet;
 import java.util.Map;
 import javax.servlet.DispatcherType;
-import net.hasor.boot.web.AbstractWebServer;
-import net.hasor.boot.web.WebServerConfig;
-import net.hasor.core.Module;
-import net.hasor.web.startup.RuntimeFilter;
-import net.hasor.web.startup.RuntimeListener;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import net.hasor.boot.web.AbstractWebServer;
+import net.hasor.boot.web.BootRuntimeListener;
+import net.hasor.boot.web.WebServerConfig;
+import net.hasor.core.Module;
+import net.hasor.web.startup.RuntimeFilter;
+import net.hasor.web.startup.RuntimeListener;
 
 /**
  * Embedded Jetty server for Hasor Web MVC.
@@ -68,7 +69,7 @@ public class JettyWebServer extends AbstractWebServer {
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath(this.config.getContextPath());
             context.setResourceBase(documentRoot.getAbsolutePath());
-            context.addEventListener(new RuntimeListener());
+            context.addEventListener(new BootRuntimeListener());
             for (Map.Entry<String, String> entry : getInitParameters().entrySet()) {
                 context.setInitParameter(entry.getKey(), entry.getValue());
             }
