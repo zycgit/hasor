@@ -13,6 +13,12 @@ dependencies {
     api "javax.servlet.jsp:jsp-api:2.2"
 
     compileOnly "com.alibaba:fastjson:${property('lib.fastjson')}"
+    compileOnly 'com.google.code.gson:gson:2.14.0'
+    compileOnly 'com.fasterxml.jackson.core:jackson-databind:2.18.0'
+    compileOnly 'com.alibaba.fastjson2:fastjson2:2.0.53'
+    testImplementation 'com.google.code.gson:gson:2.14.0'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.18.0'
+    testImplementation 'com.alibaba.fastjson2:fastjson2:2.0.53'
     testImplementation "javax.el:javax.el-api:3.0.0"
     testImplementation "javax.annotation:javax.annotation-api:${property('lib.annotation')}"
     testImplementation "org.apache.httpcomponents:httpclient:4.5.3"

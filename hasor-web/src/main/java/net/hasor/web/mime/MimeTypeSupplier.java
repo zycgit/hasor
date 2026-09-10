@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.web.mime;
-import net.hasor.cobble.ResourcesUtils;
-import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.io.IOUtils;
-import net.hasor.web.MimeType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
-
-import javax.servlet.ServletContext;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.servlet.ServletContext;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.InputSource;
+import net.hasor.cobble.ResourcesUtils;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.io.IOUtils;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
+import net.hasor.web.MimeType;
 
 /**
  * {@link MimeType} 接口实现。
@@ -38,8 +37,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implements MimeType {
-    private static final Logger         logger = LoggerFactory.getLogger(MimeTypeSupplier.class);
-    private final        ServletContext content;
+    private static final Logger  logger = LoggerFactory.getLogger(MimeTypeSupplier.class);
+    private final ServletContext content;
 
     public MimeTypeSupplier(ServletContext content) {
         this.content = content;

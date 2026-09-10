@@ -21,10 +21,7 @@ import java.io.Reader;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.servlet.Filter;
@@ -33,10 +30,12 @@ import javax.servlet.http.HttpServlet;
 import net.hasor.cobble.ArrayUtils;
 import net.hasor.cobble.ResourcesUtils;
 import net.hasor.cobble.dynamic.Matchers;
+import net.hasor.cobble.loader.ResourceLoader;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.TypeSupplier;
 import net.hasor.web.annotation.MappingTo;
+import net.hasor.web.binder.ResourceBinder;
 import net.hasor.web.render.Render;
 import net.hasor.web.render.RenderEngine;
 /**
@@ -45,6 +44,9 @@ import net.hasor.web.render.RenderEngine;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface WebApiBinder extends ApiBinder, MimeType {
+    /** Configure static resources independently of business filters and rendering. */
+    ResourceBinder addResource(String pathPattern, ResourceLoader... loaders);
+
     /**获取ServletContext对象。*/
     ServletContext getServletContext();
 
@@ -54,7 +56,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     /** 设置响应编码 */
     WebApiBinder setResponseCharacter(String encoding);
 
-    /** 设置请求响应编码 */
+    /** 设置全局请求响应编码，后设置的值覆盖先前配置。Action 可以通过注解或响应 API 覆盖本次响应编码。 */
     default WebApiBinder setEncodingCharacter(String requestEncoding, String responseEncoding) {
         return this.setRequestCharacter(requestEncoding).setResponseCharacter(responseEncoding);
     }
@@ -69,6 +71,9 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**使用 MappingTo 表达式，创建一个{@link ServletBindingBuilder}。*/
     ServletBindingBuilder jeeServlet(String[] morePatterns);
+
+    /** Snapshot of mappings registered so far, available during module configuration without creating beans. */
+    List<Mapping> getMappings();
 
     /**使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。*/
     default <T> MappingToBindingBuilder<T> mappingTo(String urlPattern, String... morePatterns) {
@@ -395,7 +400,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     RenderEngineBindingBuilder addRender(String renderName);
 
     /** 负责配置RenderEngine。*/
-    static interface RenderEngineBindingBuilder {
+    interface RenderEngineBindingBuilder {
         /**绑定实现。*/
         <T extends RenderEngine> void to(Class<T> renderEngineType);
 

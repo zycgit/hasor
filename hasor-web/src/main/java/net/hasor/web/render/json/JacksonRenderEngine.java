@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.objects;
-import com.alibaba.fastjson.JSON;
-import net.hasor.core.Singleton;
+package net.hasor.web.render.json;
+import java.io.IOException;
+import java.io.Writer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.hasor.web.Invoker;
 import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderInvoker;
 
-import java.io.Writer;
+/** Optional Jackson 2 JSON renderer. */
+public final class JacksonRenderEngine implements RenderEngine {
+    private final ObjectMapper mapper = new ObjectMapper();
 
-/**
- * 一个基于 Fastjson 的JSON渲染器。
- * @author 赵永春 (zyc@hasor.net)
- * @version : 2020-03-20
- */
-@Singleton
-public class JsonRenderEngine implements RenderEngine {
     @Override
-    public void process(RenderInvoker invoker, Writer writer) throws Throwable {
-        Object obj = invoker.get(Invoker.RETURN_DATA_KEY);
-        writer.write(JSON.toJSONString(obj));
+    public void process(RenderInvoker invoker, Writer writer) throws IOException {
+        Object value = invoker.get(Invoker.RETURN_DATA_KEY);
+        writer.write(this.mapper.writeValueAsString(value));
     }
 }

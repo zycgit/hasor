@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
+import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.TypeSupplier;
@@ -24,14 +31,6 @@ import net.hasor.test.web.render.SimpleRenderEngine;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.render.Render;
 import net.hasor.web.render.RenderEngine;
-import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * @version : 2016-12-16
@@ -71,7 +70,7 @@ public class RenderBinderTest extends AbstractTest {
             }
         }, servlet30("/"), LoadModule.Web);
         //
-        List<RenderDef> definitions = appContext.findBindingBean(RenderDef.class);
+        List<RenderDef> definitions = appContext.findBindingBean(RenderDef.class).stream().filter(def -> !def.isFallback()).toList();
         assert definitions.size() == 5;
         for (int i = 0; i < 5; i++) {
             assert definitions.get(i).getClass() == RenderDef.class;
@@ -126,7 +125,7 @@ public class RenderBinderTest extends AbstractTest {
             });
         }, servlet30("/"), LoadModule.Web);
         //
-        List<RenderDef> definitions = appContext.findBindingBean(RenderDef.class);
+        List<RenderDef> definitions = appContext.findBindingBean(RenderDef.class).stream().filter(def -> !def.isFallback()).toList();
         assert definitions.size() == 1;
         //
         Set<String> suffixSet = new HashSet<>();
@@ -143,8 +142,7 @@ public class RenderBinderTest extends AbstractTest {
         }, servlet30("/"), LoadModule.Web, LoadModule.Render);
         //
         List<FilterDef> defList = appContext.findBindingBean(FilterDef.class);
-        assert defList.size() == 1;
-        assert defList.get(0).getTargetType().getBindID().equals("net.hasor.web.render.RenderInvokerFilter");
-        assert defList.get(0).getIndex() == Integer.MIN_VALUE;
+        assert defList.isEmpty();
+        assert appContext.findBindingBean(net.hasor.web.render.RenderProcessor.class).size() == 1;
     }
 }

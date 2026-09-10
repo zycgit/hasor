@@ -22,9 +22,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.web.ServletVersion;
@@ -62,10 +62,12 @@ public class RuntimeFilter implements Filter {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
+
         // .编码
         if (this.appContext == null) {
             this.appContext = Objects.requireNonNull(RuntimeListener.getAppContext(filterConfig.getServletContext()), "AppContext has not been initialized.");
         }
+
         this.httpRequestEncoding = this.appContext.findBindingBean(HTTP_REQUEST_ENCODING_KEY, String.class);
         this.httpResponseEncoding = this.appContext.findBindingBean(HTTP_RESPONSE_ENCODING_KEY, String.class);
         try {
@@ -77,12 +79,12 @@ public class RuntimeFilter implements Filter {
         } catch (Throwable e) {
             throw new ServletException(e);
         }
-        //
+
         // .启动日志
         if (ServletVersion.V2_5.le(this.appContext.getInstance(ServletVersion.class))) {
-            logger.info("RuntimeFilter started, at {}", filterConfig.getServletContext().getServerInfo());
+            logger.info(String.format("RuntimeFilter started, at %s", filterConfig.getServletContext().getServerInfo()));
         } else {
-            logger.info("RuntimeFilter started, context at {}", filterConfig.getServletContext().getContextPath());
+            logger.info(String.format("RuntimeFilter started, context at %s", filterConfig.getServletContext().getContextPath()));
         }
     }
 
@@ -104,6 +106,8 @@ public class RuntimeFilter implements Filter {
         }
         if (StringUtils.isNotBlank(this.httpResponseEncoding)) {
             httpRes.setCharacterEncoding(this.httpResponseEncoding);
+        } else if (StringUtils.isNotBlank(httpReq.getCharacterEncoding())) {
+            httpRes.setCharacterEncoding(httpReq.getCharacterEncoding());
         }
         //
         // .执行

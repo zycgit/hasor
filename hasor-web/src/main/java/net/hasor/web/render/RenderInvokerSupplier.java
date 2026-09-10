@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.web.render;
+import java.util.Enumeration;
+import javax.servlet.http.HttpServletRequest;
 import net.hasor.cobble.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.wrap.InvokerWrap;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
 
 /**
  * @version : 2017-01-10

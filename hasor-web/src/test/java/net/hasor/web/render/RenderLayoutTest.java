@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.web.render;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.junit.Test;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import net.hasor.core.AppContext;
@@ -27,12 +32,7 @@ import net.hasor.test.web.render.SimpleRenderEngine;
 import net.hasor.test.web.render.TestRenderEngine;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.WebApiBinder;
-import org.junit.Test;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import net.hasor.web.render.text.TextRenderEngine;
 
 public class RenderLayoutTest extends AbstractTest {
     protected AppContext renderAppContext(boolean enableLayout, RenderEngine renderEngine, Module... module) {
@@ -51,24 +51,28 @@ public class RenderLayoutTest extends AbstractTest {
     }
 
     protected List<String> layoutFiles() {
-        return new ArrayList<String>() {{
-            add("/layout/mytest/default.html");
-            add("/layout/mytest/my/default.html");
-            //
-            add("/templates/myfiles/login.html");
-            add("/templates/myfiles/my/abc/my.html");
-            add("/templates/myfiles/my/my.html");
-            add("/templates/myfiles/my/my.json");
-        }};
+        return new ArrayList<>() {
+            {
+                add("/layout/mytest/default.html");
+                add("/layout/mytest/my/default.html");
+                //
+                add("/templates/myfiles/login.html");
+                add("/templates/myfiles/my/abc/my.html");
+                add("/templates/myfiles/my/my.html");
+                add("/templates/myfiles/my/my.json");
+            }
+        };
     }
 
     protected List<String> noneLayoutFiles() {
-        return new ArrayList<String>() {{
-            add("/login.html");
-            add("/my/abc/my.html");
-            add("/my/my.html");
-            add("/my/my.json");
-        }};
+        return new ArrayList<>() {
+            {
+                add("/login.html");
+                add("/my/abc/my.html");
+                add("/my/my.html");
+                add("/my/my.json");
+            }
+        };
     }
 
     @Test
@@ -78,16 +82,16 @@ public class RenderLayoutTest extends AbstractTest {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(DefaultLayoutHtmlAction.class);
         });
         //
-        Field layoutPathField = RenderInvokerFilter.class.getDeclaredField("layoutPath");
-        Field useLayoutField = RenderInvokerFilter.class.getDeclaredField("useLayout");
-        Field templatePathField = RenderInvokerFilter.class.getDeclaredField("templatePath");
-        Field engineMapField = RenderInvokerFilter.class.getDeclaredField("engineMap");
+        Field layoutPathField = RenderProcessor.class.getDeclaredField("layoutPath");
+        Field useLayoutField = RenderProcessor.class.getDeclaredField("useLayout");
+        Field templatePathField = RenderProcessor.class.getDeclaredField("templatePath");
+        Field engineMapField = RenderProcessor.class.getDeclaredField("engineMap");
         layoutPathField.setAccessible(true);
         useLayoutField.setAccessible(true);
         templatePathField.setAccessible(true);
         engineMapField.setAccessible(true);
         //
-        RenderInvokerFilter renderPlugin = appContext.getInstance(RenderInvokerFilter.class);
+        RenderProcessor renderPlugin = appContext.getInstance(RenderProcessor.class);
         String layoutPath = (String) layoutPathField.get(renderPlugin);
         boolean useLayout = (boolean) useLayoutField.get(renderPlugin);
         String templatePath = (String) templatePathField.get(renderPlugin);
@@ -96,7 +100,9 @@ public class RenderLayoutTest extends AbstractTest {
         assert "/layout/mytest".equals(layoutPath);
         assert useLayout;
         assert "/templates/myfiles".equals(templatePath);
-        assert engineMap.size() == 1;
+        assert engineMap.size() == 4;
+        assert engineMap.get("TEXT") instanceof TextRenderEngine;
+        assert engineMap.containsKey("JSON");
         assert engineMap.get("HTML") == renderEngine;
     }
 

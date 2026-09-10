@@ -21,12 +21,13 @@ import java.util.function.Supplier;
 import javax.servlet.AsyncContext;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.concurrent.future.BasicFuture;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.web.*;
 import net.hasor.web.binder.FilterDef;
+import net.hasor.web.render.RenderProcessor;
 
 /**
  * 负责解析参数并执行调用。
@@ -38,7 +39,12 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller 
     private FilterDef[]       filterArrays    = null;
     private Supplier<Invoker> invokerSupplier = null;
 
-    public InvokerCaller(Supplier<Invoker> invokerSupplier, FilterDef[] filterArrays) {
+    private final RenderProcessor renderProcessor;
+    private final ServletVersion  servletVersion;
+
+    public InvokerCaller(Supplier<Invoker> invokerSupplier, FilterDef[] filterArrays, RenderProcessor renderProcessor, ServletVersion servletVersion) {
+        this.renderProcessor = renderProcessor;
+        this.servletVersion = servletVersion;
         this.invokerSupplier = invokerSupplier;
         this.filterArrays = (filterArrays == null) ? new FilterDef[0] : filterArrays;
     }
@@ -49,11 +55,11 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller 
         Mapping ownerMapping = invoker.ownerMapping();
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         Method targetMethod = ownerMapping.findMethod(httpRequest);
-        //
+
         // .异步调用
         final BasicFuture<Object> future = new BasicFuture<>();
         boolean needAsync = ownerMapping.isAsync(httpRequest);
-        ServletVersion version = invoker.getAppContext().getInstance(ServletVersion.class);
+        ServletVersion version = this.servletVersion;
         if (version.ge(ServletVersion.V3_0) && needAsync) {
             // .必须满足: Servlet3.x、环境支持异步Servlet、目标开启了Servlet3
             AsyncContext asyncContext = httpRequest.startAsync(httpRequest, invoker.getHttpResponse());
@@ -69,7 +75,7 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller 
             });
             return future;
         }
-        //
+
         // .同步调用
         try {
             Object invoke = invoke(targetMethod, invoker);
@@ -82,7 +88,6 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller 
 
     /** 执行调用 */
     private Object invoke(final Method targetMethod, final Invoker invoker) throws Throwable {
-        //
         // .初始化 Controller
         final Object targetObject = invoker.getAppContext().getInstance(invoker.ownerMapping().getTargetType());
         if (targetObject instanceof Controller controller) {
@@ -91,28 +96,30 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller 
         if (targetObject == null) {
             throw new NullPointerException("mappingToDefine newInstance is null.");
         }
-        //
+
         // .准备过滤器链
-        final InvokerChain invokerChain = inv -> {
+        final InvokerChain ic = i -> {
             // 设置contentType
-            String contentType = inv.contentType();
+            String contentType = i.contentType();
             if (StringUtils.isNotBlank(contentType)) {
-                if (!inv.getHttpResponse().isCommitted()) {
-                    inv.getHttpResponse().setContentType(contentType);
+                if (!i.getHttpResponse().isCommitted()) {
+                    i.getHttpResponse().setContentType(contentType);
                 }
             }
+
             // 执行调用
             try {
-                final Object[] resolveParamsArrays = this.resolveParams(inv, targetMethod);
+                final Object[] resolveParamsArrays = this.resolveParams(i, targetMethod);
                 Object result = targetMethod.invoke(targetObject, resolveParamsArrays);
-                inv.put(Invoker.RETURN_DATA_KEY, result);
+                i.put(Invoker.RETURN_DATA_KEY, result);
                 return result;
             } catch (InvocationTargetException e) {
                 throw e.getTargetException();
             }
         };
-        //
-        // .执行Filters
-        return new InvokerChainInvocation(this.filterArrays, invokerChain).doNext(invoker);
+
+        // .业务过滤链，末端执行 Action 和返回值渲染
+        final InvokerChain last = i -> this.renderProcessor.invoke(i, ic);
+        return new InvokerChainInvocation(this.filterArrays, last).doNext(invoker);
     }
 }

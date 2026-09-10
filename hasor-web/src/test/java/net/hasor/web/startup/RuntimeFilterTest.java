@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.web.startup;
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
 import net.hasor.core.Module;
 import net.hasor.test.web.actions.args.QueryArgsAction;
 import net.hasor.test.web.actions.throwerr.*;
@@ -21,20 +34,6 @@ import net.hasor.web.AbstractTest;
 import net.hasor.web.WebModule;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.spi.AfterResponseListener;
-import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @version : 2016-12-16
@@ -78,10 +77,12 @@ public class RuntimeFilterTest extends AbstractTest {
                 return (WebModule) apiBinder -> {
                     apiBinder.setEncodingCharacter("iso-8859-1", "utf-8");
                     apiBinder.filter("/*").through((invoker, chain) -> {
-                        reference.set(new HashMap<String, String>() {{
-                            put("request", invoker.getHttpRequest().getCharacterEncoding());
-                            put("response", invoker.getHttpResponse().getCharacterEncoding());
-                        }});
+                        reference.set(new HashMap<String, String>() {
+                            {
+                                put("request", invoker.getHttpRequest().getCharacterEncoding());
+                                put("response", invoker.getHttpResponse().getCharacterEncoding());
+                            }
+                        });
                         return chain.doNext(invoker);
                     });
                     apiBinder.mappingTo("/query_param.do").with(QueryArgsAction.class);
@@ -125,10 +126,11 @@ public class RuntimeFilterTest extends AbstractTest {
         runtimeListener.contextInitialized(new ServletContextEvent(servletContext));
         RuntimeFilter runtimeFilter = new RuntimeFilter();
         runtimeFilter.init(new OneConfig("", () -> RuntimeListener.getAppContext(servletContext)));
-        //
+
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&intParam=321&strParam=5678"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        mockRenderResponse(servletResponse);
         FilterChain chain = PowerMockito.mock(FilterChain.class);
         runtimeFilter.doFilter(servletRequest, servletResponse, chain);
         //

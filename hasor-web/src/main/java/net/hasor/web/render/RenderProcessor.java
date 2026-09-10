@@ -25,50 +25,74 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.AppContext;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
-import net.hasor.web.InvokerFilter;
+import net.hasor.web.annotation.Produces;
 import net.hasor.web.binder.RenderDef;
+import net.hasor.web.render.none.NoopRenderEngine;
 
 /**
- * 渲染器插件。
+ * Web 请求执行链中的内置渲染阶段，不参与业务过滤器注册和排序。
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-class RenderInvokerFilter implements InvokerFilter {
-    private static final Logger             logger        = LoggerFactory.getLogger(RenderInvokerFilter.class);
+public final class RenderProcessor {
+    private static final Logger             logger        = LoggerFactory.getLogger(RenderProcessor.class);
     private String                          layoutPath    = null;                    // 布局模版位置
     private boolean                         useLayout     = true;
     private String                          templatePath  = null;                    // 页面模版位置
     private final Map<String, RenderEngine> engineMap     = new HashMap<>();
     private String                          placeholder   = null;
     private String                          defaultLayout = null;
+    private String                          defaultObjectEngine;
+    private String                          defaultStringEngine;
 
-    public void doInit(AppContext appContext) throws Throwable {
-        List<RenderDef> renderInfoList = appContext.findBindingBean(RenderDef.class);
-        for (RenderDef renderInfo : renderInfoList) {
-            String renderName = renderInfo.getRenderName();
-            logger.info("web -> renderName {}.", renderName);
-            this.engineMap.put(renderName.toUpperCase(), renderInfo.newEngine(appContext));
+    public void doInit(AppContext appContext, String objectEngine, String stringEngine) throws Throwable {
+        if (StringUtils.isBlank(objectEngine) || StringUtils.isBlank(stringEngine)) {
+            throw new IllegalArgumentException("Default render names must not be blank");
         }
-        //
+        this.defaultObjectEngine = objectEngine;
+        this.defaultStringEngine = stringEngine;
+
+        List<RenderDef> renderInfoList = appContext.findBindingBean(RenderDef.class);
+        renderInfoList.sort(Comparator.comparing(RenderDef::isFallback));
+        for (RenderDef renderInfo : renderInfoList) {
+            if (renderInfo.isFallback() && this.engineMap.containsKey(renderInfo.getRenderName().toUpperCase(Locale.ROOT))) {
+                continue;
+            }
+
+            String renderName = renderInfo.getRenderName();
+            logger.info(String.format("web -> renderName %s.", renderName));
+            this.engineMap.put(renderName.toUpperCase(Locale.ROOT), renderInfo.newEngine(appContext));
+        }
+
+        for (String name : new String[] { this.defaultObjectEngine, this.defaultStringEngine }) {
+            if (!this.engineMap.containsKey(name.toUpperCase(Locale.ROOT))) {
+                throw new IllegalStateException("Unknown default render engine: " + name);
+            }
+
+            RenderEngine engine = this.engineMap.get(name.toUpperCase(Locale.ROOT));
+            if (engine instanceof net.hasor.web.render.json.AutoJsonRenderEngine automatic) {
+                automatic.initialize();
+            }
+        }
+
         Settings settings = appContext.getSettings();
         this.useLayout = settings.getBoolean("hasor.layout.enable", true);
         this.layoutPath = settings.getString("hasor.layout.layoutPath", "/layout");
         this.templatePath = settings.getString("hasor.layout.templatePath", "/templates");
         this.placeholder = settings.getString("hasor.layout.placeholder", "content_placeholder");
         this.defaultLayout = settings.getString("hasor.layout.defaultLayout", "default.htm");
-        logger.info("RenderPlugin init -> useLayout={}, layoutPath={}, templatePath={}, placeholder={}, defaultLayout={}",//
-                this.useLayout, this.layoutPath, this.templatePath, this.placeholder, this.defaultLayout);
+        logger.info(String.format("Render init -> useLayout=%s, layoutPath=%s, templatePath=%s, placeholder=%s, defaultLayout=%s",//
+                this.useLayout, this.layoutPath, this.templatePath, this.placeholder, this.defaultLayout));
     }
 
-    @Override
-    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
+    public Object invoke(Invoker invoker, InvokerChain chain) throws Throwable {
         if (invoker instanceof RenderInvoker renderInvoker) {
             return doRenderInvoker(renderInvoker, chain);
         } else {
@@ -95,8 +119,9 @@ class RenderInvokerFilter implements InvokerFilter {
         //
         // 处理 RenderType
         RenderEngine specialEngine = null;
+        Method method = null;
         if (invoker.ownerMapping() != null) {
-            Method method = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
+            method = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
             RenderType renderType = findRenderType(method.getAnnotations());
             if (renderType == null) {
                 renderType = findRenderType(method.getDeclaringClass().getAnnotations());
@@ -104,7 +129,7 @@ class RenderInvokerFilter implements InvokerFilter {
             if (renderType != null && StringUtils.isNotBlank(renderType.value())) {
                 invoker.renderType(renderType.value());
                 String mimeType = invoker.getMimeType(renderType.value());
-                if (StringUtils.isNotBlank(mimeType)) {
+                if (StringUtils.isNotBlank(mimeType) && !hasProduces(method)) {
                     invoker.contentType(mimeType);
                 }
             }
@@ -112,13 +137,51 @@ class RenderInvokerFilter implements InvokerFilter {
                 specialEngine = invoker.getAppContext().getInstance(renderType.engineType());
             }
         }
-        //
-        // .执行过滤器
+
+        // .执行 Action，正常返回后渲染结果
         Object returnData = chain.doNext(invoker);
         if (invoker.getHttpResponse().isCommitted()) {
             return returnData;
         }
-        //
+
+        if (method != null) {
+            HttpServletResponse response = invoker.getHttpResponse();
+            if ((response instanceof OwnedResponse owned && owned.isOwned()) || response.getStatus() == 204 || response.getStatus() == 304 || invoker.getHttpRequest().isAsyncStarted()) {
+                return returnData;
+            }
+            // A view name keeps the existing template pipeline. Defaults apply only to mapped return values.
+            if (StringUtils.isEmpty(invoker.renderTo())) {
+                if (specialEngine == null && StringUtils.isEmpty(invoker.renderType())) {
+                    if (method.getReturnType() == void.class || returnData == null) {
+                        return returnData;
+                    }
+                    invoker.renderType(returnData instanceof CharSequence ? this.defaultStringEngine : this.defaultObjectEngine);
+                }
+
+                RenderEngine engine = specialEngine != null ? specialEngine : this.engineMap.get(invoker.renderType());
+                if (engine == null) {
+                    throw new IllegalStateException("Unknown render engine: " + invoker.renderType());
+                }
+                if (engine instanceof NoopRenderEngine) {
+                    return returnData;
+                }
+                if (engine instanceof RedirectTo.RedirectRenderEngine) {
+                    engine.process(invoker, new StringWriter());
+                    return returnData;
+                }
+
+                if (response.getContentType() == null) {
+                    String type = "TEXT".equals(invoker.renderType()) ? "text/plain" : invoker.renderType() == null ? null : invoker.getMimeType(invoker.renderType().toLowerCase(Locale.ROOT));
+                    response.setContentType(StringUtils.isBlank(type) ? "application/octet-stream" : type);
+                }
+                invoker.layoutDisable();
+                StringWriter writer = new StringWriter();
+                engine.process(invoker, writer);
+                writeBody(writer.toString(), invoker);
+                return returnData;
+            }
+        }
+
         // .处理渲染
         if (this.process(invoker, specialEngine)) {
             return returnData;
@@ -143,18 +206,21 @@ class RenderInvokerFilter implements InvokerFilter {
                 return false;
             }
         }
-        //
+        if (engine instanceof NoopRenderEngine) {
+            return true;
+        }
+
         String oriViewName = render.renderTo();
         String newViewName = render.renderTo();
         if (render.layout()) {
             newViewName = this.templatePath + ((oriViewName.charAt(0) != '/') ? "/" : "") + oriViewName;
         }
-        //
+
         String layoutFile = null;
         if (render.layout()) {
             layoutFile = findLayout(engine, oriViewName);
         }
-        //
+
         StringWriter finalWriter = new StringWriter();
         if (layoutFile != null) {
             //先执行目标页面,然后在渲染layout
@@ -182,6 +248,19 @@ class RenderInvokerFilter implements InvokerFilter {
             } else {
                 return false;//没有执行模版
             }
+        }
+    }
+
+    private static boolean hasProduces(Method method) {
+        return method.isAnnotationPresent(Produces.class) || method.getDeclaringClass().isAnnotationPresent(net.hasor.web.annotation.Produces.class);
+    }
+
+    private static void writeBody(String body, RenderInvoker invoker) throws IOException {
+        HttpServletResponse response = invoker.getHttpResponse();
+        byte[] bytes = body.getBytes(java.nio.charset.Charset.forName(response.getCharacterEncoding()));
+        response.setContentLength(bytes.length);
+        if (!"HEAD".equalsIgnoreCase(invoker.getHttpRequest().getMethod())) {
+            response.getOutputStream().write(bytes);
         }
     }
 

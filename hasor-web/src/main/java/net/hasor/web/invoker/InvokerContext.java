@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import net.hasor.cobble.concurrent.future.BasicFuture;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerFilter;
 import net.hasor.web.Mapping;
+import net.hasor.web.ServletVersion;
 import net.hasor.web.binder.FilterDef;
 import net.hasor.web.binder.MappingDef;
 import net.hasor.web.binder.OneConfig;
+import net.hasor.web.binder.ResourceDef;
+import net.hasor.web.render.OwnedResponse;
+import net.hasor.web.render.RenderProcessor;
 import net.hasor.web.spi.MappingDiscoverer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * 上下文。
@@ -39,23 +42,29 @@ import java.util.Objects;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerContext {
-    protected static Logger             logger         = LoggerFactory.getLogger(InvokerContext.class);
-    private          AppContext         appContext     = null;
-    private          Mapping[]          invokeArray    = new Mapping[0];
-    private          FilterDef[]        filters        = new FilterDef[0];
-    private          RootInvokerCreater invokerCreator = null;
+    protected static Logger    logger         = LoggerFactory.getLogger(InvokerContext.class);
+    private AppContext         appContext     = null;
+    private Mapping[]          invokeArray    = new Mapping[0];
+    private FilterDef[]        filters        = new FilterDef[0];
+    private RootInvokerCreater invokerCreator = null;
+    private RenderProcessor    renderProcessor;
+    private ResourceProcessor  resourceProcessor;
+    private ServletVersion     servletVersion;
 
     public void initContext(final AppContext appContext, final OneConfig configMap) throws Throwable {
         this.appContext = Objects.requireNonNull(appContext);
-        //
+        this.renderProcessor = appContext.getInstance(RenderProcessor.class);
+        this.resourceProcessor = new ResourceProcessor(appContext.getInstance(ResourceDef[].class));
+        this.servletVersion = appContext.getInstance(ServletVersion.class);
+
         // .MappingData
         List<MappingDef> mappingList = appContext.findBindingBean(MappingDef.class);
         mappingList.sort(Comparator.comparingLong(MappingDef::getIndex));
         this.invokeArray = mappingList.toArray(new Mapping[0]);
         for (Mapping inMapping : this.invokeArray) {
-            logger.info("mapingTo -> type '{}' mappingTo: '{}'.", inMapping.getTargetType().getBindType(), inMapping.getMappingTo());
+            logger.info(String.format("mapingTo -> type '%s' mappingTo: '%s'.", inMapping.getTargetType().getBindType(), inMapping.getMappingTo()));
         }
-        //
+
         // .discover
         SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
         for (Mapping mapping : invokeArray) {
@@ -63,15 +72,17 @@ public class InvokerContext {
                 listener.discover(mapping);
             });
         }
-        //
+
         // .Filters
         this.filters = appContext.findBindingBean(FilterDef.class).stream()//
                 .sorted(Comparator.comparingLong(FilterDef::getIndex))     //
                 .toArray(FilterDef[]::new);                                //
+
         // .init
         for (FilterDef filter : this.filters) {
             filter.init(configMap);
         }
+
         // .creator
         this.invokerCreator = new RootInvokerCreater(appContext);
     }
@@ -83,6 +94,10 @@ public class InvokerContext {
     }
 
     public Invoker newInvoker(Mapping define, HttpServletRequest request, HttpServletResponse response) {
+        if (!(response instanceof OwnedResponse)) {
+            response = new OwnedResponse(response);
+        }
+
         return this.invokerCreator.createExt(new InvokerSupplier(define, this.appContext, request, response));
     }
 
@@ -94,27 +109,29 @@ public class InvokerContext {
                 break;
             }
         }
-        //
+
         Invoker invoker = this.newInvoker(foundDefine, httpReq, httpRes);
-        ExecuteCaller executeCaller = null;
+        ExecuteCaller ec = null;
         if (foundDefine == null) {
-            executeCaller = (chain) -> {
+            ec = (chain) -> {
                 BasicFuture<Object> future = new BasicFuture<>();
-                future.completed(new InvokerChainInvocation(filters, innerInv -> {
-                    if (chain != null) {
-                        chain.doFilter(innerInv.getHttpRequest(), innerInv.getHttpResponse());
+                try {
+                    if (!this.resourceProcessor.handle(invoker) && chain != null) {
+                        chain.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse());
                     }
-                    return innerInv.get(Invoker.RETURN_DATA_KEY);
-                }).doNext(invoker));
+                    future.completed(null);
+                } catch (Throwable e) {
+                    future.failed(e);
+                }
                 return future;
             };
         } else {
-            executeCaller = new InvokerCaller(() -> invoker, this.filters);
+            ec = new InvokerCaller(() -> invoker, this.filters, this.renderProcessor, this.servletVersion);
         }
-        //
-        ExecuteCaller finalExecuteCaller = executeCaller;
+
+        ExecuteCaller finalEC = ec;
         return chain -> HttpParameters.executeWorker(invoker, () -> {
-            return finalExecuteCaller.invoke(chain);
+            return finalEC.invoke(chain);
         });
     }
 }

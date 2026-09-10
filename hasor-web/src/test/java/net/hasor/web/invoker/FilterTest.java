@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
+import java.net.URL;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.test.web.actions.args.QueryArgsAction;
@@ -22,12 +27,6 @@ import net.hasor.test.web.filters.SimpleInvokerFilter;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.binder.OneConfig;
-import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.net.URL;
 
 public class FilterTest extends AbstractTest {
     @Test
@@ -44,6 +43,7 @@ public class FilterTest extends AbstractTest {
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        mockRenderResponse(servletResponse);
         //
         assert !j2eeFilter.isInit();
         assert !hasorFilter.isInit();
@@ -98,6 +98,7 @@ public class FilterTest extends AbstractTest {
         //
         HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        mockRenderResponse(servletResponse);
         //
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
@@ -133,8 +134,8 @@ public class FilterTest extends AbstractTest {
         ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
         //
-        assert j2eeFilter1.isDoCall();
-        assert j2eeFilter2.isDoCall();
-        assert j2eeFilter3.isDoCall();
+        assert !j2eeFilter1.isDoCall();
+        assert !j2eeFilter2.isDoCall();
+        assert !j2eeFilter3.isDoCall();
     }
 }

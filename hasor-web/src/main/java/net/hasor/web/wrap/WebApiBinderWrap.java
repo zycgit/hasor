@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.web.wrap;
-import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.web.InvokerFilter;
-import net.hasor.web.ServletVersion;
-import net.hasor.web.WebApiBinder;
-
-import javax.servlet.Filter;
-import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.List;
 import java.util.Objects;
-
+import javax.servlet.Filter;
+import javax.servlet.ServletContext;
+import net.hasor.core.binder.ApiBinderWrap;
+import net.hasor.web.InvokerFilter;
+import net.hasor.web.Mapping;
+import net.hasor.web.ServletVersion;
+import net.hasor.web.WebApiBinder;
 /**
  * {@link WebApiBinder} 接口包装器
  * @version : 2017-01-10
@@ -63,6 +63,11 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     }
 
     @Override
+    public net.hasor.web.binder.ResourceBinder addResource(String pathPattern, net.hasor.cobble.loader.ResourceLoader... loaders) {
+        return this.webApiBinder.addResource(pathPattern, loaders);
+    }
+
+    @Override
     public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns) {
         return this.webApiBinder.filter(morePatterns);
     }
@@ -85,6 +90,11 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     @Override
     public ServletBindingBuilder jeeServlet(String[] moreMappingTo) {
         return this.webApiBinder.jeeServlet(moreMappingTo);
+    }
+
+    @Override
+    public List<Mapping> getMappings() {
+        return this.webApiBinder.getMappings();
     }
 
     @Override

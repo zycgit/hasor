@@ -16,8 +16,8 @@
 package net.hasor.web.binder;
 import java.io.IOException;
 import javax.servlet.ServletContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.binder.ApiBinderCreator;
 import net.hasor.web.MimeType;
@@ -26,7 +26,7 @@ import net.hasor.web.WebApiBinder;
 import net.hasor.web.mime.MimeTypeSupplier;
 
 /**
- * 渲染插件，的ApiBinder扩展器。
+ * Web 基础设施的 ApiBinder 扩展器。
  * 让 {@link ApiBinder} 支持 {@link WebApiBinder} 类型
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
@@ -79,6 +79,14 @@ public class InvokerWebApiBinderCreator implements ApiBinderCreator<WebApiBinder
         apiBinder.bindType(ServletContext.class).toInstance(servletContext);
         apiBinder.bindType(ServletVersion.class).toInstance(curVersion);
         //
-        return new InvokerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
+        InvokerWebApiBinder webBinder = new InvokerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
+        apiBinder.lazyLoad(appContext -> {
+            try {
+                webBinder.initialize(appContext);
+            } catch (Throwable e) {
+                throw new IllegalStateException("Cannot initialize Web request processing", e);
+            }
+        });
+        return webBinder;
     }
 }

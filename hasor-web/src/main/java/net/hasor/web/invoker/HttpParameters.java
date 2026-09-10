@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.function.ESupplier;
-import net.hasor.web.Invoker;
-import net.hasor.web.Mapping;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.function.ESupplier;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
+import net.hasor.web.Invoker;
+import net.hasor.web.Mapping;
 
 /**
  * Http 参数解析，对参数的操作不会影响到 request 和 response
@@ -172,7 +171,7 @@ public final class HttpParameters {
             }
             return encoding;
         } catch (Exception e) {
-            logger.warn("use '{}' decode '{}' error.", encoding, oriData);
+            logger.warn(String.format("use '%s' decode '%s' error.", encoding, oriData));
             return encoding;
         }
     }

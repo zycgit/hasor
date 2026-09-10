@@ -14,47 +14,94 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.*;
+import java.util.function.Supplier;
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.dynamic.Matchers;
 import net.hasor.cobble.provider.InstanceProvider;
+import net.hasor.cobble.setting.SettingNode;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.InvokerFilter;
+import net.hasor.web.Mapping;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.mime.MimeTypeSupplier;
 import net.hasor.web.render.RenderEngine;
+import net.hasor.web.render.RenderProcessor;
 import net.hasor.web.startup.RuntimeFilter;
-
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.*;
-import java.util.function.Supplier;
-
 /**
  * 该类是{@link WebApiBinder}接口实现。
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
-    private final InstanceProvider<String> requestEncoding  = new InstanceProvider<>("");
-    private final InstanceProvider<String> responseEncoding = new InstanceProvider<>("");
-    private final ServletVersion           curVersion;
-    private final MimeTypeSupplier         mimeType;
+    private final InstanceProvider<String>        requestEncoding  = new InstanceProvider<>("");
+    private final InstanceProvider<String>        responseEncoding = new InstanceProvider<>("");
+    private final ServletVersion                  curVersion;
+    private final MimeTypeSupplier                mimeType;
+    private final List<Mapping>                   mappings         = new ArrayList<>();
+    private final InstanceProvider<ResourceDef[]> resources        = new InstanceProvider<>(new ResourceDef[0]);
+    private final List<InnerResourceBinder>       resourceBindings = new ArrayList<>();
+    private final RenderProcessor                 renderProcessor  = new RenderProcessor();
+
     // ------------------------------------------------------------------------------------------------------
 
     protected InvokerWebApiBinder(ServletVersion curVersion, MimeTypeSupplier mimeType, ApiBinder apiBinder) {
         super(apiBinder);
         apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_REQUEST_ENCODING_KEY).toProvider(this.requestEncoding);
         apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY).toProvider(this.responseEncoding);
+        apiBinder.bindType(ResourceDef[].class).toProvider(this.resources);
+        apiBinder.bindType(RenderProcessor.class).toInstance(this.renderProcessor);
         this.curVersion = Objects.requireNonNull(curVersion);
         this.mimeType = Objects.requireNonNull(mimeType);
+        this.registerConfiguredRenderEngines();
+    }
+
+    private void registerConfiguredRenderEngines() {
+        SettingNode[] nodes = getSettings().getNodeArray("hasor.render.engines.engine");
+        if (nodes == null) {
+            return;
+        }
+
+        Map<String, String> definitions = new LinkedHashMap<>();
+        for (SettingNode node : nodes) {
+            String name = node.getSubValue("name");
+            if (name == null || !name.matches("[A-Za-z][A-Za-z0-9_-]*")) {
+                throw new IllegalArgumentException("Invalid render engine name: " + name);
+            }
+            definitions.put(name.toLowerCase(Locale.ROOT), node.getValue());
+        }
+
+        ClassLoader loader = getClassLoader();
+        definitions.forEach((name, className) -> {
+            // Keep class loading lazy: an explicit registration must be able to replace an unavailable implementation.
+            BindInfo<? extends RenderEngine> info = bindType(RenderEngine.class).uniqueName().toProvider(() -> {
+                return createConfiguredRenderEngine(name, className, loader);
+            }).toInfo();
+            bindType(RenderDef.class).uniqueName().toInstance(new RenderDef(name, info, true));
+        });
+    }
+
+    private static RenderEngine createConfiguredRenderEngine(String name, String className, ClassLoader loader) {
+        try {
+            Class<? extends RenderEngine> type = Class.forName(className, true, loader).asSubclass(RenderEngine.class);
+            try {
+                return type.getConstructor(ClassLoader.class).newInstance(loader);
+            } catch (NoSuchMethodException ignored) {
+                return type.getConstructor().newInstance();
+            }
+        } catch (ReflectiveOperationException | LinkageError | RuntimeException e) {
+            throw new IllegalStateException("Cannot create render engine '" + name + "': " + className, e);
+        }
     }
 
     private static List<String> checkEmpty(List<String> patternArrays, String npeMessage) {
@@ -71,6 +118,34 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         }
         return patternArrays;
     }
+
+    @Override
+    public ResourceBinder addResource(String pathPattern, net.hasor.cobble.loader.ResourceLoader... loaders) {
+        InnerResourceBinder binding = new InnerResourceBinder(pathPattern, loaders);
+        this.resourceBindings.add(binding);
+        return binding;
+    }
+
+    void initialize(AppContext context) throws Throwable {
+        this.initializeResources();
+        this.initializeRendering(context);
+    }
+
+    private void initializeResources() {
+        Comparator<InnerResourceBinder> specificity = Comparator.comparingInt(InnerResourceBinder::specificity).reversed();
+        Comparator<InnerResourceBinder> priority = Comparator.comparingInt(InnerResourceBinder::getOrder).thenComparing(specificity);
+        this.resources.set(this.resourceBindings.stream()//
+                .sorted(priority)//
+                .map(InnerResourceBinder::build)//
+                .toArray(ResourceDef[]::new));
+    }
+
+    private void initializeRendering(AppContext context) throws Throwable {
+        String objectEngine = getSettings().getString("hasor.render.defaults.objectEngine");
+        String stringEngine = getSettings().getString("hasor.render.defaults.stringEngine");
+        this.renderProcessor.doInit(context, objectEngine, stringEngine);
+    }
+
     // ------------------------------------------------------------------------------------------------------
 
     @Override
@@ -125,7 +200,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     @Override
     public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes) {
         List<String> uriPatterns = checkEmpty(Arrays.asList(regexes), "Filter patterns is empty.");
-        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.REGEX, uriPatterns) {
+        return new FiltersModuleBinder<>(InvokerFilter.class, UriPatternType.REGEX, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
                 filterThrough(index, pattern, matcher, filterRegister, initParams);
@@ -136,7 +211,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     @Override
     public FilterBindingBuilder<Filter> jeeFilter(final String[] morePatterns) throws NullPointerException {
         List<String> uriPatterns = checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
-        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.SERVLET, uriPatterns) {
+        return new FiltersModuleBinder<>(Filter.class, UriPatternType.SERVLET, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
                 jeeFilterThrough(index, pattern, matcher, filterRegister, initParams);
@@ -147,7 +222,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     @Override
     public FilterBindingBuilder<Filter> jeeFilterRegex(final String[] regexes) throws NullPointerException {
         List<String> uriPatterns = checkEmpty(Arrays.asList(regexes), "Filter patterns is empty.");
-        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.REGEX, uriPatterns) {
+        return new FiltersModuleBinder<>(Filter.class, UriPatternType.REGEX, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
                 jeeFilterThrough(index, pattern, matcher, filterRegister, initParams);
@@ -267,10 +342,15 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             for (String pattern : this.uriPatterns) {
                 jeeServlet(index, pattern, servletRegister, initParams);
             }
-            logger.info("mapingTo[Servlet] -> bindID '{}' mappingTo: '{}'.", servletRegister.getBindID(), this.uriPatterns);
+            logger.info(String.format("mapingTo[Servlet] -> bindID '%s' mappingTo: '%s'.", servletRegister.getBindID(), this.uriPatterns));
         }
     }
     // ------------------------------------------------------------------------------------------------------
+
+    @Override
+    public List<Mapping> getMappings() {
+        return List.copyOf(this.mappings);
+    }
 
     @Override
     public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns) {
@@ -296,9 +376,10 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             public void with(int index, BindInfo<? extends T> targetInfo) {
                 Arrays.stream(morePatterns).filter(StringUtils::isNotBlank).forEach(pattern -> {
                     MappingDef define = new MappingDef(index, targetInfo, pattern, Matchers.anyMethod(), true);
+                    mappings.add(define);
                     bindType(MappingDef.class).uniqueName().toInstance(define);
                 });
-                logger.info("mapingTo[{}] -> bindType '{}' mappingTo: '{}'.", targetInfo.getBindID(), targetInfo.getBindType(), morePatterns);
+                logger.info(String.format("mapingTo[%s] -> bindType '%s' mappingTo: '%s'.", targetInfo.getBindID(), targetInfo.getBindType(), Arrays.toString(morePatterns)));
             }
         };
     }
@@ -316,7 +397,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     // ------------------------------------------------------------------------------------------------------
 
     private abstract class RenderEngineBindingBuilderImpl implements WebApiBinder.RenderEngineBindingBuilder {
-        private String renderName;
+        private final String renderName;
 
         public RenderEngineBindingBuilderImpl(String renderName) {
             this.renderName = renderName;

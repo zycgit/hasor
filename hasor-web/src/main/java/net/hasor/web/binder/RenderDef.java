@@ -24,12 +24,23 @@ import net.hasor.web.render.RenderEngine;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderDef {
-    private String                           renderName = null;
-    private BindInfo<? extends RenderEngine> bindInfo   = null;
+    private final String                           renderName;
+    private final BindInfo<? extends RenderEngine> bindInfo;
+    private final boolean                          fallback;
 
     public RenderDef(String renderName, BindInfo<? extends RenderEngine> bindInfo) {
+        this(renderName, bindInfo, false);
+    }
+
+    RenderDef(String renderName, BindInfo<? extends RenderEngine> bindInfo, boolean fallback) {
+        this.fallback = fallback;
         this.renderName = renderName;
         this.bindInfo = bindInfo;
+    }
+
+    /** Configured defaults are used only when no explicit engine has the same name. */
+    public boolean isFallback() {
+        return this.fallback;
     }
 
     @Override

@@ -14,6 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.web;
+import static org.mockito.ArgumentMatchers.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.servlet.AsyncContext;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.mockito.stubbing.Answer;
+import org.powermock.api.mockito.PowerMockito;
 import net.hasor.cobble.CollectionUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.concurrent.future.BasicFuture;
@@ -26,24 +42,6 @@ import net.hasor.core.Hasor;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.ExecuteCaller;
 import net.hasor.web.invoker.InvokerContext;
-import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static org.mockito.ArgumentMatchers.*;
 
 /**
  * @author 赵永春 (zyc@hasor.net)
@@ -268,9 +266,11 @@ public class AbstractTest {
         Map<String, List<String>> tmpQueryMap = new HashMap<>();
         if (postParams != null) {
             for (final String key : postParams.keySet()) {
-                tmpQueryMap.put(key, new ArrayList<String>() {{
-                    add(postParams.get(key));
-                }});
+                tmpQueryMap.put(key, new ArrayList<String>() {
+                    {
+                        add(postParams.get(key));
+                    }
+                });
             }
         }
         if (StringUtils.isNotBlank(query)) {
@@ -344,6 +344,7 @@ public class AbstractTest {
             }
         }
         if (response != null) {
+            mockRenderResponse(response);
             try {
                 AtomicReference<String> reference = new AtomicReference<>();
                 PowerMockito.when(response.getCharacterEncoding()).then((Answer<String>) invocation -> reference.get());
@@ -364,11 +365,15 @@ public class AbstractTest {
     protected String mockAndCallHttp(String httpMethod, String callURL, AppContext appContext, Set<String> responseType, Set<String> dispatcher) throws Throwable {
         HttpServletRequest httpRequest = mockRequest(httpMethod, new URL(callURL));
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
+        mockRenderResponse(httpResponse);
+        AtomicReference<String> contentType = new AtomicReference<>();
+        PowerMockito.when(httpResponse.getContentType()).thenAnswer(invocation -> contentType.get());
         StringWriter stringWriter = new StringWriter();
         PowerMockito.when(httpResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));
         PowerMockito.when(httpResponse.getOutputStream()).thenReturn(new DelegatingServletOutputStream(new WriterOutputStream(stringWriter)));
         //
         PowerMockito.doAnswer((Answer<Void>) invocation -> {
+            contentType.set(invocation.getArgument(0));
             if (responseType != null) {
                 responseType.add(invocation.getArguments()[0].toString());
             }
@@ -393,7 +398,31 @@ public class AbstractTest {
     protected Object callInvoker(AppContext appContext, HttpServletRequest request) throws Throwable {
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
-        ExecuteCaller caller = invokerContext.genCaller(request, PowerMockito.mock(HttpServletResponse.class));
+        HttpServletResponse response = PowerMockito.mock(HttpServletResponse.class);
+        mockRenderResponse(response);
+        ExecuteCaller caller = invokerContext.genCaller(request, response);
         return caller.invoke(null).get();
+    }
+
+    /** Model the Servlet response contract now that plain Web renders returned values. */
+    protected void mockRenderResponse(HttpServletResponse response) {
+        AtomicReference<String> contentType = new AtomicReference<>();
+        AtomicReference<String> encoding = new AtomicReference<>("UTF-8");
+        PowerMockito.when(response.getContentType()).thenAnswer(invocation -> contentType.get());
+        PowerMockito.doAnswer(invocation -> {
+            contentType.set(invocation.getArgument(0));
+            return null;
+        }).when(response).setContentType(anyString());
+        PowerMockito.when(response.getCharacterEncoding()).thenAnswer(invocation -> encoding.get());
+        PowerMockito.doAnswer(invocation -> {
+            encoding.set(invocation.getArgument(0));
+            return null;
+        }).when(response).setCharacterEncoding(anyString());
+        try {
+            PowerMockito.when(response.getOutputStream()).thenReturn(new DelegatingServletOutputStream(new java.io.ByteArrayOutputStream()));
+            PowerMockito.when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+        } catch (java.io.IOException e) {
+            throw new AssertionError(e);
+        }
     }
 }

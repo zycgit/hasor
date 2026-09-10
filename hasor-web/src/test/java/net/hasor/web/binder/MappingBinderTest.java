@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
+import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.test.web.actions.basic.AnnoGetAction;
@@ -26,19 +32,23 @@ import net.hasor.web.AbstractTest;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.startup.RuntimeFilter;
-import org.junit.Test;
-
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MappingBinderTest extends AbstractTest {
+    @Test
+    public void laterEncodingSettingsOverrideEarlierValues() throws Exception {
+        try (AppContext context = buildWebAppContext(binder -> {
+            binder.setEncodingCharacter("UTF-8", "UTF-8");
+            binder.setEncodingCharacter("GB18030", "UTF-16LE");
+        }, servlet25("/"), LoadModule.Web)) {
+            org.junit.Assert.assertEquals("GB18030", context.findBindingBean(RuntimeFilter.HTTP_REQUEST_ENCODING_KEY, String.class));
+            org.junit.Assert.assertEquals("UTF-16LE", context.findBindingBean(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY, String.class));
+        }
+    }
+
     @Test
     public void binder_0() {
         AppContext appContext1 = buildWebAppContext(apiBinder -> {
@@ -263,7 +273,6 @@ public class MappingBinderTest extends AbstractTest {
         }, servlet30("/"), LoadModule.Web);
         //
         List<FilterDef> definitions = appContext.findBindingBean(FilterDef.class);
-        definitions.removeIf(def -> "net.hasor.web.render.RenderInvokerFilter".equals(def.getTargetType().getBindID()));
         definitions.sort(Comparator.comparingInt(FilterDef::getIndex).thenComparing(def -> def.getMatcher().getPattern()));
         assert definitions.size() == 10;
         for (int i = 0; i < 10; i++) {
@@ -332,7 +341,6 @@ public class MappingBinderTest extends AbstractTest {
         }, servlet30("/"), LoadModule.Web);
         //
         List<FilterDef> definitions = appContext.findBindingBean(FilterDef.class);
-        definitions.removeIf(def -> "net.hasor.web.render.RenderInvokerFilter".equals(def.getTargetType().getBindID()));
         definitions.sort(Comparator.comparingInt(FilterDef::getIndex).thenComparing(def -> def.getMatcher().getPattern()));
         assert definitions.size() == 8;
         //

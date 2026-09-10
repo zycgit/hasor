@@ -30,13 +30,13 @@ import java.lang.annotation.Target;
 public @interface RenderType {
     /**
      * 默认使用的渲染器名字。
-     * 提示：RenderWebPlugin 会根据渲染器名字尝试寻找对应的 ContentType。此时如果同时指定了 @Produces 注解那么会覆盖 @Produces。
-     * @see net.hasor.web.render.RenderWebPlugin */
+     * 根据渲染器名字推断 ContentType；显式 @Produces 注解优先。
+     * @see net.hasor.web.render.RenderProcessor */
     String value() default "";
 
     /**
      * 默认使用的渲染器类型，与 value 行为不同的是。是否处理 ContentType 取决于 engineType 的实现。
-     * @see net.hasor.web.render.RenderWebPlugin */
+     * @see net.hasor.web.render.RenderProcessor */
     Class<? extends RenderEngine> engineType() default DEFAULT.class;
 
     class DEFAULT implements RenderEngine {

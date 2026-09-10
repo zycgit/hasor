@@ -23,25 +23,25 @@ import javax.servlet.http.HttpSessionListener;
 import net.hasor.cobble.ClassUtils;
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.spi.SpiTrigger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-01-10
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener, ServletRequestListener {
-    protected           Logger               logger                = LoggerFactory.getLogger(getClass());
-    public static final String               AppContextName        = AppContext.class.getName();
-    public static final String               AppContextFactoryName = AppContext.class.getName() + ".factory";
-    public static final String               HASOR_MAIN_ARGS       = "hasor-main-args";
-    private             boolean              contextIsOutSite      = false;
-    private             Supplier<AppContext> appContext            = null;
-    private             SpiTrigger           spiTrigger            = null;
+    protected Logger             logger                = LoggerFactory.getLogger(getClass());
+    public static final String   AppContextName        = AppContext.class.getName();
+    public static final String   AppContextFactoryName = AppContext.class.getName() + ".factory";
+    public static final String   HASOR_MAIN_ARGS       = "hasor-main-args";
+    private boolean              contextIsOutSite      = false;
+    private Supplier<AppContext> appContext            = null;
+    private SpiTrigger           spiTrigger            = null;
 
     /*----------------------------------------------------------------------------------------------------*/
     public RuntimeListener() {

@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.cobble.StringUtils;
-import net.hasor.cobble.concurrent.future.BasicFuture;
-import net.hasor.cobble.function.EFunction;
-import net.hasor.cobble.io.IOUtils;
-import net.hasor.core.AppContext;
-import net.hasor.web.Invoker;
-import net.hasor.web.Mapping;
-import net.hasor.web.MimeType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import net.hasor.cobble.StringUtils;
+import net.hasor.cobble.concurrent.future.BasicFuture;
+import net.hasor.cobble.function.EFunction;
+import net.hasor.cobble.io.IOUtils;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
+import net.hasor.core.AppContext;
+import net.hasor.web.Invoker;
+import net.hasor.web.Mapping;
+import net.hasor.web.MimeType;
 
 /**
  * {@link Invoker} 接口实现类。
@@ -40,16 +39,16 @@ import java.util.concurrent.Future;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerSupplier implements Invoker {
-    protected static Logger              logger          = LoggerFactory.getLogger(InvokerSupplier.class);
-    private final    Set<String>         lockKeys        = new HashSet<>();
-    private          HttpServletRequest  httpRequest     = null;
-    private          HttpServletResponse httpResponse    = null;
-    private          AppContext          appContext      = null;
-    private          String              contentType     = null;    // 内容类型（如果指定了内容类型，那么会设置setContentType）
-    private          MimeType            mimeType        = null;
-    private          Mapping             ownerInMapping  = null;
-    private          boolean             jsonBodyBoolean = false;
-    private          String              jsonBody        = null;
+    protected static Logger     logger          = LoggerFactory.getLogger(InvokerSupplier.class);
+    private final Set<String>   lockKeys        = new HashSet<>();
+    private HttpServletRequest  httpRequest     = null;
+    private HttpServletResponse httpResponse    = null;
+    private AppContext          appContext      = null;
+    private String              contentType     = null;    // 内容类型（如果指定了内容类型，那么会设置setContentType）
+    private MimeType            mimeType        = null;
+    private Mapping             ownerInMapping  = null;
+    private boolean             jsonBodyBoolean = false;
+    private String              jsonBody        = null;
 
     protected InvokerSupplier(Mapping ownerInMapping, AppContext appContext, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         //

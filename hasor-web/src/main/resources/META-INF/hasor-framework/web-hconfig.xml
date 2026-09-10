@@ -4,11 +4,6 @@
         <!-- 包扫描覆盖范围，逗号间隔 -->
         <loadPackages>net.hasor.web.*</loadPackages>
 
-        <!-- 默认要装载的模块 -->
-        <modules>
-            <module>net.hasor.web.render.RenderWebPlugin</module>
-        </modules>
-
         <!-- ApiBinder 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
         <apiBinderSet>
             <binder type="net.hasor.web.WebApiBinder">net.hasor.web.binder.InvokerWebApiBinderCreator</binder>
@@ -30,14 +25,18 @@
             <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE:-1}</maxFileSize>
         </fileupload>
 
-        <!-- 内嵌 HTTP 容器配置，由 hasor-boot-web-tomcat/jetty/undertow 等模块使用 -->
-        <http>
-            <!-- 容器名称。为空时会按 Java SPI 自动发现可用的 WebServerProvider。 -->
-            <server>${HASOR_HTTP_SERVER}</server>
-            <host>${HASOR_HTTP_HOST:0.0.0.0}</host>
-            <port>${HASOR_HTTP_PORT:8080}</port>
-            <contextPath>${HASOR_HTTP_CONTEXT_PATH:/}</contextPath>
-        </http>
+        <!-- 返回值渲染：编码沿用 WebApiBinder / 当前请求，none 表示不处理响应。 -->
+        <render>
+            <defaults>
+                <objectEngine>${HASOR_WEB_RENDER_OBJECT_TYPE:json}</objectEngine>
+                <stringEngine>${HASOR_WEB_RENDER_STRING_TYPE:text}</stringEngine>
+            </defaults>
+            <engines>
+                <engine name="none">net.hasor.web.render.none.NoopRenderEngine</engine>
+                <engine name="text">net.hasor.web.render.text.TextRenderEngine</engine>
+                <engine name="json">net.hasor.web.render.json.AutoJsonRenderEngine</engine>
+            </engines>
+        </render>
 
         <!-- 布局管理
                 - enable        是否启用布局管理功能，默认为 false。

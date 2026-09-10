@@ -242,7 +242,9 @@ public class CallerParamsTest extends AbstractTest {
 
     @Test
     public void post_specialParam_test() throws Throwable {
-        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", apiBinder -> {
+        // This test returns live Servlet/context objects for identity assertions, not JSON data.
+        AppContext appContext = buildWebAppContext(null, context -> net.hasor.core.Hasor.create(context)
+                .addSettings(Settings.DefaultNameSpace, "hasor.render.defaults.objectEngine", "none"), apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/special_param.do").with(SpecialTypeArgsAction.class);
         }, servlet25("/"), LoadModule.Web);
         //

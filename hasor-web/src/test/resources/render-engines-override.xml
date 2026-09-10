@@ -1,0 +1,5 @@
+<config xmlns="http://www.hasor.net/sechma/hasor-web">
+    <hasor.render.engines>
+        <engine name="text">net.hasor.web.render.WebRenderDefaultsTest$CustomText</engine>
+    </hasor.render.engines>
+</config>

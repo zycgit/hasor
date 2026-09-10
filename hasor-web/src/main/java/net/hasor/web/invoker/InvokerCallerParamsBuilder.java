@@ -24,12 +24,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import net.hasor.cobble.BeanUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.convert.ConverterUtils;
+import net.hasor.cobble.logging.Logger;
+import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.AppContext;
 import net.hasor.web.Invoker;
@@ -147,7 +147,7 @@ public class InvokerCallerParamsBuilder {
                 atData = invoker.getAppContext().justInject(net.hasor.cobble.ClassUtils.newInstance(paramClass));
                 atData = this.getParamsParam(invoker, paramClass, atData);
             } catch (Throwable e) {
-                logger.error(paramClass.getName() + "newInstance error.", e.getMessage());
+                logger.error(paramClass.getName() + "newInstance error.", e);
                 atData = null;
             }
         }
@@ -176,7 +176,7 @@ public class InvokerCallerParamsBuilder {
                     }
                 }
             } catch (Exception e) {
-                logger.error(field + "set new Value error.", e.getMessage());
+                logger.error(field + "set new Value error.", e);
             }
         }
         return paramObject;
