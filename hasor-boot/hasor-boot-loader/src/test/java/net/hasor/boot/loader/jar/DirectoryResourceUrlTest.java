@@ -1,5 +1,11 @@
+/*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
 package net.hasor.boot.loader.jar;
-import static org.junit.Assert.*;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -8,6 +14,7 @@ import java.nio.file.Path;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class DirectoryResourceUrlTest {
     @Test

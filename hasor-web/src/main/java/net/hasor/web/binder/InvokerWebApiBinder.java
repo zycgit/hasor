@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.binder;
 import java.io.IOException;
@@ -38,10 +31,11 @@ import net.hasor.web.mime.MimeTypeSupplier;
 import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderProcessor;
 import net.hasor.web.startup.RuntimeFilter;
+
 /**
  * 该类是{@link WebApiBinder}接口实现。
- * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-01-10
  */
 public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     private final InstanceProvider<String>        requestEncoding  = new InstanceProvider<>("");
@@ -310,7 +304,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
 
     private class ServletsModuleBuilder implements ServletBindingBuilder {
-        private List<String> uriPatterns;
+        private final List<String> uriPatterns;
 
         ServletsModuleBuilder(List<String> uriPatterns) {
             this.uriPatterns = uriPatterns;
@@ -385,7 +379,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     // ------------------------------------------------------------------------------------------------------
 
-    /** 拦截这些后缀的请求，这些请求会被渲染器渲染。*/
+    /** 拦截这些后缀的请求，这些请求会被渲染器渲染。 */
     public WebApiBinder.RenderEngineBindingBuilder addRender(String renderName) {
         return new RenderEngineBindingBuilderImpl(Objects.requireNonNull(renderName, "Render renderName is empty.")) {
             @Override

@@ -1,10 +1,14 @@
+/*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
 package net.hasor.config.web;
-import static org.junit.Assert.*;
 import java.io.StringWriter;
 import java.util.Map;
 import javax.servlet.ServletContext;
-import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -16,6 +20,9 @@ import net.hasor.web.binder.MappingDef;
 import net.hasor.web.binder.RenderDef;
 import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.render.RenderProcessor;
+import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
+import static org.junit.Assert.*;
 
 public class WebDefaultsModuleTest {
     @MappingTo("/config-defaults-test")
@@ -82,10 +89,7 @@ public class WebDefaultsModuleTest {
     @org.junit.Test
     public void optionsLoadingPreservesValuesAndIgnoresBootKeys() {
         WebOptions options = new WebOptions().staticLocation("custom").spaPaths("/app/*");
-        Settings settings = Hasor.create()
-                .addSettings(Settings.DefaultNameSpace, "hasor.boot.web.staticLocation", "legacy")
-                .addSettings(Settings.DefaultNameSpace, "hasor.config.web.scanExcludes", "example.Controller")
-                .buildSettings();
+        Settings settings = Hasor.create().addSettings(Settings.DefaultNameSpace, "hasor.boot.web.staticLocation", "legacy").addSettings(Settings.DefaultNameSpace, "hasor.config.web.scanExcludes", "example.Controller").buildSettings();
         assertSame(options, WebDefaultsModule.loadOptions(options, settings));
         assertEquals("custom", options.getStaticLocation());
         assertArrayEquals(new String[] { "/app/*" }, options.getSpaPaths());

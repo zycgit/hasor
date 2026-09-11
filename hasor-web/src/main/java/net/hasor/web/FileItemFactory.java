@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -21,7 +28,6 @@ import java.io.IOException;
  * <p>A factory interface for creating {@link FileItem} instances. Factories
  * can provide their own custom configuration, over and above that provided
  * by the default file upload implementation.</p>
- *
  * @version $Id: FileItemFactory.java 1454690 2013-03-09 12:08:48Z simonetripodi $
  */
 @FunctionalInterface
@@ -29,8 +35,7 @@ public interface FileItemFactory {
     /**
      * Create a new {@link FileItem} instance from the supplied parameters and
      * any local factory configuration.
-     *
-     * @param itemStream   The FileItemStream of the form field.
+     * @param itemStream The FileItemStream of the form field.
      * @return The newly created file item.
      */
     FileItem createItem(FileItemStream itemStream) throws IOException;

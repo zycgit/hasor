@@ -1,19 +1,15 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.core.event;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.*;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.concurrent.ThreadUtils;
 import net.hasor.cobble.concurrent.future.BasicFuture;
@@ -23,14 +19,10 @@ import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.FireType;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.*;
-
 /**
  * 标准事件处理器接口的实现类
- * @version : 2013-5-6
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2013-5-6
  */
 public class StandardEventManager implements EventContext {
     private final ScheduledExecutorService                 executorService;
@@ -43,7 +35,7 @@ public class StandardEventManager implements EventContext {
         threadPool.setMaximumPoolSize(eventThreadPoolSize);
     }
 
-    /**获取执行事件使用的{@link ScheduledExecutorService}接口对象。*/
+    /** 获取执行事件使用的{@link ScheduledExecutorService}接口对象。 */
     protected ScheduledExecutorService getExecutorService() {
         return this.executorService;
     }
@@ -209,12 +201,12 @@ public class StandardEventManager implements EventContext {
         return this.fireEvent(event, atCurrentThread);
     }
 
-    /**创建事件对象*/
+    /** 创建事件对象 */
     protected <T> EventObject<T> createEvent(String eventType, FireType fireType) {
         return new EventObject<T>(eventType, fireType);
     }
 
-    /**引发事件，无论*/
+    /** 引发事件，无论 */
     protected <T> Future<Boolean> fireEvent(final EventObject<T> event, boolean atCurrentThread) {
         final BasicFuture<Boolean> future = new BasicFuture<>();
         if (atCurrentThread) {
@@ -226,7 +218,7 @@ public class StandardEventManager implements EventContext {
         return future;
     }
 
-    /**引发事件*/
+    /** 引发事件 */
     protected <T> void executeEvent(final EventObject<T> eventObj, BasicFuture<Boolean> future) {
         String eventType = eventObj.getEventType();
         T eventData = eventObj.getEventData();
@@ -264,7 +256,6 @@ public class StandardEventManager implements EventContext {
         }
         //
         future.completed(true);
-        return;
     }
 
     private <T> Throwable doListener(EventObject<T> eventObj, String eventType, T eventData, EventCallBackHook<T> callBack, EventListener<T> listener) {

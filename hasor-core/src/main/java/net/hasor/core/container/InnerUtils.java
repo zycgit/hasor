@@ -1,3 +1,10 @@
+/*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
 package net.hasor.core.container;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -54,7 +61,7 @@ public class InnerUtils {
         return initMethod;
     }
 
-    /** 查找类的默认销毁方法*/
+    /** 查找类的默认销毁方法 */
     public static Method findDestroyMethod(Class<?> targetBeanType, BindInfo<?> bindInfo) {
         Method destroyMethod = null;
         //a.注解形式（注解优先）
@@ -244,7 +251,7 @@ public class InnerUtils {
         if (targetType.getPackage() != null) {
             ignore = testAopIgnore(rootLoader, targetType.getPackage().getName());
         }
-        return (ignore != null) ? ignore : false;
+        return ignore != null && ignore;
     }
 
     private static Boolean testAopIgnore(Class<?> targetType, boolean isRootClass) {
@@ -304,7 +311,7 @@ public class InnerUtils {
                 super.visitEnd();
             }
         }
-        for (;;) {
+        for (; ; ) {
             InputStream asStream = rootLoader.getResourceAsStream(packageName + "/package-info.class");
             if (asStream != null) {
                 try {

@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,16 +22,15 @@
  * limitations under the License.
  */
 package net.hasor.web.upload;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
-
+import javax.servlet.http.HttpServletRequest;
 import static java.lang.String.format;
 
 /**
  * <p>Provides access to the request information needed for a request made to an HTTP servlet.</p>
- * @since FileUpload 1.1
  * @version $Id: ServletRequestContext.java 1564788 2014-02-05 14:36:41Z markt $
+ * @since FileUpload 1.1
  */
 class ServletRequestContext {
     // ----------------------------------------------------- Instance Variables
@@ -75,7 +81,6 @@ class ServletRequestContext {
     /**
      * Retrieve the input stream for the request.
      * @return The input stream for the request.
-     *
      * @throws IOException if a problem occurs.
      */
     public InputStream getInputStream() throws IOException {

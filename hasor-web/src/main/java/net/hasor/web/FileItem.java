@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -22,7 +29,6 @@ import java.io.UnsupportedEncodingException;
 /**
  * <p> This class represents a file or form item that was received within a
  * <code>multipart/form-data</code> POST request.
- *
  * @version $Id: FileItem.java 1454690 2013-03-09 12:08:48Z simonetripodi $
  * @since 1.3 additionally implements FileItemHeadersSupport
  */
@@ -42,7 +48,6 @@ public interface FileItem extends FileItemStream {
      * the same item. This allows a particular implementation to use, for
      * example, file renaming, where possible, rather than copying all of the
      * underlying data, thus gaining a significant performance benefit.
-     *
      * @param outStream The <code>OutputStream</code> into which the uploaded item should be stored.
      * @throws Exception if an error occurs.
      */
@@ -67,7 +72,6 @@ public interface FileItem extends FileItemStream {
      * Returns the contents of the file item as a String, using the specified
      * encoding.  This method uses {@link #get()} to retrieve the
      * contents of the item.
-     *
      * @param encoding The character encoding to use.
      * @return The contents of the item, as a string.
      * @throws UnsupportedEncodingException if the requested character encoding is not available.

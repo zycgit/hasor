@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.invoker;
 import java.io.Reader;
@@ -35,20 +28,20 @@ import net.hasor.web.MimeType;
 
 /**
  * {@link Invoker} 接口实现类。
- * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-01-10
  */
 public class InvokerSupplier implements Invoker {
-    protected static Logger     logger          = LoggerFactory.getLogger(InvokerSupplier.class);
-    private final Set<String>   lockKeys        = new HashSet<>();
-    private HttpServletRequest  httpRequest     = null;
-    private HttpServletResponse httpResponse    = null;
-    private AppContext          appContext      = null;
-    private String              contentType     = null;    // 内容类型（如果指定了内容类型，那么会设置setContentType）
-    private MimeType            mimeType        = null;
-    private Mapping             ownerInMapping  = null;
-    private boolean             jsonBodyBoolean = false;
-    private String              jsonBody        = null;
+    protected static Logger              logger          = LoggerFactory.getLogger(InvokerSupplier.class);
+    private final    Set<String>         lockKeys        = new HashSet<>();
+    private          HttpServletRequest  httpRequest     = null;
+    private          HttpServletResponse httpResponse    = null;
+    private          AppContext          appContext      = null;
+    private          String              contentType     = null;    // 内容类型（如果指定了内容类型，那么会设置setContentType）
+    private          MimeType            mimeType        = null;
+    private          Mapping             ownerInMapping  = null;
+    private          boolean             jsonBodyBoolean = false;
+    private          String              jsonBody        = null;
 
     protected InvokerSupplier(Mapping ownerInMapping, AppContext appContext, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         //

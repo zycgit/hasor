@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,47 +22,39 @@
  * limitations under the License.
  */
 package net.hasor.web.upload;
-import net.hasor.web.upload.util.Streams;
-
 import java.io.*;
-
+import net.hasor.web.upload.util.Streams;
 import static java.lang.String.format;
 import static net.hasor.web.upload.FileUploadException.UploadErrorCodes.*;
 
 /**
  * <p> Low level API for processing file uploads.
- *
  * <p> This class can be used to process data streams conforming to MIME
  * 'multipart' format as defined in
  * <a href="http://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a>. Arbitrarily
  * large amounts of data in the stream can be processed under constant
  * memory usage.
- *
  * <p> The format of the stream is defined in the following way:<br>
- *
  * <code>
- *   multipart-body := preamble 1*encapsulation close-delimiter epilogue<br>
- *   encapsulation := delimiter body CRLF<br>
- *   delimiter := "--" boundary CRLF<br>
- *   close-delimiter := "--" boundary "--"<br>
- *   preamble := &lt;ignore&gt;<br>
- *   epilogue := &lt;ignore&gt;<br>
- *   body := header-part CRLF body-part<br>
- *   header-part := 1*header CRLF<br>
- *   header := header-name ":" header-value<br>
- *   header-name := &lt;printable ascii characters except ":"&gt;<br>
- *   header-value := &lt;any ascii characters except CR &amp; LF&gt;<br>
- *   body-data := &lt;arbitrary data&gt;<br>
+ * multipart-body := preamble 1*encapsulation close-delimiter epilogue<br>
+ * encapsulation := delimiter body CRLF<br>
+ * delimiter := "--" boundary CRLF<br>
+ * close-delimiter := "--" boundary "--"<br>
+ * preamble := &lt;ignore&gt;<br>
+ * epilogue := &lt;ignore&gt;<br>
+ * body := header-part CRLF body-part<br>
+ * header-part := 1*header CRLF<br>
+ * header := header-name ":" header-value<br>
+ * header-name := &lt;printable ascii characters except ":"&gt;<br>
+ * header-value := &lt;any ascii characters except CR &amp; LF&gt;<br>
+ * body-data := &lt;arbitrary data&gt;<br>
  * </code>
- *
  * <p>Note that body-data can contain another mulipart entity.  There
  * is limited support for single pass processing of such nested
  * streams.  The nested stream is <strong>required</strong> to have a
  * boundary token of the same length as the parent stream (see {@link
  * #setBoundary(byte[])}).
- *
  * <p>Here is an example of usage of this class.<br>
- *
  * <pre>
  *   try {
  *     MultipartStream multipartStream = new MultipartStream(input, boundary);
@@ -74,7 +73,6 @@ import static net.hasor.web.upload.FileUploadException.UploadErrorCodes.*;
  *     // a read or write error occurred
  *   }
  * </pre>
- *
  * @version $Id: MultipartStream.java 1745065 2016-05-22 14:56:37Z britter $
  */
 class MultipartStream {
@@ -101,13 +99,13 @@ class MultipartStream {
     /** The input stream from which data is read. */
     private final          InputStream input;
     /** The length of the boundary token plus the leading <code>CRLF--</code>. */
-    private                int         boundaryLength;
+    private       int    boundaryLength;
     /** The amount of data, in bytes, that must be kept in the buffer in order to detect delimiters reliably. */
-    private                int         keepRegion;
+    private final int    keepRegion;
     /** The byte sequence that partitions the stream. */
-    private                byte[]      boundary;
+    private final byte[] boundary;
     /** The length of the buffer used for processing the request. */
-    private final          int         bufSize;
+    private final int    bufSize;
     /** The buffer used for processing the request. */
     private final          byte[]      buffer;
     /** The index of first valid character in the buffer. <br> 0 <= head < bufSize */
@@ -120,16 +118,14 @@ class MultipartStream {
 
     /**
      * <p> Constructs a <code>MultipartStream</code> with a custom size buffer.
-     *
      * <p> Note that the buffer must be at least big enough to contain the
      * boundary string, plus 4 characters for CR/LF and double dash, plus at
      * least one byte of data.  Too small a buffer size setting will degrade
      * performance.
-     *
-     * @param input    The <code>InputStream</code> to serve as a data source.
+     * @param input The <code>InputStream</code> to serve as a data source.
      * @param boundary The token used for dividing the stream into
-     *                 <code>encapsulations</code>.
-     * @param bufSize  The size of the buffer to be used, in bytes.
+     * <code>encapsulations</code>.
+     * @param bufSize The size of the buffer to be used, in bytes.
      * @throws IllegalArgumentException If the buffer size is too small
      * @since 1.3.1
      */
@@ -155,7 +151,7 @@ class MultipartStream {
 
     /**
      * <p> Constructs a <code>MultipartStream</code> with a default size buffer.
-     * @param input    The <code>InputStream</code> to serve as a data source.
+     * @param input The <code>InputStream</code> to serve as a data source.
      * @param boundary The token used for dividing the stream into <code>encapsulations</code>.
      * @see #MultipartStream(InputStream, byte[], int)
      */
@@ -253,7 +249,6 @@ class MultipartStream {
      * <p>Headers are returned verbatim to the input stream, including the
      * trailing <code>CRLF</code> marker. Parsing is left to the application.
      * <p><strong>TODO</strong> allow limiting maximum header size to protect against abuse.
-     *
      * @return The <code>header-part</code> of the current encapsulation.
      * @throws FileUploadException if the stream ends unexpectedly.
      */
@@ -296,11 +291,11 @@ class MultipartStream {
 
     /**
      * <p>Reads <code>body-data</code> from the current <code>encapsulation</code> and writes its contents into the output <code>Stream</code>.
-     * <p>Arbitrary large amounts of data can be processed by this method using a constant size buffer. 
+     * <p>Arbitrary large amounts of data can be processed by this method using a constant size buffer.
      * @param output The <code>Stream</code> to write data into. May be null, in which case this method is equivalent to {@link #discardBodyData()}.
      * @return the amount of data written.
      * @throws FileUploadException if the stream ends unexpectedly.
-     * @throws IOException              if an i/o error occurs.
+     * @throws IOException if an i/o error occurs.
      */
     public int readBodyData(OutputStream output) throws IOException {
         final InputStream istream = newInputStream();
@@ -318,12 +313,10 @@ class MultipartStream {
     /**
      * <p> Reads <code>body-data</code> from the current
      * <code>encapsulation</code> and discards it.
-     *
      * <p>Use this method to skip encapsulations you don't need or don't understand.
-     *
      * @return The amount of data discarded.
      * @throws FileUploadException if the stream ends unexpectedly.
-     * @throws IOException         if an i/o error occurs.
+     * @throws IOException if an i/o error occurs.
      */
     public int discardBodyData() throws IOException {
         return readBodyData(null);
@@ -332,7 +325,6 @@ class MultipartStream {
     /**
      * Finds the beginning of the first <code>encapsulation</code>.
      * @return <code>true</code> if an <code>encapsulation</code> was found in the stream.
-     *
      * @throws IOException if an i/o error occurs.
      */
     public boolean skipPreamble() throws IOException {
@@ -360,12 +352,11 @@ class MultipartStream {
 
     /**
      * Compares <code>count</code> first bytes in the arrays <code>a</code> and <code>b</code>.
-     * @param a     The first array to compare.
-     * @param b     The second array to compare.
+     * @param a The first array to compare.
+     * @param b The second array to compare.
      * @param count How many bytes should be compared.
-     *
      * @return <code>true</code> if <code>count</code> first bytes in arrays
-     *         <code>a</code> and <code>b</code> are equal.
+     * <code>a</code> and <code>b</code> are equal.
      */
     public static boolean arrayequals(byte[] a, byte[] b, int count) {
         for (int i = 0; i < count; i++) {
@@ -379,12 +370,10 @@ class MultipartStream {
     /**
      * Searches for a byte of specified value in the <code>buffer</code>,
      * starting at the specified <code>position</code>.
-     *
      * @param value The value to find.
-     * @param pos   The starting position for searching.
-     *
+     * @param pos The starting position for searching.
      * @return The position of byte found, counting from beginning of the
-     *         <code>buffer</code>, or <code>-1</code> if not found.
+     * <code>buffer</code>, or <code>-1</code> if not found.
      */
     protected int findByte(byte value, int pos) {
         for (int i = pos; i < tail; i++) {
@@ -398,9 +387,8 @@ class MultipartStream {
     /**
      * Searches for the <code>boundary</code> in the <code>buffer</code>
      * region delimited by <code>head</code> and <code>tail</code>.
-     *
      * @return The position of the boundary found, counting from the
-     *         beginning of the <code>buffer</code>, or <code>-1</code> if not found.
+     * beginning of the <code>buffer</code>, or <code>-1</code> if not found.
      */
     protected int findSeparator() {
         int first;
@@ -451,7 +439,8 @@ class MultipartStream {
             }
         }
 
-        /** Returns the number of bytes, which have been read by the stream.
+        /**
+         * Returns the number of bytes, which have been read by the stream.
          * @return Number of bytes, which have been read so far.
          */
         public long getBytesRead() {

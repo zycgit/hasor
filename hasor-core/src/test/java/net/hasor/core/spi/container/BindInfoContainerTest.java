@@ -1,19 +1,16 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.core.spi.container;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import net.hasor.cobble.BeanUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -25,11 +22,6 @@ import net.hasor.test.core.basic.pojo.PojoBean;
 import net.hasor.test.core.basic.pojo.SampleBean;
 import net.hasor.test.core.basic.pojo.SampleFace;
 import org.junit.Test;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BindInfoContainerTest {
     @Test
@@ -230,7 +222,7 @@ public class BindInfoContainerTest {
             writeMethod.invoke(adapter, SampleBean.class);
             assert false;
         } catch (Exception e) {
-            if (e instanceof InvocationTargetException == false) {
+            if (!(e instanceof InvocationTargetException)) {
                 e.printStackTrace();
                 assert false;
             }

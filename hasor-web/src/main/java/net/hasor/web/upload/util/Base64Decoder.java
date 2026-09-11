@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -72,10 +79,8 @@ final class Base64Decoder {
 
     /**
      * Decode the base 64 encoded byte data writing it to the given output stream, whitespace characters will be ignored.
-     *
      * @param data the buffer containing the Base64-encoded data
      * @param out the output stream to hold the decoded bytes
-     *
      * @return the number of bytes produced.
      * @throws IOException thrown when the padding is incorrect or the input is truncated.
      */

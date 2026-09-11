@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,24 +22,20 @@
  * limitations under the License.
  */
 package net.hasor.web.upload;
-import net.hasor.web.upload.util.MimeUtility;
-
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import net.hasor.web.upload.util.MimeUtility;
 
 /**
  * A simple parser intended to parse sequences of name/value pairs.
- *
  * Parameter values are expected to be enclosed in quotes if they
  * contain unsafe characters, such as '=' characters or separators.
  * Parameter values are optional and can be omitted.
- *
  * <p>
- *  <code>param1 = value; param2 = "anything goes; really"; param3</code>
+ * <code>param1 = value; param2 = "anything goes; really"; param3</code>
  * </p>
- *
  * @version $Id: ParameterParser.java 1565253 2014-02-06 13:48:16Z ggregory $
  */
 class ParameterParser {
@@ -57,7 +60,7 @@ class ParameterParser {
     /**
      * Are there any characters left to parse?
      * @return <tt>true</tt> if there are unparsed characters,
-     *         <tt>false</tt> otherwise.
+     * <tt>false</tt> otherwise.
      */
     private boolean hasChar() {
         return this.pos < this.len;
@@ -68,7 +71,7 @@ class ParameterParser {
      * leading and trailing blanks as well as enclosing quotation marks,
      * when necessary.
      * @param quoted <tt>true</tt> if quotation marks are expected,
-     *               <tt>false</tt> otherwise.
+     * <tt>false</tt> otherwise.
      * @return the token
      */
     private String getToken(boolean quoted) {
@@ -97,7 +100,7 @@ class ParameterParser {
      * @param ch the character to test for presense in the array of characters
      * @param charray the array of characters to test against
      * @return <tt>true</tt> if the character is present in the array of
-     *   characters, <tt>false</tt> otherwise.
+     * characters, <tt>false</tt> otherwise.
      */
     private boolean isOneOf(char ch, final char[] charray) {
         boolean result = false;
@@ -226,7 +229,6 @@ class ParameterParser {
 
     /**
      * Extracts a map of name/value pairs from the given array of characters. Names are expected to be unique.
-     *
      * @param charArray the array of characters that contains a sequence of
      * name/value pairs
      * @param offset - the initial offset.

@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.boot.web;
 import java.io.File;
@@ -34,23 +27,23 @@ import net.hasor.web.startup.RuntimeListener;
  * @version : 2026-06-17
  */
 public class WebServerConfig {
-    public static final String                   HASOR_ROOT_MODULE  = "hasor-root-module";
-    public static final String                   HASOR_HCONFIG_FILE = "hasor-hconfig-file";
-    public static final String                   HASOR_HCONFIG_NAME = "hasor-hconfig-name";
-    public static final String                   HASOR_MAIN_ARGS    = RuntimeListener.HASOR_MAIN_ARGS;
-    private String                               host               = "0.0.0.0";
-    private int                                  port               = 8080;
-    private String                               contextPath        = "/";
-    private String                               filterName         = "hasorFilter";
-    private String                               filterPattern      = "/*";
-    private File                                 documentRoot       = defaultDocumentRoot();
-    private Class<?>                             rootModule;
-    private String                               hconfigFile;
-    private String                               server;
-    private String[]                             arguments          = new String[0];
-    private Function<ServletContext, AppContext> appContextFactory;
-    private final Map<String, String>            initParameters     = new LinkedHashMap<>();
-    private WebOptions                           webOptions         = new WebOptions();
+    public static final String                               HASOR_ROOT_MODULE  = "hasor-root-module";
+    public static final String                               HASOR_HCONFIG_FILE = "hasor-hconfig-file";
+    public static final String                               HASOR_HCONFIG_NAME = "hasor-hconfig-name";
+    public static final String                               HASOR_MAIN_ARGS    = RuntimeListener.HASOR_MAIN_ARGS;
+    private             String                               host               = "0.0.0.0";
+    private             int                                  port               = 8080;
+    private             String                               contextPath        = "/";
+    private             String                               filterName         = "hasorFilter";
+    private             String                               filterPattern      = "/*";
+    private             File                                 documentRoot       = defaultDocumentRoot();
+    private             Class<?>                             rootModule;
+    private             String                               hconfigFile;
+    private             String                               server;
+    private             String[]                             arguments          = new String[0];
+    private             Function<ServletContext, AppContext> appContextFactory;
+    private final       Map<String, String>                  initParameters     = new LinkedHashMap<>();
+    private             WebOptions                           webOptions         = new WebOptions();
 
     public WebServerConfig() {
     }

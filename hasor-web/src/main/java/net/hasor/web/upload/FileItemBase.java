@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,21 +22,19 @@
  * limitations under the License.
  */
 package net.hasor.web.upload;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import net.hasor.cobble.io.IOUtils;
 import net.hasor.web.FileItem;
 import net.hasor.web.FileItemHeaders;
 import net.hasor.web.FileItemStream;
 import net.hasor.web.upload.util.Streams;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 /**
  * <p> This class represents a file or form item that was received within a
  * <code>multipart/form-data</code> POST request.
- *
  * @version $Id: FileItem.java 1454690 2013-03-09 12:08:48Z simonetripodi $
  * @since 1.3 additionally implements FileItemHeadersSupport
  */

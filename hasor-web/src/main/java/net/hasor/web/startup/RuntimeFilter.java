@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.startup;
 import java.io.IOException;
@@ -36,19 +29,19 @@ import net.hasor.web.spi.BeforeRequestListener;
 
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
- * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-01-10
  */
 public class RuntimeFilter implements Filter {
-    protected Logger            logger                     = LoggerFactory.getLogger(getClass());
-    private final AtomicBoolean inited                     = new AtomicBoolean(false);
-    public static final String  HTTP_REQUEST_ENCODING_KEY  = "HTTP_REQUEST_ENCODING";
-    public static final String  HTTP_RESPONSE_ENCODING_KEY = "HTTP_RESPONSE_ENCODING";
-    private String              httpRequestEncoding        = null;
-    private String              httpResponseEncoding       = null;
-    private AppContext          appContext                 = null;
-    private SpiTrigger          spiTrigger                 = null;
-    private InvokerContext      invokerContext             = null;
+    protected           Logger         logger                     = LoggerFactory.getLogger(getClass());
+    private final       AtomicBoolean  inited                     = new AtomicBoolean(false);
+    public static final String         HTTP_REQUEST_ENCODING_KEY  = "HTTP_REQUEST_ENCODING";
+    public static final String         HTTP_RESPONSE_ENCODING_KEY = "HTTP_RESPONSE_ENCODING";
+    private             String         httpRequestEncoding        = null;
+    private             String         httpResponseEncoding       = null;
+    private             AppContext     appContext                 = null;
+    private             SpiTrigger     spiTrigger                 = null;
+    private             InvokerContext invokerContext             = null;
 
     public RuntimeFilter() {
         this(null);

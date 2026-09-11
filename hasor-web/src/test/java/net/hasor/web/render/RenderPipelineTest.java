@@ -1,13 +1,17 @@
+/*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
 package net.hasor.web.render;
-import static org.junit.Assert.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.AbstractTest;
@@ -17,6 +21,9 @@ import net.hasor.web.annotation.Get;
 import net.hasor.web.binder.FilterDef;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.InvokerContext;
+import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
+import static org.junit.Assert.*;
 
 public class RenderPipelineTest extends AbstractTest {
     public static class Action {

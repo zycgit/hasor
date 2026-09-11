@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2012-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.boot.loader.jar;
 import java.io.File;
@@ -25,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import net.hasor.cobble.logging.Logger;
 import net.hasor.cobble.logging.LoggerFactory;
+
 /**
  * {@link URLStreamHandler} for Spring Boot loader {@link JarFile}s.
  * @author Phillip Webb
@@ -35,17 +29,17 @@ import net.hasor.cobble.logging.LoggerFactory;
 public class Handler extends URLStreamHandler {
     // NOTE: in order to be found as a URL protocol handler, this class must be public,
     // must be named Handler and must be in a package ending '.jar'
-    private static final String                      JAR_PROTOCOL            = "jar:";
-    private static final String                      FILE_PROTOCOL           = "file:";
-    private static final String                      TOMCAT_WARFILE_PROTOCOL = "war:file:";
-    private static final String                      SEPARATOR               = "!/";
-    private static final Pattern                     SEPARATOR_PATTERN       = Pattern.compile(SEPARATOR, Pattern.LITERAL);
-    private static final String                      CURRENT_DIR             = "/./";
-    private static final Pattern                     CURRENT_DIR_PATTERN     = Pattern.compile(CURRENT_DIR, Pattern.LITERAL);
-    private static final String                      PARENT_DIR              = "/../";
-    public static final String                       PROTOCOL_HANDLER        = "java.protocol.handler.pkgs";
-    private static URL                               jarContextUrl;
-    private static SoftReference<Map<File, JarFile>> rootFileCache;
+    private static final String                            JAR_PROTOCOL            = "jar:";
+    private static final String                            FILE_PROTOCOL           = "file:";
+    private static final String                            TOMCAT_WARFILE_PROTOCOL = "war:file:";
+    private static final String                            SEPARATOR               = "!/";
+    private static final Pattern                           SEPARATOR_PATTERN       = Pattern.compile(SEPARATOR, Pattern.LITERAL);
+    private static final String                            CURRENT_DIR             = "/./";
+    private static final Pattern                           CURRENT_DIR_PATTERN     = Pattern.compile(CURRENT_DIR, Pattern.LITERAL);
+    private static final String                            PARENT_DIR              = "/../";
+    public static final  String                            PROTOCOL_HANDLER        = "java.protocol.handler.pkgs";
+    private static       URL                               jarContextUrl;
+    private static       SoftReference<Map<File, JarFile>> rootFileCache;
 
     static {
         rootFileCache = new SoftReference<>(null);

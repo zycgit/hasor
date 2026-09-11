@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,6 +22,11 @@
  * limitations under the License.
  */
 package net.hasor.web.upload;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import javax.servlet.http.HttpServletRequest;
 import net.hasor.cobble.ExceptionUtils;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.web.FileItem;
@@ -25,25 +37,15 @@ import net.hasor.web.upload.util.Closeable;
 import net.hasor.web.upload.util.HeadersSet;
 import net.hasor.web.upload.util.LimitedInputStream;
 import net.hasor.web.upload.util.Streams;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-
 import static java.lang.String.format;
 import static net.hasor.web.upload.FileUploadException.UploadErrorCodes.*;
 
 /**
  * <p>High level API for processing file uploads.</p>
- *
  * <p>This class handles multiple files per single HTML widget, sent using <code>multipart/mixed</code> encoding type, as specified by
  * <a href="http://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a>.
- *
  * <p>How the data for individual parts is stored is determined by the factory
  * used to create them; a given part may be in memory, on disk, or somewhere else.</p>
- *
  * @version $Id: FileUpload.java 1743630 2016-05-13 09:20:45Z jochen $
  */
 public class FileUpload {
@@ -71,7 +73,7 @@ public class FileUpload {
      * Utility method that determines whether the request contains multipart content.
      * @param request The servlet request to be evaluated. Must be non-null.
      * @return <code>true</code> if the request is multipart;
-     *         <code>false</code> otherwise.
+     * <code>false</code> otherwise.
      */
     public static final boolean isMultipartContent(HttpServletRequest request) {
         if (!POST_METHOD.equalsIgnoreCase(request.getMethod())) {
@@ -81,10 +83,7 @@ public class FileUpload {
         if (contentType == null) {
             return false;
         }
-        if (contentType.toLowerCase(Locale.ENGLISH).startsWith(MULTIPART)) {
-            return true;
-        }
-        return false;
+        return contentType.toLowerCase(Locale.ENGLISH).startsWith(MULTIPART);
     }
     // ----------------------------------------------------------- Data members
     /** The maximum size permitted for the complete request, as opposed to {@link #fileSizeMax}. A value of -1 indicates no maximum. */
@@ -124,8 +123,8 @@ public class FileUpload {
 
     /**
      * Returns the maximum allowed size of a single uploaded file, as opposed to {@link #getSizeMax()}.
-     * @see #setFileSizeMax(long)
      * @return Maximum size of a single uploaded file.
+     * @see #setFileSizeMax(long)
      */
     public long getFileSizeMax() {
         return fileSizeMax;
@@ -133,8 +132,8 @@ public class FileUpload {
 
     /**
      * Sets the maximum allowed size of a single uploaded file, as opposed to {@link #getSizeMax()}.
-     * @see #getFileSizeMax()
      * @param fileSizeMax Maximum size of a single uploaded file.
+     * @see #getFileSizeMax()
      */
     public void setFileSizeMax(long fileSizeMax) {
         this.fileSizeMax = fileSizeMax;
@@ -165,10 +164,10 @@ public class FileUpload {
      * Processes an <a href="http://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a> compliant <code>multipart/form-data</code> stream.
      * @param request The  request.
      * @return An iterator to instances of <code>FileItemStream</code>
-     *         parsed from the request, in the order that they were transmitted.
+     * parsed from the request, in the order that they were transmitted.
      * @throws net.hasor.web.upload.FileUploadException if there are problems reading/parsing the request or storing files.
      * @throws IOException An I/O error occurred. This may be a network
-     *   error while communicating with the client or a problem while storing the uploaded content.
+     * error while communicating with the client or a problem while storing the uploaded content.
      */
     public Iterator<FileItemStream> getItemIterator(HttpServletRequest request) throws IOException {
         return new FileItemIteratorImpl(new ServletRequestContext(request));
@@ -300,7 +299,7 @@ public class FileUpload {
      * <p> Parses the <code>header-part</code> and returns as key/value pairs.
      * <p> If there are multiple headers of the same names, the name will map to a comma-separated list containing the values.
      * @param headerPart The <code>header-part</code> of the current
-     *                   <code>encapsulation</code>.
+     * <code>encapsulation</code>.
      * @return A <code>Map</code> containing the parsed HTTP request headers.
      */
     protected FileItemHeaders getParsedHeaders(String headerPart) {
@@ -328,7 +327,7 @@ public class FileUpload {
                 }
                 // Continuation line found
                 end = parseEndOfLine(headerPart, nonWs);
-                header.append(" ").append(headerPart.substring(nonWs, end));
+                header.append(" ").append(headerPart, nonWs, end);
                 start = end + 2;
             }
             parseHeaderLine(headers, header.toString());
@@ -390,7 +389,7 @@ public class FileUpload {
             /** Whether the file item was already opened. */
             private       boolean         opened;
             /** The headers, if any. */
-            private       FileItemHeaders headers;
+            private final FileItemHeaders headers;
 
             /**
              * Creates a new instance.
@@ -427,7 +426,6 @@ public class FileUpload {
 
             /**
              * Returns the items content type, or null.
-             *
              * @return Content type, if known, or null.
              */
             public String getContentType() {
@@ -436,7 +434,6 @@ public class FileUpload {
 
             /**
              * Returns the items field name.
-             *
              * @return Field name.
              */
             public String getFieldName() {
@@ -445,12 +442,11 @@ public class FileUpload {
 
             /**
              * Returns the items file name.
-             *
              * @return File name, if known, or null.
              * @throws IllegalArgumentException The file name contains a NUL character,
-             *   which might be an indicator of a security attack. If you intend to
-             *   use the file name anyways, catch the exception and use
-             *   InvalidFileNameException#getName().
+             * which might be an indicator of a security attack. If you intend to
+             * use the file name anyways, catch the exception and use
+             * InvalidFileNameException#getName().
              */
             public String getName() {
                 return Streams.checkFileName(name);
@@ -458,9 +454,8 @@ public class FileUpload {
 
             /**
              * Returns, whether this is a form field.
-             *
              * @return True, if the item is a form field,
-             *   otherwise false.
+             * otherwise false.
              */
             public boolean isFormField() {
                 return formField;
@@ -469,7 +464,6 @@ public class FileUpload {
             /**
              * Returns an input stream, which may be used to
              * read the items contents.
-             *
              * @return Opened input stream.
              * @throws IOException An I/O error occurred.
              */
@@ -485,7 +479,6 @@ public class FileUpload {
 
             /**
              * Closes the file item.
-             *
              * @throws IOException An I/O error occurred.
              */
             void close() throws IOException {
@@ -641,10 +634,9 @@ public class FileUpload {
 
         /**
          * Returns, whether another instance of {@link FileItemStream} is available.
-         *
+         * @return True, if one or more additional file items are available, otherwise false.
          * @throws FileUploadException Parsing or processing the file item failed.
          * @throws IOException Reading the file item failed.
-         * @return True, if one or more additional file items are available, otherwise false.
          */
         public boolean hasNext() {
             if (eof) {
@@ -662,12 +654,11 @@ public class FileUpload {
 
         /**
          * Returns the next available {@link FileItemStream}.
-         *
+         * @return FileItemStream instance, which provides access to the next file item.
          * @throws java.util.NoSuchElementException No more items are available.
-         *          Use {@link #hasNext()} to prevent this exception.
+         * Use {@link #hasNext()} to prevent this exception.
          * @throws FileUploadException Parsing or processing the file item failed.
          * @throws IOException Reading the file item failed.
-         * @return FileItemStream instance, which provides access to the next file item.
          */
         public FileItemStream next() {
             if (eof || (!itemValid && !hasNext())) {

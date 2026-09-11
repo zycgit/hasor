@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -19,8 +26,8 @@ import java.io.IOException;
 
 /**
  * 文件上传异常。
- * @version 2009-4-29
  * @author 赵永春 (zyc@hasor.net)
+ * @version 2009-4-29
  */
 public class FileUploadException extends IOException {
     public enum UploadErrorCodes {

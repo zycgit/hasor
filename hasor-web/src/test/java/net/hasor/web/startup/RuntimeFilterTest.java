@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.startup;
 import java.io.IOException;
@@ -25,8 +18,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 import net.hasor.core.Module;
 import net.hasor.test.web.actions.args.QueryArgsAction;
 import net.hasor.test.web.actions.throwerr.*;
@@ -34,10 +25,12 @@ import net.hasor.web.AbstractTest;
 import net.hasor.web.WebModule;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.spi.AfterResponseListener;
+import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
 
 /**
- * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2016-12-16
  */
 public class RuntimeFilterTest extends AbstractTest {
     @Test
@@ -138,8 +131,8 @@ public class RuntimeFilterTest extends AbstractTest {
         assert o instanceof Map;
         assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
         assert ((Integer) ((Map) o).get("intParam")) == 321;
-        assert ((String) ((Map) o).get("strParam")).equals("5678");
-        assert ((String) ((Map) o).get("eptParam")) == null;
+        assert ((Map) o).get("strParam").equals("5678");
+        assert ((Map) o).get("eptParam") == null;
         runtimeFilter.destroy();
         assert true;
     }

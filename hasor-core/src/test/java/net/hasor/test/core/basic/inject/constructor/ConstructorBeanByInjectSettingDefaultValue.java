@@ -1,59 +1,51 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.test.core.basic.inject.constructor;
-import net.hasor.core.InjectSettings;
-import net.hasor.test.core.enums.SelectEnum;
-
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
+import net.hasor.core.InjectSettings;
+import net.hasor.test.core.enums.SelectEnum;
 
 // 8 种基本类型和其包装类型，以及4种时间类型和常用的枚举、字符串
 public class ConstructorBeanByInjectSettingDefaultValue {
-    private byte          byteValue;
-    private Byte          byteValue2;
+    private final byte byteValue;
+    private final Byte byteValue2;
     //
-    private short         shortValue;
-    private Short         shortValue2;
+    private final short shortValue;
+    private final Short shortValue2;
     //
-    private int           intValue;
-    private Integer       intValue2;
+    private final int   intValue;
+    private final Integer intValue2;
     //
-    private long          longValue;
-    private Long          longValue2;
+    private final long    longValue;
+    private final Long    longValue2;
     //
-    private float         floatValue;
-    private Float         floatValue2;
+    private final float floatValue;
+    private final Float floatValue2;
     //
-    private double        doubleValue;
-    private Double        doubleValue2;
+    private final double doubleValue;
+    private final Double doubleValue2;
     //
-    private boolean       booleanValue;
-    private Boolean       booleanValue2;
+    private final boolean booleanValue;
+    private final Boolean booleanValue2;
     //
-    private char          charValue;
-    private Character     charValue2;
+    private final char    charValue;
+    private final Character charValue2;
     //
-    private Date          dateValue1;
-    private java.sql.Date dateValue2;
-    private Time          dateValue3;
-    private Timestamp     dateValue4;
+    private final Date      dateValue1;
+    private final java.sql.Date dateValue2;
+    private final Time          dateValue3;
+    private final Timestamp     dateValue4;
     //
-    private String        stringValue;
-    private SelectEnum    enumValue;
+    private final String    stringValue;
+    private final SelectEnum enumValue;
 
     //
     public ConstructorBeanByInjectSettingDefaultValue(//

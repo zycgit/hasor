@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.mime;
 import java.io.Closeable;
@@ -23,22 +16,22 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.ServletContext;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.InputSource;
 import net.hasor.cobble.ResourcesUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.io.IOUtils;
 import net.hasor.cobble.logging.Logger;
 import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.web.MimeType;
+import org.xml.sax.InputSource;
 
 /**
  * {@link MimeType} 接口实现。
- * @version : 2015年2月11日
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2015年2月11日
  */
 public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implements MimeType {
-    private static final Logger  logger = LoggerFactory.getLogger(MimeTypeSupplier.class);
-    private final ServletContext content;
+    private static final Logger         logger = LoggerFactory.getLogger(MimeTypeSupplier.class);
+    private final        ServletContext content;
 
     public MimeTypeSupplier(ServletContext content) {
         this.content = content;
@@ -48,7 +41,7 @@ public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implemen
         return this.content;
     }
 
-    /**根据扩展名获取meta类型。*/
+    /** 根据扩展名获取meta类型。 */
     public String getMimeType(String suffix) {
         String mimeType = this.get(suffix.toUpperCase());
         if (StringUtils.isBlank(mimeType)) {
@@ -63,7 +56,7 @@ public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implemen
         }
     }
 
-    /**装载数据。*/
+    /** 装载数据。 */
     public void loadResource(String resourceName) throws IOException {
         ClassLoader classLoader = this.content.getClassLoader();
         List<InputStream> inStreamList = null;

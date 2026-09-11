@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.core;
 
@@ -34,24 +27,28 @@ import net.hasor.core.container.TemplateAppContext;
 
 /**
  * Hasor的核心接口，它为应用程序提供了一个统一的配置界面和运行环境。
- * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2013-3-26
  */
 public interface AppContext extends MetaInfo, Closeable {
-    /** 容器事件，在所有模块 start 阶段之后引发。
-     * @see TemplateAppContext */
+    /**
+     * 容器事件，在所有模块 start 阶段之后引发。
+     * @see TemplateAppContext
+     */
     String ContextEvent_Started  = "ContextEvent_Started";
-    /** 容器事件，在所有模块 start 阶段之后引发。
-     * @see TemplateAppContext */
+    /**
+     * 容器事件，在所有模块 start 阶段之后引发。
+     * @see TemplateAppContext
+     */
     String ContextEvent_Shutdown = "ContextEvent_Shutdown";
 
     /** @return 获取 {@link Settings} */
     Settings getSettings();
 
-    /** @return 事件上下文*/
+    /** @return 事件上下文 */
     EventContext getEventContext();
 
-    /** @return 事件上下文*/
+    /** @return 事件上下文 */
     ResourceLoader getResourceLoader();
 
     /** 获取当创建Bean时使用的{@link ClassLoader} */
@@ -197,13 +194,15 @@ public interface AppContext extends MetaInfo, Closeable {
     /** 根据 BindInfo 创建 Bean 的 Provider */
     <T> Supplier<? extends T> getProvider(BindInfo<T> info);
 
-    /** 将 AppContext 接口的 getInstance(Class) 能力转换为 TypeSupplier 接口形式。*/
+    /** 将 AppContext 接口的 getInstance(Class) 能力转换为 TypeSupplier 接口形式。 */
     default TypeSupplier wrapTypeSupplier() {
         return AppContext.this::getInstance;
     }
 
-    /** 对 object 对象仅执行依赖注入，要注入的属性等信息参照：findBindingRegister(null,object.getClass())。
-     * 如果参照信息为空，那么将直接 return object。 */
+    /**
+     * 对 object 对象仅执行依赖注入，要注入的属性等信息参照：findBindingRegister(null,object.getClass())。
+     * 如果参照信息为空，那么将直接 return object。
+     */
     default <T> T justInject(T object) {
         if (object == null) {
             return null;
@@ -211,12 +210,16 @@ public interface AppContext extends MetaInfo, Closeable {
         return this.justInject(object, object.getClass());
     }
 
-    /** 对 object 对象仅执行依赖注入，要注入的属性等信息参照：findBindingRegister(null,bindType)。
-     * 如果参照信息为空，那么将直接 return object。 */
+    /**
+     * 对 object 对象仅执行依赖注入，要注入的属性等信息参照：findBindingRegister(null,bindType)。
+     * 如果参照信息为空，那么将直接 return object。
+     */
     <T> T justInject(T object, Class<?> beanType);
 
-    /** 对 object 对象仅执行依赖注入，要注入的属性等信息参照：bindInfo。
-     * 如果参照信息为空，那么将直接 return object。 */
+    /**
+     * 对 object 对象仅执行依赖注入，要注入的属性等信息参照：bindInfo。
+     * 如果参照信息为空，那么将直接 return object。
+     */
     <T> T justInject(T object, BindInfo<?> bindInfo);
 
     /*-------------------------------------------------------------------------------------Binder*/

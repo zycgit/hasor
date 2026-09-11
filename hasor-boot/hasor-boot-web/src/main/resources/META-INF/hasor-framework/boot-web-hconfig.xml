@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/hasor-core">
+    <hasor.boot.web.health>
+        <enabled>${HASOR_BOOT_WEB_HEALTH_ENABLED:true}</enabled>
+        <path>${HASOR_BOOT_WEB_HEALTH_PATH:/health}</path>
+    </hasor.boot.web.health>
     <hasor.http>
         <!-- Boot 内嵌 HTTP 容器公共配置；具体容器模块只提供各自特有配置。 -->
         <server>${HASOR_HTTP_SERVER}</server>

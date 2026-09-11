@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -37,12 +44,9 @@ final class QuotedPrintableDecoder {
 
     /**
      * Decode the encoded byte data writing it to the given output stream.
-     *
-     * @param data   The array of byte data to decode.
-     * @param out    The output stream used to return the decoded data.
-     *
+     * @param data The array of byte data to decode.
+     * @param out The output stream used to return the decoded data.
      * @return the number of bytes produced.
-     * @exception IOException
      */
     public static int decode(byte[] data, OutputStream out) throws IOException {
         int off = 0;
@@ -88,7 +92,6 @@ final class QuotedPrintableDecoder {
 
     /**
      * Convert a hex digit to the binary value it represents.
-     *
      * @param b the ascii hex byte to convert (0-0, A-F, a-f)
      * @return the int value of the hex byte, 0-15
      * @throws IOException if the byte is not a valid hex digit.

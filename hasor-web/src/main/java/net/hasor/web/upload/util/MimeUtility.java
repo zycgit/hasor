@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -18,6 +25,7 @@ package net.hasor.web.upload.util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -81,9 +89,7 @@ public final class MimeUtility {
      * its proper form.  The text generally will consist of a
      * string of tokens, some of which may be encoded using
      * base64 encoding.
-     *
-     * @param text   The text to decode.
-     *
+     * @param text The text to decode.
      * @return The decoded text string.
      * @throws UnsupportedEncodingException if the detected encoding in the input text is not supported.
      */
@@ -138,7 +144,7 @@ public final class MimeUtility {
                         String decodedWord = decodeWord(word);
                         // are any whitespace characters significant?  Append 'em if we've got 'em.
                         if (!previousTokenEncoded && startWhiteSpace != -1) {
-                            decodedText.append(text.substring(startWhiteSpace, endWhiteSpace));
+                            decodedText.append(text, startWhiteSpace, endWhiteSpace);
                             startWhiteSpace = -1;
                         }
                         // this is definitely a decoded token.
@@ -155,7 +161,7 @@ public final class MimeUtility {
                 // this is a normal token, so it doesn't matter what the previous token was.  Add the white space
                 // if we have it.
                 if (startWhiteSpace != -1) {
-                    decodedText.append(text.substring(startWhiteSpace, endWhiteSpace));
+                    decodedText.append(text, startWhiteSpace, endWhiteSpace);
                     startWhiteSpace = -1;
                 }
                 // this is not a decoded token.
@@ -169,13 +175,9 @@ public final class MimeUtility {
     /**
      * Parse a string using the RFC 2047 rules for an "encoded-word"
      * type.  This encoding has the syntax:
-     *
      * encoded-word = "=?" charset "?" encoding "?" encoded-text "?="
-     *
-     * @param word   The possibly encoded word value.
-     *
+     * @param word The possibly encoded word value.
      * @return The decoded word.
-     * @throws UnsupportedEncodingException
      */
     private static String decodeWord(String word) throws UnsupportedEncodingException {
         // encoded words start with the characters "=?".  If this not an encoded word, we throw a
@@ -208,7 +210,7 @@ public final class MimeUtility {
         try {
             // the decoder writes directly to an output stream.
             ByteArrayOutputStream out = new ByteArrayOutputStream(encodedText.length());
-            byte[] encodedData = encodedText.getBytes(US_ASCII_CHARSET);
+            byte[] encodedData = encodedText.getBytes(StandardCharsets.US_ASCII);
             // Base64 encoded?
             if (encoding.equals(BASE64_ENCODING_MARKER)) {
                 Base64Decoder.decode(encodedData, out);
@@ -218,8 +220,7 @@ public final class MimeUtility {
                 throw new UnsupportedEncodingException("Unknown RFC 2047 encoding: " + encoding);
             }
             // get the decoded byte data and convert into a string.
-            byte[] decodedData = out.toByteArray();
-            return new String(decodedData, javaCharset(charset));
+            return out.toString(javaCharset(charset));
         } catch (IOException e) {
             throw new UnsupportedEncodingException("Invalid RFC 2047 encoding");
         }
@@ -228,9 +229,7 @@ public final class MimeUtility {
     /**
      * Translate a MIME standard character set name into the Java
      * equivalent.
-     *
      * @param charset The MIME standard name.
-     *
      * @return The Java equivalent for this name.
      */
     private static String javaCharset(String charset) {

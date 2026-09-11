@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -46,7 +53,7 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
      * @param pSizeMax The input streams limit, in bytes.
      * @param pCount The actual number of bytes.
      * @throws IOException The called method is expected
-     *   to raise an IOException.
+     * to raise an IOException.
      */
     protected abstract void raiseError(long pSizeMax, long pCount) throws IOException;
 
@@ -70,11 +77,10 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
      * is thrown.
      * <p>
      * This method simply performs <code>in.read()</code> and returns the result.
-     *
      * @return the next byte of data, or <code>-1</code> if the end of the
-     *             stream is reached.
-     * @exception IOException  if an I/O error occurs.
-     * @see        java.io.FilterInputStream#in
+     * stream is reached.
+     * @throws IOException if an I/O error occurs.
+     * @see java.io.FilterInputStream#in
      */
     @Override
     public int read() throws IOException {
@@ -94,20 +100,19 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
      * <p>
      * This method simply performs <code>in.read(b, off, len)</code>
      * and returns the result.
-     *
-     * @param      b     the buffer into which the data is read.
-     * @param      off   The start offset in the destination array
-     *                   <code>b</code>.
-     * @param      len   the maximum number of bytes read.
+     * @param b the buffer into which the data is read.
+     * @param off The start offset in the destination array
+     * <code>b</code>.
+     * @param len the maximum number of bytes read.
      * @return the total number of bytes read into the buffer, or
-     *             <code>-1</code> if there is no more data because the end of
-     *             the stream has been reached.
-     * @exception NullPointerException If <code>b</code> is <code>null</code>.
-     * @exception IndexOutOfBoundsException If <code>off</code> is negative,
+     * <code>-1</code> if there is no more data because the end of
+     * the stream has been reached.
+     * @throws NullPointerException If <code>b</code> is <code>null</code>.
+     * @throws IndexOutOfBoundsException If <code>off</code> is negative,
      * <code>len</code> is negative, or <code>len</code> is greater than
      * <code>b.length - off</code>
-     * @exception IOException  if an I/O error occurs.
-     * @see        java.io.FilterInputStream#in
+     * @throws IOException if an I/O error occurs.
+     * @see java.io.FilterInputStream#in
      */
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
@@ -132,8 +137,8 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
      * Closes this input stream and releases any system resources
      * associated with the stream. This
      * method simply performs <code>in.close()</code>.
-     * @exception IOException  if an I/O error occurs.
-     * @see        java.io.FilterInputStream#in
+     * @throws IOException if an I/O error occurs.
+     * @see java.io.FilterInputStream#in
      */
     @Override
     public void close() throws IOException {

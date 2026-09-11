@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.core.info;
 import java.util.ArrayList;
@@ -27,20 +20,20 @@ import net.hasor.core.binder.BindInfoBuilder;
 /**
  * 用于定义Bean，实现了Bean配置接口{@link BindInfoBuilder}，配置的信息通过{@link BindInfo}接口展现出来。
  * <p>同时实现了{@link CustomerProvider}和{@link ScopeProvider}接口。表示着这个Bean定义支持自定义{@link Supplier}和{@link Scope}。
- * @version : 2014年7月3日
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2014年7月3日
  */
 public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements//
         BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T>, ScopeProvider {
-    protected static Logger logger = LoggerFactory.getLogger(AbstractBindInfoProviderAdapter.class);
+    protected static Logger                logger           = LoggerFactory.getLogger(AbstractBindInfoProviderAdapter.class);
     //1.基本属性
-    private String             bindID     = null;
-    private String             bindName   = null;
-    private Class<T>           bindType   = null;
-    private Class<? extends T> sourceType = null;
+    private          String                bindID           = null;
+    private          String                bindName         = null;
+    private          Class<T>              bindType         = null;
+    private          Class<? extends T>    sourceType       = null;
     //2.系统属性
-    private Supplier<? extends T> customerProvider = null;
-    private List<Supplier<Scope>> scopeProvider    = null;
+    private          Supplier<? extends T> customerProvider = null;
+    private          List<Supplier<Scope>> scopeProvider    = null;
 
     public String getBindID() {
         if (this.bindID == null) {
@@ -58,12 +51,12 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         return this.bindType;
     }
 
-    /** 调用 bindType 之后，并通过 to 方法明确指明的具体实现类。*/
+    /** 调用 bindType 之后，并通过 to 方法明确指明的具体实现类。 */
     public Class<? extends T> getSourceType() {
         return this.sourceType;
     }
 
-    /**获取 {@link #setCustomerProvider(Supplier)} 方法设置的 Provider 对象。*/
+    /** 获取 {@link #setCustomerProvider(Supplier)} 方法设置的 Provider 对象。 */
     public Supplier<? extends T> getCustomerProvider() {
         return this.customerProvider;
     }

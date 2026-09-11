@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.core.container;
 import java.util.*;
@@ -27,19 +20,19 @@ import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.GenerateBeanID;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.spi.BindInfoProvisionListener;
+
 /**
  * 负责管理 Bean 的元信息
- *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2019-06-20
  */
 public class BindInfoContainer extends AbstractContainer implements Observer {
-    protected static Logger                               logger           = LoggerFactory.getLogger(BindInfoContainer.class);
-    private final List<BindInfo<?>>                       allBindInfoList  = new ArrayList<>();
-    private final ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<>();
-    private final SpiCallerContainer                      spiCallerContainer;
-    private final GenerateBeanID                          generateBeanID   = new GenerateBeanID();
+    protected static Logger                                  logger           = LoggerFactory.getLogger(BindInfoContainer.class);
+    private final    List<BindInfo<?>>                       allBindInfoList  = new ArrayList<>();
+    private final    ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<>();
+    private final    ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<>();
+    private final    SpiCallerContainer                      spiCallerContainer;
+    private final    GenerateBeanID                          generateBeanID   = new GenerateBeanID();
 
     public BindInfoContainer(SpiCallerContainer spiCallerContainer) {
         this.spiCallerContainer = spiCallerContainer;
@@ -56,7 +49,6 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
 
     /**
      * 通过一个类型获取所有绑定该类型下的绑定信息。
-     *
      * @param bindType bean type
      * @return 返回所有符合条件的绑定信息。
      */
@@ -78,7 +70,6 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
 
     /**
      * 通过一个类型获取所有绑定该类型下的绑定信息。
-     *
      * @param withName 绑定名
      * @param bindType bean type
      * @return 返回所有符合条件的绑定信息。

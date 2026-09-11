@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.test.core.mods;
 import net.hasor.cobble.logging.Logger;
@@ -19,13 +12,14 @@ import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
+
 /**
  * 在模块中处理容器启动
- * @version : 2013-9-14
  * @author 赵永春 (zyc@byshell.org)
+ * @version : 2013-9-14
  */
 public class OnLifeModule implements Module {
-    protected Logger           logger = LoggerFactory.getLogger(getClass());
+    protected           Logger logger = LoggerFactory.getLogger(getClass());
     public static final String STR    = "say form Mod_1.";
 
     public void loadModule(ApiBinder apiBinder) throws Throwable {

@@ -1,16 +1,23 @@
+/*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
 package net.hasor.web.render;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Test;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.WebModule;
 import net.hasor.web.annotation.Get;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class WebRenderDefaultsTest extends AbstractTest {
     public static class Action {

@@ -1,19 +1,17 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.core.info;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Supplier;
 import net.hasor.cobble.BeanUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.dynamic.DynamicProperty;
@@ -22,16 +20,9 @@ import net.hasor.cobble.reflect.ConstructorUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Supplier;
-
 /**
- *
- * @version : 2014年7月4日
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2014年7月4日
  */
 public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderAdapter<T> {
     private final Map<Integer, ParamInfo>              constructorParams;
@@ -124,7 +115,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         return new ConstructorInfo(types, providers);
     }
 
-    /**获得需要IoC的属性列表*/
+    /** 获得需要IoC的属性列表 */
     public Constructor<?> getConstructor(Class<?> targetClass, AppContext appContext) throws NoSuchMethodException {
         Class<?>[] constructorParamTypes = genConstructorInfo(appContext).types;
         Constructor<?> c = ConstructorUtils.getAccessibleConstructor(targetClass, constructorParamTypes);
@@ -155,12 +146,12 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         }
     }
 
-    /**获得需要IoC的属性列表*/
+    /** 获得需要IoC的属性列表 */
     public Supplier<?>[] getConstructorParams(AppContext appContext) {
         return genConstructorInfo(appContext).providers;
     }
 
-    /**获得需要IoC的属性列表*/
+    /** 获得需要IoC的属性列表 */
     public Map<String, Supplier<?>> getPropertyMap(AppContext appContext) {
         Map<String, Supplier<?>> PropertyMap = new HashMap<>();
         for (Entry<String, ParamInfo> ent : injectProperty.entrySet()) {
@@ -209,7 +200,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         return sourceType;
     }
 
-    /**获得初始化方法。*/
+    /** 获得初始化方法。 */
     public Method getInitMethod(Class<?> targetClass) {
         try {
             if (StringUtils.isNotBlank(this.initMethod)) {
@@ -221,7 +212,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         return null;
     }
 
-    /**获得销毁方法。*/
+    /** 获得销毁方法。 */
     public Method getDestroyMethod(Class<?> targetClass) {
         try {
             if (StringUtils.isNotBlank(this.destroyMethod)) {

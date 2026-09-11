@@ -1,16 +1,20 @@
+/*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
 package net.hasor.boot.web;
-
-import static org.junit.Assert.*;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
-
-import org.junit.After;
-import org.junit.Test;
-
 import net.hasor.boot.fixtures.render.RenderApplication;
 import net.hasor.core.Hasor;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public abstract class RenderDefaultsIntegrationTest extends ContainerIntegrationTest {
     private WebServer server;

@@ -1,48 +1,41 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.render;
 import net.hasor.web.Invoker;
 
 /**
  * 渲染插件 Api
- * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-01-10
  */
 public interface RenderInvoker extends Invoker {
-    /**要渲染的资源。*/
+    /** 要渲染的资源。 */
     String renderTo();
 
-    /**指定要渲染的资源，并指定渲染器。*/
+    /** 指定要渲染的资源，并指定渲染器。 */
     void renderTo(String viewName);
 
-    /**指定要渲染的资源，并指定渲染器。*/
+    /** 指定要渲染的资源，并指定渲染器。 */
     void renderTo(String renderType, String viewName);
 
-    /**当前使用的渲染器。*/
+    /** 当前使用的渲染器。 */
     String renderType();
 
-    /**指定渲染器。*/
+    /** 指定渲染器。 */
     void renderType(String renderType);
 
-    /**是否启用布局功能。*/
+    /** 是否启用布局功能。 */
     boolean layout();
 
-    /**启用布局功能。*/
+    /** 启用布局功能。 */
     void layoutEnable();
 
-    /**禁用布局功能。*/
+    /** 禁用布局功能。 */
     void layoutDisable();
 }

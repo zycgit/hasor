@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.core;
 import java.io.Closeable;
@@ -42,17 +35,17 @@ import net.hasor.core.spi.SpiJudge;
  * Bind 参考了 Google Guice 的 Binder 接口设计，功能上大体相似。目的是提供一种不同于配置文件、注解方式的配置方法。
  * 这样一种设计并不是指 Hasor 抛弃配置文件和注解的优势，开发者可以根据项目的特征自行选择。
  * Hasor 的开发者可以将某一个类使用 ApiBinder 接口的 bindType 方法注册到容器中。这个工作与 Spring 配置文件中 Bean 配置的作用并无不同。
- * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2013-4-10
  */
 public interface ApiBinder {
     /** @return 获取 {@link Settings} */
     Settings getSettings();
 
-    /** @return 事件上下文*/
+    /** @return 事件上下文 */
     EventContext getEventContext();
 
-    /** @return 事件上下文*/
+    /** @return 事件上下文 */
     ResourceLoader getResourceLoader();
 
     /** 获取当创建Bean时使用的{@link ClassLoader} */
@@ -63,7 +56,7 @@ public interface ApiBinder {
 
     /**
      * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
-     *  -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
+     * -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
      * @param featureType 特征类型
      * @param scanPackages 扫描的包范围
      * @return 返回匹配的类集合。
@@ -232,13 +225,13 @@ public interface ApiBinder {
 
     /**
      * bind type to context , 通过返回的 Builder 可以对绑定进行后续更加细粒度的配置。<p>
-     *  -- {@link NamedBindingBuilder}类型，为绑定起名字。继承自：{@link LinkedBindingBuilder}<br>
-     *  -- {@link LinkedBindingBuilder}类型，为绑定设置实现方式。继承自：{@link InjectPropertyBindingBuilder}<br>
-     *  -- {@link InjectPropertyBindingBuilder}类型，为绑定设置注入属性。继承自：{@link LifeBindingBuilder}<br>
-     *  -- {@link LifeBindingBuilder}类型，为绑定设置生命周期方法配置。继承自：{@link ScopedBindingBuilder}<br>
-     *  -- {@link ScopedBindingBuilder}类型，为绑定设置作用域。继承自：{@link OptionPropertyBindingBuilder}<br>
-     *  -- {@link OptionPropertyBindingBuilder}类型，为绑定设置作用域。继承自：{@link MetaDataBindingBuilder}<br>
-     *  -- {@link MetaDataBindingBuilder}类型，绑定元信息配置。<br>
+     * -- {@link NamedBindingBuilder}类型，为绑定起名字。继承自：{@link LinkedBindingBuilder}<br>
+     * -- {@link LinkedBindingBuilder}类型，为绑定设置实现方式。继承自：{@link InjectPropertyBindingBuilder}<br>
+     * -- {@link InjectPropertyBindingBuilder}类型，为绑定设置注入属性。继承自：{@link LifeBindingBuilder}<br>
+     * -- {@link LifeBindingBuilder}类型，为绑定设置生命周期方法配置。继承自：{@link ScopedBindingBuilder}<br>
+     * -- {@link ScopedBindingBuilder}类型，为绑定设置作用域。继承自：{@link OptionPropertyBindingBuilder}<br>
+     * -- {@link OptionPropertyBindingBuilder}类型，为绑定设置作用域。继承自：{@link MetaDataBindingBuilder}<br>
+     * -- {@link MetaDataBindingBuilder}类型，绑定元信息配置。<br>
      * @param type bean type。
      * @return 返回 - {@link NamedBindingBuilder}。
      */
@@ -444,8 +437,8 @@ public interface ApiBinder {
     default <T> Supplier<T> getProvider(Class<T> targetType) {
         Objects.requireNonNull(targetType, "targetType is null.");
         class TargetSupplierByClass implements AppContextAware, Supplier<T> {
-            private final Class<T> targetType;
-            private AppContext     appContext = null;
+            private final Class<T>   targetType;
+            private       AppContext appContext = null;
 
             TargetSupplierByClass(Class<T> targetType) {
                 this.targetType = targetType;
@@ -495,7 +488,7 @@ public interface ApiBinder {
 
     /*--------------------------------------------------------------------------------------Faces*/
 
-    /**给绑定起个名字。*/
+    /** 给绑定起个名字。 */
     interface NamedBindingBuilder<T> extends LinkedBindingBuilder<T> {
         /**
          * 绑定一个名称(并同时设置ID,为随机ID)。
@@ -544,7 +537,7 @@ public interface ApiBinder {
         NamedBindingBuilder<T> bothWith(String nameString);
     }
 
-    /**处理类型和实现的绑定。*/
+    /** 处理类型和实现的绑定。 */
     interface LinkedBindingBuilder<T> extends TypeSupplierBindingBuilder<T> {
         /**
          * 为绑定设置一个实现类。
@@ -577,7 +570,7 @@ public interface ApiBinder {
         InjectConstructorBindingBuilder<T> toConstructor(Constructor<? extends T> constructor);
     }
 
-    /**构造方法依赖注入，该接口的配置会覆盖注解  {@link ConstructorBy}。*/
+    /** 构造方法依赖注入，该接口的配置会覆盖注解  {@link ConstructorBy}。 */
     interface InjectConstructorBindingBuilder<T> extends LifeBindingBuilder<T> {
         /**
          * 设置构造方法注入属性。
@@ -706,7 +699,7 @@ public interface ApiBinder {
         TypeSupplierBindingBuilder<T> dynamicReadOnlyProperty(String name, Class<?> propertyType, BindInfo<? extends DynamicProperty> delegate);
     }
 
-    /**属性依赖注入*/
+    /** 属性依赖注入 */
     interface InjectPropertyBindingBuilder<T> extends LifeBindingBuilder<T> {
         /**
          * 值类型的属性注入。
@@ -747,18 +740,22 @@ public interface ApiBinder {
         InjectPropertyBindingBuilder<T> overwriteAnnotation();
     }
 
-    /**负责启动之后的生命周期方法映射。*/
+    /** 负责启动之后的生命周期方法映射。 */
     interface LifeBindingBuilder<T> extends ScopedBindingBuilder<T> {
-        /**配置当对象被创建时调用的方法，如果{@link Init @Init()}注解也定义了一个初始化方法则，注解方式优先于配置。
-         * @see net.hasor.core.Init*/
+        /**
+         * 配置当对象被创建时调用的方法，如果{@link Init @Init()}注解也定义了一个初始化方法则，注解方式优先于配置。
+         * @see net.hasor.core.Init
+         */
         LifeBindingBuilder<T> initMethod(String methodName);
 
-        /**配置当容器销毁时调用的方法，如果{@link Destroy @Destroy()}注解也定义了一个初始化方法则，注解方式优先于配置。
-         * @see net.hasor.core.Destroy*/
+        /**
+         * 配置当容器销毁时调用的方法，如果{@link Destroy @Destroy()}注解也定义了一个初始化方法则，注解方式优先于配置。
+         * @see net.hasor.core.Destroy
+         */
         LifeBindingBuilder<T> destroyMethod(String methodName);
     }
 
-    /**Bean存在的作用域*/
+    /** Bean存在的作用域 */
     interface ScopedBindingBuilder<T> extends OptionPropertyBindingBuilder<T> {
         /**
          * 注册为原型模式(会覆盖类型上本身的作用域注释配置)。<p>
@@ -825,11 +822,11 @@ public interface ApiBinder {
         OptionPropertyBindingBuilder<T> toScope(String... scopeName);
     }
 
-    /** 选项和属性的配置。*/
+    /** 选项和属性的配置。 */
     interface OptionPropertyBindingBuilder<T> extends MetaDataBindingBuilder<T> {
     }
 
-    /**绑定元信息*/
+    /** 绑定元信息 */
     interface MetaDataBindingBuilder<T> {
         /**
          * 设置元信息。

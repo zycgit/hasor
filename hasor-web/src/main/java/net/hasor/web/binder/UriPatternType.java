@@ -1,12 +1,16 @@
+/*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
 /**
  * Copyright (C) 2008 Google Inc.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
  * http://www.apache.org/licenses/LICENSE-2.0
- *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +46,7 @@ public enum UriPatternType {
         private final String pattern;
         private final Kind   patternKind;
 
-        private static enum Kind {
+        private enum Kind {
             PREFIX,
             SUFFIX,
             LITERAL,
@@ -93,29 +97,27 @@ public enum UriPatternType {
     }
 
     /**
-     * Matches URIs using a regular expression.
-     * @author dhanji@gmail.com (Dhanji R. Prasanna)
-     */
-    private static class RegexUriPatternMatcher implements UriPatternMatcher {
-        private final Pattern pattern;
+         * Matches URIs using a regular expression.
+         * @author dhanji@gmail.com (Dhanji R. Prasanna)
+         */
+        private record RegexUriPatternMatcher(Pattern pattern) implements UriPatternMatcher {
+            public RegexUriPatternMatcher(final String pattern) {
+                this(Pattern.compile(pattern));
+            }
 
-        public RegexUriPatternMatcher(final String pattern) {
-            this.pattern = Pattern.compile(pattern);
-        }
+            @Override
+            public boolean matches(final String uri) {
+                return null != uri && this.pattern.matcher(uri).matches();
+            }
 
-        @Override
-        public boolean matches(final String uri) {
-            return null != uri && this.pattern.matcher(uri).matches();
-        }
+            @Override
+            public UriPatternType getPatternType() {
+                return UriPatternType.REGEX;
+            }
 
-        @Override
-        public UriPatternType getPatternType() {
-            return UriPatternType.REGEX;
+            @Override
+            public String getPattern() {
+                return pattern.pattern();
+            }
         }
-
-        @Override
-        public String getPattern() {
-            return pattern.pattern();
-        }
-    }
 }

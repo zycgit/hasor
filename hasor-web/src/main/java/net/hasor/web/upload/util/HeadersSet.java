@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,14 +22,13 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.util;
-import net.hasor.web.FileItemHeaders;
-
 import java.util.*;
+import net.hasor.web.FileItemHeaders;
 
 /**
  * Default implementation of the {@link FileItemHeaders} interface.
- * @since 1.2.1
  * @version $Id: HeadersSet.java 1458379 2013-03-19 16:16:47Z britter $
+ * @since 1.2.1
  */
 public class HeadersSet implements FileItemHeaders {
     /**
@@ -64,7 +70,6 @@ public class HeadersSet implements FileItemHeaders {
 
     /**
      * Method to add header values to this instance.
-     *
      * @param name name of this header
      * @param value value of this header
      */

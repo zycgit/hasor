@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2012-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.boot.loader.jar;
 import java.io.IOException;
@@ -22,6 +15,7 @@ import java.util.jar.Attributes.Name;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
+
 /**
  * Provides access to entries from a {@link JarFile}. In order to reduce memory
  * consumption entry details are stored using int arrays. The {@code hashCodes} array
@@ -37,7 +31,7 @@ import java.util.zip.ZipEntry;
  */
 class JarFileEntries implements CentralDirectoryVisitor, Iterable<JarEntry> {
     private static final Runnable NO_VALIDATION   = () -> {
-                                                  };
+    };
     private static final String   META_INF_PREFIX = "META-INF/";
     private static final Name     MULTI_RELEASE   = new Name("Multi-Release");
     private static final int      BASE_VERSION    = 8;
@@ -54,25 +48,25 @@ class JarFileEntries implements CentralDirectoryVisitor, Iterable<JarEntry> {
         RUNTIME_VERSION = version;
     }
 
-    private static final long              LOCAL_FILE_HEADER_SIZE = 30;
-    private static final char              SLASH                  = '/';
-    private static final char              NO_SUFFIX              = 0;
-    protected static final int             ENTRY_CACHE_SIZE       = 25;
-    private final JarFile                  jarFile;
-    private final JarEntryFilter           filter;
-    private RandomFile                     centralDirectoryData;
-    private int                            size;
-    private int[]                          hashCodes;
-    private int[]                          centralDirectoryOffsets;
-    private int[]                          positions;
-    private Boolean                        multiReleaseJar;
-    private JarEntryCertification[]        certifications;
-    private final Map<Integer, FileHeader> entriesCache           = Collections.synchronizedMap(new LinkedHashMap<Integer, FileHeader>(16, 0.75f, true) {
-                                                                      @Override
-                                                                      protected boolean removeEldestEntry(Map.Entry<Integer, FileHeader> eldest) {
-                                                                          return size() >= ENTRY_CACHE_SIZE;
-                                                                      }
-                                                                  });
+    private static final   long                     LOCAL_FILE_HEADER_SIZE = 30;
+    private static final   char                     SLASH                  = '/';
+    private static final   char                     NO_SUFFIX              = 0;
+    protected static final int                      ENTRY_CACHE_SIZE       = 25;
+    private final          JarFile                  jarFile;
+    private final          JarEntryFilter           filter;
+    private                RandomFile               centralDirectoryData;
+    private                int                      size;
+    private                int[]                    hashCodes;
+    private                int[]                    centralDirectoryOffsets;
+    private                int[]                    positions;
+    private                Boolean                  multiReleaseJar;
+    private                JarEntryCertification[]  certifications;
+    private final          Map<Integer, FileHeader> entriesCache           = Collections.synchronizedMap(new LinkedHashMap<Integer, FileHeader>(16, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Integer, FileHeader> eldest) {
+            return size() >= ENTRY_CACHE_SIZE;
+        }
+    });
 
     JarFileEntries(JarFile jarFile, JarEntryFilter filter) {
         this.jarFile = jarFile;
@@ -351,7 +345,7 @@ class JarFileEntries implements CentralDirectoryVisitor, Iterable<JarEntry> {
      */
     private final class EntryIterator implements Iterator<JarEntry> {
         private final Runnable validator;
-        private int            index = 0;
+        private       int      index = 0;
 
         private EntryIterator(Runnable validator) {
             this.validator = validator;

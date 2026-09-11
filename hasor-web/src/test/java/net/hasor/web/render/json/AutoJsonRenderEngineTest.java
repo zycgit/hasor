@@ -1,14 +1,21 @@
+/*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
 package net.hasor.web.render.json;
-import static org.junit.Assert.*;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 import net.hasor.web.Invoker;
 import net.hasor.web.render.RenderInvoker;
+import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
+import static org.junit.Assert.*;
 
 public class AutoJsonRenderEngineTest {
     private static final String[] LIBRARIES = { "com.fasterxml.jackson.", "com.google.gson.", "com.alibaba.fastjson.", "com.alibaba.fastjson2." };
@@ -26,6 +33,7 @@ public class AutoJsonRenderEngineTest {
                     for (int index : present) {
                         if (index == i) {
                             allowed = true;
+                            break;
                         }
                     }
                     if (!allowed) {

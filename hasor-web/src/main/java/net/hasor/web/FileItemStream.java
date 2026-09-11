@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,25 +22,21 @@
  * limitations under the License.
  */
 package net.hasor.web;
-import net.hasor.web.upload.FileUpload;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.servlet.http.HttpServletRequest;
+import net.hasor.web.upload.FileUpload;
 
 /**
  * <p> This interface provides access to a file or form item that was
  * received within a <code>multipart/form-data</code> POST request.
  * The items contents are retrieved by calling {@link #openStream()}.</p>
- *
- * <p>Instances of this class are created by accessing the iterator, 
+ * <p>Instances of this class are created by accessing the iterator,
  * returned by {@link FileUpload#getItemIterator(HttpServletRequest)}.</p>
- *
  * <p><em>Note</em>: There is an interaction between the iterator and
  * its associated instances of {@link FileItemStream}: By invoking
  * {@link java.util.Iterator#hasNext()} on the iterator, you discard all data,
  * which hasn't been read so far from the previous data.</p>
- *
  * @version $Id: FileItemStream.java 1454691 2013-03-09 12:15:54Z simonetripodi $
  */
 public interface FileItemStream {
@@ -54,7 +57,6 @@ public interface FileItemStream {
      * the browser (or other client software). In most cases, this will be the
      * base file name, without path information. However, some clients, such as
      * the Opera browser, do include path information.
-     *
      * @return The original filename in the client's filesystem.
      */
     String getName();
@@ -68,7 +70,7 @@ public interface FileItemStream {
     /**
      * Determines whether or not a <code>FileItem</code> instance represents a simple form field.
      * @return <code>true</code> if the instance represents a simple form
-     *         field; <code>false</code> if it represents an uploaded file.
+     * field; <code>false</code> if it represents an uploaded file.
      */
     boolean isFormField();
 

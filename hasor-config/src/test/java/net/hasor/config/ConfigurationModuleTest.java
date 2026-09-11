@@ -1,25 +1,18 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.config;
-import static org.junit.Assert.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.Test;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.*;
 import net.hasor.core.Module;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class ConfigurationModuleTest {
     @Test
@@ -41,7 +34,7 @@ public class ConfigurationModuleTest {
     @Test
     public void binderScanUsesExplicitScope() throws Exception {
         try (AppContext context = manualHasor().build(binder -> binder.installModule(ConfigurationModule.of(binder.findClass(Configuration.class, "net.hasor.config.autoscan").toArray(Class<?>[]::new))))) {
-            assertEquals("module-loaded", context.getInstance(net.hasor.config.autoscan.AutoScanService.class).getValue());
+            assertEquals("module-loaded", context.getInstance(net.hasor.config.autoscan.AutoScanService.class).value());
         }
     }
 
@@ -55,7 +48,7 @@ public class ConfigurationModuleTest {
     @Test
     public void autoFactoryUsesCoreScope() throws Exception {
         try (AppContext context = manualHasor().addSettings(Settings.DefaultNameSpace, "hasor.loadPackages", "net.hasor.config.autoscan").build(ConfigurationModule.auto())) {
-            assertEquals("module-loaded", context.getInstance(net.hasor.config.autoscan.AutoScanService.class).getValue());
+            assertEquals("module-loaded", context.getInstance(net.hasor.config.autoscan.AutoScanService.class).value());
         }
     }
 
@@ -241,7 +234,7 @@ public class ConfigurationModuleTest {
     public static class LifecycleBean {
         private static final AtomicInteger initialized = new AtomicInteger();
         private static final AtomicInteger destroyed   = new AtomicInteger();
-        private boolean                    ready;
+        private              boolean       ready;
 
         public void init() {
             this.ready = true;

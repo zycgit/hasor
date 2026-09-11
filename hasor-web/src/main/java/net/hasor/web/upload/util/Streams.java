@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -15,13 +22,12 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.util;
-import net.hasor.cobble.io.IOUtils;
-import net.hasor.web.FileItemStream;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import net.hasor.cobble.io.IOUtils;
+import net.hasor.web.FileItemStream;
 
 /**
  * Utility class for working with streams.
@@ -48,15 +54,13 @@ public final class Streams {
      * <pre>
      *   copy(pInputStream, pOutputStream, new byte[8192]);
      * </pre>
-     *
      * @param inputStream The input stream, which is being read.
-     *   It is guaranteed, that {@link InputStream#close()} is called on the stream.
+     * It is guaranteed, that {@link InputStream#close()} is called on the stream.
      * @param outputStream The output stream, to which data should
-     *   be written. May be null, in which case the input streams contents are simply discarded.
+     * be written. May be null, in which case the input streams contents are simply discarded.
      * @param closeOutputStream True guarantees, that {@link OutputStream#close()}
      * is called on the stream. False indicates, that only
      * {@link OutputStream#flush()} should be called finally.
-     *
      * @return Number of bytes, which have been copied.
      * @throws IOException An I/O error occurred.
      */
@@ -66,16 +70,15 @@ public final class Streams {
 
     /**
      * Copies the contents of the given {@link InputStream} to the given {@link OutputStream}.
-     *
      * @param inputStream The input stream, which is being read.
-     *   It is guaranteed, that {@link InputStream#close()} is called on the stream.
+     * It is guaranteed, that {@link InputStream#close()} is called on the stream.
      * @param outputStream The output stream, to which data should
-     *   be written. May be null, in which case the input streams contents are simply discarded.
+     * be written. May be null, in which case the input streams contents are simply discarded.
      * @param closeOutputStream True guarantees, that {@link OutputStream#close()}
-     *   is called on the stream. False indicates, that only
-     *   {@link OutputStream#flush()} should be called finally.
+     * is called on the stream. False indicates, that only
+     * {@link OutputStream#flush()} should be called finally.
      * @param buffer Temporary buffer, which is to be used for
-     *   copying data.
+     * copying data.
      * @return Number of bytes, which have been copied.
      * @throws IOException An I/O error occurred.
      */
@@ -119,9 +122,9 @@ public final class Streams {
      * This convenience method allows to read a {@link FileItemStream}'s
      * content into a string. The platform's default character encoding is used for converting bytes into characters.
      * @param inputStream The input stream to read.
-     * @see #asString(InputStream, String)
      * @return The streams contents, as a string.
      * @throws IOException An I/O error occurred.
+     * @see #asString(InputStream, String)
      */
     public static String asString(InputStream inputStream) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -132,12 +135,11 @@ public final class Streams {
     /**
      * This convenience method allows to read a {@link FileItemStream}'s
      * content into a string, using the given character encoding.
-     *
      * @param inputStream The input stream to read.
      * @param encoding The character encoding, typically "UTF-8".
-     * @see #asString(InputStream)
      * @return The streams contents, as a string.
      * @throws IOException An I/O error occurred.
+     * @see #asString(InputStream)
      */
     public static String asString(InputStream inputStream, String encoding) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -148,7 +150,6 @@ public final class Streams {
     /**
      * Checks, whether the given file name is valid in the sense, that it doesn't contain any NUL characters.
      * If the file name is valid, it will be returned without any modifications. Otherwise, an {@link IllegalArgumentException} is raised.
-     *
      * @param fileName The file name to check
      * @return Unmodified file name, if valid.
      * @throws IllegalArgumentException The file name was found to be invalid.

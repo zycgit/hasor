@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web;
 import java.util.Enumeration;
@@ -31,41 +24,41 @@ import net.hasor.core.AppContext;
 
 /**
  * 请求调用
- * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2016-12-26
  */
 public interface Invoker extends MimeType {
-    /**数据池中的key，该数据是表示请求方法的执行返回值。*/
+    /** 数据池中的key，该数据是表示请求方法的执行返回值。 */
     String RETURN_DATA_KEY = "resultData";  //
-    /**数据池中的key，数据池中的自关联，相当于 this的含义。*/
+    /** 数据池中的key，数据池中的自关联，相当于 this的含义。 */
     String ROOT_DATA_KEY   = "rootData";    //
-    /**数据池中的key，request对象。*/
+    /** 数据池中的key，request对象。 */
     String REQUEST_KEY     = "request";     //
-    /**数据池中的key，response对象。*/
+    /** 数据池中的key，response对象。 */
     String RESPONSE_KEY    = "response";    //
 
-    /** 获取当前{@link AppContext} 对象。*/
+    /** 获取当前{@link AppContext} 对象。 */
     AppContext getAppContext();
 
-    /** 获取 {@link HttpServletRequest} 对象。*/
+    /** 获取 {@link HttpServletRequest} 对象。 */
     HttpServletRequest getHttpRequest();
 
-    /** 获取 {@link HttpServletResponse} 对象。*/
+    /** 获取 {@link HttpServletResponse} 对象。 */
     HttpServletResponse getHttpResponse();
 
-    /** 安排一个异步任务来执行接下来的任务。*/
+    /** 安排一个异步任务来执行接下来的任务。 */
     <T> Future<T> asyncExecute(EFunction<Invoker, T, Throwable> consumer, Executor executor);
 
-    /** 安排一个异步任务来执行接下来的任务。*/
+    /** 安排一个异步任务来执行接下来的任务。 */
     default <T> Future<T> asyncExecute(EFunction<Invoker, T, Throwable> consumer) {
         Executor executor = this.getAppContext().getEventContext().getExecutor();
         return this.asyncExecute(consumer, executor);
     }
 
-    /** 设置内容类型类型，如果没有配置那么会通过 renderType 配置进行自动推断，若 @RenderType 也未配置，那么不会进行任何操作。*/
+    /** 设置内容类型类型，如果没有配置那么会通过 renderType 配置进行自动推断，若 @RenderType 也未配置，那么不会进行任何操作。 */
     String contentType();
 
-    /** 设置内容类型类型，如果没有配置那么会通过 renderType 配置进行自动推断，若 @RenderType 也未配置，那么不会进行任何操作。*/
+    /** 设置内容类型类型，如果没有配置那么会通过 renderType 配置进行自动推断，若 @RenderType 也未配置，那么不会进行任何操作。 */
     void contentType(String contentType);
 
     /** 本次请求的 Action，如果没有命中任何 Mapping 那么会返回空。例如在 InvokerFilter 拦截器中经常会看到空的 ownerMapping */
@@ -74,7 +67,7 @@ public interface Invoker extends MimeType {
     /** 如果请求是 application/json 类型的，那么可以通过这个方法获取 Json 数据 */
     String getJsonBodyString();
 
-    /** 获取数据容器中已经保存的数据 keys 。*/
+    /** 获取数据容器中已经保存的数据 keys 。 */
     default Set<String> keySet() {
         Enumeration<String> names = this.getHttpRequest().getAttributeNames();
         HashSet<String> nameSet = new HashSet<>();
@@ -106,8 +99,8 @@ public interface Invoker extends MimeType {
 
     /**
      * 从数据池中删除数据，如果尝试删除已经被锁定的key，会引发 {@link UnsupportedOperationException} 类型异常。
-     * @see #lockKey(String)
      * @param key 数据key
+     * @see #lockKey(String)
      */
     default void remove(String key) {
         if (StringUtils.isBlank(key) || this.isLockKey(key)) {
@@ -117,11 +110,11 @@ public interface Invoker extends MimeType {
     }
 
     /**
-     /**
+     * /**
      * 将新的值设置到数据池中，如果尝试覆盖已经被锁定的key，会引发 {@link UnsupportedOperationException} 类型异常。
-     * @see #lockKey(String)
      * @param key 数据key
      * @param value 数据 value
+     * @see #lockKey(String)
      */
     default void put(String key, Object value) {
         if (StringUtils.isBlank(key) || this.isLockKey(key)) {
@@ -142,15 +135,17 @@ public interface Invoker extends MimeType {
      */
     void lockKey(String key);
 
-    /**获取当前请求路径。相当于下面这样的代码：
+    /**
+     * 获取当前请求路径。相当于下面这样的代码：
      * <pre>
-     String contextPath = httpRequest.getContextPath();
-     String requestPath = httpRequest.getRequestURI();
-     if (requestPath.startsWith(contextPath)) {
-     requestPath = requestPath.substring(contextPath.length());
-     }
-     return requestPath;
-     </pre>*/
+     * String contextPath = httpRequest.getContextPath();
+     * String requestPath = httpRequest.getRequestURI();
+     * if (requestPath.startsWith(contextPath)) {
+     * requestPath = requestPath.substring(contextPath.length());
+     * }
+     * return requestPath;
+     * </pre>
+     */
     default String getRequestPath() {
         String contextPath = this.getHttpRequest().getContextPath();
         String requestPath = this.getHttpRequest().getRequestURI();
@@ -166,7 +161,6 @@ public interface Invoker extends MimeType {
      * otherwise specified by the implementing class, actions are performed in
      * the order of entry set iteration (if an iteration order is specified.)
      * Exceptions thrown by the action are relayed to the caller.
-     *
      * @param action The action to be performed for each entry
      * @throws NullPointerException if the specified action is null
      * @since 1.8
@@ -183,7 +177,6 @@ public interface Invoker extends MimeType {
      * If the specified key is not already associated with a value (or is mapped
      * to {@code null}) associates it with the given value and returns
      * {@code null}, else returns the current value.
-     *
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @throws UnsupportedOperationException if the {@code put} operation is not supported by this map
@@ -198,12 +191,10 @@ public interface Invoker extends MimeType {
     /**
      * Returns the value to which the specified key is mapped, or
      * {@code defaultValue} if this map contains no mapping for the key.
-     *
      * The default implementation makes no guarantees about synchronization
      * or atomicity properties of this method. Any implementation providing
      * atomicity guarantees must override this method and document its
      * concurrency properties.
-     *
      * @param key the key whose associated value is to be returned
      * @param defaultValue the default mapping of the key
      * @return the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping for the key
@@ -217,12 +208,10 @@ public interface Invoker extends MimeType {
     /**
      * Returns the value to which the specified key is mapped, or
      * {@code defaultValue} if this map contains no mapping for the key.
-     *
      * The default implementation makes no guarantees about synchronization
      * or atomicity properties of this method. Any implementation providing
      * atomicity guarantees must override this method and document its
      * concurrency properties.
-     *
      * @param key the key whose associated value is to be returned
      * @param defaultValue the default mapping of the key
      * @return the value to which the specified key is mapped, or {@code defaultValue} if this map contains no mapping for the key
@@ -236,13 +225,11 @@ public interface Invoker extends MimeType {
      * If the specified key is not already associated with a value (or is mapped
      * to {@code null}), attempts to compute its value using the given mapping
      * function and enters it into this map unless {@code null}.
-     *
      * <p>If the function returns {@code null} no mapping is recorded. If
      * the function itself throws an (unchecked) exception, the
      * exception is rethrown, and no mapping is recorded.  The most
      * common usage is to construct a new object serving as an initial
      * mapped value or memoized result.
-     *
      * @param key key with which the specified value is to be associated
      * @param mappingFunction the function to compute a value
      * @throws UnsupportedOperationException if the {@code put} operation is not supported by this map

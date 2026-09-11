@@ -1,19 +1,24 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.invoker;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.AppContext;
 import net.hasor.test.web.actions.args.*;
@@ -22,18 +27,6 @@ import net.hasor.web.Invoker;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.render.RenderInvoker;
 import org.junit.Test;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CallerParamsTest extends AbstractTest {
     @Test
@@ -49,8 +42,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
         //
         {
@@ -59,8 +52,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
         //
         {
@@ -69,8 +62,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 0;
             assert ((Integer) ((Map) o).get("intParam")) == 0;
-            assert ((String) ((Map) o).get("strParam")) == null;
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam") == null;
+            assert ((Map) o).get("eptParam") == null;
         }
     }
 
@@ -87,8 +80,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
         //
         {
@@ -97,8 +90,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
     }
 
@@ -121,8 +114,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
         //
         {
@@ -131,8 +124,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
     }
 
@@ -155,8 +148,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
         //
         {
@@ -165,8 +158,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
     }
 
@@ -190,8 +183,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
         //
         {
@@ -201,8 +194,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
     }
 
@@ -225,8 +218,8 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
         //
         {
@@ -235,21 +228,20 @@ public class CallerParamsTest extends AbstractTest {
             assert o instanceof Map;
             assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
             assert ((Integer) ((Map) o).get("intParam")) == 321;
-            assert ((String) ((Map) o).get("strParam")).equals("5678");
-            assert ((String) ((Map) o).get("eptParam")) == null;
+            assert ((Map) o).get("strParam").equals("5678");
+            assert ((Map) o).get("eptParam") == null;
         }
     }
 
     @Test
     public void post_specialParam_test() throws Throwable {
         // This test returns live Servlet/context objects for identity assertions, not JSON data.
-        AppContext appContext = buildWebAppContext(null, context -> net.hasor.core.Hasor.create(context)
-                .addSettings(Settings.DefaultNameSpace, "hasor.render.defaults.objectEngine", "none"), apiBinder -> {
+        AppContext appContext = buildWebAppContext(null, context -> net.hasor.core.Hasor.create(context).addSettings(Settings.DefaultNameSpace, "hasor.render.defaults.objectEngine", "none"), apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/special_param.do").with(SpecialTypeArgsAction.class);
         }, servlet25("/"), LoadModule.Web);
         //
         String data = "a=b,c/1?2";
-        HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/special_param.do?string=" + URLEncoder.encode(data, "utf-8")));
+        HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/special_param.do?string=" + URLEncoder.encode(data, StandardCharsets.UTF_8)));
         Object o = callInvoker(appContext, request);
         assert o instanceof Map;
         assert ((Map) o).get("invoker") instanceof Invoker;

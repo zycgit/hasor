@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web;
 import java.io.IOException;
@@ -38,16 +31,17 @@ import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.binder.ResourceBinder;
 import net.hasor.web.render.Render;
 import net.hasor.web.render.RenderEngine;
+
 /**
  * 提供了注册Servlet和Filter的方法。
- * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2016-12-26
  */
 public interface WebApiBinder extends ApiBinder, MimeType {
     /** Configure static resources independently of business filters and rendering. */
     ResourceBinder addResource(String pathPattern, ResourceLoader... loaders);
 
-    /**获取ServletContext对象。*/
+    /** 获取ServletContext对象。 */
     ServletContext getServletContext();
 
     /** 设置请求编码 */
@@ -61,26 +55,26 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         return this.setRequestCharacter(requestEncoding).setResponseCharacter(responseEncoding);
     }
 
-    /**获取容器支持的Servlet版本。*/
+    /** 获取容器支持的Servlet版本。 */
     ServletVersion getServletVersion();
 
-    /**使用 MappingTo 表达式，创建一个{@link ServletBindingBuilder}。*/
+    /** 使用 MappingTo 表达式，创建一个{@link ServletBindingBuilder}。 */
     default ServletBindingBuilder jeeServlet(String urlPattern, String... morePatterns) {
         return this.jeeServlet(ArrayUtils.add(morePatterns, urlPattern));
     }
 
-    /**使用 MappingTo 表达式，创建一个{@link ServletBindingBuilder}。*/
+    /** 使用 MappingTo 表达式，创建一个{@link ServletBindingBuilder}。 */
     ServletBindingBuilder jeeServlet(String[] morePatterns);
 
     /** Snapshot of mappings registered so far, available during module configuration without creating beans. */
     List<Mapping> getMappings();
 
-    /**使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。*/
+    /** 使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。 */
     default <T> MappingToBindingBuilder<T> mappingTo(String urlPattern, String... morePatterns) {
         return this.mappingTo(ArrayUtils.add(morePatterns, urlPattern));
     }
 
-    /**使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。*/
+    /** 使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。 */
     <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns);
 
     /** 加载带有 @MappingTo 注解的类。 */
@@ -144,36 +138,36 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         return this;
     }
 
-    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
+    /** 使用传统表达式，创建一个{@link FilterBindingBuilder}。 */
     default FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns) {
         return this.filter(ArrayUtils.add(morePatterns, urlPattern));
     }
 
-    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
+    /** 使用传统表达式，创建一个{@link FilterBindingBuilder}。 */
     FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns);
 
-    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
+    /** 使用正则表达式，创建一个{@link FilterBindingBuilder}。 */
     default FilterBindingBuilder<InvokerFilter> filterRegex(String regex, String... regexes) {
         return this.filter(ArrayUtils.add(regexes, regex));
     }
 
-    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
+    /** 使用正则表达式，创建一个{@link FilterBindingBuilder}。 */
     FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes);
 
-    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
+    /** 使用传统表达式，创建一个{@link FilterBindingBuilder}。 */
     default FilterBindingBuilder<Filter> jeeFilter(String urlPattern, String... morePatterns) {
         return this.jeeFilter(ArrayUtils.add(morePatterns, urlPattern));
     }
 
-    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
+    /** 使用传统表达式，创建一个{@link FilterBindingBuilder}。 */
     FilterBindingBuilder<Filter> jeeFilter(String[] morePatterns);
 
-    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
+    /** 使用正则表达式，创建一个{@link FilterBindingBuilder}。 */
     default FilterBindingBuilder<Filter> jeeFilterRegex(String regex, String... regexes) {
         return this.jeeFilterRegex(ArrayUtils.add(regexes, regex));
     }
 
-    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
+    /** 使用正则表达式，创建一个{@link FilterBindingBuilder}。 */
     FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes);
 
     void addMimeType(String type, String mimeType);
@@ -197,7 +191,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     void loadMimeType(Reader reader) throws IOException;
 
     /** 负责配置Filter */
-    static interface FilterBindingBuilder<T> {
+    interface FilterBindingBuilder<T> {
         default void through(Class<? extends T> filterKey) {
             this.through(0, filterKey, null);
         }
@@ -255,8 +249,8 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         void through(int index, BindInfo<? extends T> filterRegister, Map<String, String> initParams);
     }
 
-    /**负责配置Servlet。*/
-    static interface ServletBindingBuilder {
+    /** 负责配置Servlet。 */
+    interface ServletBindingBuilder {
         default void with(Class<? extends HttpServlet> targetKey) {
             with(0, targetKey, null);
         }
@@ -314,8 +308,8 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         void with(int index, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams);
     }
 
-    /**负责配置MappingTo。*/
-    static interface MappingToBindingBuilder<T> {
+    /** 负责配置MappingTo。 */
+    interface MappingToBindingBuilder<T> {
         default void with(Class<? extends T> targetKey) {
             with(0, targetKey);
         }
@@ -358,12 +352,12 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         return this;
     }
 
-    /** 加载 @Render注解配置的渲染器。*/
+    /** 加载 @Render注解配置的渲染器。 */
     default WebApiBinder loadRender(Class<?> renderClass) {
         return loadRender(renderClass, null);
     }
 
-    /** 加载 @Render注解配置的渲染器。*/
+    /** 加载 @Render注解配置的渲染器。 */
     default WebApiBinder loadRender(Class<?> renderClass, TypeSupplier typeSupplier) {
         Objects.requireNonNull(renderClass, "class is null.");
         int modifier = renderClass.getModifiers();
@@ -379,7 +373,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         //
         Class<RenderEngine> engineClass = (Class<RenderEngine>) renderClass;
         Render renderInfo = renderClass.getAnnotation(Render.class);
-        if (renderInfo != null && renderInfo.value().length > 0) {
+        if (renderInfo != null) {
             for (String renderName : renderInfo.value()) {
                 if (typeSupplier == null) {
                     addRender(renderName).to(engineClass);
@@ -399,20 +393,20 @@ public interface WebApiBinder extends ApiBinder, MimeType {
      */
     RenderEngineBindingBuilder addRender(String renderName);
 
-    /** 负责配置RenderEngine。*/
+    /** 负责配置RenderEngine。 */
     interface RenderEngineBindingBuilder {
-        /**绑定实现。*/
+        /** 绑定实现。 */
         <T extends RenderEngine> void to(Class<T> renderEngineType);
 
-        /**绑定实现。*/
+        /** 绑定实现。 */
         default void toInstance(RenderEngine renderEngine) {
             this.toProvider(() -> renderEngine);
         }
 
-        /**绑定实现。*/
+        /** 绑定实现。 */
         void toProvider(Supplier<? extends RenderEngine> renderEngineProvider);
 
-        /**绑定实现。*/
+        /** 绑定实现。 */
         void bindToInfo(BindInfo<? extends RenderEngine> renderEngineInfo);
     }
     //

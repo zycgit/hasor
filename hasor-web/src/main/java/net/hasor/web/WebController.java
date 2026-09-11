@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web;
 import java.io.IOException;
@@ -34,10 +27,9 @@ import net.hasor.web.upload.factorys.disk.DiskFileItemFactory;
  * 昨夜西风凋碧树。独上高楼，望尽天涯路。 <br>
  * 衣带渐宽终不悔，为伊消得人憔悴。 <br>
  * 众里寻她千百度，蓦然回首，那人却在灯火阑珊处。
- *
- * @version : 2013-8-14
  * @author JFinal
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2013-8-14
  */
 public class WebController implements Controller {
     private final ThreadLocal<Invoker> invoker = new ThreadLocal<>();
@@ -534,16 +526,16 @@ public class WebController implements Controller {
     //------------------------
 
     /**
-     *  返回 Invoker 保存的数据。
-     *  @return 返回数据
+     * 返回 Invoker 保存的数据。
+     * @return 返回数据
      */
     protected <T> T getData(String name) {
         return (T) this.getInvoker().get(name);
     }
 
     /**
-     *  设置 Invoker 保存的数据。
-     *  @return 返回 this
+     * 设置 Invoker 保存的数据。
+     * @return 返回 this
      */
     protected WebController putData(String name, Object value) {
         this.getInvoker().put(name, value);
@@ -551,8 +543,8 @@ public class WebController implements Controller {
     }
 
     /**
-     *  删除 Invoker 保存的数据。
-     *  @return 返回 this
+     * 删除 Invoker 保存的数据。
+     * @return 返回 this
      */
     protected WebController removeData(String name) {
         this.getInvoker().remove(name);
@@ -560,8 +552,8 @@ public class WebController implements Controller {
     }
 
     /**
-     *  设置 Invoker 保存的数据。
-     *  @return 返回 this
+     * 设置 Invoker 保存的数据。
+     * @return 返回 this
      */
     protected WebController setDatas(Map<String, Object> attrMap) {
         for (Map.Entry<String, Object> entry : attrMap.entrySet()) {
@@ -571,8 +563,8 @@ public class WebController implements Controller {
     }
 
     /**
-     *  返回 Invoker 保存的数据keys。
-     *  @return 返回数据
+     * 返回 Invoker 保存的数据keys。
+     * @return 返回数据
      */
     protected Set<String> getDataNames() {
         return this.getInvoker().keySet();
@@ -595,7 +587,7 @@ public class WebController implements Controller {
     }
     //------------------------
 
-    /** 更新渲染模版。*/
+    /** 更新渲染模版。 */
     protected void renderTo(String viewName) {
         Invoker invoker = getInvoker();
         if (invoker instanceof RenderInvoker render) {

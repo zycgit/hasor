@@ -1,18 +1,22 @@
+/*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
 package net.hasor.boot.web;
-
-import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-
-import org.junit.After;
-import org.junit.Test;
-
 import net.hasor.boot.fixtures.defaults.DefaultApplication;
 import net.hasor.boot.fixtures.defaults.HelloController;
 import net.hasor.boot.fixtures.manual.ManualApplication;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /** The same HTTP contract runs against Tomcat, Jetty and Undertow. */
 public abstract class WebDefaultsIntegrationTest extends ContainerIntegrationTest {
@@ -77,7 +81,7 @@ public abstract class WebDefaultsIntegrationTest extends ContainerIntegrationTes
         assertTrue(get("/app/details", 200, "text/html").contains("Boot welcome"));
         get("/app/missing.js", 404, null);
         get("/api/missing", 404, null);
-        get("/health", 404, null);
+        assertTrue(get("/health", 200, "application/json").contains("UP"));
     }
 
     @Test

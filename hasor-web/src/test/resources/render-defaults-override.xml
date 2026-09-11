@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/hasor-web">
     <hasor.render>
-        <defaults><stringEngine>json</stringEngine></defaults>
+        <defaults>
+            <stringEngine>json</stringEngine>
+        </defaults>
     </hasor.render>
 </config>

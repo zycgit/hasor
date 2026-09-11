@@ -1,4 +1,11 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -24,14 +31,12 @@ import java.io.IOException;
 public interface Closeable extends java.io.Closeable {
     /**
      * Closes the object.
-     *
      * @throws IOException An I/O error occurred.
      */
     void close() throws IOException;
 
     /**
      * Returns, whether the object is already closed.
-     *
      * @return True, if the object is closed, otherwise false.
      * @throws IOException An I/O error occurred.
      */

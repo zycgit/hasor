@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.render;
 import java.io.File;
@@ -38,19 +31,19 @@ import net.hasor.web.render.none.NoopRenderEngine;
 
 /**
  * Web 请求执行链中的内置渲染阶段，不参与业务过滤器注册和排序。
- * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-01-10
  */
 public final class RenderProcessor {
-    private static final Logger             logger        = LoggerFactory.getLogger(RenderProcessor.class);
-    private String                          layoutPath    = null;                    // 布局模版位置
-    private boolean                         useLayout     = true;
-    private String                          templatePath  = null;                    // 页面模版位置
-    private final Map<String, RenderEngine> engineMap     = new HashMap<>();
-    private String                          placeholder   = null;
-    private String                          defaultLayout = null;
-    private String                          defaultObjectEngine;
-    private String                          defaultStringEngine;
+    private static final Logger                    logger        = LoggerFactory.getLogger(RenderProcessor.class);
+    private              String                    layoutPath    = null;                    // 布局模版位置
+    private              boolean                   useLayout     = true;
+    private              String                    templatePath  = null;                    // 页面模版位置
+    private final        Map<String, RenderEngine> engineMap     = new HashMap<>();
+    private              String                    placeholder   = null;
+    private              String                    defaultLayout = null;
+    private              String                    defaultObjectEngine;
+    private              String                    defaultStringEngine;
 
     public void doInit(AppContext appContext, String objectEngine, String stringEngine) throws Throwable {
         if (StringUtils.isBlank(objectEngine) || StringUtils.isBlank(stringEngine)) {
@@ -274,7 +267,7 @@ public final class RenderProcessor {
         return true;
     }
 
-    protected String findLayout(RenderEngine engine, String tempFile) throws IOException {
+    private String findLayout(RenderEngine engine, String tempFile) throws IOException {
         File layoutFile = new File(this.layoutPath, tempFile);
         if (engine.exist(layoutFile.getPath())) {
             return layoutFile.getPath();

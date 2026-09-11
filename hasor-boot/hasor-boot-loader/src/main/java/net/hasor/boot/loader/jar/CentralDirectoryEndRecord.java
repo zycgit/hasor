@@ -1,20 +1,14 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2012-2020 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.boot.loader.jar;
 import java.io.IOException;
+
 /**
  * A ZIP File "End of central directory record" (EOCD).
  * @author Phillip Webb
@@ -23,17 +17,17 @@ import java.io.IOException;
  * @see <a href="https://en.wikipedia.org/wiki/Zip_%28file_format%29">Zip File Format</a>
  */
 class CentralDirectoryEndRecord {
-    private static final int MINIMUM_SIZE           = 22;
-    private static final int MAXIMUM_COMMENT_LENGTH = 0xFFFF;
-    private static final int ZIP64_MAGICCOUNT       = 0xFFFF;
-    private static final int MAXIMUM_SIZE           = MINIMUM_SIZE + MAXIMUM_COMMENT_LENGTH;
-    private static final int SIGNATURE              = 0x06054b50;
-    private static final int COMMENT_LENGTH_OFFSET  = 20;
-    private static final int READ_BLOCK_SIZE        = 256;
-    private final Zip64End   zip64End;
-    private byte[]           block;
-    private int              offset;
-    private int              size;
+    private static final int      MINIMUM_SIZE           = 22;
+    private static final int      MAXIMUM_COMMENT_LENGTH = 0xFFFF;
+    private static final int      ZIP64_MAGICCOUNT       = 0xFFFF;
+    private static final int      MAXIMUM_SIZE           = MINIMUM_SIZE + MAXIMUM_COMMENT_LENGTH;
+    private static final int      SIGNATURE              = 0x06054b50;
+    private static final int      COMMENT_LENGTH_OFFSET  = 20;
+    private static final int      READ_BLOCK_SIZE        = 256;
+    private final        Zip64End zip64End;
+    private              byte[]   block;
+    private              int      offset;
+    private              int      size;
 
     /**
      * Create a new {@link CentralDirectoryEndRecord} instance from the specified
@@ -133,13 +127,13 @@ class CentralDirectoryEndRecord {
      * 4.3.14 of Zip64 specification</a>
      */
     private static final class Zip64End {
-        private static final int   ZIP64_ENDTOT = 32; // total number of entries
-        private static final int   ZIP64_ENDSIZ = 40; // central directory size in bytes
-        private static final int   ZIP64_ENDOFF = 48; // offset of first CEN header
-        private final Zip64Locator locator;
-        private final long         centralDirectoryOffset;
-        private final long         centralDirectoryLength;
-        private final int          numberOfRecords;
+        private static final int          ZIP64_ENDTOT = 32; // total number of entries
+        private static final int          ZIP64_ENDSIZ = 40; // central directory size in bytes
+        private static final int          ZIP64_ENDOFF = 48; // offset of first CEN header
+        private final        Zip64Locator locator;
+        private final        long         centralDirectoryOffset;
+        private final        long         centralDirectoryLength;
+        private final        int          numberOfRecords;
 
         private Zip64End(RandomFile data, int centralDirectoryEndOffset) throws IOException {
             this(data, new Zip64Locator(data, centralDirectoryEndOffset));
@@ -186,8 +180,8 @@ class CentralDirectoryEndRecord {
      * 4.3.15 of Zip64 specification</a>
      */
     private static final class Zip64Locator {
-        static final int   ZIP64_LOCSIZE = 20; // locator size
-        static final int   ZIP64_LOCOFF  = 8; // offset of zip64 end
+        static final  int  ZIP64_LOCSIZE = 20; // locator size
+        static final  int  ZIP64_LOCOFF  = 8; // offset of zip64 end
         private final long zip64EndOffset;
         private final int  offset;
 

@@ -1,0 +1,9 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+ext.pomName = 'Hasor-Boot-Core'
+description = '统一应用启动与扩展生命周期。'
+dependencies {
+    api project(':hasor-config')
+}

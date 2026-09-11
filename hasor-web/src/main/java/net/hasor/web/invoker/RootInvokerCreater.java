@@ -1,17 +1,10 @@
 /*
+ * Copyright 2015-2022 the original author or authors.
  * Copyright 2008-2009 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.invoker;
 
@@ -29,9 +22,10 @@ import net.hasor.cobble.setting.Settings;
 import net.hasor.core.AppContext;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerCreator;
+
 /**
- * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2017-01-10
  */
 class RootInvokerCreater implements InvokerCreator {
     protected Map<Class<?>, InvokerCreator> createrMap = new HashMap<>();
@@ -44,7 +38,7 @@ class RootInvokerCreater implements InvokerCreator {
         // .寻找InvokerCreater扩展
         Map<Class<?>, Class<?>> extBinderMap = new HashMap<>();
         SettingNode[] nodeArray = settings.getNodeArray("hasor.invokerCreatorSet.invokerCreator");
-        if (nodeArray != null && nodeArray.length > 0) {
+        if (nodeArray != null) {
             for (SettingNode atNode : nodeArray) {
                 if (atNode == null) {
                     continue;
@@ -114,7 +108,7 @@ class RootInvokerCreater implements InvokerCreator {
     }
 
     private static class InvokerCreaterInvocationHandler implements InvocationHandler {
-        private Map<Class<?>, Object> supportMap;
+        private final Map<Class<?>, Object> supportMap;
 
         public InvokerCreaterInvocationHandler(Map<Class<?>, Object> supportMap) {
             this.supportMap = supportMap;

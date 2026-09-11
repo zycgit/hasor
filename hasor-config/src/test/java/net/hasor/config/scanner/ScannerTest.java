@@ -1,7 +1,16 @@
+/*
+ * Copyright 2015-2022 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
 package net.hasor.config.scanner;
 
-import java.util.*;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import net.hasor.cobble.loader.MatchType;
 import net.hasor.cobble.loader.providers.ClassPathResourceLoader;
 import net.hasor.config.Configuration;
@@ -9,7 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.MappingToGroup;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class ScannerTest {
