@@ -45,4 +45,4 @@ Run Maven web demo:
 java -jar maven/demo-hasor-boot-web/target/*-boot.jar
 ```
 
-The Web demo uses the `hasor.http` defaults from `hasor-web`; for example, set `HASOR_HTTP_PORT=18080` to change the port.
+The Web demo uses the `hasor.boot.web` defaults from `hasor-boot-web`; for example, set `HASOR_HTTP_PORT=18080` to change the port.

@@ -13,7 +13,7 @@ package net.hasor.boot.web;
  * @version : 2026-06-18
  */
 public interface WebServerProvider {
-    /** Server name used by {@code hasor.http.server}, for example {@code tomcat}. */
+    /** Server name used in diagnostics, for example {@code tomcat}. */
     String name();
 
     /** Create a server instance with the resolved configuration. */

@@ -46,7 +46,11 @@ public final class WebServers {
         });
         try {
             server.start();
-            logger.info("Hasor Web started at " + serverUrl(server));
+            if (server.getPort() >= 0) {
+                logger.info("Hasor Web started at " + serverUrl(server));
+            } else {
+                logger.info("Hasor Web started without an HTTP listener.");
+            }
             return server;
         } catch (Exception e) {
             shutdownHook.close();
@@ -64,31 +68,32 @@ public final class WebServers {
         WebServerConfig copy = config == null ? new WebServerConfig() : config.copy();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
-            WebServerProvider provider = findProvider(classLoader, copy.getServer());
-            copy.server(provider.name());
+            WebServerProvider provider = findProvider(classLoader);
             return provider.create(copy);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntime(e);
         }
     }
 
-    private static WebServerProvider findProvider(ClassLoader classLoader, String serverName) {
+    private static WebServerProvider findProvider(ClassLoader classLoader) {
         List<String> names = new ArrayList<>();
+        WebServerProvider candidate = null;
         for (WebServerProvider provider : ServiceLoader.load(WebServerProvider.class, classLoader)) {
             String providerName = provider.name();
             if (StringUtils.isBlank(providerName)) {
                 throw new IllegalStateException(provider.getClass().getName() + " provider name is blank.");
             }
             names.add(providerName);
-            if (StringUtils.isBlank(serverName) || providerName.equalsIgnoreCase(serverName)) {
-                return provider;
-            }
+            candidate = provider;
         }
-        if (StringUtils.isBlank(serverName)) {
-            throw new IllegalStateException("No embedded WebServerProvider found. Add hasor-boot-web-tomcat, hasor-boot-web-jetty, or hasor-boot-web-undertow.");
-        } else {
-            throw new IllegalStateException("No embedded WebServerProvider named '" + serverName + "' found. Available providers: " + names + ".");
+        if (names.size() == 1) {
+            return candidate;
         }
+        if (names.size() > 1) {
+            throw new IllegalStateException("Multiple embedded WebServerProviders found: " + names
+                    + ". Keep only one embedded container dependency.");
+        }
+        throw new IllegalStateException("No embedded WebServerProvider found. Add hasor-boot-web-tomcat, hasor-boot-web-jetty, or hasor-boot-web-undertow.");
     }
 
     private static String serverUrl(WebServer server) {

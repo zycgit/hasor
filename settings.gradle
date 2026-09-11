@@ -20,7 +20,7 @@ rootProject.name = 'hasor-parent'
 include 'hasor-core'
 include 'hasor-web'
 include 'hasor-config'
-include 'hasor-boot-core'
+include 'hasor-boot'
 include 'hasor-boot-loader'
 include 'hasor-boot-web'
 include 'hasor-boot-maven-plugin'
@@ -30,7 +30,7 @@ include 'hasor-boot-web-undertow'
 include 'test-web-containers'
 
 project(':hasor-boot-loader').projectDir = file('hasor-boot/hasor-boot-loader')
-project(':hasor-boot-core').projectDir = file('hasor-boot/hasor-boot-core')
+project(':hasor-boot').projectDir = file('hasor-boot/hasor-boot')
 project(':hasor-boot-web').projectDir = file('hasor-boot/hasor-boot-web')
 project(':hasor-boot-maven-plugin').projectDir = file('hasor-boot/hasor-boot-maven-plugin')
 project(':hasor-boot-web-tomcat').projectDir = file('hasor-boot/hasor-boot-web-tomcat')

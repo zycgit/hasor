@@ -39,11 +39,12 @@ public class WebServerConfig {
     private             File                                 documentRoot       = defaultDocumentRoot();
     private             Class<?>                             rootModule;
     private             String                               hconfigFile;
-    private             String                               server;
     private             String[]                             arguments          = new String[0];
     private             Function<ServletContext, AppContext> appContextFactory;
     private final       Map<String, String>                  initParameters     = new LinkedHashMap<>();
     private             WebOptions                           webOptions         = new WebOptions();
+
+    private boolean httpEnabled = true;
 
     public WebServerConfig() {
     }
@@ -52,6 +53,7 @@ public class WebServerConfig {
         if (source == null) {
             return;
         }
+        this.httpEnabled = source.httpEnabled;
         this.host = source.host;
         this.port = source.port;
         this.contextPath = source.contextPath;
@@ -60,7 +62,6 @@ public class WebServerConfig {
         this.documentRoot = source.documentRoot;
         this.rootModule = source.rootModule;
         this.hconfigFile = source.hconfigFile;
-        this.server = source.server;
         this.arguments = source.arguments == null ? null : source.arguments.clone();
         this.appContextFactory = source.appContextFactory;
         this.initParameters.putAll(source.initParameters);
@@ -84,6 +85,15 @@ public class WebServerConfig {
         return new File(System.getProperty("java.io.tmpdir"), "hasor-webroot");
     }
 
+    public boolean isHttpEnabled() {
+        return this.httpEnabled;
+    }
+
+    public WebServerConfig httpEnabled(boolean enabled) {
+        this.httpEnabled = enabled;
+        return this;
+    }
+
     public String getHost() {
         return this.host;
     }
@@ -92,19 +102,16 @@ public class WebServerConfig {
         if (settings == null) {
             return this;
         }
-        String server = settings.getString("hasor.http.server", null);
-        if (StringUtils.isNotBlank(server)) {
-            this.server(server);
-        }
-        String host = settings.getString("hasor.http.host", null);
+        this.httpEnabled = settings.getBoolean("hasor.boot.web.connectors.http.enabled", this.httpEnabled);
+        String host = settings.getString("hasor.boot.web.connectors.http.host", null);
         if (StringUtils.isNotBlank(host)) {
             this.host(host);
         }
-        Integer port = settings.getInteger("hasor.http.port", null);
+        Integer port = settings.getInteger("hasor.boot.web.connectors.http.port", null);
         if (port != null) {
             this.port(port);
         }
-        String contextPath = settings.getString("hasor.http.contextPath", null);
+        String contextPath = settings.getString("hasor.boot.web.server.contextPath", null);
         if (StringUtils.isNotBlank(contextPath)) {
             this.contextPath(contextPath);
         }
@@ -264,14 +271,6 @@ public class WebServerConfig {
         return this;
     }
 
-    public String getServer() {
-        return this.server;
-    }
-
-    public WebServerConfig server(String server) {
-        this.server = StringUtils.isBlank(server) ? null : server.trim();
-        return this;
-    }
 
     public String[] getArguments() {
         return this.arguments == null ? null : this.arguments.clone();

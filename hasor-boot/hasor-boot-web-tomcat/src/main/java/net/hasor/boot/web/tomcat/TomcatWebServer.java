@@ -56,7 +56,9 @@ public class TomcatWebServer extends AbstractWebServer {
             server.setHostname(this.config.getHost());
             server.setPort(this.config.getPort());
             server.setBaseDir(documentRoot.getAbsolutePath());
-            server.getConnector();
+            if (this.config.isHttpEnabled()) {
+                server.getConnector().setProperty("address", this.config.getHost());
+            }
 
             Context context = server.addContext(tomcatContextPath(), documentRoot.getAbsolutePath());
             context.setParentClassLoader(Thread.currentThread().getContextClassLoader());
@@ -145,7 +147,7 @@ public class TomcatWebServer extends AbstractWebServer {
 
     @Override
     public int getPort() {
-        if (this.tomcat != null && this.tomcat.getConnector() != null && this.tomcat.getConnector().getLocalPort() > 0) {
+        if (this.config.isHttpEnabled() && this.tomcat != null && this.tomcat.getConnector() != null && this.tomcat.getConnector().getLocalPort() > 0) {
             return this.tomcat.getConnector().getLocalPort();
         }
         return super.getPort();

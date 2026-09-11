@@ -54,10 +54,13 @@ public class JettyWebServer extends AbstractWebServer {
         try {
             File documentRoot = getDocumentRootFile();
             newServer = new Server();
-            ServerConnector newConnector = new ServerConnector(newServer);
-            newConnector.setHost(this.config.getHost());
-            newConnector.setPort(this.config.getPort());
-            newServer.addConnector(newConnector);
+            ServerConnector newConnector = null;
+            if (this.config.isHttpEnabled()) {
+                newConnector = new ServerConnector(newServer);
+                newConnector.setHost(this.config.getHost());
+                newConnector.setPort(this.config.getPort());
+                newServer.addConnector(newConnector);
+            }
 
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath(this.config.getContextPath());

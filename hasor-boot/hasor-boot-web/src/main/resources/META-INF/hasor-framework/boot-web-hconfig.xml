@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/hasor-core">
-    <hasor.boot.web.health>
-        <enabled>${HASOR_BOOT_WEB_HEALTH_ENABLED:true}</enabled>
-        <path>${HASOR_BOOT_WEB_HEALTH_PATH:/health}</path>
-    </hasor.boot.web.health>
-    <hasor.http>
-        <!-- Boot 内嵌 HTTP 容器公共配置；具体容器模块只提供各自特有配置。 -->
-        <server>${HASOR_HTTP_SERVER}</server>
-        <host>${HASOR_HTTP_HOST:0.0.0.0}</host>
-        <port>${HASOR_HTTP_PORT:8080}</port>
-        <contextPath>${HASOR_HTTP_CONTEXT_PATH:/}</contextPath>
-    </hasor.http>
+    <hasor.boot.web>
+        <!-- 服务器级配置；具体容器只负责各自特有参数。 -->
+        <server>
+            <contextPath>${HASOR_WEB_CONTEXT_PATH:/}</contextPath>
+        </server>
+
+        <!-- 协议监听端点。HTTPS 等协议由实现它们的扩展提供配置。 -->
+        <connectors>
+            <http enabled="${HASOR_HTTP_ENABLED:true}">
+                <host>${HASOR_HTTP_HOST:0.0.0.0}</host>
+                <port>${HASOR_HTTP_PORT:8080}</port>
+            </http>
+        </connectors>
+
+        <health enabled="${HASOR_BOOT_WEB_HEALTH_ENABLED:true}">
+            <path>${HASOR_BOOT_WEB_HEALTH_PATH:/health}</path>
+        </health>
+    </hasor.boot.web>
 </config>

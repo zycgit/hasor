@@ -22,7 +22,7 @@ public class JettyWebServerTest {
     @Test
     public void jarShouldAutoStartAndStopWithHasor() {
         AppContext appContext = Hasor.create()//
-                .addSettings(Settings.DefaultNameSpace, "hasor.http.port", 0)//
+                .addSettings(Settings.DefaultNameSpace, "hasor.boot.web.connectors.http.port", 0)//
                 .build();
         WebServer server = appContext.getInstance(WebServer.class);
 
@@ -37,7 +37,7 @@ public class JettyWebServerTest {
 
     @Test
     public void startStop() throws Exception {
-        WebServer server = WebServers.create(WebServerConfig.of(StartModule.class).server("jetty").port(0));
+        WebServer server = WebServers.create(WebServerConfig.of(StartModule.class).port(0));
         assertTrue(server instanceof JettyWebServer);
         try {
             server.start();

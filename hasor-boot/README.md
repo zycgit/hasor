@@ -70,9 +70,9 @@ tasks.named('bootJar') {
 }
 ```
 
-将容器依赖替换为 `hasor-boot-web-jetty` 或 `hasor-boot-web-undertow` 即可切换容器。通常只引入一种容器；存在多个提供者时，应显式设置 `hasor.http.server`，否则使用 SPI 发现的第一个提供者。
+将容器依赖替换为 `hasor-boot-web-jetty` 或 `hasor-boot-web-undertow` 即可切换容器。只能引入一种容器；SPI 发现零个或多个实现都会报错。
 
-普通应用将容器依赖替换为 `net.hasor:hasor-boot-core:5.1.1-SNAPSHOT`，不需要 Servlet 或 JSON 库；入口仍使用下面的 `Boot.run(...)`。一次性任务完成后调用返回对象的 `close()`，常驻服务可调用 `join()` 等待关闭。
+普通应用将容器依赖替换为 `net.hasor:hasor-boot:5.1.1-SNAPSHOT`，不需要 Servlet 或 JSON 库；入口仍使用下面的 `Boot.run(...)`。一次性任务完成后调用返回对象的 `close()`，常驻服务可调用 `join()` 等待关闭。
 
 ### 2. 编写启动类和接口
 
@@ -139,12 +139,22 @@ java -jar build/libs/demo-1.0.0-boot.jar
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="https://www.hasor.net/sechma/main">
     <hasor.loadPackages>example.*</hasor.loadPackages>
-    <hasor.http>
-        <server>tomcat</server>
-        <host>0.0.0.0</host>
-        <port>8080</port>
-        <contextPath>/</contextPath>
-    </hasor.http>
+    <hasor.boot.web>
+        <server>
+            <contextPath>/</contextPath>
+        </server>
+        <connectors>
+            <http>
+                <enabled>true</enabled>
+                <host>0.0.0.0</host>
+                <port>8080</port>
+            </http>
+        </connectors>
+        <health>
+            <enabled>true</enabled>
+            <path>/health</path>
+        </health>
+    </hasor.boot.web>
     <hasor.config.web>
         <spaPaths>/app/*</spaPaths>
     </hasor.config.web>
@@ -155,12 +165,18 @@ java -jar build/libs/demo-1.0.0-boot.jar
 
 | 配置项 | 默认值 | 环境变量 |
 | --- | --- | --- |
-| `hasor.http.server` | 按 SPI 发现容器 | `HASOR_HTTP_SERVER` |
-| `hasor.http.host` | `0.0.0.0` | `HASOR_HTTP_HOST` |
-| `hasor.http.port` | `8080` | `HASOR_HTTP_PORT` |
-| `hasor.http.contextPath` | `/` | `HASOR_HTTP_CONTEXT_PATH` |
+| `hasor.boot.web.connectors.http.enabled` | `true` | `HASOR_HTTP_ENABLED` |
+| `hasor.boot.web.connectors.http.host` | `0.0.0.0` | `HASOR_HTTP_HOST` |
+| `hasor.boot.web.connectors.http.port` | `8080` | `HASOR_HTTP_PORT` |
+| `hasor.boot.web.server.contextPath` | `/` | `HASOR_WEB_CONTEXT_PATH` |
 
 环境变量由默认配置中的占位符读取；应用可以在配置文件中覆盖这些默认值。启动参数会传递给应用，不会自动将 `--port=...` 等参数解析为 HTTP 配置。
+
+容器由依赖决定，SPI 必须发现唯一的容器实现，不提供名称选择配置。
+
+关闭 `connectors.http.enabled` 后仍初始化 Web 应用上下文，但不监听 HTTP 端口，`WebServer.getPort()` 返回 `-1`。目前只实现 HTTP 监听，HTTPS 等协议尚未提供。
+
+原 `hasor.http.*` 配置需迁移到上述结构；容器选择配置已删除，上下文路径的环境变量改为 `HASOR_WEB_CONTEXT_PATH`，HTTP 的 host、port 环境变量保持不变。
 
 Config、Web、Boot 不再读取专用 `scanPackages` 或 `autoScan` 配置，也不提供对应的设置接口。自动扫描默认执行，范围仅由 Core 的 `hasor.loadPackages`（环境变量 `HASOR_LOAD_PACKAGES`）管理。
 
@@ -248,8 +264,8 @@ Web 扩展默认提供 `GET /health`，健康时返回 HTTP 200 和 `{"status":"
 更改路径后不再注册默认的 `/health`。已存在的业务路由优先，关闭内置接口不会删除业务路由。
 
 业务实现 `net.hasor.boot.web.health.HealthCheck`，再通过 `@Bean` 或
-`binder.bindType(HealthCheck.class).toInstance(...)` 注册到容器。
-支持多个检查项，名称必须非空且唯一；检查同步执行，实现应线程安全，并为数据库、网络等外部调用自行设置超时。
+`binder.bindType(HealthCheck.class).nameWith("database").toInstance(...)` 注册到容器。
+支持多个检查项，名称取容器绑定名称，为空时取绑定 ID；`@Bean` 默认使用方法名，也可通过 `@Bean("database")` 显式命名。名称必须非空且唯一；检查同步执行，实现应线程安全，并为数据库、网络等外部调用自行设置超时。
 默认检查仅表示应用容器已启动，不会自动探测数据库或其他业务依赖。内置接口沿用 Hasor Web 的 JSON 渲染，需要应用提供 JSON 库。
 
 完整示例见[启动文档](../document/docs/guides/deployment/boot-launcher.md)。
@@ -261,7 +277,7 @@ Web 扩展默认提供 `GET /health`，健康时返回 HTTP 200 和 `{"status":"
 | `hasor-boot-loader` | 可执行 JAR 启动器、应用类加载与嵌套 JAR 资源读取 |
 | `hasor-boot-gradle-plugin` | Gradle 可执行 JAR 打包 |
 | `hasor-boot-maven-plugin` | Maven 可执行 JAR 打包 |
-| `hasor-boot-core` | 统一启动入口、应用容器创建、SPI 启动链及资源关闭 |
+| `hasor-boot` | 统一启动入口、应用容器创建、SPI 启动链及资源关闭 |
 | `hasor-boot-web` | Web 启动扩展、Servlet 环境及内嵌容器 API |
 | `hasor-boot-web-tomcat` | Tomcat 容器适配 |
 | `hasor-boot-web-jetty` | Jetty 容器适配 |
@@ -286,7 +302,7 @@ APP-INF/lib/                运行依赖 JAR
 以下命令在 Hasor 仓库根目录执行：
 
 ```bash
-./gradlew :hasor-boot-core:test :hasor-boot-loader:test :hasor-boot-web:test \
+./gradlew :hasor-boot:test :hasor-boot-loader:test :hasor-boot-web:test \
   :hasor-boot-web-tomcat:test :hasor-boot-web-jetty:test :hasor-boot-web-undertow:test
 ```
 
@@ -297,7 +313,7 @@ APP-INF/lib/                运行依赖 JAR
 ```bash
 ./gradlew :hasor-core:publishToMavenLocal :hasor-web:publishToMavenLocal \
   :hasor-config:publishToMavenLocal :hasor-boot-loader:publishToMavenLocal \
-  :hasor-boot-core:publishToMavenLocal :hasor-boot-web:publishToMavenLocal :hasor-boot-web-tomcat:publishToMavenLocal
+  :hasor-boot:publishToMavenLocal :hasor-boot-web:publishToMavenLocal :hasor-boot-web-tomcat:publishToMavenLocal
 ./gradlew :hasor-boot-gradle-plugin:publishToMavenLocal
 ```
 

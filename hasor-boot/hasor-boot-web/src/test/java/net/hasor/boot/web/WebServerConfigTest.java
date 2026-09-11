@@ -65,12 +65,30 @@ public class WebServerConfigTest {
     }
 
     @Test
+    public void connectorSettingsAreLoadedAndCopied() {
+        Settings settings = Hasor.create()
+                .addSettings(Settings.DefaultNameSpace, "hasor.boot.web.connectors.http.enabled", false)
+                .addSettings(Settings.DefaultNameSpace, "hasor.boot.web.connectors.http.host", "127.0.0.1")
+                .addSettings(Settings.DefaultNameSpace, "hasor.boot.web.connectors.http.port", 18080)
+                .addSettings(Settings.DefaultNameSpace, "hasor.boot.web.server.contextPath", "/console")
+                .buildSettings();
+        WebServerConfig original = new WebServerConfig().loadSettings(settings);
+        WebServerConfig config = original.copy();
+        original.httpEnabled(true);
+        assertFalse(config.isHttpEnabled());
+        assertEquals("127.0.0.1", config.getHost());
+        assertEquals(18080, config.getPort());
+        assertEquals("/console", config.getContextPath());
+    }
+
+    @Test
     public void defaultSettings() {
         Settings settings = Hasor.create().buildSettings();
         // Assert resource discovery itself, not merely WebServerConfig's Java fallbacks.
-        assertEquals("0.0.0.0", settings.getString("hasor.http.host"));
-        assertEquals(Integer.valueOf(8080), settings.getInteger("hasor.http.port"));
-        assertEquals("/", settings.getString("hasor.http.contextPath"));
+        assertTrue(settings.getBoolean("hasor.boot.web.connectors.http.enabled", false));
+        assertEquals("0.0.0.0", settings.getString("hasor.boot.web.connectors.http.host"));
+        assertEquals(Integer.valueOf(8080), settings.getInteger("hasor.boot.web.connectors.http.port"));
+        assertEquals("/", settings.getString("hasor.boot.web.server.contextPath"));
         WebServerConfig config = WebServerConfig.of(settings, StartModule.class);
         assertEquals("0.0.0.0", config.getHost());
         assertEquals(8080, config.getPort());
@@ -78,7 +96,6 @@ public class WebServerConfigTest {
         assertEquals("hasorFilter", config.getFilterName());
         assertEquals("/*", config.getFilterPattern());
         assertEquals(StartModule.class, config.getRootModule());
-        assertNull(config.getServer());
     }
 
     @Test
@@ -96,13 +113,11 @@ public class WebServerConfigTest {
     @Test
     public void overrideSettings() {
         WebServerConfig config = WebServerConfig.of(Hasor.create()//
-                .addSettings(Settings.DefaultNameSpace, "hasor.http.server", "mock")//
-                .addSettings(Settings.DefaultNameSpace, "hasor.http.host", "127.0.0.1")//
-                .addSettings(Settings.DefaultNameSpace, "hasor.http.port", "18080")//
-                .addSettings(Settings.DefaultNameSpace, "hasor.http.contextPath", "demo")//
+                .addSettings(Settings.DefaultNameSpace, "hasor.boot.web.connectors.http.host", "127.0.0.1")//
+                .addSettings(Settings.DefaultNameSpace, "hasor.boot.web.connectors.http.port", "18080")//
+                .addSettings(Settings.DefaultNameSpace, "hasor.boot.web.server.contextPath", "demo")//
                 .buildSettings(), StartModule.class);
 
-        assertEquals("mock", config.getServer());
         assertEquals("127.0.0.1", config.getHost());
         assertEquals(18080, config.getPort());
         assertEquals("/demo", config.getContextPath());
@@ -112,9 +127,9 @@ public class WebServerConfigTest {
     }
 
     @Test
-    public void createByServerName() {
+    public void createByAvailableProvider() {
         WebServer server = WebServers.create(WebServerConfig.of(StartModule.class)//
-                .server("mock")//
+                //
                 .arguments("a", "b"));
         assertTrue(server instanceof MockWebServer);
         assertArrayEquals(new String[] { "a", "b" }, ((MockWebServer) server).getConfig().getArguments());

@@ -29,7 +29,7 @@ public class TomcatWebServerTest {
     @Test
     public void jarShouldAutoStartAndStopWithHasor() {
         AppContext appContext = Hasor.create()//
-                .addSettings(Settings.DefaultNameSpace, "hasor.http.port", 0)//
+                .addSettings(Settings.DefaultNameSpace, "hasor.boot.web.connectors.http.port", 0)//
                 .build();
         WebServer server = appContext.getInstance(WebServer.class);
 
@@ -45,7 +45,7 @@ public class TomcatWebServerTest {
     @Test
     public void startStop() throws Exception {
         AppContext[] holder = new AppContext[1];
-        WebServerConfig config = new WebServerConfig().server("tomcat").port(0).appContextFactory(servletContext -> {
+        WebServerConfig config = new WebServerConfig().port(0).appContextFactory(servletContext -> {
             holder[0] = Hasor.create(servletContext).build(new StartModule());
             return holder[0];
         });

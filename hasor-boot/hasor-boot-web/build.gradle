@@ -8,5 +8,5 @@ description = 'Shared embedded Web server infrastructure for Hasor Boot.'
 
 dependencies {
     api project(':hasor-web')
-    api project(':hasor-boot-core')
+    api project(':hasor-boot')
 }

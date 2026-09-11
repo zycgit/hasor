@@ -11,7 +11,7 @@ package net.hasor.boot.web.jetty;
 import javax.servlet.ServletContext;
 import net.hasor.boot.web.WebServer;
 import net.hasor.boot.web.WebServerConfig;
-import net.hasor.cobble.StringUtils;
+import net.hasor.boot.web.WebServers;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
@@ -25,13 +25,8 @@ public class JettyWebServerModule implements Module {
         if (apiBinder.getContext() instanceof ServletContext) {
             throw new IgnoreModuleException();
         }
-        String serverName = apiBinder.getSettings().getString("hasor.http.server", null);
-        if (StringUtils.isNotBlank(serverName) && !"Jetty".equalsIgnoreCase(serverName)) {
-            throw new IgnoreModuleException();
-        }
-
         WebServerConfig config = new WebServerConfig().loadSettings(apiBinder.getSettings());
-        this.server = new JettyWebServer(config);
+        this.server = (JettyWebServer) WebServers.create(config);
         apiBinder.bindType(WebServer.class).toInstance(this.server);
         apiBinder.bindType(WebServer.class).nameWith("Jetty").toInstance(this.server);
     }

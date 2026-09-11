@@ -28,7 +28,7 @@ public interface WebServer extends AutoCloseable {
     /** Host name or address configured for the server. */
     String getHost();
 
-    /** Bound HTTP port. When port is configured as 0, this should be the actual local port after start. */
+    /** Bound HTTP port. When port is configured as 0, this should be the actual local port after start. Returns -1 when HTTP is disabled. */
     int getPort();
 
     /** Servlet context path. */

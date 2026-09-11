@@ -12,7 +12,7 @@ Run it:
 java -jar build/libs/*-boot.jar
 ```
 
-The HTTP server is started by `WebServers.run(...)`. Its defaults come from the `hasor.http` section in `hasor-web` and can be overridden with environment variables such as `HASOR_HTTP_PORT`.
+The HTTP server is started by `WebServers.run(...)`. Its defaults come from the `hasor.boot.web` section in `hasor-boot-web` and can be overridden with environment variables such as `HASOR_HTTP_PORT`.
 
 Then open:
 

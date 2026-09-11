@@ -92,7 +92,7 @@ public abstract class AbstractWebServer implements WebServer {
 
     @Override
     public int getPort() {
-        return this.config.getPort();
+        return this.config.isHttpEnabled() ? this.config.getPort() : -1;
     }
 
     @Override

@@ -79,11 +79,13 @@ public class UndertowWebServer extends AbstractWebServer {
             manager = Servlets.defaultContainer().addDeployment(deploymentInfo);
             manager.deploy();
             HttpHandler servletHandler = manager.start();
-            undertow = Undertow.builder()//
+            if (this.config.isHttpEnabled()) {
+                undertow = Undertow.builder()//
                     .addHttpListener(this.config.getPort(), this.config.getHost())//
                     .setHandler(createPathHandler(servletHandler))//
                     .build();
-            undertow.start();
+                undertow.start();
+            }
             this.deploymentManager = manager;
             this.server = undertow;
         } catch (Exception e) {
