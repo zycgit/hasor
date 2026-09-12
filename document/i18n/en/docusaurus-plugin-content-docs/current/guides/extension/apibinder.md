@@ -19,7 +19,14 @@ This capability makes extension tools feel native to Hasor, even when they are t
 
 During Hasor's init process, in the `newApiBinder` phase, Hasor collects all `ApiBinder` extension points from configuration files and creates them.
 
-![](../_img/CC2_E1VA_864B_GCI5.png)
+| Configuration / provider | Extension interface | Exposure |
+| --- | --- | --- |
+| Container | ApiBinder interface | Java proxy |
+| web-hconfig.xml → WebApiBinderCreater | WebApiBinder interface | Same Java proxy |
+| dataql-hconfig.xml → DataApiBinderCreater | DataApiBinder interface | Same Java proxy |
+| Other hconfig files → other ApiBinderCreater implementations | Other ApiBinder interfaces | Same Java proxy |
+
+The proxy exposes the ApiBinder interface and dispatches calls to the corresponding provider.
 
 The created extension-point objects are stored in a map named `supportMap`. The map key is the user-defined `ApiBinder` interface.
 

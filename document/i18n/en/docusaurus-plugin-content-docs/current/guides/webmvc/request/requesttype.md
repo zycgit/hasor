@@ -7,9 +7,15 @@ description: Route requests by HTTP method in Hasor Web.
 
 # Distinguishing Request Types
 
-If you do not know what request types are, see this diagram:
+In browser developer tools, the request Headers panel identifies the HTTP method:
 
-![](../../_img/CC2_11EF_EF69_F9BE.png)
+| Header field | Example |
+| --- | --- |
+| Request URL | http://www.hasor.net/account/login.htm |
+| Request Method | **GET** |
+| Status Code | 200 |
+
+The **Request Method** field is the request type used by the annotations below.
 
 If one method should receive every request type, annotate it with `@Any`. To distinguish request types, use different methods for POST and GET as shown below:
 

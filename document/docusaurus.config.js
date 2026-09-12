@@ -66,6 +66,12 @@ const config = {
             items: [
                 {
                     type: 'doc',
+                    docId: 'releases/latest',
+                    position: 'left',
+                    label: '版本说明',
+                },
+                {
+                    type: 'doc',
                     docId: 'guides/getting-started/quickstart',
                     position: 'left',
                     label: '文档手册',
@@ -128,4 +134,20 @@ const config = {
     ]
 };
 
-module.exports = config;
+module.exports = function createConfig() {
+    if (process.env.DOCUSAURUS_CURRENT_LOCALE !== 'en') {
+        return config;
+    }
+    const messages = require('./i18n/en/code.json');
+    return {
+        ...config,
+        tagline: messages['site.tagline'].message,
+        themeConfig: {
+            ...config.themeConfig,
+            metadata: config.themeConfig.metadata.map((entry) => ({
+                ...entry,
+                content: messages['site.' + entry.name]?.message ?? entry.content,
+            })),
+        },
+    };
+};

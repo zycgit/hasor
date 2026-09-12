@@ -7,6 +7,8 @@ description: Configure AOP interceptors on specific methods.
 
 # Method-Level Interceptors
 
+The following annotation is handled by the built-in AopModule in hasor-core; hasor-config is not required. `@Aop` is `net.hasor.cobble.dynamic.Aop`, and the interceptor interfaces are also in `net.hasor.cobble.dynamic`.
+
 When only certain methods in a class need interception, use method-level interceptors.
 
 ```java title='Example'
@@ -42,7 +44,3 @@ public class SimpleInterceptor implements MethodInterceptor {
 AppContext appContext = Hasor.create().build();
 appContext.getInstance(AopBean.class).echo("sss");
 ```
-
-## Required Module
-
-Add `hasor-config` for automatic annotation AOP. The `Aop` annotation and interceptor interfaces are in `net.hasor.cobble.dynamic`.

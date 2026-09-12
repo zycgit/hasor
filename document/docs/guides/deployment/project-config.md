@@ -11,13 +11,13 @@ Hasor Boot 的工程配置分为两部分：运行期依赖和 Maven/Gradle 打�
 
 ## 普通应用依赖
 
-普通 Java 应用至少引入 `hasor-core`：
+使用统一 `Boot.run(...)` 的普通应用引入 `hasor-boot`：
 
 ```xml
 <dependency>
     <groupId>net.hasor</groupId>
-    <artifactId>hasor-core</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <artifactId>hasor-boot</artifactId>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -31,14 +31,16 @@ Web 应用需要 `hasor-web`，并选择一个内嵌容器模块：
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-web-tomcat</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
+
+容器模块已传递引入 Boot、Config、Web。必须只引入一种容器，零个或多个 SPI 实现都会报错。默认 JSON 渲染需业务提供 JSON 库，详见 [JSON 渲染](../webmvc/response/json_render.md)。
 
 内嵌容器模块可以按需要替换为：
 
@@ -68,7 +70,7 @@ Hasor Boot Maven 插件会在 `package` 阶段把普通 jar 重打包成可执�
         <plugin>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-boot-maven-plugin</artifactId>
-            <version>5.0.2-SNAPSHOT</version>
+            <version>5.1.1-SNAPSHOT</version>
             <executions>
                 <execution>
                     <goals>
@@ -95,13 +97,13 @@ Hasor Boot Maven 插件会在 `package` 阶段把普通 jar 重打包成可执�
 
 ```bash
 mvn package
-java -jar target/demo-hasor-boot-basic-5.0.2-SNAPSHOT.jar
+java -jar target/demo-hasor-boot-basic-5.1.1-SNAPSHOT.jar
 ```
 
 Web 应用也使用同样的 `java -jar` 方式运行：
 
 ```bash
-java -jar target/demo-hasor-boot-web-5.0.2-SNAPSHOT.jar
+java -jar target/demo-hasor-boot-web-5.1.1-SNAPSHOT.jar
 ```
 
 ## Gradle 打包插件
@@ -121,7 +123,7 @@ rootProject.name = 'demo'
 ```groovy title="build.gradle"
 plugins {
     id 'java'
-    id 'net.hasor.boot' version '5.0.2-SNAPSHOT'
+    id 'net.hasor.boot' version '5.1.1-SNAPSHOT'
 }
 
 version = '1.0.0'
@@ -136,8 +138,8 @@ configurations {
     bootLoader
 }
 dependencies {
-    implementation 'net.hasor:hasor-core:5.0.2-SNAPSHOT'
-    bootLoader 'net.hasor:hasor-boot-loader:5.0.2-SNAPSHOT'
+    implementation 'net.hasor:hasor-boot:5.1.1-SNAPSHOT'
+    bootLoader 'net.hasor:hasor-boot-loader:5.1.1-SNAPSHOT'
 }
 tasks.named('bootJar') {
     mainClass.set('com.example.Application')

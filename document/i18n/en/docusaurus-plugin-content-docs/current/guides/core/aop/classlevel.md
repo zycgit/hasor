@@ -7,6 +7,8 @@ description: Configure AOP interceptors on all methods of a class.
 
 # Class-Level Interceptors
 
+`hasor-core` processes `@Aop` through `net.hasor.core.aop.AopModule` by default, without a Config dependency. The annotations and interceptor interfaces are in `net.hasor.cobble.dynamic`; programmatic configuration is also available through `ApiBinder.bindInterceptor`.
+
 In Hasor, configuring an interceptor for a bean only requires one annotation. All methods of the annotated class are intercepted.
 
 ```java title='Example'
@@ -38,7 +40,3 @@ public class SimpleInterceptor implements MethodInterceptor {
 AppContext appContext = Hasor.create().build();
 appContext.getInstance(AopBean.class).echo("sss");
 ```
-
-## Required Module
-
-Annotation AOP requires `hasor-config`, which installs `AopModule` by default. `Aop`, `MethodInterceptor`, and `MethodInvocation` are in `net.hasor.cobble.dynamic`. With core alone, configure interceptors explicitly through `ApiBinder.bindInterceptor`.

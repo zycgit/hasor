@@ -17,7 +17,7 @@ import TabItem from '@theme/TabItem';
 
 ## 引入 hasor-core
 
-当前源码版本为 `5.0.2-SNAPSHOT`。如果使用正式发布版本，请替换为 Maven Central 上的对应版本。
+当前源码版本为 `5.1.1-SNAPSHOT`。如果使用正式发布版本，请替换为 Maven Central 上的对应版本。
 
 <Tabs>
   <TabItem value="Maven" label="Maven" default>
@@ -26,7 +26,7 @@ import TabItem from '@theme/TabItem';
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-core</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ import TabItem from '@theme/TabItem';
   <TabItem value="Gradle" label="Gradle">
 
 ```text
-implementation "net.hasor:hasor-core:5.0.2-SNAPSHOT"
+implementation "net.hasor:hasor-core:5.1.1-SNAPSHOT"
 ```
 
   </TabItem>
@@ -114,7 +114,7 @@ AppContext appContext = Hasor.create()
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -124,7 +124,7 @@ AppContext appContext = Hasor.create()
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-web-tomcat</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -132,4 +132,4 @@ Web Boot 应用可以通过 `WebServers.run(args, RootModule.class)` 启动。�
 
 ## 使用注解配置
 
-加入 `net.hasor:hasor-config` 后，可以用 `@Configuration` 和 `@Bean` 声明对象，并通过 `ApplicationBoot.run(Application.class, args)` 从启动类所在包扫描配置。启动类不必实现 `Module`。完整示例、扫描范围和 Bean 生命周期见 [Java 注解配置](../core/conf/java-config.md)。
+加入 `net.hasor:hasor-config` 后，可以用 `@Configuration` 和 `@Bean` 声明对象，并通过 `ApplicationBoot.run(Application.class, args)` 启动应用。扫描范围由 `hasor.loadPackages` 显式指定，不会自动推导启动类所在包。启动类不必实现 `Module`。完整示例、扫描范围和 Bean 生命周期见 [Java 注解配置](../core/conf/java-config.md)。

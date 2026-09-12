@@ -2,5 +2,119 @@
   "version.label": {
     "message": "Next",
     "description": "The label for version current"
+  },
+  "sidebar.guides.category.02. 核心特性": {
+    "message": "02. Core Features"
+  },
+  "sidebar.guides.category.动态代理(AOP)": {
+    "message": "Dynamic Proxy (AOP)"
+  },
+  "sidebar.guides.category.Bean 管理": {
+    "message": "Bean Management"
+  },
+  "sidebar.guides.category.Bean 管理.link.generated-index.title": {
+    "message": "Bean Management"
+  },
+  "sidebar.guides.category.配置文件": {
+    "message": "Configuration Files"
+  },
+  "sidebar.guides.category.事件模型": {
+    "message": "Event Model"
+  },
+  "sidebar.guides.category.依赖注入(IoC)": {
+    "message": "Dependency Injection (IoC)"
+  },
+  "sidebar.guides.category.生命周期": {
+    "message": "Lifecycle"
+  },
+  "sidebar.guides.category.动态属性": {
+    "message": "Dynamic Properties"
+  },
+  "sidebar.guides.category.作用域(Scope)": {
+    "message": "Scopes"
+  },
+  "sidebar.guides.category.05. 打包和部署": {
+    "message": "05. Packaging and Deployment"
+  },
+  "sidebar.guides.category.06. 扩展机制": {
+    "message": "06. Extension"
+  },
+  "sidebar.guides.category.01. 入门": {
+    "message": "01. Getting Started"
+  },
+  "sidebar.guides.category.04. Web MVC": {
+    "message": "04. Web MVC"
+  },
+  "sidebar.guides.category.请求拦截器": {
+    "message": "Request Interceptors"
+  },
+  "sidebar.guides.category.J2EE 兼容": {
+    "message": "J2EE Compatibility"
+  },
+  "sidebar.guides.category.J2EE 兼容.link.generated-index.title": {
+    "message": "J2EE Compatibility"
+  },
+  "sidebar.guides.category.请求参数": {
+    "message": "Request Parameters"
+  },
+  "sidebar.guides.category.请求参数.link.generated-index.title": {
+    "message": "Request Parameters"
+  },
+  "sidebar.guides.category.接收 Web 请求": {
+    "message": "Receiving Web Requests"
+  },
+  "sidebar.guides.category.结果响应": {
+    "message": "Responses"
+  },
+  "sidebar.guides.category.文件上传": {
+    "message": "File Upload"
+  },
+  "sidebar.guides.category.文件上传.link.generated-index.title": {
+    "message": "File Upload"
+  },
+  "sidebar.guides.category.请求验证": {
+    "message": "Request Validation"
+  },
+  "sidebar.guides.category.请求验证.link.generated-index.title": {
+    "message": "Request Validation"
+  },
+  "sidebar.guides.category.Web 开发": {
+    "message": "Web Development"
+  },
+  "sidebar.releases.category.v0.x": {
+    "message": "v0.x"
+  },
+  "sidebar.releases.category.v0.x.link.generated-index.title": {
+    "message": "v0.x"
+  },
+  "sidebar.releases.category.v1.x": {
+    "message": "v1.x"
+  },
+  "sidebar.releases.category.v1.x.link.generated-index.title": {
+    "message": "v1.x"
+  },
+  "sidebar.releases.category.v2.x": {
+    "message": "v2.x"
+  },
+  "sidebar.releases.category.v2.x.link.generated-index.title": {
+    "message": "v2.x"
+  },
+  "sidebar.releases.category.v3.x": {
+    "message": "v3.x"
+  },
+  "sidebar.releases.category.v3.x.link.generated-index.title": {
+    "message": "v3.x"
+  },
+  "sidebar.releases.category.v4.x": {
+    "message": "v4.x"
+  },
+  "sidebar.releases.category.v4.x.link.generated-index.title": {
+    "message": "v4.x"
+  },
+  "sidebar.releases.category.v5.x": {
+    "message": "v5.x"
+  },
+  "sidebar.releases.category.v5.x.link.generated-index.title": {
+    "message": "v5.x"
   }
 }

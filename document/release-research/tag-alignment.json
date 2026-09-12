@@ -1,0 +1,176 @@
+{
+  "repository": "/home/zyc/project/hasor/hasor",
+  "alignedOn": "2026-09-12",
+  "tagPrefix": "Release.Hasor-",
+  "tags": [
+    "Release.Hasor-0.0.1",
+    "Release.Hasor-0.0.12",
+    "Release.Hasor-0.0.13",
+    "Release.Hasor-0.0.14",
+    "Release.Hasor-0.0.2",
+    "Release.Hasor-0.0.3",
+    "Release.Hasor-0.0.4",
+    "Release.Hasor-0.0.5",
+    "Release.Hasor-0.0.6",
+    "Release.Hasor-0.0.7",
+    "Release.Hasor-0.0.8",
+    "Release.Hasor-0.0.9",
+    "Release.Hasor-1.0.0",
+    "Release.Hasor-1.2.0",
+    "Release.Hasor-2.0.0",
+    "Release.Hasor-2.1.0",
+    "Release.Hasor-2.2.0",
+    "Release.Hasor-2.3.0",
+    "Release.Hasor-2.3.1",
+    "Release.Hasor-2.3.2",
+    "Release.Hasor-2.3.3",
+    "Release.Hasor-2.4.0",
+    "Release.Hasor-2.4.1",
+    "Release.Hasor-2.4.2",
+    "Release.Hasor-2.4.3",
+    "Release.Hasor-2.4.4",
+    "Release.Hasor-2.4.5",
+    "Release.Hasor-2.4.6",
+    "Release.Hasor-2.5.0",
+    "Release.Hasor-2.5.1",
+    "Release.Hasor-2.5.2",
+    "Release.Hasor-3.0.0",
+    "Release.Hasor-3.0.1",
+    "Release.Hasor-3.0.2",
+    "Release.Hasor-3.0.3",
+    "Release.Hasor-3.1.0",
+    "Release.Hasor-3.1.1",
+    "Release.Hasor-3.1.2",
+    "Release.Hasor-3.1.3",
+    "Release.Hasor-3.2.0",
+    "Release.Hasor-3.2.1",
+    "Release.Hasor-3.2.2",
+    "Release.Hasor-4.0.0",
+    "Release.Hasor-4.0.1",
+    "Release.Hasor-4.0.2",
+    "Release.Hasor-4.0.3",
+    "Release.Hasor-4.0.4",
+    "Release.Hasor-4.0.5",
+    "Release.Hasor-4.0.6",
+    "Release.Hasor-4.1.0",
+    "Release.Hasor-4.1.1",
+    "Release.Hasor-4.1.10",
+    "Release.Hasor-4.1.11",
+    "Release.Hasor-4.1.12",
+    "Release.Hasor-4.1.13",
+    "Release.Hasor-4.1.2",
+    "Release.Hasor-4.1.3",
+    "Release.Hasor-4.1.4",
+    "Release.Hasor-4.1.5",
+    "Release.Hasor-4.1.6",
+    "Release.Hasor-4.1.7",
+    "Release.Hasor-4.1.8",
+    "Release.Hasor-4.1.9",
+    "Release.Hasor-4.2.0",
+    "Release.Hasor-4.2.1",
+    "Release.Hasor-4.2.2",
+    "Release.Hasor-4.2.3",
+    "Release.Hasor-4.2.4",
+    "Release.Hasor-4.2.5",
+    "Release.Hasor-5.0.0",
+    "Release.Hasor-5.0.1",
+    "Release.Hasor-5.1.0"
+  ],
+  "developmentPages": [
+    "5.x/v5.1.1.md"
+  ],
+  "rules": [
+    "正式发布页与本仓库标签一一对应，不新增或修改标签。",
+    "无标签的中间 Core 版本向后归入最近的有标签版本，保留原始版本标识。",
+    "Web 独立版本依照标签 POM 中的实际版本归并，不按与 Core 同号的原则对应。",
+    "Web 0.0.1 在 Core 0.0.2 标签仍为 SNAPSHOT，因此与 Web 0.0.2 一并收录于 Core 0.0.3。",
+    "Web 0.0.8 归入整合了 Web 的 0.0.12 标签。",
+    "原始发布日期、内容与删除页面备份保留，不将归并版本描述成主版本首次新增。"
+  ],
+  "merges": [
+    {
+      "sourcePage": "0.x/v0.0.10.md",
+      "targetPage": "0.x/v0.0.12.md",
+      "targetTag": "Release.Hasor-0.0.12",
+      "originalMarkdown": "---\nid: v0.0.10\nsidebar_position: 991\ntitle: v0.0.10 (2015-04-03)\n---\n\n# v0.0.10 (2015-04-03)\n\n## 影响范围\n\n- Core 生命周期、类加载、配置与工具\n\n## 更新内容\n\n- 新增\n  - 增加 shutdown 生命周期阶段及 `StartModule`。\n  - 增加 Future 工具包、`ApiBinderWrap`、`SettingsWarp` 和对象字符串构建工具。\n- 优化\n  - 移除 SLF4J 依赖，使用 JDK 日志并拆分 `org.more.logger` 工具包。\n  - 补充无参构造、泛型信息读取及内部 Provider、元数据适配实现。\n- 修复\n  - 修复特殊 ClassLoader 环境下重复加载类的问题。\n  - 修复 `AbstractSettings` 多线程下可能出现的 HashMap 死锁。\n  - 修复设置 Java 系统属性后环境变量无法识别，以及扫描不到父类接口实现的问题。\n",
+      "reason": "归入后续最近的正式标签"
+    },
+    {
+      "sourcePage": "0.x/v0.0.11.md",
+      "targetPage": "0.x/v0.0.12.md",
+      "targetTag": "Release.Hasor-0.0.12",
+      "originalMarkdown": "---\nid: v0.0.11\nsidebar_position: 990\ntitle: v0.0.11 (2015-04-24)\n---\n\n# v0.0.11 (2015-04-24)\n\n## 影响范围\n\n- Core 日志工具\n\n## 更新内容\n\n- 修复\n  - 修复 `LoggerHelper` 多次输出日志时产生堆栈溢出的问题。\n",
+      "reason": "归入后续最近的正式标签"
+    },
+    {
+      "sourcePage": "1.x/v1.1.0.md",
+      "targetPage": "1.x/v1.2.0.md",
+      "targetTag": "Release.Hasor-1.2.0",
+      "originalMarkdown": "---\nid: v1.1.0\nsidebar_position: 985\ntitle: v1.1.0 (2015-07-09)\n---\n\n# v1.1.0 (2015-07-09)\n\n## 影响范围\n\n- Core 生命周期与 Web MVC、资源\n\n## 更新内容\n\n- 新增\n  - 增加请求作用域数据容器 `ContextMap`，可通过控制器或 AppContext 获取。\n  - MVC 支持请求文件名后缀匹配，默认包含 `htm`、`html`、`do`。\n  - `Hasor` 增加 `autoAware`，控制器增加 `getModelByName`。\n- 优化\n  - `AppContextAware` 不再需要通过 ApiBinder 显式声明，简化启动与 Provider 构造过程。\n  - `ResourceLoader.exist` 不再抛出 IO 异常。\n- 修复\n  - 修复加载模块时未正确拦截依赖引发的错误。\n  - 修复验证消息未初始化及资源加载器插入空值引发的空指针异常。\n",
+      "reason": "归入后续最近的正式标签"
+    },
+    {
+      "sourcePage": "0.x/v0.0.1.20130831-M1.md",
+      "targetPage": "0.x/v0.0.1.md",
+      "targetTag": "Release.Hasor-0.0.1",
+      "originalMarkdown": "---\nid: v0.0.1.20130831-M1\nsidebar_position: 1200\ntitle: v0.0.1.20130831-M1 (里程碑)\n---\n\n# v0.0.1.20130831-M1 (里程碑)\n\n## 影响范围\n\n- Core 首个里程碑版本：模块、依赖注入与事件\n\n## 更新内容\n\n- 新增\n  - 提供模块生命周期调度、依赖循环检查，以及强依赖、弱依赖和依赖反制规则。\n  - 支持 JSR-330 依赖注入，通过 `@Bean` 管理对象，可在 Binder 中使用 Guice 接口。\n  - 提供 `@Before` 注解式 AOP，以及同步、异步事件 API。\n  - 支持自定义 XML 配置解析和配置变更监听。\n  - 提供 Servlet、Filter、Session 和 ServletContext 监听器的注解声明。\n",
+      "reason": "初始里程碑归入首个正式标签"
+    },
+    {
+      "sourcePage": "0.x/web-v0.0.1.md",
+      "targetPage": "0.x/v0.0.3.md",
+      "targetTag": "Release.Hasor-0.0.3",
+      "originalMarkdown": "---\nid: web-v0.0.1\nsidebar_position: 1099\ntitle: Hasor Web v0.0.1\n---\n\n# Hasor Web v0.0.1\n\n## 影响范围\n\n- Web Servlet、控制器、RESTful 与静态资源\n\n## 更新内容\n\n- 新增\n  - 支持以 `@WebServlet`、`@WebFilter` 声明 Servlet 和 Filter。\n  - 支持 `@Controller` 控制器，以及方法级、类级和全局控制器拦截器；控制器可使用单例或多实例模式。\n  - 支持 RESTful 路由及路径、查询、请求头、Cookie 等参数注入。\n  - 通过 `@ResultDefine` 扩展返回值处理，内置转发、包含、JSON 和重定向处理。\n  - 支持通过 XML 配置从 JAR、ZIP、目录和 classpath 加载 Web 资源。\n",
+      "reason": "按早期 Web 模块版本及对应标签代码归并"
+    },
+    {
+      "sourcePage": "0.x/web-v0.0.2.md",
+      "targetPage": "0.x/v0.0.3.md",
+      "targetTag": "Release.Hasor-0.0.3",
+      "originalMarkdown": "---\nid: web-v0.0.2\nsidebar_position: 1098\ntitle: Hasor Web v0.0.2\n---\n\n# Hasor Web v0.0.2\n\n## 影响范围\n\n- Web RESTful 路由、拦截器与 Servlet 装配\n\n## 更新内容\n\n- 新增\n  - WebApiBinder 支持指定 Servlet、Filter 的注册顺序。\n  - RESTful 服务支持拦截器及 `@Forword`、`@Include`、`@Json`、`@Redirect` 返回值处理。\n- 优化\n  - 优化异常信息及 JavaDoc 构建，移除原 MIME 相关代码。\n- 修复\n  - 修复 RESTful 服务无法正常发布的问题。\n  - 修复通过 WebApiBinder 注册的 Filter 启动顺序不可控的问题。\n",
+      "reason": "按早期 Web 模块版本及对应标签代码归并"
+    },
+    {
+      "sourcePage": "0.x/web-v0.0.3.md",
+      "targetPage": "0.x/v0.0.4.md",
+      "targetTag": "Release.Hasor-0.0.4",
+      "originalMarkdown": "---\nid: web-v0.0.3\nsidebar_position: 1097\ntitle: Hasor Web v0.0.3\n---\n\n# Hasor Web v0.0.3\n\n## 影响范围\n\n- Web 静态资源加载\n\n## 更新内容\n\n- 优化\n  - ZIP 资源加载器缓存条目名称，减少反复打开压缩包的次数。\n- 修复\n  - 调整调试模式下 classpath 资源缓存的刷新行为，便于开发调试。\n  - 资源不存在时返回 HTTP 404。\n",
+      "reason": "按早期 Web 模块版本及对应标签代码归并"
+    },
+    {
+      "sourcePage": "0.x/web-v0.0.4.md",
+      "targetPage": "0.x/v0.0.6.md",
+      "targetTag": "Release.Hasor-0.0.6",
+      "originalMarkdown": "---\nid: web-v0.0.4\nsidebar_position: 1096\ntitle: Hasor Web v0.0.4\n---\n\n# Hasor Web v0.0.4\n\n## 影响范围\n\n- Web JSON 输出与 Servlet 包结构\n\n## 更新内容\n\n- 优化\n  - 适配 Core v0.0.6 的接口变化。\n  - `j2ee` 软件包更名为 `servlet3`。\n  - `@Json` 输出的数据前后增加圆括号。\n- 修复\n  - 修复 `@Json` 无法序列化普通 POJO 的问题。\n\n## 升级说明\n\n- JSON 输出新增圆括号包裹，直接解析响应内容的调用方需注意格式变化。\n",
+      "reason": "按早期 Web 模块版本及对应标签代码归并"
+    },
+    {
+      "sourcePage": "0.x/web-v0.0.5.md",
+      "targetPage": "0.x/v0.0.7.md",
+      "targetTag": "Release.Hasor-0.0.7",
+      "originalMarkdown": "---\nid: web-v0.0.5\nsidebar_position: 1095\ntitle: Hasor Web v0.0.5\n---\n\n# Hasor Web v0.0.5\n\n## 影响范围\n\n- Web 对象注入、JSP 与控制器拦截\n\n## 更新内容\n\n- 新增\n  - 增加 JSP 标签库。\n  - Web 容器绑定 ServletRequest、HttpServletRequest、ServletResponse、HttpServletResponse、HttpSession、ServletContext。\n- 修复\n  - 修复控制器拦截器调用标记 `@ControllerIgnore` 的方法时发生递归死循环的问题。\n",
+      "reason": "按早期 Web 模块版本及对应标签代码归并"
+    },
+    {
+      "sourcePage": "0.x/web-v0.0.6.md",
+      "targetPage": "0.x/v0.0.8.md",
+      "targetTag": "Release.Hasor-0.0.8",
+      "originalMarkdown": "---\nid: web-v0.0.6\nsidebar_position: 1094\ntitle: Hasor Web v0.0.6\n---\n\n# Hasor Web v0.0.6\n\n## 影响范围\n\n- Web 类型绑定与启动\n\n## 更新内容\n\n- 新增\n  - WebApiBinder 支持通过 RegisterInfo 绑定。\n- 优化\n  - 调整主要接口以解除对 Guice 的强制依赖。\n  - 插件移至 Hasor Quick，请求与响应编码设置改由插件提供。\n- 修复\n  - 修复 JSTL 标签 `fireEvent` 无法正常工作的问题。\n  - 适配 Core 模块代理类型的变化。\n\n## 升级说明\n\n- 不再由 Web 直接提供 `requestEncoding`、`responseEncoding` 设置。\n",
+      "reason": "按早期 Web 模块版本及对应标签代码归并"
+    },
+    {
+      "sourcePage": "0.x/web-v0.0.7.md",
+      "targetPage": "0.x/v0.0.9.md",
+      "targetTag": "Release.Hasor-0.0.9",
+      "originalMarkdown": "---\nid: web-v0.0.7\nsidebar_position: 1093\ntitle: Hasor Web v0.0.7\n---\n\n# Hasor Web v0.0.7\n\n## 影响范围\n\n- Web 请求与响应对象\n\n## 更新内容\n\n- 新增\n  - 增加 `RRUpdate`，用于更新 Request、Response 对象。\n",
+      "reason": "按早期 Web 模块版本及对应标签代码归并"
+    },
+    {
+      "sourcePage": "0.x/web-v0.0.8.md",
+      "targetPage": "0.x/v0.0.12.md",
+      "targetTag": "Release.Hasor-0.0.12",
+      "originalMarkdown": "---\nid: web-v0.0.8\nsidebar_position: 1092\ntitle: Hasor Web v0.0.8\n---\n\n# Hasor Web v0.0.8\n\n## 影响范围\n\n- Web 生命周期、日志与 MIME 类型\n\n## 更新内容\n\n- 新增\n  - 增加 shutdown 生命周期阶段。\n  - 增加获取 MIME 类型的工具模块。\n- 优化\n  - 日志输出切换为 LoggerHelper，环境变量接口适配 Core 的变化。\n\n## 升级说明\n\n- 删除 `RRUpdate`，Request、Response 不再通过依赖注入方式注入到类中。\n",
+      "reason": "按早期 Web 模块版本及对应标签代码归并"
+    }
+  ]
+}

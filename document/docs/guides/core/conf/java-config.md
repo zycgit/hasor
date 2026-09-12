@@ -13,7 +13,7 @@ description: 使用 hasor-config 声明 Bean、限定扫描范围并配置 Web M
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-config</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -37,24 +37,32 @@ public class Application {
         return new Greeting();
     }
 
-    public static class Greeting {
-        public String message() {
-            return "Hello Hasor";
-        }
+}
+
+```
+
+业务类独立放在 `Greeting.java`：
+
+```java
+package com.example;
+
+public class Greeting {
+    public String message() {
+        return "Hello Hasor";
     }
 }
 ```
 
-`ApplicationBoot` 要求主类带有 `@Configuration` 且位于具名包。它把主类所在包设为 `hasor.config.scanPackages`，并注册为 primarySource。`create(Application.class)` 返回可继续设置参数的 `Hasor` 构建器；`run` 会绑定参数并创建 AppContext。主类及其子包中的 `@Configuration` 会被发现。
+`ApplicationBoot` 要求主类带有 `@Configuration`，将其注册为 primarySource，但不会推导扫描包。`create(...)` 返回 Hasor 构建器，`run(...)` 绑定参数并创建 AppContext。扫描范围统一由 `hasor.loadPackages` 指定。
 
 已有 Module 应用也可以显式安装配置：
 
 ```java
-import net.hasor.config.core.ConfigurationModule;
+import net.hasor.config.ConfigurationModule;
 
 apiBinder.installModule(ConfigurationModule.of(Application.class));
-// 或限定包扫描：
-apiBinder.installModule(ConfigurationModule.scan("com.example"));
+// 或按 Core 配置的扫描范围装配：
+apiBinder.installModule(ConfigurationModule.auto());
 ```
 
 ## Bean 工厂与生命周期
@@ -71,18 +79,19 @@ apiBinder.installModule(ConfigurationModule.scan("com.example"));
 
 ## 自动扫描配置
 
-`hasor-config` 通过 `META-INF/hasor.schemas` 加载默认模块。配置项如下：
+引入 Config 后，默认模块自动安装 `ConfigurationModule`，无需重复安装。
+`auto()` 和公开无参构造方法按 Core 范围扫描；`of(...)` 只处理显式配置类，不顺带扫描路由。
+子类可通过受保护的构造方法 `super(Application.class)` 指定配置类。
 
-| 配置项 | 默认值 / 回退规则 | 环境变量 |
-| --- | --- | --- |
-| `hasor.config.autoScan` | `true`，控制配置类自动扫描及 Web 扫描扩展的安装 | `HASOR_CONFIG_AUTO_SCAN` |
-| `hasor.config.scanPackages` | 未设置时回退到 `hasor.loadPackages` | `HASOR_CONFIG_SCAN_PACKAGES` |
-| `hasor.config.web.autoScan` | `true`，控制 Controller 自动扫描 | `HASOR_CONFIG_WEB_AUTO_SCAN` |
-| `hasor.config.web.scanPackages` | 依次回退到 `hasor.config.scanPackages`、`hasor.loadPackages` | `HASOR_CONFIG_WEB_SCAN_PACKAGES` |
+```xml
+<config xmlns="https://www.hasor.net/sechma/main">
+    <hasor.loadPackages>com.example.*</hasor.loadPackages>
+</config>
+```
 
-应明确限定业务包，不能仅依赖框架默认扫描范围。`ApplicationBoot.create` 会设置配置扫描包，如需调整可继续调用 `addSettings(Settings.DefaultNameSpace, "hasor.config.scanPackages", "com.example")`。
-
-配置类扫描在所有回退范围为空时直接返回；Web 扫描模块被安装后若仍无有效范围则抛出异常。关闭 `hasor.config.autoScan` 不会禁止显式安装 `ConfigurationModule`。
+多个包用逗号分隔；环境变量为 `HASOR_LOAD_PACKAGES`。启动类所在包不会自动成为扫描范围。
+Config、Web、Boot 专用的 `scanPackages`、`autoScan` 配置及环境变量已不再读取。
+空范围不扫描。Scanner 遍历一次类路径，先处理配置类和 Bean，再处理 Web 路由；没有 Web 依赖时跳过路由处理。
 
 ## Web Controller 与 MVC 配置
 
@@ -96,19 +105,19 @@ Web 自动配置在限定范围内查找 `@MappingTo` 类并注册路由，配�
 package com.example;
 
 import net.hasor.config.Configuration;
-import net.hasor.config.web.CorsRegistry;
-import net.hasor.config.web.JsonRenderConfigurer;
-import net.hasor.config.web.ResourceHandlerRegistry;
+import net.hasor.config.web.cors.CorsRegistry;
+import net.hasor.config.web.render.JsonRenderConfigurer;
+import net.hasor.web.WebApiBinder;
+import net.hasor.cobble.loader.providers.PrefixResourceLoader;
 import net.hasor.config.web.WebMvcConfigurer;
 
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/assets/**")
-                .addResourceLocations("classpath:/web-assets/")
-                .setWelcomeFile("home.html")
-                .setOrder(-100);
+    public void addResourceHandlers(WebApiBinder binder) {
+        binder.addResource("/assets/**", new PrefixResourceLoader(binder.getResourceLoader(), "web-assets"))
+                .welcomeFile("home.html")
+                .order(-100);
     }
 
     @Override
@@ -123,11 +132,11 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void configureJson(JsonRenderConfigurer configurer) {
-        configurer.useDefaultJsonRenderEngine();
+        configurer.renderEngine(net.hasor.web.render.json.JsonRenderEngine.class);
     }
 }
 ```
 
 ## 注解 AOP
 
-`hasor-config` 默认安装 `net.hasor.config.aop.AopModule`，支持 `net.hasor.cobble.dynamic.Aop` 注解。类级拦截器先于方法级拦截器执行。原有 `ApiBinder.bindInterceptor` 编程式 AOP 仍属于核心能力，详见 [类级拦截器](../aop/classlevel.md)。
+`hasor-core` 默认安装 `net.hasor.core.aop.AopModule`，无需 Config 依赖，支持 `net.hasor.cobble.dynamic.Aop` 注解。类级拦截器先于方法级拦截器执行。原有 `ApiBinder.bindInterceptor` 编程式 AOP 仍属于核心能力，详见 [类级拦截器](../aop/classlevel.md)。

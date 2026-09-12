@@ -2,10 +2,27 @@
 id: boot-launcher
 sidebar_position: 3
 title: Boot 启动器
-description: 使用 Hasor.run 编写普通 Hasor 应用的启动入口。
+description: 统一 Boot 入口、Core 启动方式、生命周期与健康检查。
 ---
 
 # Boot 启动器
+
+新应用推荐使用 `net.hasor.boot.Boot`，普通应用与 Web 应用使用同一个入口：
+
+```java
+public class Application {
+    public static void main(String[] args) throws Exception {
+        try (net.hasor.boot.BootApplication app =
+                     net.hasor.boot.Boot.run(args, Application.class)) {
+            app.join();
+        }
+    }
+}
+```
+
+普通应用依赖 `net.hasor:hasor-boot:5.1.1-SNAPSHOT`；Web 应用引入一个容器模块即可。一次性任务完成后关闭应用，不调用 `join()`。参见[工程配置](./project-config.md)。
+
+## Core 启动入口
 
 普通应用使用 `Hasor.run(args, PrimarySource.class)` 作为启动入口。启动类通常同时实现 `Module`，`main` 方法负责启动，`loadModule` 方法负责声明 Bean 和扩展点。
 
@@ -38,7 +55,7 @@ Hasor.create()
 
 ## primarySources
 
-`primarySources` 是 Hasor Boot 的主启动来源。它和普通 Module 的区别在于：
+`primarySources` 是 Hasor Core 的主启动来源。它和普通 Module 的区别在于：
 
 - 它一定会被注册为 Hasor Bean。
 - 它由 Hasor 创建，因此类型需要提供可访问的无参构造方法。
@@ -129,3 +146,33 @@ appContext.shutdown();
 :::tip
 `kill -0 <pid>` 只用于探测进程是否存在和当前用户是否有权限，不会通知进程退出。常见的退出通知是 `kill <pid>` 或 `kill -15 <pid>`，它们会触发 JVM shutdown hook。
 :::
+## Boot 扩展与生命周期
+
+`new Boot().sources(...).arguments(...).hconfigFile(...).property(...).start()` 支持代码配置，property 覆盖文件属性。
+`BootApplication.getAppContext()` 获取应用容器，`close()` 逆序关闭扩展资源再关闭容器，`join()` 等待关闭。
+Boot 通过 SPI 发现 `BootExtension`，按 order 和类名排列；扩展包装下一阶段 BootLauncher，传递环境与模块。
+Web 扩展在 Servlet 上下文回调中创建同一个应用容器；不是再单独启动一个业务容器。
+扩展应仅调用下一阶段一次，通过 onClose 注册清理，启动失败时释放自己取得的资源。
+
+## 健康检查
+
+Boot Web 默认提供 `GET /health`，地址包含配置的上下文路径前缀。
+`hasor.boot.web.health.enabled` 控制开关，`hasor.boot.web.health.path` 修改地址；
+对应环境变量为 `HASOR_BOOT_WEB_HEALTH_ENABLED`、`HASOR_BOOT_WEB_HEALTH_PATH`。
+
+在配置类中声明检查项：
+```java
+@Bean
+public net.hasor.boot.web.health.HealthCheck database() {
+    return () -> databaseAvailable();
+}
+```
+
+`databaseAvailable()` 是业务自行实现的探测逻辑。接口只有 `boolean check() throws Exception`，不需要 `name()`。
+名称取容器绑定名称，为空时取绑定 ID：普通 `@Bean` 使用方法名，也可写 `@Bean("db")`。名称必须非空且唯一，不裁剪后缀。
+
+每次请求同步执行全部检查，不因一个失败而短路。全部通过返回 HTTP 200；任意 false 或异常返回 HTTP 503：
+`{"status":"DOWN","checks":{"database":"DOWN"}}`。
+没有业务检查项时仅判断应用容器是否启动。当前没有分组、可选汇总策略或结果缓存。
+实现需线程安全并自行设置连接池、网络等超时。响应不暴露异常细节，但检查名称公开；生产环境应限制访问。
+默认接口需要可用 JSON 渲染器；关闭 HTTP 监听后接口也不可访问。

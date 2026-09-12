@@ -1,7 +1,7 @@
 ---
 sidebar_position: 2
 title: Quick Start
-description: Create an AppContext with hasor-core, then add hasor-web or hasor-boot when needed.
+description: Create AppContext with hasor-core and add hasor-web or hasor-boot as needed.
 ---
 
 import Tabs from '@theme/Tabs';
@@ -9,15 +9,15 @@ import TabItem from '@theme/TabItem';
 
 # Quick Start
 
-Ordinary Java applications start with `hasor-core`; annotation configuration uses `hasor-config`; Web MVC uses `hasor-web`; executable packaging and embedded servers use individual `hasor-boot` modules. See [Java Configuration](../core/conf/java-config.md) for `ApplicationBoot`, `@Configuration`, and `@Bean`.
+Start ordinary Java applications with `hasor-core`; use `hasor-config` for annotation configuration and `hasor-web` for Web MVC. Add the corresponding `hasor-boot` modules when you need executable Fat Jars or embedded containers.
 
-:::info Runtime Requirements
-Java compilation targets version 17. Applications require JDK 17 or later.
+:::info Runtime requirements
+The current source targets Java 17; applications require JDK 17 or later.
 :::
 
-## Add hasor-core
+## Adding hasor-core
 
-The current source version is `5.0.2-SNAPSHOT`. Replace it with the released Maven Central version when using a stable release.
+The current source version is `5.1.1-SNAPSHOT`. To use an official release, replace it with the corresponding version from Maven Central.
 
 <Tabs>
   <TabItem value="Maven" label="Maven" default>
@@ -26,7 +26,7 @@ The current source version is `5.0.2-SNAPSHOT`. Replace it with the released Mav
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-core</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -34,15 +34,15 @@ The current source version is `5.0.2-SNAPSHOT`. Replace it with the released Mav
   <TabItem value="Gradle" label="Gradle">
 
 ```text
-implementation "net.hasor:hasor-core:5.0.2-SNAPSHOT"
+implementation "net.hasor:hasor-core:5.1.1-SNAPSHOT"
 ```
 
   </TabItem>
 </Tabs>
 
-## Create the container
+## Creating a container
 
-The minimal startup path is one line:
+The minimal startup is one line:
 
 ```java
 import net.hasor.core.AppContext;
@@ -51,11 +51,11 @@ import net.hasor.core.Hasor;
 AppContext appContext = Hasor.create().build();
 ```
 
-An application can create multiple independent `AppContext` instances, although most processes only need one main context.
+An application can create multiple independent `AppContext` instances. A process usually needs only one main `AppContext`.
 
-## Write a Module
+## Writing a Module
 
-The configuration entry point is `net.hasor.core.Module`. Use `ApiBinder` inside `loadModule` to declare beans, SPI listeners, scopes, AOP, and other capabilities.
+The configuration entry point is `net.hasor.core.Module`. Use `ApiBinder` in `loadModule` to declare Beans, SPI, scopes, AOP, and other features.
 
 ```java
 import net.hasor.core.ApiBinder;
@@ -69,14 +69,14 @@ public class AppModule implements Module {
 }
 ```
 
-Load the module during startup:
+Pass the Module at startup:
 
 ```java
 AppContext appContext = Hasor.create().build(new AppModule());
 HelloService helloService = appContext.getInstance(HelloService.class);
 ```
 
-Modules can install other modules:
+A Module can install other Modules:
 
 ```java
 public class RootModule implements Module {
@@ -88,9 +88,9 @@ public class RootModule implements Module {
 }
 ```
 
-## Load configuration
+## Reading configuration
 
-By default, Hasor reads `hconfig.xml` from the classpath. To use another file name, specify it during startup:
+Hasor reads `hconfig.xml` from the classpath by default. Specify a different filename at startup if needed:
 
 ```java
 AppContext appContext = Hasor.create()
@@ -98,7 +98,7 @@ AppContext appContext = Hasor.create()
         .build(new AppModule());
 ```
 
-You can also set configuration entries directly:
+You can also set configuration values directly at startup:
 
 ```java
 AppContext appContext = Hasor.create()
@@ -106,26 +106,30 @@ AppContext appContext = Hasor.create()
         .build(new AppModule());
 ```
 
-## Choose Web or Boot
+## Choosing Web or Boot
 
-For Web MVC applications, add `hasor-web`:
+Add `hasor-web` for Web MVC:
 
 ```xml
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
-For executable Fat Jar applications, use `hasor-boot-maven-plugin` and choose one embedded container module when needed:
+Use a Maven or Gradle packaging plugin for an executable Fat Jar. Web applications also select an embedded container module:
 
 ```xml
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-web-tomcat</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
-Web Boot applications can start with `WebServers.run(args, RootModule.class)`. See [Packaging and Deployment](../deployment/overview.md), [Project Configuration](../deployment/project-config.md), and [Web Launcher](../deployment/web-launcher.md) for details.
+Start Web Boot applications with `WebServers.run(args, RootModule.class)`. See [Packaging and Deployment](../deployment/overview.md), [Project Configuration](../deployment/project-config.md), and [Web Launcher](../deployment/web-launcher.md).
+
+## Using annotation configuration
+
+With `net.hasor:hasor-config`, declare objects using `@Configuration` and `@Bean`, and start the application with `ApplicationBoot.run(Application.class, args)`. Specify the scan scope through `hasor.loadPackages`; the startup class package is not inferred automatically. The startup class does not have to implement `Module`. See [Java Annotation Configuration](../core/conf/java-config.md) for examples, scan rules, and Bean lifecycle.

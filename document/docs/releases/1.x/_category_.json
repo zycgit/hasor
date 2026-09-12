@@ -1,0 +1,10 @@
+{
+  "label": "v1.x",
+  "position": 999,
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "v1.x"
+  }
+}

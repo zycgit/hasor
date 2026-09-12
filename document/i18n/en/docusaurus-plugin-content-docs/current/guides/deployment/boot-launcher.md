@@ -2,12 +2,29 @@
 id: boot-launcher
 sidebar_position: 3
 title: Boot Launcher
-description: Use Hasor.run to write the startup entry for ordinary Hasor applications.
+description: Unified Boot startup, Core entry points, lifecycle, and health checks.
 ---
 
 # Boot Launcher
 
-Ordinary applications use `Hasor.run(args, PrimarySource.class)` as the startup entry. The startup class usually implements `Module`; the `main` method starts the application, and `loadModule` declares beans and extension points.
+New applications should use `net.hasor.boot.Boot`. Ordinary and Web applications share the same entry point:
+
+```java
+public class Application {
+    public static void main(String[] args) throws Exception {
+        try (net.hasor.boot.BootApplication app =
+                     net.hasor.boot.Boot.run(args, Application.class)) {
+            app.join();
+        }
+    }
+}
+```
+
+Ordinary applications depend on `net.hasor:hasor-boot:5.1.1-SNAPSHOT`; Web applications need one container module. Close one-shot applications after completing their work instead of calling `join()`. See [Project Configuration](./project-config.md).
+
+## Core entry point
+
+Ordinary applications use `Hasor.run(args, PrimarySource.class)`. The startup class usually also implements `Module`: `main` starts the application, while `loadModule` declares Beans and extension points.
 
 ```java
 import net.hasor.core.ApiBinder;
@@ -38,16 +55,16 @@ Hasor.create()
 
 ## primarySources
 
-`primarySources` are the main startup sources for Hasor Boot. They differ from ordinary modules in the following ways:
+`primarySources` are the primary startup sources for Hasor Core. They differ from ordinary Modules as follows:
 
-- A primary source is always registered as a Hasor bean.
-- It is created by Hasor, so the type must provide an accessible no-argument constructor.
-- It is created as a singleton, and the `AppContext` obtains it before full dependency injection is performed.
-- If it implements `Module`, the same instance participates in the `loadModule`, `onStart`, and `onStop` lifecycle.
-- When `loadModule` is called, the container is still in the module-configuration phase, so dependency injection has not yet been performed on the primary source.
-- For the primary source itself, dependency injection happens after `loadModule` and before `onStart`.
+- A primary source is always registered as a Hasor Bean.
+- Hasor creates it, so the type must provide an accessible no-argument constructor.
+- It is created as a singleton; after `AppContext` obtains it, full dependency injection is performed.
+- If it implements `Module`, the same instance participates in `loadModule`, `onStart`, and `onStop`.
+- `loadModule` runs during module configuration, before dependency injection on the primarySource.
+- For the primarySource itself, injection occurs after `loadModule` and before `onStart`.
 
-A startup class can therefore handle module configuration and lifecycle logic at the same time:
+A startup class can therefore handle both module configuration and startup lifecycle logic:
 
 ```java
 import net.hasor.core.ApiBinder;
@@ -83,14 +100,14 @@ public class DemoHasorBootApplication implements Module {
 }
 ```
 
-## Startup Arguments
+## Startup arguments
 
-`Hasor.run` binds the `args` received by the `main` method into the container:
+`Hasor.run` binds the `args` received by `main` into the container:
 
 - `net.hasor.core.info.Arguments`
-- A named `String[]` whose name is `Arguments.MAIN_ARGS`
+- A `String[]` named `Arguments.MAIN_ARGS`
 
-Business beans or the primary source can inject `Arguments` directly:
+Business Beans and primarySources can inject `Arguments` directly:
 
 ```java
 import net.hasor.core.Inject;
@@ -106,15 +123,15 @@ public class HelloService {
 }
 ```
 
-## Shutdown Handling
+## Shutdown handling
 
-By default, Hasor registers a JVM shutdown hook. When the process exits normally or receives `SIGTERM` or `SIGINT`, Hasor calls `AppContext.shutdown()` and executes `Module#onStop`.
+Hasor registers a JVM shutdown hook by default. On normal process exit, `SIGTERM`, or `SIGINT`, Hasor calls `AppContext.shutdown()` and executes `Module#onStop`.
 
 ```java
 Hasor.run(args, DemoHasorBootApplication.class);
 ```
 
-If an application needs to control shutdown by itself, disable automatic registration:
+Disable automatic registration if the application needs to control shutdown itself:
 
 ```java
 AppContext appContext = Hasor.create()
@@ -127,5 +144,35 @@ appContext.shutdown();
 ```
 
 :::tip
-`kill -0 <pid>` only checks whether the process exists and whether the current user has permission to signal it. It does not notify the process to exit. Common exit notifications are `kill <pid>` and `kill -15 <pid>`, both of which trigger the JVM shutdown hook.
+`kill -0 <pid>` only checks whether the process exists and the current user has permission; it does not request termination. Typical termination commands are `kill <pid>` and `kill -15 <pid>`, which trigger the JVM shutdown hook.
 :::
+## Boot extensions and lifecycle
+
+`new Boot().sources(...).arguments(...).hconfigFile(...).property(...).start()` supports configuration in code; property overrides file properties.
+`BootApplication.getAppContext()` returns the application container. `close()` closes extension resources in reverse order before closing the container; `join()` waits for shutdown.
+Boot discovers `BootExtension` through SPI and sorts extensions by order and class name. Extensions wrap the next BootLauncher stage and pass on the environment and modules.
+The Web extension creates the same application container in the Servlet context callback; it does not start a separate business container.
+Extensions should invoke the next stage only once, register cleanup through onClose, and release resources they acquired if startup fails.
+
+## Health checks
+
+Boot Web provides `GET /health` by default, prefixed by the configured context path.
+Use `hasor.boot.web.health.enabled` to enable or disable it and `hasor.boot.web.health.path` to change its address.
+The corresponding environment variables are `HASOR_BOOT_WEB_HEALTH_ENABLED` and `HASOR_BOOT_WEB_HEALTH_PATH`.
+
+Declare checks in a configuration class:
+```java
+@Bean
+public net.hasor.boot.web.health.HealthCheck database() {
+    return () -> databaseAvailable();
+}
+```
+
+`databaseAvailable()` is application-defined probe logic. The interface only declares `boolean check() throws Exception`; no `name()` is required.
+Names come from container binding names, falling back to binding IDs when empty. Ordinary `@Bean` methods use their method names; explicit `@Bean("db")` is also supported. Names must be nonempty and unique; no suffix is stripped.
+
+Every request runs all checks synchronously without short-circuiting on failure. All passing checks return HTTP 200; any false result or exception returns HTTP 503:
+`{"status":"DOWN","checks":{"database":"DOWN"}}`。
+Without business checks, only the application container startup state is checked. Grouping, selectable aggregation strategies, and result caching are not currently supported.
+Implementations must be thread-safe and set their own connection-pool, network, and other timeouts. Responses do not expose exception details, but check names are public; restrict access in production.
+The default endpoint requires an available JSON renderer. It is also inaccessible when the HTTP listener is disabled.

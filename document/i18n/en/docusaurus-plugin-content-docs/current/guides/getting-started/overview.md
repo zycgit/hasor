@@ -2,27 +2,27 @@
 id: overview
 sidebar_position: 1
 title: Introduction
-description: Learn the roles of hasor-core, hasor-config, hasor-web, and hasor-boot.
+description: Understand the responsibilities of hasor-core, hasor-config, hasor-web, and hasor-boot.
 ---
 # Introduction
 
-Hasor is a lightweight framework for Java applications, organized by these responsibilities:
+Hasor is a lightweight framework for Java applications. The current repository is organized by responsibility:
 
-- `hasor-core`: IoC, AOP, scopes, events, lifecycle hooks, configuration, and plugin extension points.
-- `hasor-config`: optional Java configuration, Bean factories, annotation AOP, and Web auto-configuration.
-- `hasor-web`: Web MVC, request mapping, request parameters, response rendering, file upload, and Servlet integration on top of `hasor-core`.
-- `hasor-boot`: executable Fat Jar packaging plus embedded Tomcat, Jetty, and Undertow support for Hasor Web.
+- `hasor-core`: IoC, AOP, scopes, events, lifecycle, configuration, and plugin extensions.
+- `hasor-config`: optional declarative configuration with `@Configuration`, `@Bean`, and Web auto-configuration.
+- `hasor-web`: Web MVC, request mapping, request parameters, response rendering, file uploads, and Servlet integration on top of `hasor-core`.
+- `hasor-boot`: a unified application startup entry point and extension lifecycle, with companion modules for Web containers, the Loader, and packaging plugins.
 
-`hasor-boot` is a group of modules: the loader, Maven/Gradle plugins, the shared Web API, and individual embedded containers.
+`hasor-boot` is both the module-group directory name and the published name of the unified startup module. Ordinary Boot applications depend on `net.hasor:hasor-boot`; Web applications need one container module.
 
-Most Hasor applications are built around `Module`, `ApiBinder`, and `AppContext`: declare bindings and extension points in a `Module`, then create the runtime context with `Hasor.create().build(...)`.
+Hasor lets applications start with a small core container and add Web or executable packaging capabilities as needed. Application code centers on `Module`, `ApiBinder`, and `AppContext`: declare bindings and extensions in a `Module`, then create the runtime context through `Hasor.create().build(...)`.
 
-## Runtime Requirements
+## Runtime requirements
 
-The current source version is `5.0.2-SNAPSHOT`. Java compilation targets version 17; applications require JDK 17 or later. Build the repository with its Gradle Wrapper.
+The current source version is `5.1.1-SNAPSHOT`, targeting Java 17. Applications require JDK 17 or later. Build the source using the repository Gradle Wrapper.
 
 ## Features
 
-Hasor still follows a "microkernel + plugins" model. `hasor-core` keeps the core container small, `hasor-web` extends the binding API through `WebApiBinder`, and `hasor-boot` handles executable archive packaging and runtime loading.
+Hasor follows a microkernel-and-plugins design. `hasor-core` keeps a small core surface; `hasor-web` extends binding APIs through `WebApiBinder`; Boot extends the runtime through SPI. Companion Maven/Gradle plugins and the Loader handle executable archives.
 
-For ordinary Java applications, use `hasor-core`; add [hasor-config](../core/conf/java-config.md) for annotation configuration. For Servlet Web applications, add `hasor-web` and configure `RuntimeListener` and `RuntimeFilter`. Fat Jars need a Maven or Gradle packaging plugin; only embedded Web applications need a container module.
+Ordinary Java applications can use `hasor-core` alone. Add [hasor-config](../core/conf/java-config.md) for annotation configuration. Traditional Servlet Web applications add `hasor-web` and configure `RuntimeListener` and `RuntimeFilter`. Use Maven or Gradle packaging plugins for executable Fat Jars, adding a container module only when an embedded Web server is needed.

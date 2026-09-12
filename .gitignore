@@ -9,6 +9,7 @@ _book
 dependency-reduced-pom.xml
 .gradle
 /.gradle/
+.deploy-venv/
 
 # nodejs
 package-lock.json

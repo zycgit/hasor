@@ -15,7 +15,7 @@ description: Build Servlet Web MVC applications with hasor-web.
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -116,19 +116,22 @@ public class DemoWebApplication implements WebModule {
 }
 ```
 
-Embedded container settings come from `hasor.http` and can also be overridden by environment variables:
+Embedded container settings come from `hasor.boot.web` and can also be overridden by environment variables:
 
 ```xml
 <config xmlns="http://www.hasor.net/sechma/hasor-web">
-    <hasor>
-        <http>
-            <server>${HASOR_HTTP_SERVER}</server>
-            <host>${HASOR_HTTP_HOST:0.0.0.0}</host>
-            <port>${HASOR_HTTP_PORT:8080}</port>
-            <contextPath>${HASOR_HTTP_CONTEXT_PATH:/}</contextPath>
-        </http>
-    </hasor>
+    <hasor.boot.web>
+        <server>
+            <contextPath>/</contextPath>
+        </server>
+        <connectors>
+            <http enabled="true">
+                <host>0.0.0.0</host>
+                <port>8080</port>
+            </http>
+        </connectors>
+    </hasor.boot.web>
 </config>
 ```
 
-When `server` is empty, Hasor discovers an available container through Java SPI. You can also set it explicitly to `tomcat`, `jetty`, or `undertow`.
+The container is discovered through SPI and must be unique; there is no name selector.

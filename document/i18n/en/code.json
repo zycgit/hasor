@@ -1,4 +1,8 @@
 {
+  "theme.navbar.item.label.版本说明": {
+    "message": "Release Notes",
+    "description": "Release notes navigation label"
+  },
   "site.tagline": {
     "message": "Hasor Framework",
     "description": "The site tagline"
@@ -269,6 +273,6 @@
     "description": "The title of the tag list page"
   },
   "homepage.tagline": {
-    "message": "Hasor is a framework ecosystem composed of several framework families. These sub-frameworks cover IoC, AOP, Web MVC, databases, and many other areas."
+    "message": "Hasor is a lightweight Java framework centered on hasor-core, hasor-config, hasor-web, and hasor-boot."
   }
 }

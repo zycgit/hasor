@@ -114,4 +114,4 @@ We have now explained what dependency injection is and shown several forms of it
 
 ## Circular Dependency Diagnostics
 
-When a Bean creation chain closes a cycle, the container throws `net.hasor.core.CircularDependencyException`. The message lists dependencies and marks the closing node; `getDependencyPath()` returns an immutable path including the repeated final node. `hasor-config` Bean factories include their configuration class, method, and parameter types in the description. Break the dependency cycle or defer resolution through a Provider; resolving that Provider immediately within the same creation chain still forms a cycle.
+When a Bean creation chain closes a cycle, the container throws `net.hasor.core.CircularDependencyException`. The message lists dependencies and marks the closing node; `getDependencyPath()` returns an immutable path including the repeated final node. `hasor-config` `@Bean` factories include their configuration class, method, and parameter types in the description. Break the dependency cycle or defer resolution through a Provider; resolving that Provider immediately within the same creation chain still forms a cycle.

@@ -52,7 +52,7 @@ The runtime classpath is assembled by Boot Loader:
 
 A complete setup usually follows this order:
 
-1. Add dependencies and Maven packaging in [Project Configuration](./project-config.md).
+1. Add dependencies and Maven or Gradle packaging in [Project Configuration](./project-config.md).
 2. Use [Boot Launcher](./boot-launcher.md) for ordinary applications.
 3. Use [Web Launcher](./web-launcher.md) for Web applications with embedded containers.
 

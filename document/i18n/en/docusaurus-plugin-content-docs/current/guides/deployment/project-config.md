@@ -2,28 +2,28 @@
 id: project-config
 sidebar_position: 2
 title: Project Configuration
-description: Configure Hasor Boot dependencies, embedded container dependencies, and the Maven executable package plugin.
+description: Configure Hasor Boot dependencies and Maven or Gradle executable archive plugins.
 ---
 
 # Project Configuration
 
-Hasor Boot project configuration has two parts: runtime dependencies and the Maven packaging plugin. Ordinary applications only need the core dependency and packaging plugin. Web applications also choose one embedded container module.
+Hasor Boot project configuration has two parts: runtime dependencies and Maven/Gradle packaging plugins. Ordinary applications need only the core dependency and packaging plugin; Web applications also select an embedded container module. The versions below match the current source snapshot. Install the corresponding artifacts locally first, or use versions available in your dependency repository.
 
-## Ordinary Application Dependencies
+## Ordinary application dependencies
 
-Ordinary Java applications need at least `hasor-core`:
+Add `hasor-boot` for an ordinary application using the unified `Boot.run(...)` entry point:
 
 ```xml
 <dependency>
     <groupId>net.hasor</groupId>
-    <artifactId>hasor-core</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <artifactId>hasor-boot</artifactId>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
-If you only run the `main` method during development, no extra runtime dependency is required. To package an executable fat jar, configure `hasor-boot-maven-plugin` in Maven.
+Running `main` directly during development requires no additional runtime dependency. Configure `hasor-boot-maven-plugin` in Maven when packaging an executable Fat Jar.
 
-## Web Application Dependencies
+## Web application dependencies
 
 Web applications need `hasor-web` and one embedded container module:
 
@@ -31,24 +31,26 @@ Web applications need `hasor-web` and one embedded container module:
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-web-tomcat</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
-The embedded container module can be replaced as needed:
+Container modules bring in Boot, Config, and Web transitively. Include only one container: zero or multiple SPI implementations cause errors. The application must supply a JSON library for default JSON rendering; see [JSON Rendering](../webmvc/response/json_render.md).
+
+Choose one of the following embedded container modules as needed:
 
 - `hasor-boot-web-tomcat`
 - `hasor-boot-web-jetty`
 - `hasor-boot-web-undertow`
 
-## Maven Packaging Plugin
+## Maven packaging plugin
 
-The Hasor Boot Maven plugin repackages a regular jar into an executable archive during the `package` phase.
+The Hasor Boot Maven plugin repackages the ordinary jar as an executable archive during the `package` phase.
 
 ```xml
 <build>
@@ -68,7 +70,7 @@ The Hasor Boot Maven plugin repackages a regular jar into an executable archive 
         <plugin>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-boot-maven-plugin</artifactId>
-            <version>5.0.2-SNAPSHOT</version>
+            <version>5.1.1-SNAPSHOT</version>
             <executions>
                 <execution>
                     <goals>
@@ -81,7 +83,7 @@ The Hasor Boot Maven plugin repackages a regular jar into an executable archive 
 </build>
 ```
 
-If you do not want to write `Main-Class` through `maven-jar-plugin`, configure the Hasor Boot plugin parameter directly:
+Instead of writing `Main-Class` through `maven-jar-plugin`, you can configure the Hasor Boot plugin directly:
 
 ```xml
 <configuration>
@@ -89,24 +91,24 @@ If you do not want to write `Main-Class` through `maven-jar-plugin`, configure t
 </configuration>
 ```
 
-## Build and Run
+## Building and running
 
-After Maven package, the target directory contains a Hasor Boot archive that can run directly.
+Maven package generates a runnable Hasor Boot archive in the target directory.
 
 ```bash
 mvn package
-java -jar target/demo-hasor-boot-basic-5.0.2-SNAPSHOT.jar
+java -jar target/demo-hasor-boot-basic-5.1.1-SNAPSHOT.jar
 ```
 
-Web applications use the same `java -jar` form:
+Web applications run with the same `java -jar` command:
 
 ```bash
-java -jar target/demo-hasor-boot-web-5.0.2-SNAPSHOT.jar
+java -jar target/demo-hasor-boot-web-5.1.1-SNAPSHOT.jar
 ```
 
-## Gradle Packaging
+## Gradle packaging plugin
 
-The plugin ID is `net.hasor.boot`. Install the source snapshot to Maven Local first, or use versions available in your configured repositories. Plugin repositories and dependency repositories are configured separately:
+The plugin ID is `net.hasor.boot`. This example uses a source snapshot installed in Maven Local. Configure plugin resolution repositories separately from ordinary dependency repositories.
 
 ```groovy title="settings.gradle"
 pluginManagement {
@@ -121,7 +123,7 @@ rootProject.name = 'demo'
 ```groovy title="build.gradle"
 plugins {
     id 'java'
-    id 'net.hasor.boot' version '5.0.2-SNAPSHOT'
+    id 'net.hasor.boot' version '5.1.1-SNAPSHOT'
 }
 
 version = '1.0.0'
@@ -136,8 +138,8 @@ configurations {
     bootLoader
 }
 dependencies {
-    implementation 'net.hasor:hasor-core:5.0.2-SNAPSHOT'
-    bootLoader 'net.hasor:hasor-boot-loader:5.0.2-SNAPSHOT'
+    implementation 'net.hasor:hasor-boot:5.1.1-SNAPSHOT'
+    bootLoader 'net.hasor:hasor-boot-loader:5.1.1-SNAPSHOT'
 }
 tasks.named('bootJar') {
     mainClass.set('com.example.Application')
@@ -145,10 +147,17 @@ tasks.named('bootJar') {
 }
 ```
 
-Run `./gradlew bootJar`, then `java -jar build/libs/demo-1.0.0-boot.jar`. `assemble` also depends on `bootJar`. The default classifier is `boot`; the ordinary jar is retained. If `mainClass` is absent, the task reads the source jar Manifest. `loaderClasspath` must be configured explicitly.
+Running `./gradlew bootJar` produces `build/libs/demo-1.0.0-boot.jar`; run it with `java -jar build/libs/demo-1.0.0-boot.jar`. `assemble` also depends on `bootJar`. The ordinary jar is retained by default; the executable archive uses the `boot` classifier. If `mainClass` is unset, the ordinary jar Manifest `Main-Class` is used. Configure `loaderClasspath` explicitly.
 
-## Building Hasor Sources
+## Building Hasor from source
 
-The Hasor repository uses Gradle Wrapper; Maven examples above are for consuming applications. From the repository root, run `./build.sh package test` to build, or `./build.sh install test` to also publish locally, including the separately built Gradle plugin. The script skips tests unless `test` is present; direct `./gradlew build` follows the normal Gradle test lifecycle.
+The Hasor repository itself uses Gradle Wrapper; the Maven configuration above is for applications consuming Hasor. From the repository root, run:
 
-`deploy` uploads release versions to Maven Central and rejects SNAPSHOT versions. Before the real build it clears the previous Central bundle directory and ZIP; `--dry-run` skips cleanup and upload. See `build.sh --help` for publishing parameters.
+```bash
+./build.sh package test
+./build.sh install test
+```
+
+`package` builds artifacts; `install` also installs them in Maven Local, including the separately built Gradle plugin. The script runs tests only when the `test` argument is present. Running `./gradlew build` directly follows the normal Gradle test workflow.
+
+`deploy` uploads official versions to Maven Central and rejects SNAPSHOT versions. Before building, it removes old Central bundle directories and ZIPs to prevent stale artifacts from being included. `--dry-run` does not clean or upload. See repository `build.sh --help` for publishing options.

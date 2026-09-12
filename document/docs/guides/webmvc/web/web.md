@@ -15,7 +15,7 @@ description: 使用 hasor-web 构建 Servlet Web MVC 应用。
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -116,19 +116,22 @@ public class DemoWebApplication implements WebModule {
 }
 ```
 
-内嵌容器参数来自 `hasor.http` 配置，也可以通过环境变量覆盖：
+内嵌容器参数来自 `hasor.boot.web` 配置，也可以通过环境变量覆盖：
 
 ```xml
 <config xmlns="http://www.hasor.net/sechma/hasor-web">
-    <hasor>
-        <http>
-            <server>${HASOR_HTTP_SERVER}</server>
-            <host>${HASOR_HTTP_HOST:0.0.0.0}</host>
-            <port>${HASOR_HTTP_PORT:8080}</port>
-            <contextPath>${HASOR_HTTP_CONTEXT_PATH:/}</contextPath>
-        </http>
-    </hasor>
+    <hasor.boot.web>
+        <server>
+            <contextPath>/</contextPath>
+        </server>
+        <connectors>
+            <http enabled="true">
+                <host>0.0.0.0</host>
+                <port>8080</port>
+            </http>
+        </connectors>
+    </hasor.boot.web>
 </config>
 ```
 
-`server` 为空时会通过 Java SPI 自动发现可用容器；也可以显式设置为 `tomcat`、`jetty`、`undertow`。
+容器通过唯一 SPI 实现自动发现，不提供名称选择。

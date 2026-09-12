@@ -14,7 +14,11 @@ Hasor events have three execution models:
 - Synchronous with a shared thread.
 - Asynchronous.
 
-![Event model](../../_img/CC2_950A_FEDD_45ED.png)
+| Model | Main flow | Listener execution |
+| --- | --- | --- |
+| Synchronous, dedicated thread | Fire event → wait → continue after listeners finish | Runs on an event thread; completion releases the waiting caller |
+| Synchronous, shared thread | Fire event → run listeners → continue | Runs on the calling thread |
+| Asynchronous | Fire event → continue immediately | Runs independently on an event thread |
 
 Whether the event model is synchronous or asynchronous, events in Hasor share the following characteristics:
 - Event listeners execute in registration order.

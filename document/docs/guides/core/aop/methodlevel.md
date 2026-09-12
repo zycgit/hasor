@@ -7,7 +7,7 @@ description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-bo
 
 # 方法级拦截器
 
-以下注解用法需要引入 `hasor-config`。`@Aop` 为 `net.hasor.cobble.dynamic.Aop`，对应的拦截器接口也位于 `net.hasor.cobble.dynamic` 包。
+以下注解由 hasor-core 内置 AopModule 处理，不需要 hasor-config。`@Aop` 为 `net.hasor.cobble.dynamic.Aop`，对应的拦截器接口也位于 `net.hasor.cobble.dynamic` 包。
 
 在某个类中只有某些特定的方法需要被拦截，那么就要使用方法级拦截器。
 

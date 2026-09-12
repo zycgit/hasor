@@ -11,6 +11,10 @@
     "message": "Documentation",
     "description": "Navbar item with label 文档手册"
   },
+  "item.label.版本说明": {
+    "message": "Release Notes",
+    "description": "Release notes navigation label"
+  },
   "item.label.源代码": {
     "message": "Source Code",
     "description": "Navbar item with label 源代码"

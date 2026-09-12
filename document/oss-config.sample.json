@@ -1,0 +1,24 @@
+{
+  "credentials": {
+    "docs-publisher": {
+      "accessKeyId": "",
+      "accessKeySecret": ""
+    }
+  },
+  "sites": {
+    "dbvisitor": {
+      "credential": "docs-publisher",
+      "endpoint": "https://oss-cn-hangzhou.aliyuncs.com",
+      "bucketName": "your-dbvisitor-docs-bucket",
+      "prefix": "",
+      "cdnUrl": "https://www.dbvisitor.net/"
+    },
+    "hasor": {
+      "credential": "docs-publisher",
+      "endpoint": "https://oss-cn-hangzhou.aliyuncs.com",
+      "bucketName": "your-hasor-docs-bucket",
+      "prefix": "",
+      "cdnUrl": "https://www.hasor.net/"
+    }
+  }
+}

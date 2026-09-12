@@ -1,0 +1,1386 @@
+{
+  "scope": [
+    "hasor-core",
+    "hasor-web"
+  ],
+  "rules": [
+    "数据库发布正文及 release_time 优先；开源中国补充遗漏版本及条目。",
+    "按正文的模块与版本分段；资讯标题不能决定正文所有条目的版本。",
+    "资讯发表时间与版本发布日期分别保留。",
+    "排除 DB、事务、DataQL、Dataway、RSF、tConsole、外部集成与独立 Commons 的更新；Core/Web 当时内置的能力保留。",
+    "有冲突时核对对应标签源码，不能验证的条目不写入发布页。"
+  ],
+  "sources": [
+    "project-version-raw.json",
+    "oschina-raw.json",
+    "history.json"
+  ],
+  "decisions": [
+    {
+      "version": "2.4.1",
+      "source": 75710,
+      "issue": "资讯正文称增加 Type.ByType 并设为默认，数据库未列此项。",
+      "decision": "未采用。Release.Hasor-2.4.1 的 Inject.java 仍默认 Type.ByName，源码没有该 ByType 枚举。"
+    },
+    {
+      "version": "2.3.2",
+      "source": 75710,
+      "issue": "资讯同列 2.3.2 与 2.3.3 新增 @ImplBy。",
+      "decision": "采用数据库归属 2.3.3；2.3.2 标签无 ImplBy.java，2.3.3 标签存在。"
+    },
+    {
+      "version": "3.0.0",
+      "source": 80916,
+      "issue": "资讯与数据库写作 tryCase。",
+      "decision": "按源码订正为 ApiBinder.tryCast。"
+    },
+    {
+      "version": "4.1.0",
+      "source": 113151,
+      "issue": "资讯摘要写 jsr332，Core 正文写 JSR-330。",
+      "decision": "采用正文 JSR-330；XML 命名空间的 sechma 为历史实际拼写，已核对配置源码。"
+    },
+    {
+      "version": "4.1.7",
+      "issue": "旧稿将空地址问题归为 Spring 重定向。",
+      "decision": "核对相邻标签 RenderWebPlugin.java，实际为 Hasor Web 的 forward 目标为空，订正为响应转发。"
+    },
+    {
+      "version": "4.2.0",
+      "issue": "旧稿仅描述已排除的子项目。",
+      "decision": "核对相邻标签，补入 HttpParameters 参数更新接口及 BeanContainer 构造异常处理。"
+    },
+    {
+      "version": "0.0.6",
+      "source": 47097,
+      "issue": "同一正文既列新增服务注册接口，又列删除 ServicesRegisterHandler。",
+      "decision": "保留最终删除结论，不同时宣称该版本仍提供服务注册能力。"
+    }
+  ],
+  "excludedArticles": [
+    {
+      "id": 60476,
+      "title": "【每日一博】分布式服务框架 Hasor-RSF 盘点",
+      "reason": "非 Core/Web 版本发布公告"
+    },
+    {
+      "id": 47314,
+      "title": "Hasor 同 Spring OSGi 的比较及设计思想",
+      "reason": "非 Core/Web 版本发布公告"
+    },
+    {
+      "id": 45535,
+      "title": "【每日一博】为什么 Hasor 的设计强调模块？",
+      "reason": "非 Core/Web 版本发布公告"
+    },
+    {
+      "id": 42711,
+      "title": "汇总 Hasor 已经开发完的功能",
+      "reason": "非 Core/Web 版本发布公告"
+    },
+    {
+      "id": 42221,
+      "title": "Hasor 的生命周期是如何设计的？",
+      "reason": "非 Core/Web 版本发布公告"
+    }
+  ],
+  "records": [
+    {
+      "version": "0.0.1",
+      "module": "core-web",
+      "releaseDate": "2013-09-15",
+      "databaseId": 1,
+      "oschinaIds": [
+        44322
+      ],
+      "scope": "Core 容器、模块、配置与 Web 模块边界",
+      "new": [
+        "增加 `@GuiceModule`，用于将 Guice 模块引入 Hasor。"
+      ],
+      "opt": [
+        "重构 Core、AppContext 和 Settings；`InitContext` 功能合并到 `Environment`。",
+        "`ApiBinder` 增加模块依赖管理。",
+        "`HasorModule`、`HasorEventListener`、`XmlProperty` 分别更名为 `Module`、`EventListener`、`XmlNode`。",
+        "XML 配置解析改用 SAX，不再依赖 `ns.prop`，`config-mapping.properties` 不再必须解析。",
+        "合并 `onReady` 与 `onInit` 生命周期阶段，删除销毁过程。",
+        "Web 支持从 Core 移至 Hasor Web；整理 `net.hasor` 包结构、类扫描与集合工具。",
+        "`@Module` 更名为 `@AnnoModule`。"
+      ]
+    },
+    {
+      "version": "0.0.2",
+      "module": "core-web",
+      "releaseDate": "2013-09-29",
+      "databaseId": 2,
+      "oschinaIds": [
+        44639
+      ],
+      "scope": "Core 扩展、模块事件与 AOP",
+      "new": [
+        "增加 Gift 体系，为非模块类工具提供扩展机制。",
+        "以模块类名为事件名，在初始化、启动和停止阶段发出对应事件。"
+      ],
+      "opt": [
+        "`DefaultXmlProperty` 更名为 `DefaultXmlNode`，扩展 `XmlNode` 常用方法。",
+        "`AbstractAppContext` 中的事件声明移至 `AppContext` 接口。",
+        "`@Before` 更名为 `@Aop`；ASM 升级至 4.0，同步调整 ClassCode。",
+        "移除 Mapping 部分支持，相关代码改为示例。"
+      ],
+      "fix": [
+        "修复 `StandardAppContext` 调用无参构造方法时的异常。"
+      ]
+    },
+    {
+      "version": "0.0.3",
+      "module": "core-web",
+      "releaseDate": "2013-10-09",
+      "databaseId": 3,
+      "oschinaIds": [
+        44892
+      ],
+      "scope": "Core 构建与 API 文档",
+      "opt": [
+        "更新父 POM，支持 GBK 编码环境下生成 JavaDoc。",
+        "改进 JavaDoc 文档内容。"
+      ]
+    },
+    {
+      "version": "0.0.4",
+      "module": "core-web",
+      "releaseDate": "2013-11-11",
+      "databaseId": 4,
+      "oschinaIds": [
+        45889
+      ],
+      "scope": "Core 插件、环境、日志与生命周期",
+      "new": [
+        "`Environment.isDebug` 可判断是否以调试模式启动。",
+        "增加日志级别判断及 Trace 日志输出方法，输出前检查对应级别是否启用。",
+        "增加 `ServicesRegisterHandler` 服务注册机制及模块启动、停止事件。",
+        "`ApiBinder`、`AppContext` 补充 BindingType 工具方法。",
+        "增加 Cache、Aware 插件，支持向对象注入 `AppContext`，并输出插件加载状态。"
+      ],
+      "opt": [
+        "Gift 更名为 Plugin，定位为框架功能插件；移除 `giftSupport` 配置。",
+        "`ContextEvent_Stop` 更名为 `ContextEvent_Stoped`。"
+      ]
+    },
+    {
+      "version": "0.0.5",
+      "module": "core-web",
+      "releaseDate": "2013-11-25",
+      "databaseId": 5,
+      "oschinaIds": [
+        46269
+      ],
+      "scope": "Core 配置加载、插件与缓存",
+      "new": [
+        "增加 `DomXmlAccept`，将 XML 转换为 `XmlNode` 树。"
+      ],
+      "opt": [
+        "降低 JAR 中 `static-config.xml` 的合并优先级，使外部文件配置优先。",
+        "调整 `AbstractAppContext.createInjector`；Cache 键类型由 `String` 改为 `Serializable`。"
+      ],
+      "fix": [
+        "修复 `DecSequenceMap.removeAllMap` 的并发修改异常。",
+        "修复 `ApiBinderModule` 未处理 Binder 参数导致插件加载失败的问题。"
+      ]
+    },
+    {
+      "version": "0.0.6",
+      "module": "core-web",
+      "releaseDate": "2013-12-21",
+      "databaseId": 6,
+      "oschinaIds": [
+        47097
+      ],
+      "scope": "Core 日志、AOP、对象转换与生命周期",
+      "new": [
+        "`BeanUtils.copyProperty` 支持 POJO 与 Map 之间的属性复制。"
+      ],
+      "opt": [
+        "日志定位调用位置时不再必须创建异常对象。",
+        "AOP 拦截器缓存从 `HashMap` 改为 `WeakHashMap`。",
+        "`Hasor` 移至 core 包；`AppContextAware` 由 Core 直接支持，不再通过 Aware 插件处理。",
+        "移除 `ServicesRegisterHandler` 服务注册机制。",
+        "整理 `AbstractAppContext` 内部流程，通过受保护方法提供扩展；容器事件在对应阶段完成后发出。"
+      ],
+      "fix": [
+        "修复普通 POJO 的 JSON 序列化异常，使用 `JSONPojoConvertor` 处理。",
+        "修复空值向日期类型转换时的异常。"
+      ]
+    },
+    {
+      "version": "0.0.7",
+      "module": "core-web",
+      "releaseDate": "2014-01-17",
+      "databaseId": 7,
+      "oschinaIds": [
+        47975
+      ],
+      "scope": "Core 配置、事件、扫描与插件",
+      "new": [
+        "`Settings` 支持设置配置值，并可通过 `.` 获取根节点；`Environment` 支持设置扫描范围。",
+        "增加 `@GlobalAop`、`PluginHelper` 和 `AbstractAppContext.addGuiceModule`。"
+      ],
+      "opt": [
+        "类扫描由 `Class.forName` 改为字节码解析。",
+        "`getNameSpace` 更名为 `getSetting`，`clean` 更名为 `cleanCache`，`GlobalProperty` 更名为 `FieldProperty`。"
+      ],
+      "fix": [
+        "修复扫描不到 `AppContextAware` 实现时中止启动阶段的问题。",
+        "修复通过 Listener 注解注册的初始化、启动事件未被正确调用的问题。",
+        "修复配置根节点与子节点同名导致的数据混乱，以及 `FileEnvironment` 重复加载配置的问题。",
+        "修复 `AnnoStandardAppContext` 初始化异常。"
+      ]
+    },
+    {
+      "version": "0.0.8",
+      "module": "core-web",
+      "releaseDate": "2014-07-26",
+      "databaseId": 12,
+      "oschinaIds": [
+        53959
+      ],
+      "scope": "Core 类型绑定、作用域与模块机制",
+      "new": [
+        "确立类型绑定与 Bean 机制，支持 Scope、Provider，增加 `EventContext`。",
+        "内置 AOP 接口，不再直接依赖 AOP Alliance。"
+      ],
+      "opt": [
+        "简化主要接口，解除对 Guice 的强制依赖。",
+        "`findBean`、`findProvider` 更名为 `findBindingBean`、`findBindingProvider`。",
+        "删除原有 start、stop 生命周期及插件生命周期支持，移除模块代理和启动依赖检查。",
+        "插件迁至 Hasor Quick，精简 JSON、OGNL 及其他工具包。"
+      ]
+    },
+    {
+      "version": "0.0.9",
+      "module": "core-web",
+      "releaseDate": "2014-09-21",
+      "databaseId": 13,
+      "oschinaIds": [
+        55456
+      ],
+      "scope": "Core 依赖注入与上下文",
+      "new": [
+        "依赖注入使用 `InjectMembers` 接口。"
+      ],
+      "opt": [
+        "简化 AppContext 实现层次和 context 结构，不再依赖 Guice 或 Spring。",
+        "模块通过 `start` 传入，不再使用 `addModule`；移除 `getParent`。"
+      ]
+    },
+    {
+      "version": "0.0.10",
+      "module": "core-web",
+      "releaseDate": "2015-04-03",
+      "databaseId": 14,
+      "oschinaIds": [
+        61192
+      ],
+      "scope": "Core 生命周期、类加载、配置与工具",
+      "new": [
+        "增加 shutdown 生命周期阶段及 `StartModule`。",
+        "增加 Future 工具包、`ApiBinderWrap`、`SettingsWarp` 和对象字符串构建工具。"
+      ],
+      "opt": [
+        "移除 SLF4J 依赖，使用 JDK 日志并拆分 `org.more.logger` 工具包。",
+        "补充无参构造、泛型信息读取及内部 Provider、元数据适配实现。"
+      ],
+      "fix": [
+        "修复特殊 ClassLoader 环境下重复加载类的问题。",
+        "修复 `AbstractSettings` 多线程下可能出现的 HashMap 死锁。",
+        "修复设置 Java 系统属性后环境变量无法识别，以及扫描不到父类接口实现的问题。"
+      ]
+    },
+    {
+      "version": "0.0.11",
+      "module": "core-web",
+      "releaseDate": "2015-04-24",
+      "databaseId": 15,
+      "oschinaIds": [],
+      "scope": "Core 日志工具",
+      "fix": [
+        "修复 `LoggerHelper` 多次输出日志时产生堆栈溢出的问题。"
+      ]
+    },
+    {
+      "version": "0.0.12",
+      "module": "core-web",
+      "releaseDate": "2015-05-09",
+      "databaseId": 16,
+      "oschinaIds": [],
+      "scope": "Core 模块组织、事件与 Web 集成",
+      "new": [
+        "将 Web 与部分 Quick 插件合并到 Core。",
+        "Web 增加 shutdown 生命周期支持、MIME 类型获取工具及 Servlet 请求、响应、Session、Context 接口绑定。",
+        "增加 JSP 标签库和 `@Aop` 注解插件。",
+        "请求与响应默认采用 UTF-8 编码，资源插件支持从 classpath、文件路径和 ZIP 中加载资源。"
+      ],
+      "opt": [
+        "`StandardEventManager` 改为无锁实现。",
+        "移除自有日志封装，改用 SLF4J，处理 JDK 日志的类加载器问题。"
+      ]
+    },
+    {
+      "version": "0.0.13",
+      "module": "core-web",
+      "releaseDate": "2015-05-09",
+      "databaseId": 17,
+      "oschinaIds": [],
+      "scope": "Core 日志",
+      "opt": [
+        "移除自有日志封装，重新使用 SLF4J，解决 JDK 日志使用 SystemClassLoader 导致的输出问题。",
+        "调整测试用例，取消日志包装。"
+      ]
+    },
+    {
+      "version": "0.0.14",
+      "module": "core-web",
+      "releaseDate": "2015-06-18",
+      "databaseId": 18,
+      "oschinaIds": [
+        63488
+      ],
+      "scope": "Core 配置与结果消息",
+      "new": [
+        "`Settings` 增加 `merageXmlNode`，用于汇聚 XML 节点。"
+      ],
+      "opt": [
+        "Result 增加 Message 消息传递机制。"
+      ],
+      "fix": [
+        "修复日志直接输出格式化占位字符的问题。",
+        "修复多配置文件下主配置失效，以及同一模块在多个 `static-config.xml` 中重复加载的问题。"
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "module": "core-web",
+      "releaseDate": "2015-07-03",
+      "databaseId": 19,
+      "oschinaIds": [
+        63900
+      ],
+      "scope": "Core 对象绑定与 Web MVC、验证",
+      "new": [
+        "增加 `DateUtils` 和按名称、类型获取 Provider 的方法，开放 AOP 表达式匹配方法。",
+        "合并 Hasor MVC 的 controller、result 插件，支持自定义 Action 返回值处理。",
+        "增加基于 `Validation` 的验证机制、表单验证器注册及 `ResultProcess` 异常处理。"
+      ],
+      "opt": [
+        "简化容器工厂与资源插件，调整 Web 模块加载及扩展接口。"
+      ],
+      "fix": [
+        "修复 `asEagerSingleton()` 声明单例失效的问题。"
+      ]
+    },
+    {
+      "version": "1.1.0",
+      "module": "core-web",
+      "releaseDate": "2015-07-09",
+      "databaseId": 20,
+      "oschinaIds": [
+        64078
+      ],
+      "scope": "Core 生命周期与 Web MVC、资源",
+      "new": [
+        "增加请求作用域数据容器 `ContextMap`，可通过控制器或 AppContext 获取。",
+        "MVC 支持请求文件名后缀匹配，默认包含 `htm`、`html`、`do`。",
+        "`Hasor` 增加 `autoAware`，控制器增加 `getModelByName`。"
+      ],
+      "opt": [
+        "`AppContextAware` 不再需要通过 ApiBinder 显式声明，简化启动与 Provider 构造过程。",
+        "`ResourceLoader.exist` 不再抛出 IO 异常。"
+      ],
+      "fix": [
+        "修复加载模块时未正确拦截依赖引发的错误。",
+        "修复验证消息未初始化及资源加载器插入空值引发的空指针异常。"
+      ]
+    },
+    {
+      "version": "1.2.0",
+      "module": "core-web",
+      "releaseDate": "2015-08-20",
+      "databaseId": 21,
+      "oschinaIds": [
+        65414
+      ],
+      "scope": "Core 对象工具与 Web 参数验证",
+      "new": [
+        "增加 `@IgnoreParam`，用于在表单注入时忽略指定参数。"
+      ],
+      "opt": [
+        "Validation 参数改为泛型，补充泛型判断；验证框架从 MVC 中独立。",
+        "完善 ResultDO 的消息处理。"
+      ],
+      "fix": [
+        "修复 BeanUtils 无法获取父类字段和方法的问题。"
+      ]
+    },
+    {
+      "version": "2.0.0",
+      "module": "core-web",
+      "releaseDate": "2015-11-27",
+      "databaseId": 22,
+      "oschinaIds": [
+        68450
+      ],
+      "scope": "Core 注入、生命周期与 Web 模块边界",
+      "new": [
+        "增加 `@Inject`、`@Init`，支持注解注入与初始化。",
+        "增加 JVM 关闭钩子及 `WebApiBinderWrap`。",
+        "引入 JSON 工具，ASM 升级至 5.0，以支持解析 Java 8 类文件。"
+      ],
+      "opt": [
+        "`StartModule` 更名为 `LifeModule`，增加 `onStop`；调整 `onStart` 与容器启动事件的调用时机。",
+        "环境初始化与构造方法支持传入 Settings。",
+        "移除 `ResultModule`，MVC 插件独立，MVC 框架迁出为 haweb。"
+      ],
+      "fix": [
+        "修复字节码对 `long`、`float`、`double` 的处理问题，排除 java、javax 包中的类参与 AOP。"
+      ],
+      "upgrade": [
+        "`StartModule` 更名为 `LifeModule`，生命周期实现需补充或调整 `onStop`。"
+      ]
+    },
+    {
+      "version": "2.1.0",
+      "module": "core-web",
+      "releaseDate": "2016-01-17",
+      "databaseId": 23,
+      "oschinaIds": [
+        70002
+      ],
+      "scope": "Core 注入与关闭、Web 插件",
+      "new": [
+        "增加 RESTful、templates 插件，提供内置 Web 开发及模板渲染。",
+        "增加简化模块配置的插件，验证插件支持 `@ValidDefine`。"
+      ],
+      "opt": [
+        "ShutdownHook 在启动时注册、关闭时注销；增加 Environment 包装器。",
+        "`@Inject` 增加 ByID、ByName 注入方式。",
+        "模板和资源插件整合 MIME 处理，移除 JSP 自定义函数。"
+      ],
+      "fix": [
+        "修复 `Shutdown in progress`、Web 启动空指针及 `@Inject` 携带 value 时失效的问题。"
+      ]
+    },
+    {
+      "version": "2.2.0",
+      "module": "core-web",
+      "releaseDate": "2016-02-23",
+      "databaseId": 24,
+      "oschinaIds": [
+        70982
+      ],
+      "scope": "Core 事件与配置、Web 过滤链",
+      "new": [
+        "增加事件注册插件，`Settings` 增加 `addSetting`、`clearSetting`。"
+      ],
+      "opt": [
+        "资源插件由 Servlet 改为 Filter，未命中资源时继续交给 Servlet 容器。",
+        "RESTful 插件改用 Filter，可通过 `renderTo` 或 `ContextMap.setViewName` 指定模板。",
+        "工作目录的默认来源由 `USER.DIR` 改为 `USER.HOME`。",
+        "XML 配置冲突时保留多个值；事件参数由 `Object[]` 改为泛型。"
+      ]
+    },
+    {
+      "version": "2.3.0",
+      "module": "core-web",
+      "releaseDate": "2016-04-06",
+      "databaseId": 25,
+      "oschinaIds": [
+        72259
+      ],
+      "scope": "Core 注解、作用域、初始化与环境配置",
+      "new": [
+        "支持配置默认单例或原型模式，增加 `asEagerPrototype`、`@Singleton`、`@Prototype`。",
+        "带 `@Init` 的单例在容器启动阶段完成初始化。",
+        "支持通过 File 指定配置文件。"
+      ],
+      "opt": [
+        "容器绑定 `EventContext`，可通过注入或容器查询获取。",
+        "调整事件插件等待 AppContext 注入的方式，优化启动与线程命名。",
+        "Hasor 定义的同名环境变量优先于系统环境变量。"
+      ]
+    },
+    {
+      "version": "2.3.1",
+      "module": "core-web",
+      "releaseDate": "2016-04-13",
+      "databaseId": 26,
+      "oschinaIds": [
+        75710
+      ],
+      "scope": "Core 配置合并",
+      "fix": [
+        "修复 `AbstractMergeSettings` 因 Map 无序而提前合并主配置，导致应用配置优先级失效的问题。"
+      ]
+    },
+    {
+      "version": "2.3.2",
+      "module": "core-web",
+      "releaseDate": "2016-05-29",
+      "databaseId": 27,
+      "oschinaIds": [
+        75710
+      ],
+      "scope": "Core 插件装配、事件与结果消息",
+      "opt": [
+        "事件处理完成后再调用 `handleComplete`。",
+        "Result 补充 Message 相关方法。",
+        "内置插件在初始化时检查配置，仅装配实际使用的功能。"
+      ]
+    },
+    {
+      "version": "2.3.3",
+      "module": "core-web",
+      "releaseDate": "2016-06-16",
+      "databaseId": 28,
+      "oschinaIds": [
+        75710
+      ],
+      "scope": "Core 接口注入",
+      "new": [
+        "增加 `@ImplBy`，简化接口默认实现的注入配置。"
+      ]
+    },
+    {
+      "version": "2.4.0",
+      "module": "core-web",
+      "releaseDate": "2016-07-29",
+      "databaseId": 29,
+      "oschinaIds": [
+        75710
+      ],
+      "scope": "Core 配置模板与 Web 渲染",
+      "new": [
+        "支持配置模板化，通过替换配置值适配日常、预发、线上等环境，无需修改部署包。",
+        "增加 `@InjectSettings`；`AbstractSettings.resetValues` 可通过 `UpdateValue` 更新配置数据。",
+        "整合 RESTful、Template、MIME 插件，支持多个渲染器及动态选择渲染方式。",
+        "支持注入 `WebAppContext`、`WebEnvironment`。"
+      ],
+      "opt": [
+        "增加 UTF-8 属性文件加载，以 `DecSpaceMap` 组织多个配置空间。",
+        "`findClass` 从 Settings 移至 Environment，移除 `AbstractMergeSettings`。",
+        "资源加载下沉至工具包，资源的 Web 部分与编码插件移至示例。"
+      ]
+    },
+    {
+      "version": "2.4.1",
+      "module": "core-web",
+      "releaseDate": "2016-08-01",
+      "databaseId": 30,
+      "oschinaIds": [
+        75710
+      ],
+      "scope": "Core 环境配置",
+      "opt": [
+        "优化 `env.config` 的读取处理。"
+      ]
+    },
+    {
+      "version": "2.4.2",
+      "module": "core-web",
+      "releaseDate": "2016-08-04",
+      "databaseId": 31,
+      "oschinaIds": [],
+      "scope": "Web 请求验证与 Core 环境配置",
+      "new": [
+        "RESTful 整合 Validation，支持请求参数 `@Valid` 验证及场景化验证。"
+      ],
+      "fix": [
+        "修复 `env.config` 加载环境变量时的名称冲突问题。"
+      ]
+    },
+    {
+      "version": "2.4.3",
+      "module": "core-web",
+      "releaseDate": "2016-08-18",
+      "databaseId": 32,
+      "oschinaIds": [
+        76305
+      ],
+      "scope": "Web 控制器、验证与 Core 工具",
+      "new": [
+        "增加 `StringEscapeUtils`、`EntitiesUtils` 等 HTML 转义工具。"
+      ],
+      "opt": [
+        "改进启动日志；`WebController` 增加 `putData`，用于向模板输出数据。",
+        "`ValidErrors` 继承 `RenderData`，简化验证参数访问。",
+        "整理 WebController 方法，移除重复接口并补充表单验证操作。"
+      ]
+    },
+    {
+      "version": "2.4.4",
+      "module": "core-web",
+      "releaseDate": "2016-09-05",
+      "databaseId": 33,
+      "oschinaIds": [
+        76819
+      ],
+      "scope": "Web Servlet 集成、异步处理与文件上传",
+      "new": [
+        "支持 Servlet 2.3 至 3.1，增加文件上传。",
+        "增加 `@Async`，在 Servlet 3 容器中启用异步请求，并可用于异步文件上传。",
+        "通过 web-fragment 简化 Servlet 3 环境的初始化配置。"
+      ],
+      "opt": [
+        "调整 WebController 方法可见性及工具包结构。"
+      ]
+    },
+    {
+      "version": "2.4.5",
+      "module": "core-web",
+      "releaseDate": "2016-09-29",
+      "databaseId": 34,
+      "oschinaIds": [
+        77582
+      ],
+      "scope": "Core 绑定元数据、配置注入与环境",
+      "new": [
+        "`BindInfo` 增加 `setMetaData`、`removeMetaData`。",
+        "`@InjectSettings` 支持 `${...}` 环境变量表达式。"
+      ],
+      "opt": [
+        "简化 JSON 日志处理；调整 `AbstractEnvironment` 初始化接口，以参数控制是否加载 `env.config`。",
+        "`LinkedCaseInsensitiveMap` 提升为公共工具，调整包位置。"
+      ],
+      "fix": [
+        "修复 Settings 增删改操作中的键名大小写处理，以及环境变量默认值未替换的问题。",
+        "`remoteEnvVar` 更正为 `removeEnvVar`。"
+      ]
+    },
+    {
+      "version": "2.4.6",
+      "module": "core-web",
+      "releaseDate": "2016-10-07",
+      "databaseId": 35,
+      "oschinaIds": [
+        77817
+      ],
+      "scope": "Core 作用域与 Web 参数、验证、渲染",
+      "new": [
+        "增加 `ScopeManager`，完善作用域注册。",
+        "增加请求前、响应后事件，支持注入 WebEnvironment、WebAppContext；接口类型参数从 AppContext 获取。",
+        "RESTful 增加 JSON 后缀拦截，调整上传包位置。"
+      ],
+      "opt": [
+        "RenderData 与 Request 属性共享数据，`@ValidBy` 支持多个表单验证器。"
+      ],
+      "fix": [
+        "修复 Action 方法无法传入 Response 的问题。"
+      ]
+    },
+    {
+      "version": "2.5.0",
+      "module": "core-web",
+      "releaseDate": "2016-10-26",
+      "databaseId": 36,
+      "oschinaIds": [
+        78466
+      ],
+      "scope": "Core 绑定查询、Aware 与生命周期",
+      "new": [
+        "增加 `ClassAwareProvider`、`InfoAwareProvider` 及 `autoAware` 重载。",
+        "ApiBinder、BeanBuilder 增加 `getBindInfo`、`findBindingRegister`，允许初始化阶段查询其他模块的注册信息。"
+      ],
+      "opt": [
+        "即时检测绑定 ID 冲突，不再等待初始化后期统一检查。",
+        "启动、关闭监听接口提升为公开 API，调整模块发现顺序。",
+        "移除 `ContextEvent_Initialized`，其阶段对应 Module 的 `loadModule`。",
+        "SLF4J API 升级至 1.7.21。"
+      ]
+    },
+    {
+      "version": "2.5.1",
+      "module": "core-web",
+      "releaseDate": "2016-11-08",
+      "databaseId": 37,
+      "oschinaIds": [
+        78835
+      ],
+      "scope": "Core 外部对象注入与 Web 启动",
+      "new": [
+        "`AppContext.justInject` 可对已有对象执行依赖注入。",
+        "增加 `WebHasor`，提供 WebAppContext 初始化入口。"
+      ],
+      "opt": [
+        "启动时可通过 Map 传入环境变量，不再只能使用 `env.config`。"
+      ],
+      "fix": [
+        "修复不同 ClassLoader 下关闭容器时可能发生的异常。"
+      ]
+    },
+    {
+      "version": "2.5.2",
+      "module": "core-web",
+      "releaseDate": "2016-12-01",
+      "databaseId": 38,
+      "oschinaIds": [
+        79557
+      ],
+      "scope": "Core Provider 与绑定接口",
+      "opt": [
+        "整理 Provider 实现工具包，迁移 `BindInfoBuilder` 接口位置。"
+      ]
+    },
+    {
+      "version": "3.0.0",
+      "module": "core-web",
+      "releaseDate": "2017-01-12",
+      "databaseId": 47,
+      "oschinaIds": [
+        80916
+      ],
+      "scope": "Core Binder 扩展与 Web 调用体系",
+      "new": [
+        "增加 `ApiBinderCreater` 扩展机制，通过 `ApiBinder.tryCast` 获取扩展接口。",
+        "增加 ContainerCreater 扩展，`WebApiBinder` 支持设置请求和响应编码。",
+        "增加 `@AopIgnore`，可在类或包级别排除动态代理。",
+        "增加 Invoker、InvokerFilter、MappingSetup 和 WebPlugin，统一调用上下文、过滤及路由发现扩展。"
+      ],
+      "opt": [
+        "Web 通过 ApiBinder 扩展接入 AppContext，不再需要 WebEnvironment、WebAppContext、WebHasor。",
+        "融合 Web 与 RESTful 框架。",
+        "移除 v2.4.4 引入的 web-fragment 自动配置，避免重复装配。"
+      ],
+      "upgrade": [
+        "WebEnvironment、WebAppContext、WebHasor 被移除，Web 扩展通过 ApiBinder 接入。",
+        "不再使用 web-fragment 自动装配，需要检查应用的 Web 初始化配置。"
+      ]
+    },
+    {
+      "version": "3.0.1",
+      "module": "core-web",
+      "releaseDate": "2017-01-29",
+      "databaseId": 39,
+      "oschinaIds": [
+        81527
+      ],
+      "scope": "Core 配置解析与日志工具",
+      "fix": [
+        "修复 `DefaultXmlNode` 在配置替换时未处理节点属性的问题。"
+      ],
+      "opt": [
+        "移除 `LogUtils` 工具。"
+      ]
+    },
+    {
+      "version": "3.0.2",
+      "module": "core-web",
+      "releaseDate": "2017-01-30",
+      "databaseId": 40,
+      "oschinaIds": [
+        81527
+      ],
+      "scope": "Core Provider 与 Web 绑定、编码",
+      "new": [
+        "增加 `ProviderType`，用于描述 Provider 返回值类型。",
+        "`MappingToBuilder` 增加 `findBindType` 方法。"
+      ],
+      "fix": [
+        "修复未配置请求、响应编码时 `RuntimeFilter` 发生异常的问题。"
+      ]
+    },
+    {
+      "version": "3.0.3",
+      "module": "core-web",
+      "releaseDate": "2017-02-07",
+      "databaseId": 41,
+      "oschinaIds": [],
+      "scope": "Core AOP 与容器启动",
+      "fix": [
+        "修复 `ClassEngine` 检查 `@AopIgnore` 时的空指针问题，避免导致启动失败。"
+      ]
+    },
+    {
+      "version": "3.1.0",
+      "module": "core-web",
+      "releaseDate": "2017-02-15",
+      "databaseId": 43,
+      "oschinaIds": [
+        81951
+      ],
+      "scope": "Core AOP、环境配置与工具",
+      "opt": [
+        "依赖注入遇到父子类同名字段冲突时，在异常中输出字段名。",
+        "环境变量名不区分大小写，`env.config` 优先从 WORK_HOME 查找，再从 classpath 加载。",
+        "精简 org.more 工具并迁入 Core，整合 classcode，移除不常用的 Event 插件。",
+        "增加调试模式下的代理字节码输出。"
+      ],
+      "fix": [
+        "修复 Java 8 下 AOP 产生 `VerifyError` 的问题，不再需要 `-noverify` 绕过该错误。"
+      ]
+    },
+    {
+      "version": "3.1.1",
+      "module": "core-web",
+      "releaseDate": "2017-02-16",
+      "databaseId": 44,
+      "oschinaIds": [
+        81995
+      ],
+      "scope": "Core 环境配置",
+      "fix": [
+        "通过 `Hasor.create` 设置应用环境参数后，不再加载 `env.config`。"
+      ]
+    },
+    {
+      "version": "3.1.2",
+      "module": "core-web",
+      "releaseDate": "2017-02-19",
+      "databaseId": 46,
+      "oschinaIds": [
+        82093
+      ],
+      "scope": "Core 环境变量与 Web 渲染、验证、布局",
+      "new": [
+        "区分框架环境变量与用户环境变量：框架参数不影响 `env.config` 加载，显式用户参数会停止加载该文件。"
+      ],
+      "opt": [
+        "渲染框架和 RenderApiBinder 整合到 Hasor Web。",
+        "`ValidErrors` 合并到 `ValidInvoker`。",
+        "`HASOR_RESTFUL_LAYOUT` 默认值由 true 改为 false，页面布局不再默认启用。"
+      ],
+      "upgrade": [
+        "页面布局不再默认启用；依赖布局的应用需显式启用 `HASOR_RESTFUL_LAYOUT`。",
+        "`ValidErrors` 合并至 `ValidInvoker`，自定义验证代码需调整接口引用。"
+      ]
+    },
+    {
+      "version": "3.1.3",
+      "module": "core-web",
+      "releaseDate": "2017-02-23",
+      "databaseId": 48,
+      "oschinaIds": [],
+      "scope": "Core 绑定查询与事件线程",
+      "opt": [
+        "事件管理器支持通过构造参数指定线程名称。"
+      ],
+      "fix": [
+        "修复 `AppContext.getBindIDs`、`getNames` 始终返回空值的问题。"
+      ]
+    },
+    {
+      "version": "3.2.0",
+      "module": "core-web",
+      "releaseDate": "2017-10-15",
+      "releaseDateSource": {
+        "url": "https://repo.maven.apache.org/maven2/net/hasor/hasor-core/3.2.0/",
+        "artifactTimestamp": "2017-10-15 11:00",
+        "verifiedOn": "2026-09-12",
+        "note": "采用 Maven Central 制品目录日期，与标签所指发布提交的作者日期一致；轻量标签无独立创建时间，提交者日期为 2025 年，不作为发布日期。"
+      },
+      "oschinaIds": [
+        89605
+      ],
+      "gitTag": "Release.Hasor-3.2.0",
+      "scope": "Core 事件、AOP 与 Web 渲染",
+      "new": [
+        "增加内置 FreeMarker 渲染器，使用时需提供 FreeMarker 依赖。",
+        "增加 JSON 渲染器，按 Fastjson、Gson 的顺序查找可用实现，也可通过绑定 `JsonRenderEngine` 指定自定义实现。"
+      ],
+      "opt": [
+        "`EventContext` 增加 `fireSyncEventWithEspecial`，支持指定同步事件是否由独立线程执行。"
+      ],
+      "fix": [
+        "修复被代理类包含静态代码块或静态方法时生成错误字节码的问题。",
+        "修复 `@Produces` 注解处理中的问题。"
+      ],
+      "sources": [
+        89605
+      ]
+    },
+    {
+      "version": "3.2.2",
+      "module": "core-web",
+      "releaseDate": "2018-01-02",
+      "oschinaIds": [
+        92066
+      ],
+      "gitTag": "Release.Hasor-3.2.2",
+      "scope": "Core 上下文与事件、Web 路由和验证",
+      "date": "2018-01-02",
+      "new": [
+        "增加 `AppContextWarp`，用于包装 AppContext。",
+        "`@ValidBy` 增加 `inherited` 属性，控制验证注解是否被继承。",
+        "增加 `ValidStrategy`，控制是否继续执行后续验证器。"
+      ],
+      "opt": [
+        "`HASOR_LOAD_EVENT_POOL` 默认值由 20 调整为 8。",
+        "`@MappingTo` 支持为同一处理方法配置多个地址。"
+      ],
+      "sources": [
+        92066
+      ]
+    },
+    {
+      "version": "4.1.0",
+      "module": "core-web",
+      "releaseDate": "2020-02-03",
+      "oschinaIds": [
+        113151
+      ],
+      "gitTag": "Release.Hasor-4.1.0",
+      "scope": "Core 注入、配置、SPI 与 Web 调用和渲染",
+      "date": "2020-02-03",
+      "new": [
+        "Core 完善 JSR-330 支持，`@InjectSettings` 支持指定配置命名空间。",
+        "提供新的 SPI 扩展机制，Web 监听过程由 SPI 接替。",
+        "增加 `OneConfig`，统一 FilterConfig、ServletConfig 和 InvokerConfig。"
+      ],
+      "opt": [
+        "Servlet 转换为 Mapping 调用，Filter 转换为 InvokerFilter，统一请求处理过程。",
+        "Core、Web 补充单元测试并修复潜在问题。",
+        "MIME 类型优先从框架配置获取，未找到时再向 ServletContext 查询。"
+      ],
+      "upgrade": [
+        "默认配置文件由 `hasor-config.xml` 改为 `hconfig.xml`，不再提供原环境参数属性文件机制，`hasor-env-properties` 失效。",
+        "`@Produces` 只负责响应 Content-Type，不再决定采用哪个渲染器。",
+        "移除 `ListenerPipeline` 和 `RenderInvoker.lockViewType` 相关方法，自定义扩展需要调整。",
+        "主配置命名空间由 `http://project.hasor.net/hasor/schema/main` 改为 `http://www.hasor.net/sechma/main`。"
+      ],
+      "sources": [
+        113151
+      ]
+    },
+    {
+      "version": "4.2.1",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        119229
+      ],
+      "gitTag": "Release.Hasor-4.2.1",
+      "scope": "Core 动态属性、配置读取、SPI 与模块生命周期",
+      "new": [
+        "增加 `PropertyDelegate`，动态扩展 Bean 属性及对应的 getter、setter。",
+        "`InputStreamSettings` 增加 `addReader`，支持追加配置读取来源。",
+        "ApiBinder 支持 `toTypeSupplier`。"
+      ],
+      "opt": [
+        "加载 `xxx-hconfig.xml` 时去重。",
+        "多个构造方法声明 `@ConstructorBy` 时，优先选择参数数量最少的构造方法。",
+        "模块可在 `loadModule` 中抛出 `IgnoreModuleException`，跳过该模块的启动和停止回调。"
+      ],
+      "fix": [
+        "修复 `loadSpiListener` 未按预期注册的问题，使 `@Spi` 注解正确参与注册。",
+        "修复未引入 Web 依赖时普通控制台应用启动失败的问题。"
+      ],
+      "upgrade": [
+        "`@AopIgnore` 更名为 `@IgnoreProxy`，同时控制 AOP 和动态属性代理。"
+      ],
+      "sources": [
+        119229
+      ]
+    },
+    {
+      "version": "4.2.2",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        127321
+      ],
+      "gitTag": "Release.Hasor-4.2.2",
+      "scope": "Core 生命周期、配置、Provider 与 Web 参数处理",
+      "new": [
+        "`Hasor` 支持单独构建 Environment、Settings。",
+        "`XmlNode` 增加 `toSettingMap`、`toSettingsMap`，将配置节点转换为 Map。"
+      ],
+      "opt": [
+        "`AppContext` 实现 `Closeable`，关闭时调用 `shutdown`。",
+        "扩充 `Provider` 接口，Hasor SPI 兼容标准 Java SPI。",
+        "优化 BeanContainer 对 final 字段的处理。"
+      ],
+      "fix": [
+        "修复 `setupEnvironment` 的空指针异常。",
+        "修复请求参数不是数组时的处理问题，增加类型转换。"
+      ],
+      "upgrade": [
+        "Servlet 初始化参数 `hasor-hconfig-name`、`hasor-envconfig-name` 分别改为 `hasor-hconfig-file`、`hasor-env-file`。",
+        "Core 的 provider 工具包迁入公共模块，直接引用这些类型时需更新 import。"
+      ],
+      "sources": [
+        127321
+      ]
+    },
+    {
+      "version": "4.2.3",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        131324
+      ],
+      "gitTag": "Release.Hasor-4.2.3",
+      "scope": "Core 配置模型、SPI、事件与 Web 异步调用",
+      "new": [
+        "支持 YAML 配置文件。",
+        "增加 `SettingsReader` 扩展接口，统一 properties、XML、YAML 的读取机制。",
+        "`Invoker` 增加 `asyncExecute`，支持继续执行一个或多个异步请求。",
+        "`EventContext.getExecutor` 可获取内部事件执行器。",
+        "`HttpParameters` 支持访问 Request 属性和当前 Invoker。"
+      ],
+      "opt": [
+        "Settings 底层存储改为 Map/List 数据模型，重构配置访问逻辑。",
+        "配置基础实现支持脱离容器独立使用。"
+      ],
+      "fix": [
+        "调整 SPI 接口，修复注册问题。"
+      ],
+      "upgrade": [
+        "`AbstractSettings` 更名为 `BasicSettings`，自定义配置实现需更新继承关系。",
+        "`XmlNode` 更名为 `SettingNode`，直接操作配置节点的代码需适配新模型。"
+      ],
+      "sources": [
+        131324
+      ]
+    },
+    {
+      "version": "4.2.0",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [],
+      "gitTag": "Release.Hasor-4.2.0",
+      "scope": "Core 对象创建与 Web 参数更新",
+      "new": [
+        "`HttpParameters` 增加 Cookie、Header、Query、Path 和请求参数的替换、合并及追加接口。"
+      ],
+      "fix": [
+        "优化构造方法抛出异常时的处理，保留原有运行时异常，不再一律包装为 IllegalStateException。"
+      ],
+      "sources": [],
+      "gitVerified": true
+    },
+    {
+      "version": "4.1.7",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [],
+      "gitTag": "Release.Hasor-4.1.7",
+      "scope": "Web 响应转发",
+      "fix": [
+        "响应未提交时，先检查转发地址是否为空，避免未设置目标地址仍尝试转发而引发异常。"
+      ],
+      "sources": [],
+      "gitVerified": true
+    },
+    {
+      "version": "3.2.1",
+      "module": "core-web",
+      "releaseDate": "2017-10-17",
+      "releaseDateSource": {
+        "url": "https://repo.maven.apache.org/maven2/net/hasor/hasor-core/3.2.1/",
+        "artifactTimestamp": "2017-10-17 12:27",
+        "verifiedOn": "2026-09-12",
+        "note": "采用 Maven Central 制品目录日期，与标签所指发布提交的作者日期一致；轻量标签无独立创建时间，提交者日期为 2025 年，不作为发布日期。"
+      },
+      "oschinaIds": [],
+      "gitTag": "Release.Hasor-3.2.1",
+      "scope": "Core 绑定诊断与模块配置",
+      "opt": [
+        "改善 `ApiBinder.toString` 的诊断信息。"
+      ],
+      "fix": [
+        "清理模块配置中的失效引用，修复配置文件组织混乱的问题。"
+      ],
+      "sources": [],
+      "gitVerified": true
+    },
+    {
+      "version": "4.0.6",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [],
+      "gitTag": "Release.Hasor-4.0.6",
+      "scope": "Core 对象创建与 Provider 获取",
+      "new": [
+        "`getInstance`、`getProvider` 增加构造参数支持，可以在获取对象时传入构造所需的数据。"
+      ],
+      "sources": []
+    },
+    {
+      "version": "4.1.1",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [],
+      "gitTag": "Release.Hasor-4.1.1",
+      "scope": "Core 类型创建与 AOP",
+      "new": [
+        "增加 `TypeSupplier` 和 `AppContext.wrapTypeSupplier`，支持定制框架所需类型的创建方式。"
+      ],
+      "opt": [
+        "ASM 升级至 7.3.1。"
+      ],
+      "sources": []
+    },
+    {
+      "version": "4.1.2",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [],
+      "gitTag": "Release.Hasor-4.1.2",
+      "scope": "Web 响应渲染、转发与 Core 类型创建",
+      "new": [
+        "增加 `@RenderType`、`@ForwardTo`、`@RedirectTo`，分别声明渲染器、请求转发和重定向。",
+        "增加 JSON 渲染实现及资源过滤器。"
+      ],
+      "opt": [
+        "`TypeSupplier` 增加类型判断和组合能力。"
+      ],
+      "upgrade": [
+        "移除 `RenderEngine.initEngine`，自定义渲染器需要适配接口变化；响应类型可通过 `Invoker.contentType` 设置。"
+      ],
+      "sources": []
+    },
+    {
+      "version": "4.1.3",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [],
+      "gitTag": "Release.Hasor-4.1.3",
+      "scope": "Web 请求与响应、Core 扩展接口",
+      "new": [
+        "增加接收 JSON 请求体的 `@RequestBody`，提供跨域 Filter 工具。"
+      ],
+      "opt": [
+        "响应输出补充 Content-Length。"
+      ],
+      "upgrade": [
+        "`ApiBinderCreater` 拼写更正为 `ApiBinderCreator`，自定义扩展需要更新类型引用。"
+      ],
+      "sources": []
+    },
+    {
+      "version": "4.1.4",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [],
+      "gitTag": "Release.Hasor-4.1.4",
+      "scope": "Core SPI 仲裁与 Web 执行链",
+      "opt": [
+        "SPI 使用 `SpiJudge` 仲裁多个监听器的选择、顺序和返回值。",
+        "参数解析扩展整合到 `PreExecuteChainSpi`，精简调用链扩展点。"
+      ],
+      "upgrade": [
+        "`InvokerCreater`、`CreatorProvisionListener` 等类型名称订正，旧 import 需同步调整。",
+        "`SpiInterceptor` 改为 `SpiJudge`，`CollectScopeListener` 改为 `CollectScopeChainSpi`。"
+      ],
+      "sources": []
+    },
+    {
+      "version": "4.1.5",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [],
+      "gitTag": "Release.Hasor-4.1.5",
+      "scope": "Core 注解与 Web 日志",
+      "opt": [
+        "Hasor 的 `@Inject` 不再标记为废弃。",
+        "统一 Web 路由注册、参数解码等日志的输出格式。"
+      ],
+      "sources": [],
+      "gitVerified": true
+    },
+    {
+      "version": "4.1.9",
+      "module": "core-web",
+      "releaseDate": null,
+      "oschinaIds": [],
+      "gitTag": "Release.Hasor-4.1.9",
+      "scope": "Web HTTP 参数与 Core SPI 查询",
+      "new": [
+        "增加 `HttpParameters`，以静态方法访问请求参数。",
+        "增加 `hasSpi`、`hasJudge`，用于检查 SPI 及仲裁器是否注册。"
+      ],
+      "upgrade": [
+        "本版 Header 参数读取问题在 v4.1.10 修复。"
+      ],
+      "sources": []
+    },
+    {
+      "version": "0.0.1",
+      "module": "hasor-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        44660
+      ],
+      "sources": [
+        44660
+      ],
+      "scope": "Web Servlet、控制器、RESTful 与静态资源",
+      "new": [
+        "支持以 `@WebServlet`、`@WebFilter` 声明 Servlet 和 Filter。",
+        "支持 `@Controller` 控制器，以及方法级、类级和全局控制器拦截器；控制器可使用单例或多实例模式。",
+        "支持 RESTful 路由及路径、查询、请求头、Cookie 等参数注入。",
+        "通过 `@ResultDefine` 扩展返回值处理，内置转发、包含、JSON 和重定向处理。",
+        "支持通过 XML 配置从 JAR、ZIP、目录和 classpath 加载 Web 资源。"
+      ]
+    },
+    {
+      "version": "0.0.2",
+      "module": "hasor-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        44892
+      ],
+      "sources": [
+        44892
+      ],
+      "scope": "Web RESTful 路由、拦截器与 Servlet 装配",
+      "new": [
+        "WebApiBinder 支持指定 Servlet、Filter 的注册顺序。",
+        "RESTful 服务支持拦截器及 `@Forword`、`@Include`、`@Json`、`@Redirect` 返回值处理。"
+      ],
+      "opt": [
+        "优化异常信息及 JavaDoc 构建，移除原 MIME 相关代码。"
+      ],
+      "fix": [
+        "修复 RESTful 服务无法正常发布的问题。",
+        "修复通过 WebApiBinder 注册的 Filter 启动顺序不可控的问题。"
+      ]
+    },
+    {
+      "version": "0.0.3",
+      "module": "hasor-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        45889
+      ],
+      "sources": [
+        45889
+      ],
+      "scope": "Web 静态资源加载",
+      "opt": [
+        "ZIP 资源加载器缓存条目名称，减少反复打开压缩包的次数。"
+      ],
+      "fix": [
+        "调整调试模式下 classpath 资源缓存的刷新行为，便于开发调试。",
+        "资源不存在时返回 HTTP 404。"
+      ]
+    },
+    {
+      "version": "0.0.4",
+      "module": "hasor-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        47097
+      ],
+      "sources": [
+        47097
+      ],
+      "scope": "Web JSON 输出与 Servlet 包结构",
+      "opt": [
+        "适配 Core v0.0.6 的接口变化。",
+        "`j2ee` 软件包更名为 `servlet3`。",
+        "`@Json` 输出的数据前后增加圆括号。"
+      ],
+      "fix": [
+        "修复 `@Json` 无法序列化普通 POJO 的问题。"
+      ],
+      "upgrade": [
+        "JSON 输出新增圆括号包裹，直接解析响应内容的调用方需注意格式变化。"
+      ]
+    },
+    {
+      "version": "0.0.5",
+      "module": "hasor-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        47975
+      ],
+      "sources": [
+        47975
+      ],
+      "scope": "Web 对象注入、JSP 与控制器拦截",
+      "new": [
+        "增加 JSP 标签库。",
+        "Web 容器绑定 ServletRequest、HttpServletRequest、ServletResponse、HttpServletResponse、HttpSession、ServletContext。"
+      ],
+      "fix": [
+        "修复控制器拦截器调用标记 `@ControllerIgnore` 的方法时发生递归死循环的问题。"
+      ]
+    },
+    {
+      "version": "0.0.6",
+      "module": "hasor-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        53959
+      ],
+      "sources": [
+        53959
+      ],
+      "scope": "Web 类型绑定与启动",
+      "new": [
+        "WebApiBinder 支持通过 RegisterInfo 绑定。"
+      ],
+      "opt": [
+        "调整主要接口以解除对 Guice 的强制依赖。",
+        "插件移至 Hasor Quick，请求与响应编码设置改由插件提供。"
+      ],
+      "fix": [
+        "修复 JSTL 标签 `fireEvent` 无法正常工作的问题。",
+        "适配 Core 模块代理类型的变化。"
+      ],
+      "upgrade": [
+        "不再由 Web 直接提供 `requestEncoding`、`responseEncoding` 设置。"
+      ]
+    },
+    {
+      "version": "0.0.7",
+      "module": "hasor-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        55456
+      ],
+      "sources": [
+        55456
+      ],
+      "scope": "Web 请求与响应对象",
+      "new": [
+        "增加 `RRUpdate`，用于更新 Request、Response 对象。"
+      ]
+    },
+    {
+      "version": "0.0.8",
+      "module": "hasor-web",
+      "releaseDate": null,
+      "oschinaIds": [
+        61192
+      ],
+      "sources": [
+        61192
+      ],
+      "scope": "Web 生命周期、日志与 MIME 类型",
+      "new": [
+        "增加 shutdown 生命周期阶段。",
+        "增加获取 MIME 类型的工具模块。"
+      ],
+      "opt": [
+        "日志输出切换为 LoggerHelper，环境变量接口适配 Core 的变化。"
+      ],
+      "upgrade": [
+        "删除 `RRUpdate`，Request、Response 不再通过依赖注入方式注入到类中。"
+      ]
+    },
+    {
+      "version": "0.0.1.20130831-M1",
+      "module": "hasor-core",
+      "releaseDate": null,
+      "oschinaIds": [
+        43749
+      ],
+      "scope": "Core 首个里程碑版本：模块、依赖注入与事件",
+      "new": [
+        "提供模块生命周期调度、依赖循环检查，以及强依赖、弱依赖和依赖反制规则。",
+        "支持 JSR-330 依赖注入，通过 `@Bean` 管理对象，可在 Binder 中使用 Guice 接口。",
+        "提供 `@Before` 注解式 AOP，以及同步、异步事件 API。",
+        "支持自定义 XML 配置解析和配置变更监听。",
+        "提供 Servlet、Filter、Session 和 ServletContext 监听器的注解声明。"
+      ]
+    }
+  ]
+}
