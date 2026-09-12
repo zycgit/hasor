@@ -1,7 +1,7 @@
 ---
 id: ignore
 sidebar_position: 7
-title: f.忽略动态代理
+title: 忽略动态代理
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

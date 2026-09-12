@@ -1,7 +1,7 @@
 ---
 id: custom
 sidebar_position: 6
-title: e. Custom Interceptors
+title: Custom Interceptors
 description: Define custom AOP matchers and annotations.
 ---
 

@@ -3,59 +3,45 @@ id: latest
 sidebar_position: 0
 title: Release Notes
 ---
-import Vars from '@site/plugins/projectVars';
+
 
 # Release Notes
 
-Latest release tag in this repository: **v{Vars.lastReleaseVer}**<br/>
-Release tag date: **{Vars.lastReleaseTime}**<br/>
-Development version covered by these docs: **{Vars.docsVersion}**
+Latest release tag in this repository: **v@project.lastReleaseVer@**<br/>
+Release tag date: **@project.lastReleaseTime@**<br/>
+Documentation version: **@project.docsVersion@**
 
-Each version lists its scope, additions, improvements, and fixes. API, configuration, and dependency changes have separate upgrade notes. SNAPSHOT versions are in development and should be read separately from official releases.
+Version format: **MAJOR.MINOR.PATCH**.
+
+- **Major**: Significant changes to architecture, product goals, or APIs.
+- **Minor**: New components, features, or improvements; may include incompatible API changes.
+- **Patch**: Backward-compatible bug fixes, code improvements, and documentation updates.
 
 ## Current versions
 
-- [v5.1.1-SNAPSHOT (In development)](./5.x/v5.1.1.md)
+- [v5.2.0](./5.x/v5.2.0.md)
 - [v5.1.0](./5.x/v5.1.0.md)
 - [v5.0.1](./5.x/v5.0.1.md)
 - [v5.0.0](./5.x/v5.0.0.md)
 
 ## Historical versions
 
-The index follows the 72 release tags in this repository and combines historical official-site records with OSCHINA news to describe Core and Web changes. Intermediate versions without separate tags are merged into the next tagged release. Early Web module versions are grouped under their corresponding releases; SNAPSHOT is listed separately.
-
 ### v4.x
-
-Java 8 baseline; improvements to dependency injection, configuration, SPI, and Web extensions, with YAML configuration added later.
 
 [v4.2.5](./4.x/v4.2.5.md) · [v4.2.4](./4.x/v4.2.4.md) · [v4.2.3](./4.x/v4.2.3.md) · [v4.2.2](./4.x/v4.2.2.md) · [v4.2.1](./4.x/v4.2.1.md) · [v4.2.0](./4.x/v4.2.0.md) · [v4.1.13](./4.x/v4.1.13.md) · [v4.1.12](./4.x/v4.1.12.md) · [v4.1.11](./4.x/v4.1.11.md) · [v4.1.10](./4.x/v4.1.10.md) · [v4.1.9](./4.x/v4.1.9.md) · [v4.1.8](./4.x/v4.1.8.md) · [v4.1.7](./4.x/v4.1.7.md) · [v4.1.6](./4.x/v4.1.6.md) · [v4.1.5](./4.x/v4.1.5.md) · [v4.1.4](./4.x/v4.1.4.md) · [v4.1.3](./4.x/v4.1.3.md) · [v4.1.2](./4.x/v4.1.2.md) · [v4.1.1](./4.x/v4.1.1.md) · [v4.1.0](./4.x/v4.1.0.md) · [v4.0.6](./4.x/v4.0.6.md) · [v4.0.5](./4.x/v4.0.5.md) · [v4.0.4](./4.x/v4.0.4.md) · [v4.0.3](./4.x/v4.0.3.md) · [v4.0.2](./4.x/v4.0.2.md) · [v4.0.1](./4.x/v4.0.1.md) · [v4.0.0](./4.x/v4.0.0.md)
 
 ### v3.x
 
-Unified Web and RESTful invocation chains; reorganized rendering, validation, and shared utilities.
-
 [v3.2.2](./3.x/v3.2.2.md) · [v3.2.1](./3.x/v3.2.1.md) · [v3.2.0](./3.x/v3.2.0.md) · [v3.1.3](./3.x/v3.1.3.md) · [v3.1.2](./3.x/v3.1.2.md) · [v3.1.1](./3.x/v3.1.1.md) · [v3.1.0](./3.x/v3.1.0.md) · [v3.0.3](./3.x/v3.0.3.md) · [v3.0.2](./3.x/v3.0.2.md) · [v3.0.1](./3.x/v3.0.1.md) · [v3.0.0](./3.x/v3.0.0.md)
 
 ### v2.x
-
-Reorganized the container and improved scopes, templates, file uploads, and request validation.
 
 [v2.5.2](./2.x/v2.5.2.md) · [v2.5.1](./2.x/v2.5.1.md) · [v2.5.0](./2.x/v2.5.0.md) · [v2.4.6](./2.x/v2.4.6.md) · [v2.4.5](./2.x/v2.4.5.md) · [v2.4.4](./2.x/v2.4.4.md) · [v2.4.3](./2.x/v2.4.3.md) · [v2.4.2](./2.x/v2.4.2.md) · [v2.4.1](./2.x/v2.4.1.md) · [v2.4.0](./2.x/v2.4.0.md) · [v2.3.3](./2.x/v2.3.3.md) · [v2.3.2](./2.x/v2.3.2.md) · [v2.3.1](./2.x/v2.3.1.md) · [v2.3.0](./2.x/v2.3.0.md) · [v2.2.0](./2.x/v2.2.0.md) · [v2.1.0](./2.x/v2.1.0.md) · [v2.0.0](./2.x/v2.0.0.md)
 
 ### v1.x
 
-Integrated MVC and validation, with improvements to parameter binding and request processing.
-
 [v1.2.0](./1.x/v1.2.0.md) · [v1.0.0](./1.x/v1.0.0.md)
 
 ### v0.x
 
-Early container and module evolution, gradually establishing independent IoC, AOP, and configuration infrastructure.
-
 [v0.0.14](./0.x/v0.0.14.md) · [v0.0.13](./0.x/v0.0.13.md) · [v0.0.12](./0.x/v0.0.12.md) · [v0.0.9](./0.x/v0.0.9.md) · [v0.0.8](./0.x/v0.0.8.md) · [v0.0.7](./0.x/v0.0.7.md) · [v0.0.6](./0.x/v0.0.6.md) · [v0.0.5](./0.x/v0.0.5.md) · [v0.0.4](./0.x/v0.0.4.md) · [v0.0.3](./0.x/v0.0.3.md) · [v0.0.2](./0.x/v0.0.2.md) · [v0.0.1](./0.x/v0.0.1.md)
-
-## Historical record notes
-
-- Main-version dates from v0.0.1 through v4.2.3 use the UTC dates of `net.hasor:hasor-core` artifacts on Maven Central; original dates in cumulative changes are retained. Dates for v4.2.4, v4.2.5, and official 5.x releases use the author date of the commit referenced by the release tag, not the artifact upload date.
-- Early Core, Web, JDBC, and other modules were released separately. Repository tag versions do not necessarily match every module dependency version, so a uniform dependency example is not applied to all releases.
-- Each page describes changes in that version; historical APIs may no longer exist. When upgrading across versions, also read the upgrade notes for intermediate releases.

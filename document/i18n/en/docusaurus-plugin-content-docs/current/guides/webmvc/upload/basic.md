@@ -1,7 +1,7 @@
 ---
 id: basic
 sidebar_position: 1
-title: a. Form Upload
+title: Form Upload
 description: Upload files from forms with Hasor Web.
 ---
 

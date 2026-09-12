@@ -1,7 +1,7 @@
 ---
 id: async
 sidebar_position: 4
-title: d. Asynchronous Requests (Servlet 3.0)
+title: Asynchronous Requests (Servlet 3.0)
 description: Use Servlet 3.0 asynchronous requests in Hasor Web.
 ---
 

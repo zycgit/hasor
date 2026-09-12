@@ -1,7 +1,7 @@
 ---
 id: initbean
 sidebar_position: 2
-title: a. Initializing Beans
+title: Initializing Beans
 description: Configure initialization methods for Hasor beans.
 ---
 

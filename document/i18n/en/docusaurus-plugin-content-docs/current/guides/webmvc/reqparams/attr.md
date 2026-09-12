@@ -1,7 +1,7 @@
 ---
 id: attr
 sidebar_position: 5
-title: e. Reading Attributes
+title: Reading Attributes
 description: Read request attributes with @AttributeParameter.
 ---
 

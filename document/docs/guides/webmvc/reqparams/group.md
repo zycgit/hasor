@@ -1,7 +1,7 @@
 ---
 id: group
 sidebar_position: 6
-title: f.请求参数组
+title: 请求参数组
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

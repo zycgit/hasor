@@ -1,7 +1,7 @@
 ---
 id: async
 sidebar_position: 3
-title: b. Asynchronous Events
+title: Asynchronous Events
 description: Fire asynchronous Hasor events without blocking the main flow.
 ---
 

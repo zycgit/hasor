@@ -1,7 +1,7 @@
 ---
 id: async
 sidebar_position: 3
-title: b.异步事件
+title: 异步事件
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

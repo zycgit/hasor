@@ -1,7 +1,7 @@
 ---
 id: getrequest
 sidebar_position: 3
-title: b.获得Request接口
+title: 获得Request接口
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

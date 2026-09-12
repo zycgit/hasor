@@ -1,7 +1,7 @@
 ---
 id: proxybean
 sidebar_position: 4
-title: c.委托创建Bean
+title: 委托创建Bean
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

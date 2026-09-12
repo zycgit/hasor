@@ -1,7 +1,7 @@
 ---
 id: apibinder
 sidebar_position: 1
-title: a.ApiBinder
+title: ApiBinder
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

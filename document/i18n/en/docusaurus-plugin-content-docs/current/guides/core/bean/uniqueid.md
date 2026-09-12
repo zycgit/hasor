@@ -1,7 +1,7 @@
 ---
 id: uniqueid
 sidebar_position: 2
-title: a. Unique ID
+title: Unique ID
 description: Assign unique IDs to Hasor beans.
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: spi
 sidebar_position: 2
-title: b. SPI
+title: SPI
 description: Use Hasor SPI extension points to insert custom behavior into framework flows.
 ---
 
@@ -88,7 +88,7 @@ public class RootModule implements Module {
 }
 ```
 
-# SPI Judge
+## SPI Judge
 
 A judge has two responsibilities:
 - It can decide which SPI listeners finally execute and in what order.

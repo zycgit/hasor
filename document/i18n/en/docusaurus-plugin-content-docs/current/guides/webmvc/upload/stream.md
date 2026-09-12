@@ -1,7 +1,7 @@
 ---
 id: stream
 sidebar_position: 2
-title: b. Streaming Upload
+title: Streaming Upload
 description: Process large uploads without caching the whole file.
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: json
 sidebar_position: 4
-title: d.JSON渲染引擎
+title: JSON 渲染引擎
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

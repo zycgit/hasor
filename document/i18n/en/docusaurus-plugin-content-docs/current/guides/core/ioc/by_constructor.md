@@ -1,7 +1,7 @@
 ---
 id: constructorioc
 sidebar_position: 2
-title: a. Constructor Injection
+title: Constructor Injection
 description: Use constructors to inject dependencies in Hasor.
 ---
 

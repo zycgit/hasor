@@ -1,11 +1,11 @@
 ---
 id: overview
 sidebar_position: 1
-title: Overview
+title: Boot Startup
 description: Understand the Hasor Boot packaging model, runtime model, and executable archive layout.
 ---
 
-# Overview
+# Boot Startup
 
 Hasor Boot packages a regular Hasor application as an executable fat jar. During development, run `main` directly. Use the Maven or Gradle plugin for packaging and start the archive with `java -jar app.jar`.
 

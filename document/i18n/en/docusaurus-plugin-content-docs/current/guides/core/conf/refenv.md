@@ -1,7 +1,7 @@
 ---
 id: refenv
 sidebar_position: 5
-title: d. Referencing External Parameters
+title: Referencing External Parameters
 description: Use placeholders to reference JVM and environment values in Hasor configuration.
 ---
 

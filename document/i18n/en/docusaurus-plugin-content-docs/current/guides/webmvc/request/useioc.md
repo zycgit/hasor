@@ -1,7 +1,7 @@
 ---
 id: useioc
 sidebar_position: 2
-title: a. Using IoC
+title: Using IoC
 description: Use dependency injection in request handlers.
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: injectmembersioc
 sidebar_position: 5
-title: d.InjectMembers方式
+title: InjectMembers方式
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: custom
 sidebar_position: 6
-title: e.自定义拦截器
+title: 自定义拦截器
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: xml
 sidebar_position: 4
-title: c. XML Format Differences
+title: XML Format Differences
 description: XML configuration features, paths, conflicts, and namespaces.
 ---
 

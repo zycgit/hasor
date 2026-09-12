@@ -1,7 +1,7 @@
 ---
 id: multivalid
 sidebar_position: 2
-title: b.多验证器共同验证
+title: 多验证器共同验证
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

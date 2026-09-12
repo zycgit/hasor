@@ -1,7 +1,7 @@
 ---
 id: requesttype
 sidebar_position: 4
-title: c. Distinguishing Request Types
+title: Distinguishing Request Types
 description: Route requests by HTTP method in Hasor Web.
 ---
 

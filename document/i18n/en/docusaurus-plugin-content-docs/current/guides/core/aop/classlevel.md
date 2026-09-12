@@ -1,7 +1,7 @@
 ---
 id: classlevel
 sidebar_position: 3
-title: b. Class-Level Interceptors
+title: Class-Level Interceptors
 description: Configure AOP interceptors on all methods of a class.
 ---
 

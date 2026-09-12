@@ -1,7 +1,7 @@
 ---
 id: apibinder
 sidebar_position: 1
-title: a. ApiBinder
+title: ApiBinder
 description: Extend ApiBinder to provide unified framework extension APIs.
 ---
 

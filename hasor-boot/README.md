@@ -15,7 +15,7 @@ Boot 负责启动和装配；路由、参数绑定、响应渲染等请求处理
 
 ## 快速开始
 
-以下示例对应当前源码版本 `5.1.1-SNAPSHOT`，使用 Java 17。快照版本需要先发布到本地 Maven 仓库或配置可用的快照仓库，不代表该版本已在公共仓库发布。
+以下示例使用 Hasor `5.2.0` 和 Java 17。
 
 ### 1. 配置 Gradle 工程
 
@@ -38,7 +38,7 @@ rootProject.name = 'demo'
 ```groovy
 plugins {
     id 'java'
-    id 'net.hasor.boot' version '5.1.1-SNAPSHOT'
+    id 'net.hasor.boot' version '5.2.0'
 }
 
 group = 'example'
@@ -60,8 +60,8 @@ configurations {
 }
 
 dependencies {
-    implementation 'net.hasor:hasor-boot-web-tomcat:5.1.1-SNAPSHOT'
-    bootLoader 'net.hasor:hasor-boot-loader:5.1.1-SNAPSHOT'
+    implementation 'net.hasor:hasor-boot-web-tomcat:5.2.0'
+    bootLoader 'net.hasor:hasor-boot-loader:5.2.0'
 }
 
 tasks.named('bootJar') {
@@ -72,7 +72,7 @@ tasks.named('bootJar') {
 
 将容器依赖替换为 `hasor-boot-web-jetty` 或 `hasor-boot-web-undertow` 即可切换容器。只能引入一种容器；SPI 发现零个或多个实现都会报错。
 
-普通应用将容器依赖替换为 `net.hasor:hasor-boot:5.1.1-SNAPSHOT`，不需要 Servlet 或 JSON 库；入口仍使用下面的 `Boot.run(...)`。一次性任务完成后调用返回对象的 `close()`，常驻服务可调用 `join()` 等待关闭。
+普通应用将容器依赖替换为 `net.hasor:hasor-boot:5.2.0`，不需要 Servlet 或 JSON 库；入口仍使用下面的 `Boot.run(...)`。一次性任务完成后调用返回对象的 `close()`，常驻服务可调用 `join()` 等待关闭。
 
 ### 2. 编写启动类和接口
 
@@ -224,7 +224,7 @@ Maven 工程使用相同的启动类和容器依赖，在已有 JAR 工程的 `b
 <plugin>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-maven-plugin</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>5.2.0</version>
     <configuration>
         <mainClass>example.Application</mainClass>
     </configuration>
@@ -308,7 +308,7 @@ APP-INF/lib/                运行依赖 JAR
 
 共享测试位于 `test-web-containers/src/main/java` 和 `src/main/resources`，由各容器模块的具体测试类继承执行。仅运行共享模块自身的 `test` 不会执行三种容器的集成测试。该模块的 [README](test-web-containers/README.md) 记录了测试类加载环境及验证边界。
 
-使用本地快照时，先发布所需模块，例如 Tomcat 组合：
+使用本地源码构建时，先发布所需模块，例如 Tomcat 组合：
 
 ```bash
 ./gradlew :hasor-core:publishToMavenLocal :hasor-web:publishToMavenLocal \

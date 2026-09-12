@@ -15,7 +15,7 @@ description: Build Servlet Web MVC applications with hasor-web.
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>@project.docsVersion@</version>
 </dependency>
 ```
 

@@ -1,7 +1,7 @@
 ---
 id: cookie
 sidebar_position: 2
-title: b. Reading Cookies
+title: Reading Cookies
 description: Read cookie values with @CookieParameter.
 ---
 

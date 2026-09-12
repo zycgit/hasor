@@ -1,11 +1,11 @@
 ---
 id: properties
 sidebar_position: 2
-title: a.Properties 格式差异性
+title: Properties 格式差异性
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 配置文件
+# Properties 格式差异性
 
 属性文件格式上没有什么特殊要说明的，就是常见的 Key/Value 格式。
 

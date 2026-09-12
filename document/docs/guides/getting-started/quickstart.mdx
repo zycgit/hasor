@@ -12,12 +12,12 @@ import TabItem from '@theme/TabItem';
 普通 Java 应用从 `hasor-core` 开始；注解配置使用 `hasor-config`；Web MVC 使用 `hasor-web`；需要可执行 Fat Jar 或内嵌容器时再加入对应的 `hasor-boot` 子模块。
 
 :::info 运行环境
-当前源码的 Java 编译目标为 17，应用需要使用 JDK 17 或以上版本。
+应用需要使用 JDK 17 或以上版本。
 :::
 
 ## 引入 hasor-core
 
-当前源码版本为 `5.1.1-SNAPSHOT`。如果使用正式发布版本，请替换为 Maven Central 上的对应版本。
+以下示例使用 Hasor `@project.docsVersion@`。
 
 <Tabs>
   <TabItem value="Maven" label="Maven" default>
@@ -26,7 +26,7 @@ import TabItem from '@theme/TabItem';
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-core</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>@project.docsVersion@</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ import TabItem from '@theme/TabItem';
   <TabItem value="Gradle" label="Gradle">
 
 ```text
-implementation "net.hasor:hasor-core:5.1.1-SNAPSHOT"
+implementation "net.hasor:hasor-core:@project.docsVersion@"
 ```
 
   </TabItem>
@@ -114,7 +114,7 @@ AppContext appContext = Hasor.create()
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>@project.docsVersion@</version>
 </dependency>
 ```
 
@@ -124,11 +124,11 @@ AppContext appContext = Hasor.create()
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-web-tomcat</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>@project.docsVersion@</version>
 </dependency>
 ```
 
-Web Boot 应用可以通过 `WebServers.run(args, RootModule.class)` 启动。详细说明见 [打包和部署](../deployment/overview.md)、[工程配置](../deployment/project-config.md) 和 [Web 启动器](../deployment/web-launcher.md)。
+Web Boot 应用可以通过 `WebServers.run(args, RootModule.class)` 启动。详细说明见 [Boot 启动](../deployment/overview.md)、[工程配置](../deployment/project-config.md) 和 [Web 启动器](../deployment/web-launcher.md)。
 
 ## 使用注解配置
 

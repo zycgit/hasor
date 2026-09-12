@@ -1,7 +1,7 @@
 ---
 id: modules
 sidebar_position: 3
-title: c. Modular Configuration
+title: Modular Configuration
 description: Split Hasor configuration files across multiple projects and merge them at startup.
 ---
 

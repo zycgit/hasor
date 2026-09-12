@@ -1,7 +1,7 @@
 ---
 id: propsioc
 sidebar_position: 3
-title: b. Property Injection
+title: Property Injection
 description: Inject dependencies into fields with Hasor.
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: destroybean
 sidebar_position: 4
-title: c. Destroying Beans
+title: Destroying Beans
 description: Configure destroy methods for singleton beans.
 ---
 

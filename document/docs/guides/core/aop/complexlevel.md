@@ -1,7 +1,7 @@
 ---
 id: complexlevel
 sidebar_position: 5
-title: d.复合拦截器
+title: 复合拦截器
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

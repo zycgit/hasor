@@ -1,7 +1,7 @@
 ---
 id: usevalid
 sidebar_position: 1
-title: a. Using Validators
+title: Using Validators
 description: Validate request parameters before request handling.
 ---
 

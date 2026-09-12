@@ -15,7 +15,7 @@ description: 使用 hasor-web 构建 Servlet Web MVC 应用。
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>@project.docsVersion@</version>
 </dependency>
 ```
 

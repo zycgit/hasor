@@ -20,7 +20,7 @@ public class Application {
 }
 ```
 
-Ordinary applications depend on `net.hasor:hasor-boot:5.1.1-SNAPSHOT`; Web applications need one container module. Close one-shot applications after completing their work instead of calling `join()`. See [Project Configuration](./project-config.md).
+Ordinary applications depend on `net.hasor:hasor-boot:@project.docsVersion@`; Web applications need one container module. Close one-shot applications after completing their work instead of calling `join()`. See [Project Configuration](./project-config.md).
 
 ## Core entry point
 

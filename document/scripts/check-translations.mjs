@@ -10,6 +10,24 @@ const englishRoot = path.join(documentRoot, 'i18n/en/docusaurus-plugin-content-d
 const hash = (text) => createHash('sha256').update(text).digest('hex');
 const han = /\p{Script=Han}/u;
 
+export function checkTitles(relative, content) {
+  const title = content.match(/^title: (.*)$/m)?.[1];
+  const sidebar = content.match(/^sidebar_label: (.*)$/m)?.[1] ?? title;
+  let fence;
+  const headings = content.split('\n').filter((line) => {
+    const marker = line.match(/^\s*(`{3,}|~{3,})/)?.[1];
+    if (marker) {
+      if (!fence) fence = marker;
+      else if (marker[0] === fence[0] && marker.length >= fence.length) fence = undefined;
+      return false;
+    }
+    return !fence && /^# /.test(line);
+  }).map((line) => line.slice(2));
+  assert(title, `Missing page title: ${relative}`);
+  assert.deepEqual(headings, [title], `Page title and H1 mismatch: ${relative}`);
+  assert.equal(sidebar, title, `Sidebar title mismatch: ${relative}`);
+}
+
 export function checkPage(relative, source, english) {
   assert(!han.test(english), `Untranslated Chinese text: ${relative}`);
   for (const key of ['id', 'sidebar_position']) {
@@ -55,9 +73,23 @@ export function checkTranslations() {
       const category = JSON.parse(source);
       const key = `sidebar.${relative.split('/')[0]}.category.${category.key ?? category.label}`;
       assert.equal(sidebar[key]?.message, JSON.parse(english).label, `Missing sidebar translation: ${relative}`);
+      for (const [root, text] of [[sourceRoot, source], [englishRoot, english]]) {
+        const entry = JSON.parse(text);
+        if (entry.link?.type === 'doc') {
+          const base = path.resolve(root, path.dirname(relative), entry.link.id);
+          const file = [base + '.md', base + '.mdx'].find(existsSync);
+          assert(file, `Missing category document: ${relative}`);
+          const title = readFileSync(file, 'utf8').match(/^title: (.*)$/m)?.[1];
+          assert.equal(entry.label, title, `Category title mismatch: ${relative}`);
+        } else if (entry.link?.type === 'generated-index' && entry.link.title) {
+          assert.equal(entry.label, entry.link.title, `Generated category title mismatch: ${relative}`);
+        }
+      }
       continue;
     }
     checkPage(relative, source, english);
+    checkTitles(relative, source);
+    checkTitles(relative, english);
     for (const [, target] of english.matchAll(/\]\(([^\s)]+)(?:\s+[^)]*)?\)/g)) {
       if (/^(?:[a-z]+:|\/|#)/i.test(target)) continue;
       const destination = target.split('#')[0];

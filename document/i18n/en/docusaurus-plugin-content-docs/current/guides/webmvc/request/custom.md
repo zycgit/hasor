@@ -1,7 +1,7 @@
 ---
 id: custom
 sidebar_position: 6
-title: d. Custom Requests
+title: Custom Requests
 description: Define custom HTTP method annotations for Hasor Web.
 ---
 

@@ -1,11 +1,11 @@
 ---
 id: render
 sidebar_position: 1
-title: a. Renderers
+title: Responses
 description: Render response data into visible view content.
 ---
 
-# Renderers
+# Responses
 
 A Hasor renderer is essentially a view-layer component. Its main purpose is to help an application render data into a visible form. A typical scenario is that a request handler produces data after execution and passes it to JSP to generate an HTML page.
 

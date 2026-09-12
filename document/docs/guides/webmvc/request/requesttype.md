@@ -1,7 +1,7 @@
 ---
 id: requesttype
 sidebar_position: 4
-title: c.区分请求类型
+title: 区分请求类型
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: specialioc
 sidebar_position: 8
-title: h.注入容器类型
+title: 注入容器类型
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

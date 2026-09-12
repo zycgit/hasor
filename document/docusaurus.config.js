@@ -5,6 +5,7 @@ const prismReactRenderer = require('prism-react-renderer');
 const lightCodeTheme = prismReactRenderer.themes ? prismReactRenderer.themes.github : require('prism-react-renderer/themes/github');
 const darkCodeTheme = prismReactRenderer.themes ? prismReactRenderer.themes.dracula : require('prism-react-renderer/themes/dracula');
 const analyticsPlugin = require('./plugins/analytics.js');
+const projectVars = require('./plugins/projectVars.js');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -14,6 +15,12 @@ const config = {
     baseUrl: '/',
     onBrokenLinks: 'throw',
     markdown: {
+        preprocessor: ({fileContent}) => require('./plugins/remark-project-vars.js').replaceVariables(fileContent, projectVars),
+        // Resolve variables before extracting metadata or recognizing Markdown links.
+        parseFrontMatter: ({filePath, fileContent, defaultParseFrontMatter}) => defaultParseFrontMatter({
+            filePath,
+            fileContent: require('./plugins/remark-project-vars.js').replaceVariables(fileContent, projectVars),
+        }),
         hooks: {
             onBrokenMarkdownLinks: 'warn',
         },
@@ -33,6 +40,7 @@ const config = {
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
                 docs: {
+                    remarkPlugins: [[require('./plugins/remark-project-vars.js'), projectVars]],
                     sidebarPath: require.resolve('./sidebars.js'),
                     editUrl: 'https://gitee.com/zycgit/hasor-doc/tree/master/',
                 },
@@ -66,36 +74,24 @@ const config = {
             items: [
                 {
                     type: 'doc',
-                    docId: 'releases/latest',
-                    position: 'left',
-                    label: '版本说明',
-                },
-                {
-                    type: 'doc',
                     docId: 'guides/getting-started/quickstart',
                     position: 'left',
                     label: '文档手册',
                 },
                 {
-                    type: 'dropdown',
-                    label: '源代码',
+                    type: 'doc',
+                    docId: 'releases/latest',
                     position: 'left',
-                    items: [
-                        {
-                            label: '码云',
-                            href: 'https://gitee.com/zycgit/hasor'
-                        },
-                        {label: 'Github',href: 'https://github.com/zycgit/hasor'}
-                    ]
+                    label: '版本说明',
                 },
                 {
-                    label: 'DataQL 语言',
-                    href: 'https://www.dataql.net/',
+                    label: '码云',
+                    href: 'https://gitee.com/zycgit/hasor',
                     position: 'right',
                 },
                 {
-                    label: 'Dataway',
-                    href: 'https://www.dataql.net/docs/dataway/overview',
+                    label: 'Github',
+                    href: 'https://github.com/zycgit/hasor',
                     position: 'right',
                 },
                 {

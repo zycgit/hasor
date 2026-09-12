@@ -1,11 +1,31 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createRequire } from 'node:module';
-import { checkPage } from '../scripts/check-translations.mjs';
+import { checkPage, checkTitles } from '../scripts/check-translations.mjs';
 
 const source = '---\nid: v1.0.0\nsidebar_position: 1\n---\n# v1.0.0 (2020-01-01)\n\n## 更新内容\n\n- 新增\n  - 示例。\n';
 const english = source.replace('更新内容', 'Changes').replace('新增', 'Added').replace('示例。', 'Example.');
 const release = 'releases/1.x/v1.0.0.md';
+
+test('matching page and sidebar titles pass, ignoring code headings', () => {
+  assert.doesNotThrow(() => checkTitles('example.md', '---\ntitle: Example\n---\n# Example\n\n```sh\n# A shell comment\n```'));
+});
+test('mismatched titles, multiple H1s and sidebar overrides fail', () => {
+  for (const body of ['# Different', '# Example\n# Another', '# Example\nsidebar_label: Different']) {
+    assert.throws(() => checkTitles('example.md', 'title: Example\n' + body), /mismatch/);
+  }
+});
+
+test('navbar groups content on the left and repository links on the right', () => {
+  const items = createRequire(import.meta.url)('../docusaurus.config.js')().themeConfig.navbar.items;
+  assert.deepEqual(items.filter((item) => item.position === 'left').map((item) => item.label),
+    ['文档手册', '版本说明']);
+  const right = items.filter((item) => item.position === 'right');
+  assert.deepEqual(right.map((item) => item.label ?? item.type), ['码云', 'Github', 'localeDropdown']);
+  assert.equal(right[0].href, 'https://gitee.com/zycgit/hasor');
+  assert.equal(right[1].href, 'https://github.com/zycgit/hasor');
+  assert(!items.some((item) => item.type === 'dropdown'));
+});
 
 test('matching translation passes', () => assert.doesNotThrow(() => checkPage(release, source, english)));
 test('Chinese leftovers fail', () => assert.throws(() => checkPage(release, source, source), /Untranslated/));

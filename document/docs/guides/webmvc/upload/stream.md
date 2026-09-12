@@ -1,7 +1,7 @@
 ---
 id: stream
 sidebar_position: 2
-title: b.流式上传
+title: 流式上传
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

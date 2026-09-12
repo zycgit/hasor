@@ -1,7 +1,7 @@
 ---
 id: useioc
 sidebar_position: 2
-title: a.使用IoC
+title: 使用IoC
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

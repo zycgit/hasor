@@ -1,7 +1,7 @@
 ---
 id: globalprop
 sidebar_position: 4
-title: c.全局动态属性
+title: 全局动态属性
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

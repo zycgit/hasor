@@ -1,7 +1,7 @@
 ---
 id: group
 sidebar_position: 6
-title: f. Request Parameter Groups
+title: Request Parameter Groups
 description: Bind many request parameters into a grouped object.
 ---
 

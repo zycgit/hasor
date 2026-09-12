@@ -1,7 +1,7 @@
 ---
 id: data-access
 sidebar_position: 3
-title: 03. Data Access
+title: Data Access
 description: Use dbVisitor to provide database access capabilities for Hasor projects.
 ---
 

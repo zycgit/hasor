@@ -1,7 +1,7 @@
 ---
 id: globallevel
 sidebar_position: 4
-title: c. Global Interceptors
+title: Global Interceptors
 description: Configure interceptors that match any class and any method.
 ---
 

@@ -15,10 +15,6 @@
     "message": "Release Notes",
     "description": "Release notes navigation label"
   },
-  "item.label.源代码": {
-    "message": "Source Code",
-    "description": "Navbar item with label 源代码"
-  },
   "item.label.码云": {
     "message": "Gitee",
     "description": "Navbar item with label 码云"
@@ -26,13 +22,5 @@
   "item.label.Github": {
     "message": "Github",
     "description": "Navbar item with label Github"
-  },
-  "item.label.DataQL 语言": {
-    "message": "DataQL",
-    "description": "Navbar item with label DataQL 语言"
-  },
-  "item.label.Dataway": {
-    "message": "Dataway",
-    "description": "Navbar item with label Dataway"
   }
 }

@@ -1,11 +1,11 @@
 ---
 id: overview
 sidebar_position: 1
-title: 讲解
+title: Boot 启动
 description: 了解 Hasor Boot 的打包模型、运行模型和可执行归档结构。
 ---
 
-# 讲解
+# Boot 启动
 
 Hasor Boot 用来把普通 Hasor 应用打包成可以直接运行的 Fat Jar。开发阶段可以直接运行 `main` 方法；发布时通过 Maven 或 Gradle 插件打包，最终使用 `java -jar app.jar` 启动。
 

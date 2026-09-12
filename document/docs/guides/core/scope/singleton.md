@@ -1,7 +1,7 @@
 ---
 id: singleton
 sidebar_position: 2
-title: a.单例模式(Singleton)
+title: 单例模式(Singleton)
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

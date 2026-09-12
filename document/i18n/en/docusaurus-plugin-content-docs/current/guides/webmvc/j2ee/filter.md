@@ -1,7 +1,7 @@
 ---
 id: filter
 sidebar_position: 2
-title: b. Filter
+title: Filter
 description: Register and use Filters in Hasor Web.
 ---
 

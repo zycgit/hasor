@@ -1,7 +1,7 @@
 ---
 id: cookie
 sidebar_position: 2
-title: b.获取 Cookie
+title: 获取 Cookie
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

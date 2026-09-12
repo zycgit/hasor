@@ -1,7 +1,7 @@
 ---
 id: decorator
 sidebar_position: 3
-title: c. Layout Templates
+title: Layout Templates
 description: Use layout-template technology to decorate rendered pages.
 ---
 

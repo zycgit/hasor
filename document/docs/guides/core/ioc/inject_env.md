@@ -1,7 +1,7 @@
 ---
 id: envioc
 sidebar_position: 8
-title: g.注入外部配置
+title: 注入外部配置
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

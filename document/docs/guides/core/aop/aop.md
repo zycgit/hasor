@@ -1,11 +1,11 @@
 ---
 id: aop
 sidebar_position: 1
-title: 动态代理(Aop)
+title: 动态代理(AOP)
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 什么是Aop？
+# 动态代理(AOP)
 
 “面向切面编程” 也被称为 “Aop” 是目前非常活跃的一个开发思想。利用 AOP 可以对业务逻辑的各个部分进行隔离，
 从而使得业务逻辑各部分之间的耦合度降低，提高程序的 可重用性，同时提高了开发的效率。

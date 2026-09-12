@@ -1,7 +1,7 @@
 ---
 id: contenttype
 sidebar_position: 2
-title: b. ContentType
+title: ContentType
 description: Set response ContentType values with @Produces.
 ---
 

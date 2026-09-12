@@ -1,7 +1,7 @@
 ---
 id: async
 sidebar_position: 4
-title: d.异步请求(Servlet3.0)
+title: 异步请求(Servlet3.0)
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

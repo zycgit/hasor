@@ -1,11 +1,11 @@
 ---
 id: properties
 sidebar_position: 2
-title: a. Properties Format Differences
+title: Properties Format Differences
 description: Notes about using properties files with Hasor Settings.
 ---
 
-# Configuration Files
+# Properties Format Differences
 
 There is nothing special about the properties-file format. It is the common key/value format.
 

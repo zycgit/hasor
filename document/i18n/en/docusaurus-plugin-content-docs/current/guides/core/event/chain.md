@@ -1,7 +1,7 @@
 ---
 id: chain
 sidebar_position: 5
-title: d. Event Chains
+title: Event Chains
 description: Fire one or more events from inside another event.
 ---
 

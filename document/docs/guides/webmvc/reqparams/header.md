@@ -1,7 +1,7 @@
 ---
 id: header
 sidebar_position: 3
-title: c.获取请求头
+title: 获取请求头
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

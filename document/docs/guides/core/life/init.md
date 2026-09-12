@@ -1,7 +1,7 @@
 ---
 id: initbean
 sidebar_position: 2
-title: a.初始化 Bean
+title: 初始化 Bean
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: convert
 sidebar_position: 7
-title: g. Automatic Parameter Type Conversion
+title: Automatic Parameter Type Conversion
 description: Convert request parameter values to common Java types automatically.
 ---
 

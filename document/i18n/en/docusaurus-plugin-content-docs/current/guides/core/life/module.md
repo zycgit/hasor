@@ -1,7 +1,7 @@
 ---
 id: modulelife
 sidebar_position: 5
-title: d. Module Lifecycle
+title: Module Lifecycle
 description: Use Module callbacks and SPI listeners during the Hasor lifecycle.
 ---
 

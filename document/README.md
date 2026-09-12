@@ -14,6 +14,20 @@ npm run build
 
 `npm run start` 启动本地预览。侧边栏自动读取 `docs/guides`，新增页面通过 front matter 的 `sidebar_position` 设置顺序。构建涵盖中文和英文 locale；英文没有对应翻译的页面使用默认文档。
 
+## 文档版本变量
+
+`plugins/projectVars.js` 是文档版本信息的统一入口：`docsVersion` 用于使用指南和依赖示例，`lastReleaseVer`、`lastReleaseTime` 用于最新发布信息。
+
+在 Markdown/MDX 正文、行内代码、代码块和 Markdown 链接中使用 `@project.docsVersion@`，构建时会替换为实际版本号。例如：
+
+```xml
+<version>@project.docsVersion@</version>
+```
+
+也可使用 `@project.lastReleaseVer@` 和 `@project.lastReleaseTime@`。变量名拼错会使构建失败。代码块显示及复制的内容均为替换后的实际版本号。
+
+后续修改 `projectVars.js` 后重新构建即可；本地预览需重启。历史发布页及版本目录链接保持固定版本，不随变量变化。此配置不修改 Gradle 工程版本、文档站点 package.json 或仓库 README 中的版本。
+
 ## 英文文档同步
 
 中文源文档位于 `docs/`，英文正文位于 `i18n/en/docusaurus-plugin-content-docs/current/`，保持相同的文件路径、文档 ID 和目录顺序。版本日期、更新条目和代码示例必须同步；准确的已有译文无需重复改写。

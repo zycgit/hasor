@@ -1,7 +1,7 @@
 ---
 id: sync
 sidebar_position: 2
-title: a. Synchronous Events
+title: Synchronous Events
 description: Fire synchronous Hasor events with shared or dedicated threads.
 ---
 

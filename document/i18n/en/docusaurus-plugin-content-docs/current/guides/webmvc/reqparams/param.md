@@ -1,7 +1,7 @@
 ---
 id: param
 sidebar_position: 1
-title: a. Reading Request Parameters
+title: Reading Request Parameters
 description: Read request parameters with @RequestParameter.
 ---
 

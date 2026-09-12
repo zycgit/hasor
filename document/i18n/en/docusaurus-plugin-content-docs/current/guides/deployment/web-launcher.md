@@ -35,7 +35,7 @@ Web startup requires an embedded container module:
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-web-tomcat</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>@project.docsVersion@</version>
 </dependency>
 ```
 
@@ -80,7 +80,7 @@ The default configuration in `hasor-boot-web` already supports environment varia
 You can therefore change the listening port through an environment variable:
 
 ```bash
-HASOR_HTTP_PORT=9090 java -jar demo-hasor-boot-web-5.1.1-SNAPSHOT.jar
+HASOR_HTTP_PORT=9090 java -jar demo-hasor-boot-web-@project.docsVersion@.jar
 ```
 
 ## Creating a WebServer in code

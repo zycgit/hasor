@@ -1,7 +1,7 @@
 ---
 id: prototype
 sidebar_position: 3
-title: b. Prototype Mode
+title: Prototype Mode
 description: Use prototype bean scope in Hasor.
 ---
 

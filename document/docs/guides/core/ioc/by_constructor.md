@@ -1,7 +1,7 @@
 ---
 id: constructorioc
 sidebar_position: 2
-title: a.构造方法注入
+title: 构造方法注入
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

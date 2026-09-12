@@ -1,7 +1,7 @@
 ---
 id: freemarker
 sidebar_position: 5
-title: e. FreeMarker Rendering Engine
+title: FreeMarker Rendering Engine
 description: Implement a FreeMarker rendering engine for Hasor Web.
 ---
 

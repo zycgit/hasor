@@ -1,7 +1,7 @@
 ---
 id: prototype
 sidebar_position: 3
-title: b.原型模式(Prototype)
+title: 原型模式(Prototype)
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

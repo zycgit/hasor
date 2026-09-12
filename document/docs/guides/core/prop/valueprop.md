@@ -1,7 +1,7 @@
 ---
 id: valueprop
 sidebar_position: 2
-title: a.值型动态属性
+title: 值型动态属性
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

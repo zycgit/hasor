@@ -1,7 +1,7 @@
 ---
 id: refenv
 sidebar_position: 5
-title: d.引用外部参数
+title: 引用外部参数
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

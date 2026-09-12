@@ -1,7 +1,7 @@
 ---
 id: convert
 sidebar_position: 7
-title: g.参数自动类型转换
+title: 参数自动类型转换
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: invokerfilter
 sidebar_position: 2
-title: a. InvokerFilter Form
+title: InvokerFilter Form
 description: Implement request interception with InvokerFilter.
 ---
 

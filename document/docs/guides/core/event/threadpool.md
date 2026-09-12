@@ -1,7 +1,7 @@
 ---
 id: pool
 sidebar_position: 6
-title: e.事件线程池
+title: 事件线程池
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

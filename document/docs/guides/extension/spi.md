@@ -1,7 +1,7 @@
 ---
 id: spi
 sidebar_position: 2
-title: b.SPI
+title: SPI
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
@@ -88,7 +88,7 @@ public class RootModule implements Module {
 }
 ```
 
-# SPI 仲裁器
+## SPI 仲裁器
 
 冲裁器有两个作用
 - 一个是可以决定最终执行的 SPI 监听器是哪些，以及它们的顺序。

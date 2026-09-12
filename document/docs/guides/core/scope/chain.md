@@ -1,7 +1,7 @@
 ---
 id: chain
 sidebar_position: 5
-title: d.作用域链
+title: 作用域链
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

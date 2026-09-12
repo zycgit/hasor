@@ -20,7 +20,7 @@ public class Application {
 }
 ```
 
-普通应用依赖 `net.hasor:hasor-boot:5.1.1-SNAPSHOT`；Web 应用引入一个容器模块即可。一次性任务完成后关闭应用，不调用 `join()`。参见[工程配置](./project-config.md)。
+普通应用依赖 `net.hasor:hasor-boot:@project.docsVersion@`；Web 应用引入一个容器模块即可。一次性任务完成后关闭应用，不调用 `join()`。参见[工程配置](./project-config.md)。
 
 ## Core 启动入口
 

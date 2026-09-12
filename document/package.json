@@ -1,6 +1,6 @@
 {
   "name": "hasor-doc",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
@@ -8,6 +8,7 @@
     "build": "docusaurus build",
     "check:translations": "node scripts/check-translations.mjs",
     "test:translations": "node --test tests/translations.test.mjs",
+    "test:project-vars": "node --test tests/project-vars.test.mjs",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",

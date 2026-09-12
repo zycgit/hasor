@@ -1,7 +1,7 @@
 ---
 id: basic
 sidebar_position: 1
-title: a.表单上传
+title: 表单上传
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

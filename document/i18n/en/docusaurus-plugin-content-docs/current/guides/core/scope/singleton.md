@@ -1,7 +1,7 @@
 ---
 id: singleton
 sidebar_position: 2
-title: a. Singleton Mode
+title: Singleton Mode
 description: Configure singleton beans in Hasor.
 ---
 

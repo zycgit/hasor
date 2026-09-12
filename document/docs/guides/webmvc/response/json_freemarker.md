@@ -1,7 +1,7 @@
 ---
 id: freemarker
 sidebar_position: 5
-title: e.FreeMarker渲染引擎
+title: FreeMarker渲染引擎
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

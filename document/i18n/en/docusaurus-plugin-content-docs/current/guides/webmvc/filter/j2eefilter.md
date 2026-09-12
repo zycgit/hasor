@@ -1,7 +1,7 @@
 ---
 id: j2eefilter
 sidebar_position: 2
-title: b. Filter Form
+title: Filter Form
 description: Implement request interception with a traditional J2EE Filter.
 ---
 

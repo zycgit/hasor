@@ -1,7 +1,7 @@
 ---
 id: custom
 sidebar_position: 4
-title: c. Custom Scopes
+title: Custom Scopes
 description: Implement and register a custom Hasor scope.
 ---
 

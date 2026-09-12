@@ -1,11 +1,11 @@
 ---
 id: request
 sidebar_position: 1
-title: 接收Web请求
+title: 接收 Web 请求
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 接收Web请求
+# 接收 Web 请求
 
 接收Web请求，下面是最简形态：
 

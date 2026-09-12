@@ -3,8 +3,8 @@
     "message": "Next",
     "description": "The label for version current"
   },
-  "sidebar.guides.category.02. 核心特性": {
-    "message": "02. Core Features"
+  "sidebar.guides.category.Bean容器": {
+    "message": "Bean Container"
   },
   "sidebar.guides.category.动态代理(AOP)": {
     "message": "Dynamic Proxy (AOP)"
@@ -33,17 +33,17 @@
   "sidebar.guides.category.作用域(Scope)": {
     "message": "Scopes"
   },
-  "sidebar.guides.category.05. 打包和部署": {
-    "message": "05. Packaging and Deployment"
+  "sidebar.guides.category.Boot 启动": {
+    "message": "Boot Startup"
   },
-  "sidebar.guides.category.06. 扩展机制": {
-    "message": "06. Extension"
+  "sidebar.guides.category.扩展机制": {
+    "message": "Extension"
   },
-  "sidebar.guides.category.01. 入门": {
-    "message": "01. Getting Started"
+  "sidebar.guides.category.入门": {
+    "message": "Getting Started"
   },
-  "sidebar.guides.category.04. Web MVC": {
-    "message": "04. Web MVC"
+  "sidebar.guides.category.Web MVC": {
+    "message": "Web MVC"
   },
   "sidebar.guides.category.请求拦截器": {
     "message": "Request Interceptors"

@@ -1,7 +1,7 @@
 ---
 id: getrequest
 sidebar_position: 3
-title: b. Obtaining the Request Interface
+title: Obtaining the Request Interface
 description: Receive Servlet request-related objects as action method parameters.
 ---
 

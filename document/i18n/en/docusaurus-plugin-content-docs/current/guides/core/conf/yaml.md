@@ -1,11 +1,11 @@
 ---
 id: yaml
 sidebar_position: 3
-title: b. YAML Format Differences
+title: YAML Format Differences
 description: Notes about using YAML configuration with Hasor Settings.
 ---
 
-# Configuration Files
+# YAML Format Differences
 
 YAML is also a popular configuration-file format. Its biggest advantage is that it can express array types, and it is more readable and intuitive than properties files.
 

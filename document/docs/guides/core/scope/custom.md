@@ -1,7 +1,7 @@
 ---
 id: custom
 sidebar_position: 4
-title: c.自定义作用域
+title: 自定义作用域
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

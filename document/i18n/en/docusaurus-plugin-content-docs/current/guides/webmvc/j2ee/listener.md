@@ -1,7 +1,7 @@
 ---
 id: listener
 sidebar_position: 3
-title: c. Listener
+title: Listener
 description: Register J2EE listeners through Hasor SPI.
 ---
 

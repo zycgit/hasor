@@ -1,7 +1,7 @@
 ---
 id: methodlevel
 sidebar_position: 2
-title: a. Method-Level Interceptors
+title: Method-Level Interceptors
 description: Configure AOP interceptors on specific methods.
 ---
 

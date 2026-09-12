@@ -1,7 +1,7 @@
 ---
 id: proxybean
 sidebar_position: 4
-title: c. Delegated Bean Creation
+title: Delegated Bean Creation
 description: Delegate Hasor bean creation to another IoC container.
 ---
 

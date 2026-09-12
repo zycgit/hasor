@@ -1,7 +1,7 @@
 ---
 id: declareioc
 sidebar_position: 6
-title: e.声明式注入
+title: 声明式注入
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

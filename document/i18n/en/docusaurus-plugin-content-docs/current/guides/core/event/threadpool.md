@@ -1,7 +1,7 @@
 ---
 id: pool
 sidebar_position: 6
-title: e. Event Thread Pool
+title: Event Thread Pool
 description: Configure the Hasor event execution thread pool.
 ---
 

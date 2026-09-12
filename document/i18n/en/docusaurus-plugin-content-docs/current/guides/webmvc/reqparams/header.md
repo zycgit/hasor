@@ -1,7 +1,7 @@
 ---
 id: header
 sidebar_position: 3
-title: c. Reading Request Headers
+title: Reading Request Headers
 description: Read request headers with @HeaderParameter.
 ---
 

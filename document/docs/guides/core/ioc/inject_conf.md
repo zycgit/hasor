@@ -1,7 +1,7 @@
 ---
 id: configioc
 sidebar_position: 7
-title: f.注入配置
+title: 注入配置
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

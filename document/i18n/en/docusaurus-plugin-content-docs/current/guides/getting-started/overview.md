@@ -1,10 +1,10 @@
 ---
 id: overview
 sidebar_position: 1
-title: Introduction
+title: Getting Started
 description: Understand the responsibilities of hasor-core, hasor-config, hasor-web, and hasor-boot.
 ---
-# Introduction
+# Getting Started
 
 Hasor is a lightweight framework for Java applications. The current repository is organized by responsibility:
 
@@ -19,7 +19,7 @@ Hasor lets applications start with a small core container and add Web or executa
 
 ## Runtime requirements
 
-The current source version is `5.1.1-SNAPSHOT`, targeting Java 17. Applications require JDK 17 or later. Build the source using the repository Gradle Wrapper.
+Hasor `@project.docsVersion@` requires JDK 17 or later. Build the source using the repository Gradle Wrapper.
 
 ## Features
 

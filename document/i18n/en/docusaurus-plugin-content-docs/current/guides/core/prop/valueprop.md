@@ -1,7 +1,7 @@
 ---
 id: valueprop
 sidebar_position: 2
-title: a. Value-Based Dynamic Properties
+title: Value-Based Dynamic Properties
 description: Add simple get/set dynamic properties to beans.
 ---
 

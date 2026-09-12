@@ -1,7 +1,7 @@
 ---
 id: interfacseioc
 sidebar_position: 4
-title: c. Interface Injection
+title: Interface Injection
 description: Declare implementation types for injected interfaces.
 ---
 

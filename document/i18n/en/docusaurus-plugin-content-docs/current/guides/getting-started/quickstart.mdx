@@ -12,12 +12,12 @@ import TabItem from '@theme/TabItem';
 Start ordinary Java applications with `hasor-core`; use `hasor-config` for annotation configuration and `hasor-web` for Web MVC. Add the corresponding `hasor-boot` modules when you need executable Fat Jars or embedded containers.
 
 :::info Runtime requirements
-The current source targets Java 17; applications require JDK 17 or later.
+Applications require JDK 17 or later.
 :::
 
 ## Adding hasor-core
 
-The current source version is `5.1.1-SNAPSHOT`. To use an official release, replace it with the corresponding version from Maven Central.
+The following examples use Hasor `@project.docsVersion@`.
 
 <Tabs>
   <TabItem value="Maven" label="Maven" default>
@@ -26,7 +26,7 @@ The current source version is `5.1.1-SNAPSHOT`. To use an official release, repl
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-core</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>@project.docsVersion@</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ The current source version is `5.1.1-SNAPSHOT`. To use an official release, repl
   <TabItem value="Gradle" label="Gradle">
 
 ```text
-implementation "net.hasor:hasor-core:5.1.1-SNAPSHOT"
+implementation "net.hasor:hasor-core:@project.docsVersion@"
 ```
 
   </TabItem>
@@ -114,7 +114,7 @@ Add `hasor-web` for Web MVC:
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-web</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>@project.docsVersion@</version>
 </dependency>
 ```
 
@@ -124,11 +124,11 @@ Use a Maven or Gradle packaging plugin for an executable Fat Jar. Web applicatio
 <dependency>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-boot-web-tomcat</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>@project.docsVersion@</version>
 </dependency>
 ```
 
-Start Web Boot applications with `WebServers.run(args, RootModule.class)`. See [Packaging and Deployment](../deployment/overview.md), [Project Configuration](../deployment/project-config.md), and [Web Launcher](../deployment/web-launcher.md).
+Start Web Boot applications with `WebServers.run(args, RootModule.class)`. See [Boot Startup](../deployment/overview.md), [Project Configuration](../deployment/project-config.md), and [Web Launcher](../deployment/web-launcher.md).
 
 ## Using annotation configuration
 

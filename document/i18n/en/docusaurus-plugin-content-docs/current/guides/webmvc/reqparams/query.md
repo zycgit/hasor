@@ -1,7 +1,7 @@
 ---
 id: query
 sidebar_position: 4
-title: d. Reading URL Query Parameters
+title: Reading URL Query Parameters
 description: Read URL query parameters with @QueryParameter.
 ---
 

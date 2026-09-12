@@ -1,7 +1,7 @@
 ---
 id: uniquename
 sidebar_position: 3
-title: b. Same Type with Different Names
+title: Same Type with Different Names
 description: Bind multiple named beans of the same type.
 ---
 

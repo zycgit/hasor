@@ -1,7 +1,7 @@
 ---
 id: filter
 sidebar_position: 2
-title: b.Filter
+title: Filter
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

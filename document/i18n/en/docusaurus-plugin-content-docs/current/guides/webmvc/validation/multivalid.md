@@ -1,7 +1,7 @@
 ---
 id: multivalid
 sidebar_position: 2
-title: b. Validating with Multiple Validators
+title: Validating with Multiple Validators
 description: Compose common and scenario-specific validation logic.
 ---
 

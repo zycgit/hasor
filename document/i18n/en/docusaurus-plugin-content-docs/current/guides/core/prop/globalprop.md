@@ -1,7 +1,7 @@
 ---
 id: globalprop
 sidebar_position: 4
-title: c. Global Dynamic Properties
+title: Global Dynamic Properties
 description: Configure dynamic properties globally for matching beans.
 ---
 

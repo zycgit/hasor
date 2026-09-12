@@ -1,7 +1,7 @@
 ---
 id: injectmembersioc
 sidebar_position: 5
-title: d. InjectMembers Mode
+title: InjectMembers Mode
 description: Delegate the full injection process to InjectMembers.
 ---
 

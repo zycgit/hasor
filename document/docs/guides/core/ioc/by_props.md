@@ -1,7 +1,7 @@
 ---
 id: propsioc
 sidebar_position: 3
-title: b. 属性注入
+title: 属性注入
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

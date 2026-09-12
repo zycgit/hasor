@@ -1,7 +1,7 @@
 ---
 id: once
 sidebar_position: 4
-title: c.执行一次的事件
+title: 执行一次的事件
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

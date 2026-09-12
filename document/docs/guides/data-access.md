@@ -1,7 +1,7 @@
 ---
 id: data-access
 sidebar_position: 3
-title: 03. 数据访问
+title: 数据访问
 description: 通过 dbVisitor 为 Hasor 项目提供数据库访问能力。
 ---
 

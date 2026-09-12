@@ -1,7 +1,7 @@
 ---
 id: query
 sidebar_position: 4
-title: d.获取URL查询参数
+title: 获取URL查询参数
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

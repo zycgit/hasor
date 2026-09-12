@@ -1,7 +1,7 @@
 ---
 id: json
 sidebar_position: 4
-title: d. JSON Rendering Engine
+title: JSON Rendering Engine
 description: JSON library selection and custom response serialization in Hasor Web.
 ---
 

@@ -1,10 +1,10 @@
 ---
 id: overview
 sidebar_position: 1
-title: 介绍
+title: 入门
 description: 了解 hasor-core、hasor-config、hasor-web 和 hasor-boot 的职责。
 ---
-# 介绍
+# 入门
 
 Hasor 是一个面向 Java 应用的轻量级框架。当前代码仓库按以下职责组织：
 
@@ -19,7 +19,7 @@ Hasor 的目标是让应用可以从一个小的核心容器开始，需要 Web 
 
 ## 运行环境
 
-当前源码版本为 `5.1.1-SNAPSHOT`，Java 编译目标为 17，运行应用需要 JDK 17 或以上版本。源码构建使用仓库自带的 Gradle Wrapper。
+Hasor `@project.docsVersion@` 需要 JDK 17 或以上版本。源码构建使用仓库自带的 Gradle Wrapper。
 
 ## 特点
 

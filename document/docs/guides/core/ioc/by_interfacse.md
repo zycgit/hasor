@@ -1,7 +1,7 @@
 ---
 id: interfacseioc
 sidebar_position: 4
-title: c. 接口注入
+title: 接口注入
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

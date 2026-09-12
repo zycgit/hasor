@@ -1,11 +1,11 @@
 ---
 id: render
 sidebar_position: 1
-title: a.渲染器
+title: 结果响应
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 渲染器
+# 结果响应
 
 Hasor 的渲染器实际上是 View 层的组件，它的最大意义是帮助应用把数据渲染成可见的样子。一个典型场景是请求处理器在执行完毕后，产生一个数据然后交给 JSP 生成 HTML 页面。
 

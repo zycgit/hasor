@@ -1,7 +1,7 @@
 ---
 id: servlet
 sidebar_position: 1
-title: a. Servlet
+title: Servlet
 description: Register and use Servlets in Hasor Web.
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: declareioc
 sidebar_position: 6
-title: e. Declarative Injection
+title: Declarative Injection
 description: Declare dependency injection relationships in code or configuration.
 ---
 

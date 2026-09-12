@@ -1,7 +1,7 @@
 ---
 id: attr
 sidebar_position: 5
-title: e.获取Attribute
+title: 获取Attribute
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

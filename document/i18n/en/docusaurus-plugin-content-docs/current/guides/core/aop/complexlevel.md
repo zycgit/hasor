@@ -1,7 +1,7 @@
 ---
 id: complexlevel
 sidebar_position: 5
-title: d. Composite Interceptors
+title: Composite Interceptors
 description: Combine multiple AOP interceptors on the same or different join points.
 ---
 

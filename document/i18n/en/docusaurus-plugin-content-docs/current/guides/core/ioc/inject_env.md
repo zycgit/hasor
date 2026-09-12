@@ -1,7 +1,7 @@
 ---
 id: envioc
 sidebar_position: 8
-title: g. Injecting External Configuration
+title: Injecting External Configuration
 description: Inject external values through Settings placeholders.
 ---
 

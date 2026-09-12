@@ -1,7 +1,7 @@
 ---
 id: startbean
 sidebar_position: 3
-title: b.启动创建 Bean
+title: 启动创建 Bean
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

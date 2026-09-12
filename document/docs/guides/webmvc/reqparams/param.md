@@ -1,7 +1,7 @@
 ---
 id: param
 sidebar_position: 1
-title: a.获取请求参数
+title: 获取请求参数
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

@@ -1,7 +1,7 @@
 ---
 id: cache
 sidebar_position: 3
-title: c. Upload Cache
+title: Upload Cache
 description: Configure temporary cache storage for non-streaming uploads.
 ---
 

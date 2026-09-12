@@ -1,7 +1,7 @@
 ---
 id: chain
 sidebar_position: 5
-title: d. Scope Chain
+title: Scope Chain
 description: Scope chain notes.
 ---
 

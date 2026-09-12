@@ -1,7 +1,7 @@
 ---
 id: ignore
 sidebar_position: 7
-title: f. Ignoring Dynamic Proxy
+title: Ignoring Dynamic Proxy
 description: Use @IgnoreProxy to exclude classes or packages from dynamic proxying.
 ---
 

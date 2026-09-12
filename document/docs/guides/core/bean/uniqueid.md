@@ -1,7 +1,7 @@
 ---
 id: uniqueid
 sidebar_position: 2
-title: a.唯一ID
+title: 唯一ID
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 

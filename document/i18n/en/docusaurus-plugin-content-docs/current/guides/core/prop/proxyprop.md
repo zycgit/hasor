@@ -1,7 +1,7 @@
 ---
 id: proxyprop
 sidebar_position: 3
-title: b. Delegated Dynamic Properties
+title: Delegated Dynamic Properties
 description: Delegate dynamic property reads and writes to an interface.
 ---
 

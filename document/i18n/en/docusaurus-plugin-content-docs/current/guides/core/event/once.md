@@ -1,7 +1,7 @@
 ---
 id: once
 sidebar_position: 4
-title: c. One-Time Events
+title: One-Time Events
 description: Register event listeners that execute only once.
 ---
 
