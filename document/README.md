@@ -32,16 +32,6 @@ npm run build
 
 中文源文档位于 `docs/`，英文正文位于 `i18n/en/docusaurus-plugin-content-docs/current/`，保持相同的文件路径、文档 ID 和目录顺序。版本日期、更新条目和代码示例必须同步；准确的已有译文无需重复改写。
 
-```bash
-npm run check:translations
-npm run test:translations
-npm run build
-```
-
-`i18n/translation-status.json` 保存本次逐篇核对后的中英文 SHA-256 摘要。修改文档后，应先核对并更新对应英文内容，再更新该文件的摘要和核对日期；不要仅为通过检查而刷新摘要。站点首页与导航翻译也在检查范围内。
-
-同步检查会发现缺失或过时页面、中文残留、日期/目录/代码块数量差异和失效的相对文件链接。摘要只能发现后续变动，不能证明翻译语义正确；构建成功也不能代替内容核对。图片内文字需另行检查，英文文档可使用英文表格替代含中文的说明图。
-
 ## 部署到 OSS 并刷新 CDN
 
 两站点使用同一配置结构和发布流程，但各自的 `deploy_site.py` 固定绑定 `dbvisitor` 或 `hasor`，不会按工作目录猜测目标，也不会选择配置中的第一个站点。
@@ -94,11 +84,3 @@ HASOR_DOCS_DEPLOY_CONFIG=/absolute/path/docs-deploy.json ./deploy.sh
 ```
 
 两个独立入口同样使用配置校验和站点锁。`npm run deploy` 是 Docusaurus 自带的部署命令，不等同于 OSS/CDN 的 `./deploy.sh`。
-
-### 离线验证
-
-不使用真实凭据、不访问 OSS/CDN：
-
-```bash
-python3 -m unittest discover -s tests -v
-```
