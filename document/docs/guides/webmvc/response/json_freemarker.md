@@ -1,11 +1,11 @@
 ---
 id: freemarker
 sidebar_position: 5
-title: FreeMarker渲染引擎
+title: 4.4.5 FreeMarker渲染引擎
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# FreeMarker渲染引擎
+# 4.4.5 FreeMarker渲染引擎
 
 ```java
 /**

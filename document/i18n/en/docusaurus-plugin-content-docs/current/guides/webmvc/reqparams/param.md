@@ -1,11 +1,11 @@
 ---
 id: param
 sidebar_position: 1
-title: Reading Request Parameters
+title: 4.3.1 Reading Request Parameters
 description: Read request parameters with @RequestParameter.
 ---
 
-# Reading Request Parameters
+# 4.3.1 Reading Request Parameters
 
 :::tip
 If a page uses checkboxes to represent a group of values, use `@RequestParameter("values") String[] vars` to read them.

@@ -1,11 +1,11 @@
 ---
 id: invokerfilter
 sidebar_position: 2
-title: InvokerFilter形式
+title: 4.6.1 InvokerFilter形式
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# InvokerFilter形式
+# 4.6.1 InvokerFilter形式
 
 ```java title='例子'
 public class MyInvokerFilter implements InvokerFilter {

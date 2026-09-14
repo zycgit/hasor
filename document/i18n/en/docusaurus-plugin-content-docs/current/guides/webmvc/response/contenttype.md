@@ -1,11 +1,11 @@
 ---
 id: contenttype
 sidebar_position: 2
-title: ContentType
+title: 4.4.2 ContentType
 description: Set response ContentType values with @Produces.
 ---
 
-# ContentType
+# 4.4.2 ContentType
 
 For a response whose result is HTML, set `ContentType` with the `@Produces` annotation, as shown below:
 

@@ -1,11 +1,11 @@
 ---
 id: valueprop
 sidebar_position: 2
-title: Value-Based Dynamic Properties
+title: 2.4.1 Value-Based Dynamic Properties
 description: Add simple get/set dynamic properties to beans.
 ---
 
-# Value-Based Dynamic Properties
+# 2.4.1 Value-Based Dynamic Properties
 
 :::tip
 Value-based means the attached dynamic property only supports simple get/set behavior. It behaves as if the type simply had one more private field.

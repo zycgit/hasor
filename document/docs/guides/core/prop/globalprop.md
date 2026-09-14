@@ -1,11 +1,11 @@
 ---
 id: globalprop
 sidebar_position: 4
-title: 全局动态属性
+title: 2.4.3 全局动态属性
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 全局动态属性
+# 2.4.3 全局动态属性
 
 为每个 Bean 单独设置动态属性会比较麻烦，因此可以通过全局方式统一设置动态属性。用法和设置 Aop 有点类似。
 

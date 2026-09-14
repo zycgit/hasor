@@ -1,11 +1,11 @@
 ---
 id: custom
 sidebar_position: 6
-title: Custom Requests
+title: 4.2.4 Custom Requests
 description: Define custom HTTP method annotations for Hasor Web.
 ---
 
-# Custom Requests
+# 4.2.4 Custom Requests
 
 Requests are usually initiated by browsers, and request types are normally fixed. If you use an AJAX framework or send requests from outside a browser, the request type can actually be modified. Hasor supports custom request types.
 

@@ -1,11 +1,11 @@
 ---
 id: prop
 sidebar_position: 1
-title: Dynamic Properties
+title: 2.4 Dynamic Properties
 description: Add properties to beans dynamically through proxy capabilities.
 ---
 
-# Dynamic Properties
+# 2.4 Dynamic Properties
 
 :::tip
 - This feature was added in version 4.2.1.

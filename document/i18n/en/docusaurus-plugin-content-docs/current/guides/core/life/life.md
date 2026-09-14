@@ -1,11 +1,11 @@
 ---
 id: life
 sidebar_position: 1
-title: Lifecycle
+title: 2.6 Lifecycle
 description: Understand the Hasor container lifecycle.
 ---
 
-# Lifecycle
+# 2.6 Lifecycle
 
 Hasor's lifecycle is roughly divided into three phases: init, start, and shutdown.
 

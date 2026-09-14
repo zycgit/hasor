@@ -1,11 +1,11 @@
 ---
 id: header
 sidebar_position: 3
-title: Reading Request Headers
+title: 4.3.3 Reading Request Headers
 description: Read request headers with @HeaderParameter.
 ---
 
-# Reading Request Headers
+# 4.3.3 Reading Request Headers
 
 Use the `@HeaderParameter` annotation to read request header information:
 

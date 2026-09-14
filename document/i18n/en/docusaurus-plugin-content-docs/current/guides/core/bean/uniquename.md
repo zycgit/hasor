@@ -1,11 +1,11 @@
 ---
 id: uniquename
 sidebar_position: 3
-title: Same Type with Different Names
+title: 2.2.2 Same Type with Different Names
 description: Bind multiple named beans of the same type.
 ---
 
-# Same Type with Different Names
+# 2.2.2 Same Type with Different Names
 
 ```java
 public class MyModule implements Module {

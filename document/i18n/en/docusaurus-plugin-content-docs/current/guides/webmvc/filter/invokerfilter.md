@@ -1,11 +1,11 @@
 ---
 id: invokerfilter
 sidebar_position: 2
-title: InvokerFilter Form
+title: 4.6.1 InvokerFilter Form
 description: Implement request interception with InvokerFilter.
 ---
 
-# InvokerFilter Form
+# 4.6.1 InvokerFilter Form
 
 ```java title='Example'
 public class MyInvokerFilter implements InvokerFilter {

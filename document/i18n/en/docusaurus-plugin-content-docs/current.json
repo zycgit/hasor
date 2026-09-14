@@ -3,83 +3,83 @@
     "message": "Next",
     "description": "The label for version current"
   },
-  "sidebar.guides.category.Bean容器": {
-    "message": "Bean Container"
+  "sidebar.guides.category.2. Bean容器": {
+    "message": "2. Bean Container"
   },
-  "sidebar.guides.category.动态代理(AOP)": {
-    "message": "Dynamic Proxy (AOP)"
+  "sidebar.guides.category.2.5 动态代理(AOP)": {
+    "message": "2.5 Dynamic Proxy (AOP)"
   },
-  "sidebar.guides.category.Bean 管理": {
-    "message": "Bean Management"
+  "sidebar.guides.category.2.2 Bean 管理": {
+    "message": "2.2 Bean Management"
   },
-  "sidebar.guides.category.Bean 管理.link.generated-index.title": {
-    "message": "Bean Management"
+  "sidebar.guides.category.2.2 Bean 管理.link.generated-index.title": {
+    "message": "2.2 Bean Management"
   },
-  "sidebar.guides.category.配置文件": {
-    "message": "Configuration Files"
+  "sidebar.guides.category.2.8 配置文件": {
+    "message": "2.8 Configuration Files"
   },
-  "sidebar.guides.category.事件模型": {
-    "message": "Event Model"
+  "sidebar.guides.category.2.7 事件模型": {
+    "message": "2.7 Event Model"
   },
-  "sidebar.guides.category.依赖注入(IoC)": {
-    "message": "Dependency Injection (IoC)"
+  "sidebar.guides.category.2.1 依赖注入(IoC)": {
+    "message": "2.1 Dependency Injection (IoC)"
   },
-  "sidebar.guides.category.生命周期": {
-    "message": "Lifecycle"
+  "sidebar.guides.category.2.6 生命周期": {
+    "message": "2.6 Lifecycle"
   },
-  "sidebar.guides.category.动态属性": {
-    "message": "Dynamic Properties"
+  "sidebar.guides.category.2.4 动态属性": {
+    "message": "2.4 Dynamic Properties"
   },
-  "sidebar.guides.category.作用域(Scope)": {
-    "message": "Scopes"
+  "sidebar.guides.category.2.3 作用域(Scope)": {
+    "message": "2.3 Scopes"
   },
-  "sidebar.guides.category.Boot 启动": {
-    "message": "Boot Startup"
+  "sidebar.guides.category.5. Boot 启动": {
+    "message": "5. Boot Startup"
   },
-  "sidebar.guides.category.扩展机制": {
-    "message": "Extension"
+  "sidebar.guides.category.6. 扩展机制": {
+    "message": "6. Extension"
   },
-  "sidebar.guides.category.入门": {
-    "message": "Getting Started"
+  "sidebar.guides.category.1. 入门": {
+    "message": "1. Getting Started"
   },
-  "sidebar.guides.category.Web MVC": {
-    "message": "Web MVC"
+  "sidebar.guides.category.4. Web MVC": {
+    "message": "4. Web MVC"
   },
-  "sidebar.guides.category.请求拦截器": {
-    "message": "Request Interceptors"
+  "sidebar.guides.category.4.6 请求拦截器": {
+    "message": "4.6 Request Interceptors"
   },
-  "sidebar.guides.category.J2EE 兼容": {
-    "message": "J2EE Compatibility"
+  "sidebar.guides.category.4.8 J2EE 兼容": {
+    "message": "4.8 J2EE Compatibility"
   },
-  "sidebar.guides.category.J2EE 兼容.link.generated-index.title": {
-    "message": "J2EE Compatibility"
+  "sidebar.guides.category.4.8 J2EE 兼容.link.generated-index.title": {
+    "message": "4.8 J2EE Compatibility"
   },
-  "sidebar.guides.category.请求参数": {
-    "message": "Request Parameters"
+  "sidebar.guides.category.4.3 请求参数": {
+    "message": "4.3 Request Parameters"
   },
-  "sidebar.guides.category.请求参数.link.generated-index.title": {
-    "message": "Request Parameters"
+  "sidebar.guides.category.4.3 请求参数.link.generated-index.title": {
+    "message": "4.3 Request Parameters"
   },
-  "sidebar.guides.category.接收 Web 请求": {
-    "message": "Receiving Web Requests"
+  "sidebar.guides.category.4.2 接收 Web 请求": {
+    "message": "4.2 Receiving Web Requests"
   },
-  "sidebar.guides.category.结果响应": {
-    "message": "Responses"
+  "sidebar.guides.category.4.4 结果响应": {
+    "message": "4.4 Responses"
   },
-  "sidebar.guides.category.文件上传": {
-    "message": "File Upload"
+  "sidebar.guides.category.4.7 文件上传": {
+    "message": "4.7 File Upload"
   },
-  "sidebar.guides.category.文件上传.link.generated-index.title": {
-    "message": "File Upload"
+  "sidebar.guides.category.4.7 文件上传.link.generated-index.title": {
+    "message": "4.7 File Upload"
   },
-  "sidebar.guides.category.请求验证": {
-    "message": "Request Validation"
+  "sidebar.guides.category.4.5 请求验证": {
+    "message": "4.5 Request Validation"
   },
-  "sidebar.guides.category.请求验证.link.generated-index.title": {
-    "message": "Request Validation"
+  "sidebar.guides.category.4.5 请求验证.link.generated-index.title": {
+    "message": "4.5 Request Validation"
   },
-  "sidebar.guides.category.Web 开发": {
-    "message": "Web Development"
+  "sidebar.guides.category.4.1 Web 开发": {
+    "message": "4.1 Web Development"
   },
   "sidebar.releases.category.v0.x": {
     "message": "v0.x"

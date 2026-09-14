@@ -1,11 +1,11 @@
 ---
 id: initbean
 sidebar_position: 2
-title: Initializing Beans
+title: 2.6.1 Initializing Beans
 description: Configure initialization methods for Hasor beans.
 ---
 
-# Initializing Beans
+# 2.6.1 Initializing Beans
 
 Sometimes you want a bean to automatically call an `init` method when it is created. This section shows Hasor's support for that capability.
 

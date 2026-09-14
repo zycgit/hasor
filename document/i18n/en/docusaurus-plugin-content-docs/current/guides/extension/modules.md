@@ -1,11 +1,11 @@
 ---
 id: modules
 sidebar_position: 3
-title: Modular Configuration
+title: 6.3 Modular Configuration
 description: Split Hasor configuration files across multiple projects and merge them at startup.
 ---
 
-# Modular Configuration
+# 6.3 Modular Configuration
 
 :::tip
 In Hasor, one Java project can contain multiple subprojects, and each subproject can be an independent jar or war. Each subproject can also define its own `hconfig` configuration file.

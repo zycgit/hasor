@@ -1,10 +1,10 @@
 ---
 id: overview
 sidebar_position: 1
-title: Getting Started
+title: 1. Getting Started
 description: Understand the responsibilities of hasor-core, hasor-config, hasor-web, and hasor-boot.
 ---
-# Getting Started
+# 1. Getting Started
 
 Hasor is a lightweight framework for Java applications. The current repository is organized by responsibility:
 

@@ -1,11 +1,11 @@
 ---
 id: defaults
 sidebar_position: 0
-title: Default return-value rendering
+title: 4.4.1 Default return-value rendering
 description: Configure built-in response rendering, encoding and redirects.
 ---
 
-# Default return-value rendering
+# 4.4.1 Default return-value rendering
 
 Rendering is built into Hasor Web, without Config, Boot or a rendering filter.
 Objects and collections default to JSON, strings to text; null and void produce no default body.

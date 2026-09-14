@@ -1,11 +1,11 @@
 ---
 id: async
 sidebar_position: 3
-title: 异步事件
+title: 2.7.2 异步事件
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 异步事件
+# 2.7.2 异步事件
 
 异步事件，异步事件是指当主流程引发事件时，不阻塞主流程。事件的执行完全交给事件线程进行异步调用。
 

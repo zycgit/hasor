@@ -1,11 +1,11 @@
 ---
 id: cache
 sidebar_position: 3
-title: 上传缓存
+title: 4.7.3 上传缓存
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 上传缓存
+# 4.7.3 上传缓存
 
 在非流式上传中，大一点的文件在上传过程中都需要缓存上传数据。Hasor 可以在代码中处理上传时临时指定上传路径：
 

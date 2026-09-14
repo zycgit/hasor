@@ -1,11 +1,11 @@
 ---
 id: filter
 sidebar_position: 2
-title: Filter
+title: 4.8.2 Filter
 description: Register and use Filters in Hasor Web.
 ---
 
-# Filter
+# 4.8.2 Filter
 
 Use a filter as shown below:
 

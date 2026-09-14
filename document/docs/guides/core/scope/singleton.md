@@ -1,11 +1,11 @@
 ---
 id: singleton
 sidebar_position: 2
-title: 单例模式(Singleton)
+title: 2.3.1 单例模式(Singleton)
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 单例模式(Singleton)
+# 2.3.1 单例模式(Singleton)
 
 声明 Bean 的单例一般通过下面这种注解方式：
 

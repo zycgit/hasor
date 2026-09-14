@@ -1,11 +1,11 @@
 ---
 id: convert
 sidebar_position: 7
-title: 参数自动类型转换
+title: 4.3.7 参数自动类型转换
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 参数自动类型转换
+# 4.3.7 参数自动类型转换
 
 Hasor Web 框架可以帮助你进行简单的类型转换，可以转换的类型有：
 - 基础类型：`byte`、`short`、`int`、`long`、`float`、`double`、`boolean`、`String`

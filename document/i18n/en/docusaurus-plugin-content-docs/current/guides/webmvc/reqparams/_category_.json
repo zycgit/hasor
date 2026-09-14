@@ -1,8 +1,9 @@
 {
-  "label": "Request Parameters",
+  "label": "4.3 Request Parameters",
   "position": 3,
   "link": {
     "type": "generated-index",
-    "title": "Request Parameters"
+    "slug": "/category/请求参数",
+    "title": "4.3 Request Parameters"
   }
 }

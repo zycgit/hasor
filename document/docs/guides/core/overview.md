@@ -1,11 +1,11 @@
 ---
 id: overview
 sidebar_position: 0
-title: Bean容器
+title: 2. Bean容器
 description: Hasor Core 提供依赖注入、Bean 管理、作用域、动态属性、AOP、生命周期、事件和配置能力。
 ---
 
-# Bean容器
+# 2. Bean容器
 
 `hasor-core` 是 Hasor 的基础模块，负责应用容器、依赖注入、Bean 管理、作用域、动态代理、生命周期、事件模型和配置加载。
 

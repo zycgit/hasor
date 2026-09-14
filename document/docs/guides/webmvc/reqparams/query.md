@@ -1,11 +1,11 @@
 ---
 id: query
 sidebar_position: 4
-title: 获取URL查询参数
+title: 4.3.4 获取URL查询参数
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 获取URL查询参数
+# 4.3.4 获取URL查询参数
 
 需要使用 `@QueryParameter` 注解，例如：
 

@@ -1,11 +1,11 @@
 ---
 id: globallevel
 sidebar_position: 4
-title: Global Interceptors
+title: 2.5.3 Global Interceptors
 description: Configure interceptors that match any class and any method.
 ---
 
-# Global Interceptors
+# 2.5.3 Global Interceptors
 
 A global interceptor is effectively an interceptor that matches any class and any method. This kind of interceptor must be declared in a module:
 

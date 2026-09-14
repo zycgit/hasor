@@ -1,11 +1,11 @@
 ---
 id: declareioc
 sidebar_position: 6
-title: 声明式注入
+title: 2.1.5 声明式注入
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 声明式注入
+# 2.1.5 声明式注入
 
 用代码的形式来说明类的注入依赖关系就叫声明式注入，也可以利用 Xml 等配置文件来替代代码。但是本质是一样的。
 

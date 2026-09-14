@@ -1,11 +1,11 @@
 ---
 id: data-access
 sidebar_position: 3
-title: Data Access
+title: 3. Data Access
 description: Use dbVisitor to provide database access capabilities for Hasor projects.
 ---
 
-# Data Access
+# 3. Data Access
 
 Hasor provides container, Java configuration, Web, and packaging capabilities through `hasor-core`, `hasor-config`, `hasor-web`, and the `hasor-boot` modules. It does not embed an ORM or database access framework. Data access is provided by dbVisitor, a project in the same ecosystem that covers SQL execution, Mapper APIs, transactions, pagination, and multi-database adaptation.
 

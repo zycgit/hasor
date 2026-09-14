@@ -1,11 +1,11 @@
 ---
 id: stream
 sidebar_position: 2
-title: Streaming Upload
+title: 4.7.2 Streaming Upload
 description: Process large uploads without caching the whole file.
 ---
 
-# Streaming Upload
+# 4.7.2 Streaming Upload
 
 The biggest advantage of streaming file upload is that large files can be processed without caching:
 

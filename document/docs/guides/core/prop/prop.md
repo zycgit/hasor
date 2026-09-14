@@ -1,11 +1,11 @@
 ---
 id: prop
 sidebar_position: 1
-title: 动态属性
+title: 2.4 动态属性
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 动态属性
+# 2.4 动态属性
 
 :::tip
 - 这个特性是 4.2.1 中加入的新特性。
@@ -14,4 +14,3 @@ description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-bo
 :::
 
 在某些较难处理的代码逻辑中 “透传” 是一个很好的解决问题思路，利用动态属性可以在不修改原有类型的情况下，将一个附加的信息在不同分层上进行透传。
-

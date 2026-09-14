@@ -1,11 +1,11 @@
 ---
 id: methodlevel
 sidebar_position: 2
-title: Method-Level Interceptors
+title: 2.5.1 Method-Level Interceptors
 description: Configure AOP interceptors on specific methods.
 ---
 
-# Method-Level Interceptors
+# 2.5.1 Method-Level Interceptors
 
 The following annotation is handled by the built-in AopModule in hasor-core; hasor-config is not required. `@Aop` is `net.hasor.cobble.dynamic.Aop`, and the interceptor interfaces are also in `net.hasor.cobble.dynamic`.
 

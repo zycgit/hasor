@@ -1,11 +1,11 @@
 ---
 id: configioc
 sidebar_position: 7
-title: Injecting Configuration
+title: 2.1.6 Injecting Configuration
 description: Inject values from Hasor configuration into beans.
 ---
 
-# Injecting Configuration
+# 2.1.6 Injecting Configuration
 
 The following example uses a properties file:
 

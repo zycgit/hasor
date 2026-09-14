@@ -1,11 +1,11 @@
 ---
 id: uniquename
 sidebar_position: 3
-title: 同类型不同名
+title: 2.2.2 同类型不同名
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 同类型不同名
+# 2.2.2 同类型不同名
 
 ```java
 public class MyModule implements Module {

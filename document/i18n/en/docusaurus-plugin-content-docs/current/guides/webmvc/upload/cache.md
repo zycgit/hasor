@@ -1,11 +1,11 @@
 ---
 id: cache
 sidebar_position: 3
-title: Upload Cache
+title: 4.7.3 Upload Cache
 description: Configure temporary cache storage for non-streaming uploads.
 ---
 
-# Upload Cache
+# 4.7.3 Upload Cache
 
 In non-streaming uploads, larger files need cached upload data during the upload process. Hasor can temporarily specify an upload path in code while handling an upload:
 

@@ -1,11 +1,11 @@
 ---
 id: overview
 sidebar_position: 0
-title: Bean Container
+title: 2. Bean Container
 description: Hasor Core provides dependency injection, bean management, scopes, dynamic properties, AOP, lifecycle, events, and configuration.
 ---
 
-# Bean Container
+# 2. Bean Container
 
 `hasor-core` is the foundation of Hasor. It provides the application container, dependency injection, bean management, scopes, dynamic proxy, lifecycle callbacks, events, and configuration loading.
 

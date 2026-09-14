@@ -1,11 +1,11 @@
 ---
 id: uniqueid
 sidebar_position: 2
-title: 唯一ID
+title: 2.2.1 唯一ID
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 唯一ID
+# 2.2.1 唯一ID
 
 与 Spring一样，可以为 Bean 指定唯一的名称。也就是Bean的 ID。
 

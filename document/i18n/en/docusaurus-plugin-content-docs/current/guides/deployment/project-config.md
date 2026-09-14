@@ -1,11 +1,11 @@
 ---
 id: project-config
 sidebar_position: 2
-title: Project Configuration
+title: 5.1 Project Configuration
 description: Configure Hasor Boot dependencies and Maven or Gradle executable archive plugins.
 ---
 
-# Project Configuration
+# 5.1 Project Configuration
 
 Hasor Boot project configuration has two parts: runtime dependencies and Maven/Gradle packaging plugins. Ordinary applications need only the core dependency and packaging plugin; Web applications also select an embedded container module. The following examples use Hasor `@project.docsVersion@`.
 

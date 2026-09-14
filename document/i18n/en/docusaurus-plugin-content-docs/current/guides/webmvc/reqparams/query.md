@@ -1,11 +1,11 @@
 ---
 id: query
 sidebar_position: 4
-title: Reading URL Query Parameters
+title: 4.3.4 Reading URL Query Parameters
 description: Read URL query parameters with @QueryParameter.
 ---
 
-# Reading URL Query Parameters
+# 4.3.4 Reading URL Query Parameters
 
 Use the `@QueryParameter` annotation. For example:
 

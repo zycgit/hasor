@@ -1,11 +1,11 @@
 ---
 id: destroybean
 sidebar_position: 4
-title: Destroying Beans
+title: 2.6.3 Destroying Beans
 description: Configure destroy methods for singleton beans.
 ---
 
-# Destroying Beans
+# 2.6.3 Destroying Beans
 
 :::tip
 Only singleton objects support destruction.

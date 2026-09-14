@@ -1,11 +1,11 @@
 ---
 id: yaml
 sidebar_position: 3
-title: YAML 格式差异性
+title: 2.8.2 YAML 格式差异性
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# YAML 格式差异性
+# 2.8.2 YAML 格式差异性
 
 YAML 格式也是较为流行的一种配置文件格式，它的最大优点是 `可以表述数组类型`。并且在阅读层面比属性文件更加有效直观。\
 

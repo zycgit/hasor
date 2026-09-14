@@ -1,11 +1,11 @@
 ---
 id: proxyprop
 sidebar_position: 3
-title: 委托型动态属性
+title: 2.4.2 委托型动态属性
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 委托型动态属性
+# 2.4.2 委托型动态属性
 
 前两两个小结中演示了什么叫动态属性以及它的简单用法，动态属性的精华部分是属性值的委托。
 

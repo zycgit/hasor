@@ -1,11 +1,11 @@
 ---
 id: sync
 sidebar_position: 2
-title: Synchronous Events
+title: 2.7.1 Synchronous Events
 description: Fire synchronous Hasor events with shared or dedicated threads.
 ---
 
-# Synchronous Events
+# 2.7.1 Synchronous Events
 
 A synchronous event determines whether the main flow blocks when it fires the event and waits until all event listeners have finished before continuing. Depending on the listener thread model, synchronous events can be divided into:
 - Dedicated thread: when Hasor starts executing event listeners, it uses a new thread to execute them.

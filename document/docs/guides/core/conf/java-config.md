@@ -1,11 +1,11 @@
 ---
 id: java-config
 sidebar_position: 6
-title: Java 注解配置
+title: 2.8.5 Java 注解配置
 description: 使用 hasor-config 声明 Bean、限定扫描范围并配置 Web MVC。
 ---
 
-# Java 注解配置
+# 2.8.5 Java 注解配置
 
 `hasor-config` 在 `hasor-core` 上提供可选的注解配置，不要求应用实现 `Module`。使用同版本依赖：
 

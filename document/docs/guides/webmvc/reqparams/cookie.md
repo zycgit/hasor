@@ -1,11 +1,11 @@
 ---
 id: cookie
 sidebar_position: 2
-title: 获取 Cookie
+title: 4.3.2 获取 Cookie
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 获取 Cookie
+# 4.3.2 获取 Cookie
 
 :::tip
 如果 cookie 中存储了一组相同的数据，那么可以使用 `@CookieParameter("values") String[] vars` 获取。

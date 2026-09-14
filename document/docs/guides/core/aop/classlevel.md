@@ -1,11 +1,11 @@
 ---
 id: classlevel
 sidebar_position: 3
-title: 类级拦截器
+title: 2.5.2 类级拦截器
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 类级拦截器
+# 2.5.2 类级拦截器
 
 `hasor-core` 默认通过 `net.hasor.core.aop.AopModule` 处理 `@Aop`，无需 Config 依赖。注解和拦截器接口位于 `net.hasor.cobble.dynamic`；也可通过 `ApiBinder.bindInterceptor` 编程配置。
 

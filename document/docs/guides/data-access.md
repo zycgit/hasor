@@ -1,11 +1,11 @@
 ---
 id: data-access
 sidebar_position: 3
-title: 数据访问
+title: 3. 数据访问
 description: 通过 dbVisitor 为 Hasor 项目提供数据库访问能力。
 ---
 
-# 数据访问
+# 3. 数据访问
 
 Hasor 当前由 `hasor-core`、`hasor-config`、`hasor-web` 和 `hasor-boot` 模块组提供容器、声明式配置、Web 和打包能力，自身不再内置 ORM 或数据库访问框架。数据库访问能力由同一生态下的 dbVisitor 提供，它负责 SQL 执行、Mapper、事务、分页和多数据库适配等能力。
 

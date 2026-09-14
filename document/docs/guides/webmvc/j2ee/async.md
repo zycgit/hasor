@@ -1,11 +1,11 @@
 ---
 id: async
 sidebar_position: 4
-title: 异步请求(Servlet3.0)
+title: 4.8.4 异步请求(Servlet3.0)
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 异步请求(Servlet3.0)
+# 4.8.4 异步请求(Servlet3.0)
 
 在Servlet 3.0之前，Servlet采用 Thread-Per-Request 的方式处理请求，即每一次Http请求都由某一个线程从头到尾负责处理。
 如果一个请求需要进行IO操作，比如访问数据库、调用第三方服务接口等，那么其所对应的线程将同步地等待IO操作完成。而IO操作是非常慢的，所以此时的线程并不能及时地释放回线程池以供后续使用，在并发量越来越大的情况下，这将带来严重的性能问题。

@@ -1,11 +1,11 @@
 ---
 id: startbean
 sidebar_position: 3
-title: Creating Beans at Startup
+title: 2.6.2 Creating Beans at Startup
 description: Create singleton beans eagerly during Hasor startup.
 ---
 
-# Creating Beans at Startup
+# 2.6.2 Creating Beans at Startup
 
 ## Method One
 

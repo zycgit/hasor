@@ -1,11 +1,11 @@
 ---
 id: pool
 sidebar_position: 6
-title: 事件线程池
+title: 2.7.5 事件线程池
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 事件线程池
+# 2.7.5 事件线程池
 
 默认配置下，Hasor 执行事件的线程池大小是 8。可以在配置文件中修改这个设定：
 

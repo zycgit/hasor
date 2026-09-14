@@ -1,11 +1,11 @@
 ---
 id: filter
 sidebar_position: 2
-title: Filter
+title: 4.8.2 Filter
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# Filter
+# 4.8.2 Filter
 
 使用 Filter 如下所示：
 

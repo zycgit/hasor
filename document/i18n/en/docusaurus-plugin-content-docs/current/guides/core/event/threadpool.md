@@ -1,11 +1,11 @@
 ---
 id: pool
 sidebar_position: 6
-title: Event Thread Pool
+title: 2.7.5 Event Thread Pool
 description: Configure the Hasor event execution thread pool.
 ---
 
-# Event Thread Pool
+# 2.7.5 Event Thread Pool
 
 By default, Hasor uses a thread pool size of 8 for event execution. This setting can be changed in the configuration file:
 

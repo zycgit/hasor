@@ -1,11 +1,11 @@
 ---
 id: chain
 sidebar_position: 5
-title: 事件链
+title: 2.7.4 事件链
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 事件链
+# 2.7.4 事件链
 
 事件链，指的是在事件中引发另一个或多个事件，一个完整的事件链的例子如下：
 

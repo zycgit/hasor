@@ -1,11 +1,11 @@
 ---
 id: interfacseioc
 sidebar_position: 4
-title: Interface Injection
+title: 2.1.3 Interface Injection
 description: Declare implementation types for injected interfaces.
 ---
 
-# Interface Injection
+# 2.1.3 Interface Injection
 
 If the type to inject is an interface, configure the `net.hasor.core.ImplBy` annotation on that interface to determine its concrete implementation class.
 

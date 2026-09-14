@@ -1,11 +1,11 @@
 ---
 id: resources
 sidebar_position: 2
-title: Static Resources and Frontend Applications
+title: 4.1.1 Static Resources and Frontend Applications
 description: Configure resource sources and frontend route fallbacks with ResourceBinder.
 ---
 
-# Static Resources and Frontend Applications
+# 4.1.1 Static Resources and Frontend Applications
 
 Resource handling is built into Hasor Web and does not require Config or Boot.
 

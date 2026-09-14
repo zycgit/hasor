@@ -1,11 +1,11 @@
 ---
 id: custom
 sidebar_position: 4
-title: Custom Scopes
+title: 2.3.3 Custom Scopes
 description: Implement and register a custom Hasor scope.
 ---
 
-# Custom Scopes
+# 2.3.3 Custom Scopes
 
 Use `HttpSession` as an example to implement an `HttpSession` scope.
 

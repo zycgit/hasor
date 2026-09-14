@@ -1,11 +1,11 @@
 ---
 id: prototype
 sidebar_position: 3
-title: Prototype Mode
+title: 2.3.2 Prototype Mode
 description: Use prototype bean scope in Hasor.
 ---
 
-# Prototype Mode
+# 2.3.2 Prototype Mode
 
 Prototype mode and singleton mode are opposites. Hasor uses prototype mode by default, so developers do not need any extra configuration.
 

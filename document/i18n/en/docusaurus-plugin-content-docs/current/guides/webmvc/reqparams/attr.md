@@ -1,11 +1,11 @@
 ---
 id: attr
 sidebar_position: 5
-title: Reading Attributes
+title: 4.3.5 Reading Attributes
 description: Read request attributes with @AttributeParameter.
 ---
 
-# Reading Attributes
+# 4.3.5 Reading Attributes
 
 The most basic way is to use `httpRequest.getAttribute`, but Hasor provides the `@AttributeParameter` annotation.
 

@@ -1,11 +1,11 @@
 ---
 id: basic
 sidebar_position: 1
-title: 表单上传
+title: 4.7.1 表单上传
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 表单上传
+# 4.7.1 表单上传
 
 Hasor 内置了 apache 的 fileuplaod 组件，并且对该组件做了精简优化。因此在使用 Hasor 的文件上传时您无需也不会引入任何第三方 jar。
 

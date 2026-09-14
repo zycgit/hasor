@@ -1,11 +1,11 @@
 ---
 id: getrequest
 sidebar_position: 3
-title: Obtaining the Request Interface
+title: 4.2.2 Obtaining the Request Interface
 description: Receive Servlet request-related objects as action method parameters.
 ---
 
-# Obtaining the Request Interface
+# 4.2.2 Obtaining the Request Interface
 
 Because the lifecycle of a request is special, it cannot be injected normally through `@Inject`. Hasor provides a convenient way to obtain it:
 

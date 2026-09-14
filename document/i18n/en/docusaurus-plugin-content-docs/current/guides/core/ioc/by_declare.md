@@ -1,11 +1,11 @@
 ---
 id: declareioc
 sidebar_position: 6
-title: Declarative Injection
+title: 2.1.5 Declarative Injection
 description: Declare dependency injection relationships in code or configuration.
 ---
 
-# Declarative Injection
+# 2.1.5 Declarative Injection
 
 Using code to describe a class's injection dependencies is called declarative injection. XML and other configuration files can also replace code for this purpose, but the essence is the same.
 

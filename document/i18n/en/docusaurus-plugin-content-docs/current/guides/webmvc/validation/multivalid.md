@@ -1,11 +1,11 @@
 ---
 id: multivalid
 sidebar_position: 2
-title: Validating with Multiple Validators
+title: 4.5.2 Validating with Multiple Validators
 description: Compose common and scenario-specific validation logic.
 ---
 
-# Validating with Multiple Validators
+# 4.5.2 Validating with Multiple Validators
 
 Some validation logic is common and can be extracted into shared validation logic. Request validation can then consist of common plus specific parts, as shown below:
 

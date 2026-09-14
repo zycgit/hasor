@@ -1,11 +1,11 @@
 ---
 id: prototype
 sidebar_position: 3
-title: 原型模式(Prototype)
+title: 2.3.2 原型模式(Prototype)
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 原型模式(Prototype)
+# 2.3.2 原型模式(Prototype)
 
 原型模式 和单例模式是正反的一对关系。Hasor 默认使用的是原型模式，因此开发者不需要做任何配置。
 

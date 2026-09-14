@@ -1,11 +1,11 @@
 ---
 id: propsioc
 sidebar_position: 3
-title: Property Injection
+title: 2.1.2 Property Injection
 description: Inject dependencies into fields with Hasor.
 ---
 
-# Property Injection
+# 2.1.2 Property Injection
 
 For property injection, add the `net.hasor.core.Inject` annotation to the field that needs to be injected.
 

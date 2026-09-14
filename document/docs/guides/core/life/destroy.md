@@ -1,11 +1,11 @@
 ---
 id: destroybean
 sidebar_position: 4
-title: 销毁 Bean
+title: 2.6.3 销毁 Bean
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 销毁 Bean
+# 2.6.3 销毁 Bean
 
 :::tip
 需要注意的是只有单例的对象才支持销毁能力。

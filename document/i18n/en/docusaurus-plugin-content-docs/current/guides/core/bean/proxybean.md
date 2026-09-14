@@ -1,11 +1,11 @@
 ---
 id: proxybean
 sidebar_position: 4
-title: Delegated Bean Creation
+title: 2.2.3 Delegated Bean Creation
 description: Delegate Hasor bean creation to another IoC container.
 ---
 
-# Delegated Bean Creation
+# 2.2.3 Delegated Bean Creation
 
 Delegated bean creation was added after version 4.2.1. With `TypeSupplier`, beans registered in Hasor can be delegated to another IoC container for creation.
 

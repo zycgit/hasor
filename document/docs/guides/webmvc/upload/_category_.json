@@ -1,8 +1,9 @@
 {
-  "label": "文件上传",
+  "label": "4.7 文件上传",
   "position": 7,
   "link": {
     "type": "generated-index",
-    "title": "文件上传"
+    "slug": "/category/文件上传",
+    "title": "4.7 文件上传"
   }
 }

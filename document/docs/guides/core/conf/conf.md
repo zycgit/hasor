@@ -1,11 +1,11 @@
 ---
 id: conf
 sidebar_position: 1
-title: 配置文件
+title: 2.8 配置文件
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 配置文件
+# 2.8 配置文件
 
 :::tip
 在 Hasor 中 可以不定义任何配置文件，直接使用 Hasor 相关功能。仅仅在当需要修改某些配置的时候在使用配置文件，Hasor 对于配置文件的态度是拥抱约定优于配置，但是不鼓吹零配置。

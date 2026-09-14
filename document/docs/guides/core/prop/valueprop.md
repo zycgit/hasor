@@ -1,11 +1,11 @@
 ---
 id: valueprop
 sidebar_position: 2
-title: 值型动态属性
+title: 2.4.1 值型动态属性
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 值型动态属性
+# 2.4.1 值型动态属性
 
 :::tip
 值型是指，附加的动态属性只能简单的进行 get/set。其行为相当于类型多了一个私有字段而已

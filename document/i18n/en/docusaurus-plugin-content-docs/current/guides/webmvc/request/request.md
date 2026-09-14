@@ -1,11 +1,11 @@
 ---
 id: request
 sidebar_position: 1
-title: Receiving Web Requests
+title: 4.2 Receiving Web Requests
 description: Receive web requests with Hasor Web.
 ---
 
-# Receiving Web Requests
+# 4.2 Receiving Web Requests
 
 The simplest form for receiving a web request is shown below:
 

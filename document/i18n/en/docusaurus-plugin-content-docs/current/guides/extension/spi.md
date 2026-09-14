@@ -1,11 +1,11 @@
 ---
 id: spi
 sidebar_position: 2
-title: SPI
+title: 6.2 SPI
 description: Use Hasor SPI extension points to insert custom behavior into framework flows.
 ---
 
-# SPI
+# 6.2 SPI
 
 :::tip
 SPI stands for Service Plugin Interface. Its original intent is to insert extension points into an application's execution flow.

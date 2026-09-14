@@ -1,11 +1,11 @@
 ---
 id: envioc
 sidebar_position: 8
-title: 注入外部配置
+title: 2.1.7 注入外部配置
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 注入外部配置
+# 2.1.7 注入外部配置
 
 `@InjectSettings` 可以注入配置项。配置文件中的值支持 `${KEY}` 占位符，因此敏感信息可以通过 JVM `-D` 参数或操作系统环境变量传入。
 

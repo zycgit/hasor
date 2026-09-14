@@ -1,11 +1,11 @@
 ---
 id: methodlevel
 sidebar_position: 2
-title: 方法级拦截器
+title: 2.5.1 方法级拦截器
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 方法级拦截器
+# 2.5.1 方法级拦截器
 
 以下注解由 hasor-core 内置 AopModule 处理，不需要 hasor-config。`@Aop` 为 `net.hasor.cobble.dynamic.Aop`，对应的拦截器接口也位于 `net.hasor.cobble.dynamic` 包。
 

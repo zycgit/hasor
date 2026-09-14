@@ -1,11 +1,11 @@
 ---
 id: specialioc
 sidebar_position: 8
-title: Injecting Container Types
+title: 2.1.8 Injecting Container Types
 description: Inject Hasor container objects and other special framework types.
 ---
 
-# Injecting Container Types
+# 2.1.8 Injecting Container Types
 
 For example, obtain the container itself:
 

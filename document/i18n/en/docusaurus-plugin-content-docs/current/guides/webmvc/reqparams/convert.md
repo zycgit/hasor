@@ -1,11 +1,11 @@
 ---
 id: convert
 sidebar_position: 7
-title: Automatic Parameter Type Conversion
+title: 4.3.7 Automatic Parameter Type Conversion
 description: Convert request parameter values to common Java types automatically.
 ---
 
-# Automatic Parameter Type Conversion
+# 4.3.7 Automatic Parameter Type Conversion
 
 Hasor Web can help perform simple type conversion. Supported types include:
 - Basic types: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `String`

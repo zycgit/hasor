@@ -1,11 +1,11 @@
 ---
 id: group
 sidebar_position: 6
-title: 请求参数组
+title: 4.3.6 请求参数组
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 请求参数组
+# 4.3.6 请求参数组
 
 当一个请求递交了大量参数时，为了减少编写参数列表可以使用 `@ParameterGroup`
 

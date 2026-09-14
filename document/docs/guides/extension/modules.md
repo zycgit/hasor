@@ -1,11 +1,11 @@
 ---
 id: modules
 sidebar_position: 3
-title: 配置模块化
+title: 6.3 配置模块化
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 配置模块化
+# 6.3 配置模块化
 
 :::tip
 在 Hasor 中一个 java 项目可以含有多个工程，每个工程都是独立的 Jar/War 包。而每个工程都可以定义自己的 hconfig 配置文件。

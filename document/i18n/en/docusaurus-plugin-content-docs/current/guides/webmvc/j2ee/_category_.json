@@ -1,8 +1,9 @@
 {
-  "label": "J2EE Compatibility",
+  "label": "4.8 J2EE Compatibility",
   "position": 8,
   "link": {
     "type": "generated-index",
-    "title": "J2EE Compatibility"
+    "slug": "/category/j2ee-兼容",
+    "title": "4.8 J2EE Compatibility"
   }
 }

@@ -1,11 +1,11 @@
 ---
 id: j2eefilter
 sidebar_position: 2
-title: Filter Form
+title: 4.6.2 Filter Form
 description: Implement request interception with a traditional J2EE Filter.
 ---
 
-# Filter Form
+# 4.6.2 Filter Form
 
 A traditional J2EE `Filter` can act as an interceptor. For example:
 

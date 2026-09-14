@@ -1,11 +1,11 @@
 ---
 id: once
 sidebar_position: 4
-title: One-Time Events
+title: 2.7.3 One-Time Events
 description: Register event listeners that execute only once.
 ---
 
-# One-Time Events
+# 2.7.3 One-Time Events
 
 One-time events are a special event execution mode. Whether you register synchronous or asynchronous events, the event listener can be registered to execute only once.
 

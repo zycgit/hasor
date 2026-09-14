@@ -1,11 +1,11 @@
 ---
 id: filter
 sidebar_position: 1
-title: Request Interceptors
+title: 4.6 Request Interceptors
 description: Intercept requests in Hasor Web.
 ---
 
-# Request Interceptors
+# 4.6 Request Interceptors
 
 Hasor provides three different ways to implement request interception:
 - Intercept requests through the `InvokerFilter` interface (recommended).

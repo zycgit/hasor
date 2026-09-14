@@ -1,11 +1,11 @@
 ---
 id: ioc
 sidebar_position: 1
-title: Dependency Injection (IoC)
+title: 2.1 Dependency Injection (IoC)
 description: Introduces dependency injection and inversion of control in Hasor.
 ---
 
-# Dependency Injection (IoC)
+# 2.1 Dependency Injection (IoC)
 
 "Dependency injection" (DI) is sometimes also called "inversion of control" (IoC). In essence, they describe the same idea. Normally, when one class calls another class, the caller creates the callee. With inversion of control, the caller no longer creates the callee directly; the container injects it instead. The word "create" here emphasizes the caller's active role. Dependency injection removes the need for the caller to actively create the object it depends on.
 

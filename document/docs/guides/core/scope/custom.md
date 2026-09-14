@@ -1,11 +1,11 @@
 ---
 id: custom
 sidebar_position: 4
-title: 自定义作用域
+title: 2.3.3 自定义作用域
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 自定义作用域
+# 2.3.3 自定义作用域
 
 以 HttpSession 为例，实现一个 `HttpSession` 作用域。
 

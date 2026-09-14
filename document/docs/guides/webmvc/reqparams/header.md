@@ -1,11 +1,11 @@
 ---
 id: header
 sidebar_position: 3
-title: 获取请求头
+title: 4.3.3 获取请求头
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 获取请求头
+# 4.3.3 获取请求头
 
 获取请求头信息使用 `@HeaderParameter` 注解：
 

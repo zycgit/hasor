@@ -1,11 +1,11 @@
 ---
 id: chain
 sidebar_position: 5
-title: Event Chains
+title: 2.7.4 Event Chains
 description: Fire one or more events from inside another event.
 ---
 
-# Event Chains
+# 2.7.4 Event Chains
 
 An event chain means firing one or more additional events from inside an event. A complete event-chain example is shown below:
 

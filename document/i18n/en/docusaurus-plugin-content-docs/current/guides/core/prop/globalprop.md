@@ -1,11 +1,11 @@
 ---
 id: globalprop
 sidebar_position: 4
-title: Global Dynamic Properties
+title: 2.4.3 Global Dynamic Properties
 description: Configure dynamic properties globally for matching beans.
 ---
 
-# Global Dynamic Properties
+# 2.4.3 Global Dynamic Properties
 
 Setting dynamic properties separately for each bean can be troublesome, so dynamic properties can also be configured globally. The usage is somewhat similar to configuring AOP.
 

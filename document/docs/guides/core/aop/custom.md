@@ -1,11 +1,11 @@
 ---
 id: custom
 sidebar_position: 6
-title: 自定义拦截器
+title: 2.5.5 自定义拦截器
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 自定义拦截器
+# 2.5.5 自定义拦截器
 
 拦截器的匹配器
 - 类型：`net.hasor.cobble.dynamic.Matchers`

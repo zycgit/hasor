@@ -1,11 +1,11 @@
 ---
 id: async
 sidebar_position: 3
-title: Asynchronous Events
+title: 2.7.2 Asynchronous Events
 description: Fire asynchronous Hasor events without blocking the main flow.
 ---
 
-# Asynchronous Events
+# 2.7.2 Asynchronous Events
 
 Asynchronous events do not block the main flow when the main flow fires an event. Event execution is completely delegated to event threads and invoked asynchronously.
 

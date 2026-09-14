@@ -1,11 +1,11 @@
 ---
 id: requesttype
 sidebar_position: 4
-title: Distinguishing Request Types
+title: 4.2.3 Distinguishing Request Types
 description: Route requests by HTTP method in Hasor Web.
 ---
 
-# Distinguishing Request Types
+# 4.2.3 Distinguishing Request Types
 
 In browser developer tools, the request Headers panel identifies the HTTP method:
 

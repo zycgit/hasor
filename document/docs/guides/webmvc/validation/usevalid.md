@@ -1,11 +1,11 @@
 ---
 id: usevalid
 sidebar_position: 1
-title: 使用验证器
+title: 4.5.1 使用验证器
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 使用验证器
+# 4.5.1 使用验证器
 
 一个请求在递交到后台之后正式处理之前会做一些参数合法性校验。比如：年龄大于1，性别必须是：男或女，帐号密码输入不能为空等。
 

@@ -1,11 +1,11 @@
 ---
 id: proxybean
 sidebar_position: 4
-title: 委托创建Bean
+title: 2.2.3 委托创建Bean
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 委托创建Bean
+# 2.2.3 委托创建Bean
 
 Bean 委托创建能力是在 4.2.1 版本之后才提供的，利用 `TypeSupplier` 可以将注册到 Hasor 中到 Bean 委托给其它 IoC 容器来创建。
 

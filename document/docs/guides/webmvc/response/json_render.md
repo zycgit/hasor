@@ -1,11 +1,11 @@
 ---
 id: json
 sidebar_position: 4
-title: JSON 渲染引擎
+title: 4.4.4 JSON 渲染引擎
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# JSON 渲染引擎
+# 4.4.4 JSON 渲染引擎
 
 Hasor Web 默认将对象和集合渲染为 JSON，字符串为文本，null 和 void 不产生默认正文。
 无需在每个 Action 中设置渲染器、Content-Type 或过滤器。

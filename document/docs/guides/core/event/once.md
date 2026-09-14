@@ -1,11 +1,11 @@
 ---
 id: once
 sidebar_position: 4
-title: 执行一次的事件
+title: 2.7.3 执行一次的事件
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 执行一次的事件
+# 2.7.3 执行一次的事件
 
 执行一次的事件，这是一类特殊的事件执行方式。无论您注册的是 同步事件 还是 异步事件 都可以将事件监听器注册为只执行一次这种模式。
 

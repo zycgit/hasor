@@ -1,11 +1,11 @@
 ---
 id: xml
 sidebar_position: 4
-title: XML 格式差异性
+title: 2.8.3 XML 格式差异性
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# XML 格式差异性
+# 2.8.3 XML 格式差异性
 
 XML 格式是能力最为全面的格式，较前两种方案只有在命令行界面下维护和编辑比较不太方便。诸如多个配置文件的配置内容隔离、数组类型，XML都能很好的支持。
 

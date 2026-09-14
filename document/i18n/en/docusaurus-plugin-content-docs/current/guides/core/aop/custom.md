@@ -1,11 +1,11 @@
 ---
 id: custom
 sidebar_position: 6
-title: Custom Interceptors
+title: 2.5.5 Custom Interceptors
 description: Define custom AOP matchers and annotations.
 ---
 
-# Custom Interceptors
+# 2.5.5 Custom Interceptors
 
 Interceptor matcher:
 - Type: `net.hasor.cobble.dynamic.Matchers`

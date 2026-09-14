@@ -1,11 +1,11 @@
 ---
 id: constructorioc
 sidebar_position: 2
-title: 构造方法注入
+title: 2.1.1 构造方法注入
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 构造方法注入
+# 2.1.1 构造方法注入
 
 当类中有且只有一个无参的构造方法时，是不需要通过 `@ConstructorBy` 来指明构建 `Bean` 的构造方法。
 

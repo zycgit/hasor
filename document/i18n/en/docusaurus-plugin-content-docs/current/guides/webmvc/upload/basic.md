@@ -1,11 +1,11 @@
 ---
 id: basic
 sidebar_position: 1
-title: Form Upload
+title: 4.7.1 Form Upload
 description: Upload files from forms with Hasor Web.
 ---
 
-# Form Upload
+# 4.7.1 Form Upload
 
 Hasor includes Apache FileUpload internally and simplifies and optimizes it. Therefore, when using Hasor file upload, you do not need to introduce any third-party jar.
 

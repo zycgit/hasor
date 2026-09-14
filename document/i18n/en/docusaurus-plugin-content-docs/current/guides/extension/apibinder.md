@@ -1,11 +1,11 @@
 ---
 id: apibinder
 sidebar_position: 1
-title: ApiBinder
+title: 6.1 ApiBinder
 description: Extend ApiBinder to provide unified framework extension APIs.
 ---
 
-# ApiBinder
+# 6.1 ApiBinder
 
 :::tip
 The `ApiBinder` extension mechanism was added after Hasor 2.3. It helps applications or tool frameworks build their own interaction interfaces during the init phase.

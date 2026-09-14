@@ -1,11 +1,11 @@
 ---
 id: spi
 sidebar_position: 2
-title: SPI
+title: 6.2 SPI
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# SPI
+# 6.2 SPI
 
 :::tip
 SPI 全称 Service Plugin Interface，它的本真意图是在应用执行流程过程中，安插一些扩展点。

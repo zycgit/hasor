@@ -1,11 +1,11 @@
 ---
 id: singleton
 sidebar_position: 2
-title: Singleton Mode
+title: 2.3.1 Singleton Mode
 description: Configure singleton beans in Hasor.
 ---
 
-# Singleton Mode
+# 2.3.1 Singleton Mode
 
 A bean singleton is usually declared with the following annotation:
 

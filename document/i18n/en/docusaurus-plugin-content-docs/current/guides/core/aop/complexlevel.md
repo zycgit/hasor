@@ -1,11 +1,11 @@
 ---
 id: complexlevel
 sidebar_position: 5
-title: Composite Interceptors
+title: 2.5.4 Composite Interceptors
 description: Combine multiple AOP interceptors on the same or different join points.
 ---
 
-# Composite Interceptors
+# 2.5.4 Composite Interceptors
 
 Composite interceptors have two meanings:
 - Multiple interceptors can intercept the same join point at the same time.

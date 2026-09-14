@@ -1,11 +1,11 @@
 ---
 id: aop
 sidebar_position: 1
-title: Dynamic Proxy (AOP)
+title: 2.5 Dynamic Proxy (AOP)
 description: Introduces aspect-oriented programming and dynamic proxy support in Hasor.
 ---
 
-# Dynamic Proxy (AOP)
+# 2.5 Dynamic Proxy (AOP)
 
 "Aspect-oriented programming", also known as "AOP", is a very active development idea. AOP can isolate different parts of business logic, reduce coupling between those parts, improve code reuse, and improve development efficiency.
 

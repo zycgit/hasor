@@ -1,11 +1,11 @@
 ---
 id: overview
 sidebar_position: 0
-title: Extension
+title: 6. Extension
 description: Extend Hasor with Module, ApiBinder, and SPI.
 ---
 
-# Extension
+# 6. Extension
 
 Hasor exposes extension capabilities through `Module`, `ApiBinder`, and SPI. Applications can split configuration into multiple modules and register custom framework extension points.
 

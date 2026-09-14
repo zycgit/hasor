@@ -1,11 +1,11 @@
 ---
 id: xml
 sidebar_position: 4
-title: XML Format Differences
+title: 2.8.3 XML Format Differences
 description: XML configuration features, paths, conflicts, and namespaces.
 ---
 
-# XML Format Differences
+# 2.8.3 XML Format Differences
 
 XML is the most capable configuration format. Compared with the first two formats, it is only less convenient to maintain and edit from a command-line interface. XML supports configuration isolation across multiple files and array types very well.
 

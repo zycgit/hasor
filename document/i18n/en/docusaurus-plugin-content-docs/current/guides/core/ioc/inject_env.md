@@ -1,11 +1,11 @@
 ---
 id: envioc
 sidebar_position: 8
-title: Injecting External Configuration
+title: 2.1.7 Injecting External Configuration
 description: Inject external values through Settings placeholders.
 ---
 
-# Injecting External Configuration
+# 2.1.7 Injecting External Configuration
 
 `@InjectSettings` can inject configuration items. Values in the configuration file support `${KEY}` placeholders, so sensitive information can be provided through JVM `-D` parameters or operating-system environment variables.
 

@@ -1,11 +1,11 @@
 ---
 id: injectmembersioc
 sidebar_position: 5
-title: InjectMembers方式
+title: 2.1.4 InjectMembers方式
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# InjectMembers方式
+# 2.1.4 InjectMembers方式
 
 :::tip
 Bean 一旦实现 `net.hasor.core.spi.InjectMembers` 接口，那么其它所有注入方式全部失效

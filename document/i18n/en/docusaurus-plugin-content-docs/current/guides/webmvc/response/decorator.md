@@ -1,11 +1,11 @@
 ---
 id: decorator
 sidebar_position: 3
-title: Layout Templates
+title: 4.4.3 Layout Templates
 description: Use layout-template technology to decorate rendered pages.
 ---
 
-# Layout Templates
+# 4.4.3 Layout Templates
 
 :::tip
 Further reading: Sitemesh is a framework focused on layout templates.

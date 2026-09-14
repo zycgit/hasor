@@ -1,11 +1,11 @@
 ---
 id: refenv
 sidebar_position: 5
-title: 引用外部参数
+title: 2.8.4 引用外部参数
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 引用外部参数
+# 2.8.4 引用外部参数
 
 以配置数据库链接配置作为例子：
 

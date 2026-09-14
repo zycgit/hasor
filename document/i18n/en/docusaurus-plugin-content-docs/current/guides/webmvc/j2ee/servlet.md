@@ -1,11 +1,11 @@
 ---
 id: servlet
 sidebar_position: 1
-title: Servlet
+title: 4.8.1 Servlet
 description: Register and use Servlets in Hasor Web.
 ---
 
-# Servlet
+# 4.8.1 Servlet
 
 Use a servlet as shown below:
 

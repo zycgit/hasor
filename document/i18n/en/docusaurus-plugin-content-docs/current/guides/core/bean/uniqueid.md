@@ -1,11 +1,11 @@
 ---
 id: uniqueid
 sidebar_position: 2
-title: Unique ID
+title: 2.2.1 Unique ID
 description: Assign unique IDs to Hasor beans.
 ---
 
-# Unique ID
+# 2.2.1 Unique ID
 
 As in Spring, you can assign a unique name to a bean. This name is the bean ID.
 

@@ -1,11 +1,11 @@
 ---
 id: filter
 sidebar_position: 1
-title: 请求拦截器
+title: 4.6 请求拦截器
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 请求拦截器
+# 4.6 请求拦截器
 
 在 Hasor 中，一共有三种不同的方式实现请求拦截：
 - 通过 `InvokerFilter` 接口拦截请求（推荐）。

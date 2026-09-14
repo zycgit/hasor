@@ -1,11 +1,11 @@
 ---
 id: overview
 sidebar_position: 0
-title: 扩展机制
+title: 6. 扩展机制
 description: 使用 Module、ApiBinder 和 SPI 扩展 Hasor 框架能力。
 ---
 
-# 扩展机制
+# 6. 扩展机制
 
 Hasor 通过 `Module`、`ApiBinder` 和 SPI 提供扩展能力。应用可以把配置拆分为多个模块，也可以向框架注册自定义扩展点。
 

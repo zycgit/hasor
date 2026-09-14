@@ -1,11 +1,11 @@
 ---
 id: decorator
 sidebar_position: 3
-title: 母版页技术
+title: 4.4.3 母版页技术
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 母版页技术
+# 4.4.3 母版页技术
 
 :::tip
 延伸阅读：Sitemesh 就是专注于母版页的一款框架。

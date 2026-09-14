@@ -1,11 +1,11 @@
 ---
 id: initbean
 sidebar_position: 2
-title: 初始化 Bean
+title: 2.6.1 初始化 Bean
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 初始化 Bean
+# 2.6.1 初始化 Bean
 
 有时候我们希望有 Bean 可以在被创建时自动调用一个 init 方法，本小节就来向大家展示一下 Hasor 这方面的能力。
 

@@ -1,11 +1,11 @@
 ---
 id: async
 sidebar_position: 4
-title: Asynchronous Requests (Servlet 3.0)
+title: 4.8.4 Asynchronous Requests (Servlet 3.0)
 description: Use Servlet 3.0 asynchronous requests in Hasor Web.
 ---
 
-# Asynchronous Requests (Servlet 3.0)
+# 4.8.4 Asynchronous Requests (Servlet 3.0)
 
 Before Servlet 3.0, Servlets used a thread-per-request model: every HTTP request was handled from start to finish by one thread. If a request needed I/O, such as accessing a database or calling a third-party service API, the corresponding thread synchronously waited for that I/O operation to finish. I/O operations are very slow, so the thread could not be returned to the thread pool in time for later use. As concurrency increased, this caused serious performance problems.
 

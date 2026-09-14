@@ -1,11 +1,11 @@
 ---
 id: conf
 sidebar_position: 1
-title: Configuration Files
+title: 2.8 Configuration Files
 description: Supported Hasor configuration file formats and loading methods.
 ---
 
-# Configuration Files
+# 2.8 Configuration Files
 
 :::tip
 In Hasor, you can use the framework without defining any configuration file. Configuration files are only needed when some configuration must be changed. Hasor embraces convention over configuration, but it does not promote zero configuration.

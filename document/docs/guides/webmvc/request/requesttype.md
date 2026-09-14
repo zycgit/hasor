@@ -1,11 +1,11 @@
 ---
 id: requesttype
 sidebar_position: 4
-title: 区分请求类型
+title: 4.2.3 区分请求类型
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 区分请求类型
+# 4.2.3 区分请求类型
 
 如果你不知道什么是请求类型，那么请看这里：
 

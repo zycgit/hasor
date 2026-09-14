@@ -1,11 +1,11 @@
 ---
 id: useioc
 sidebar_position: 2
-title: Using IoC
+title: 4.2.1 Using IoC
 description: Use dependency injection in request handlers.
 ---
 
-# Using IoC
+# 4.2.1 Using IoC
 
 Fields of request-handler classes can be injected through dependency injection:
 

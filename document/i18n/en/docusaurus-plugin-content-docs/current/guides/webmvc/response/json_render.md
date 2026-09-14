@@ -1,11 +1,11 @@
 ---
 id: json
 sidebar_position: 4
-title: JSON Rendering Engine
+title: 4.4.4 JSON Rendering Engine
 description: JSON library selection and custom response serialization in Hasor Web.
 ---
 
-# JSON Rendering Engine
+# 4.4.4 JSON Rendering Engine
 
 Hasor Web renders objects and collections as JSON and strings as text by default. null and void do not produce a default body.
 There is no need to configure a renderer, Content-Type, or filter in every Action.

@@ -1,11 +1,11 @@
 ---
 id: configioc
 sidebar_position: 7
-title: 注入配置
+title: 2.1.6 注入配置
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 注入配置
+# 2.1.6 注入配置
 
 下面以属性文件为例：
 

@@ -1,11 +1,11 @@
 ---
 id: defaults
 sidebar_position: 0
-title: 默认返回值渲染
+title: 4.4.1 默认返回值渲染
 description: 内置返回值渲染、编码、自定义引擎和重定向。
 ---
 
-# 默认返回值渲染
+# 4.4.1 默认返回值渲染
 
 返回值渲染是 Hasor Web 内置机制，不需要 Config、Boot 或渲染过滤器。
 对象与集合默认 JSON，字符串默认文本，null 和 void 不输出默认正文。字符串不是隐式模板名，模板需显式指定，见[渲染器](./render.md)。

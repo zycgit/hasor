@@ -1,11 +1,11 @@
 ---
 id: resources
 sidebar_position: 2
-title: 静态资源与前端应用
+title: 4.1.1 静态资源与前端应用
 description: 使用 ResourceBinder 配置资源来源和前端路由回退。
 ---
 
-# 静态资源与前端应用
+# 4.1.1 静态资源与前端应用
 
 资源处理是 Hasor Web 的内置能力，不需要 Config 或 Boot。
 

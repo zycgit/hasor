@@ -1,11 +1,11 @@
 ---
 id: servlet
 sidebar_position: 1
-title: Servlet
+title: 4.8.1 Servlet
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# Servlet
+# 4.8.1 Servlet
 
 使用 Servlet 如下所示：
 

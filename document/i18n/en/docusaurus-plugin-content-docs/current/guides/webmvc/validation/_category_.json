@@ -1,8 +1,9 @@
 {
-  "label": "Request Validation",
+  "label": "4.5 Request Validation",
   "position": 5,
   "link": {
     "type": "generated-index",
-    "title": "Request Validation"
+    "slug": "/category/请求验证",
+    "title": "4.5 Request Validation"
   }
 }

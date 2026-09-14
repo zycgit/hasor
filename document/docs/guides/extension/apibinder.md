@@ -1,11 +1,11 @@
 ---
 id: apibinder
 sidebar_position: 1
-title: ApiBinder
+title: 6.1 ApiBinder
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# ApiBinder
+# 6.1 ApiBinder
 
 :::tip
 ApiBinder 扩展机制是从 Hasor 2.3 之后加入的。这个扩展机制可以帮助应用或工具框架在 init 阶段构建自己的交互接口。

@@ -1,11 +1,11 @@
 ---
 id: group
 sidebar_position: 6
-title: Request Parameter Groups
+title: 4.3.6 Request Parameter Groups
 description: Bind many request parameters into a grouped object.
 ---
 
-# Request Parameter Groups
+# 4.3.6 Request Parameter Groups
 
 When a request submits many parameters, use `@ParameterGroup` to reduce long parameter lists.
 

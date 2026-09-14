@@ -1,11 +1,11 @@
 ---
 id: injectmembersioc
 sidebar_position: 5
-title: InjectMembers Mode
+title: 2.1.4 InjectMembers Mode
 description: Delegate the full injection process to InjectMembers.
 ---
 
-# InjectMembers Mode
+# 2.1.4 InjectMembers Mode
 
 :::tip
 Once a bean implements `net.hasor.core.spi.InjectMembers`, all other injection methods become invalid.

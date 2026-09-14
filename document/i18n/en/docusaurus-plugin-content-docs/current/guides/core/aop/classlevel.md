@@ -1,11 +1,11 @@
 ---
 id: classlevel
 sidebar_position: 3
-title: Class-Level Interceptors
+title: 2.5.2 Class-Level Interceptors
 description: Configure AOP interceptors on all methods of a class.
 ---
 
-# Class-Level Interceptors
+# 2.5.2 Class-Level Interceptors
 
 `hasor-core` processes `@Aop` through `net.hasor.core.aop.AopModule` by default, without a Config dependency. The annotations and interceptor interfaces are in `net.hasor.cobble.dynamic`; programmatic configuration is also available through `ApiBinder.bindInterceptor`.
 

@@ -1,11 +1,11 @@
 ---
 id: constructorioc
 sidebar_position: 2
-title: Constructor Injection
+title: 2.1.1 Constructor Injection
 description: Use constructors to inject dependencies in Hasor.
 ---
 
-# Constructor Injection
+# 2.1.1 Constructor Injection
 
 When a class has exactly one no-argument constructor, you do not need to use `@ConstructorBy` to indicate which constructor should be used to build the bean.
 

@@ -1,11 +1,11 @@
 ---
 id: project-config
 sidebar_position: 2
-title: 工程配置
+title: 5.1 工程配置
 description: 配置 Hasor Boot 依赖以及 Maven、Gradle 可执行包插件。
 ---
 
-# 工程配置
+# 5.1 工程配置
 
 Hasor Boot 的工程配置分为两部分：运行期依赖和 Maven/Gradle 打包插件。普通应用只需要核心依赖和打包插件；Web 应用还需要选择一个内嵌容器模块。以下示例使用 Hasor `@project.docsVersion@`。
 

@@ -1,10 +1,10 @@
 ---
 id: overview
 sidebar_position: 1
-title: 入门
+title: 1. 入门
 description: 了解 hasor-core、hasor-config、hasor-web 和 hasor-boot 的职责。
 ---
-# 入门
+# 1. 入门
 
 Hasor 是一个面向 Java 应用的轻量级框架。当前代码仓库按以下职责组织：
 

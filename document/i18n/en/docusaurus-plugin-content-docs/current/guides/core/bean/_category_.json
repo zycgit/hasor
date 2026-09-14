@@ -1,8 +1,9 @@
 {
-  "label": "Bean Management",
+  "label": "2.2 Bean Management",
   "position": 2,
   "link": {
     "type": "generated-index",
-    "title": "Bean Management"
+    "slug": "/category/bean-管理",
+    "title": "2.2 Bean Management"
   }
 }

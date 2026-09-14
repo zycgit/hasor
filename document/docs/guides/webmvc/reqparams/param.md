@@ -1,11 +1,11 @@
 ---
 id: param
 sidebar_position: 1
-title: 获取请求参数
+title: 4.3.1 获取请求参数
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 获取请求参数
+# 4.3.1 获取请求参数
 
 :::tip
 如果页面上使用了 checkbox 来表示一组值，那么可以使用 `@RequestParameter("values") String[] vars` 获取。

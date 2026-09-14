@@ -1,11 +1,11 @@
 ---
 id: event
 sidebar_position: 1
-title: Event Model
+title: 2.7 Event Model
 description: Use the Hasor event mechanism to decouple application flows.
 ---
 
-# Event Model
+# 2.7 Event Model
 
 At the code level, different systems often still call each other directly or indirectly. To reduce code coupling, you can use Hasor's event mechanism for deeper decoupling.
 

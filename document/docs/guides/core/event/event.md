@@ -1,11 +1,11 @@
 ---
 id: event
 sidebar_position: 1
-title: 事件模型
+title: 2.7 事件模型
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 事件模型
+# 2.7 事件模型
 
 在代码层面往往多个系统之间还会有直接或者间接的调用，为了降低代码耦合度可以使用 Hasor 的事件机制来进行深度解耦。
 

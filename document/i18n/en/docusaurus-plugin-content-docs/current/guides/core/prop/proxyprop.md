@@ -1,11 +1,11 @@
 ---
 id: proxyprop
 sidebar_position: 3
-title: Delegated Dynamic Properties
+title: 2.4.2 Delegated Dynamic Properties
 description: Delegate dynamic property reads and writes to an interface.
 ---
 
-# Delegated Dynamic Properties
+# 2.4.2 Delegated Dynamic Properties
 
 The previous two sections showed what dynamic properties are and how to use them simply. The most powerful part of dynamic properties is delegated property values.
 

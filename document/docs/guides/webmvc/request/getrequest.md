@@ -1,11 +1,11 @@
 ---
 id: getrequest
 sidebar_position: 3
-title: 获得Request接口
+title: 4.2.2 获得Request接口
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 获得Request接口
+# 4.2.2 获得Request接口
 
 由于 Request 的存在周期很特殊，因此不能通过 @Inject 方式进行常规的注入。Hasor 提供了一种便捷的方式拿到它：
 

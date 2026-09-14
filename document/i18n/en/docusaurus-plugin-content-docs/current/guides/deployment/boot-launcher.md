@@ -1,11 +1,11 @@
 ---
 id: boot-launcher
 sidebar_position: 3
-title: Boot Launcher
+title: 5.2 Boot Launcher
 description: Unified Boot startup, Core entry points, lifecycle, and health checks.
 ---
 
-# Boot Launcher
+# 5.2 Boot Launcher
 
 New applications should use `net.hasor.boot.Boot`. Ordinary and Web applications share the same entry point:
 

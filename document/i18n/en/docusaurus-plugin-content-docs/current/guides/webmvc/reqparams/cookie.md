@@ -1,11 +1,11 @@
 ---
 id: cookie
 sidebar_position: 2
-title: Reading Cookies
+title: 4.3.2 Reading Cookies
 description: Read cookie values with @CookieParameter.
 ---
 
-# Reading Cookies
+# 4.3.2 Reading Cookies
 
 :::tip
 If a cookie stores a group of values with the same name, use `@CookieParameter("values") String[] vars` to read them.

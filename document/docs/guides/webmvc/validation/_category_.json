@@ -1,8 +1,9 @@
 {
-  "label": "请求验证",
+  "label": "4.5 请求验证",
   "position": 5,
   "link": {
     "type": "generated-index",
-    "title": "请求验证"
+    "slug": "/category/请求验证",
+    "title": "4.5 请求验证"
   }
 }

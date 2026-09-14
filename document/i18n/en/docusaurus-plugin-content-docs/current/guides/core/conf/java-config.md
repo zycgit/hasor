@@ -1,11 +1,11 @@
 ---
 id: java-config
 sidebar_position: 6
-title: Java Annotation Configuration
+title: 2.8.5 Java Annotation Configuration
 description: Declare Beans, restrict scanning, and configure Web MVC with hasor-config.
 ---
 
-# Java Annotation Configuration
+# 2.8.5 Java Annotation Configuration
 
 `hasor-config` provides optional annotation configuration on top of `hasor-core`; applications do not have to implement `Module`. Use the matching dependency version:
 

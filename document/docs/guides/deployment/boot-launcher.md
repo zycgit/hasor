@@ -1,11 +1,11 @@
 ---
 id: boot-launcher
 sidebar_position: 3
-title: Boot 启动器
+title: 5.2 Boot 启动器
 description: 统一 Boot 入口、Core 启动方式、生命周期与健康检查。
 ---
 
-# Boot 启动器
+# 5.2 Boot 启动器
 
 新应用推荐使用 `net.hasor.boot.Boot`，普通应用与 Web 应用使用同一个入口：
 

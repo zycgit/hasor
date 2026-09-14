@@ -1,11 +1,11 @@
 ---
 id: interfacseioc
 sidebar_position: 4
-title: 接口注入
+title: 2.1.3 接口注入
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 接口注入
+# 2.1.3 接口注入
 
 如果要注入的对象类型是一个接口，那么需要在这个接口上设置设置 `net.hasor.core.ImplBy` 注解。已确定其具体实现类是谁。
 

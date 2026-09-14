@@ -1,11 +1,11 @@
 ---
 id: complexlevel
 sidebar_position: 5
-title: 复合拦截器
+title: 2.5.4 复合拦截器
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 复合拦截器
+# 2.5.4 复合拦截器
 
 复合拦截器，有两层含义
 - 可以写多个拦截器，同时拦截同一个切点。

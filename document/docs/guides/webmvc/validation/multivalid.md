@@ -1,11 +1,11 @@
 ---
 id: multivalid
 sidebar_position: 2
-title: 多验证器共同验证
+title: 4.5.2 多验证器共同验证
 description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-boot 的核心用法
 ---
 
-# 多验证器共同验证
+# 4.5.2 多验证器共同验证
 
 有些校验逻辑比较通用，可以提取成公共的校验逻辑。这样请求验证就可以是 公共 + 制定 两部分组成，如下：
 
