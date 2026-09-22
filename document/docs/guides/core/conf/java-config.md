@@ -140,3 +140,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 ## 注解 AOP
 
 `hasor-core` 默认安装 `net.hasor.core.aop.AopModule`，无需 Config 依赖，支持 `net.hasor.cobble.dynamic.Aop` 注解。类级拦截器先于方法级拦截器执行。原有 `ApiBinder.bindInterceptor` 编程式 AOP 仍属于核心能力，详见 [类级拦截器](../aop/classlevel.md)。
+
+
+配置方法可以使用 `@DependsOn` 声明显式初始化依赖，详见[初始化依赖](../life/depends-on.md)。

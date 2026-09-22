@@ -27,7 +27,9 @@ import net.hasor.cobble.loader.ResourceLoader;
 import net.hasor.cobble.provider.Provider;
 import net.hasor.cobble.provider.Scope;
 import net.hasor.cobble.setting.Settings;
+import net.hasor.core.info.BeanDependency;
 import net.hasor.core.spi.AppContextAware;
+import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.SpiJudge;
 
 /**
@@ -457,7 +459,9 @@ public interface ApiBinder {
                 return appContext.getInstance(this.targetType);
             }
         }
-        return HasorUtils.autoAware(getEventContext(), new TargetSupplierByClass(targetType));
+        TargetSupplierByClass supplier = new TargetSupplierByClass(targetType);
+        this.bindSpiListener(ContextInitializeListener.class, (ContextInitializeListener) supplier::setAppContext);
+        return supplier;
     }
 
     default <T> Supplier<T> getProvider(BindInfo<T> targetType) {
@@ -483,7 +487,25 @@ public interface ApiBinder {
                 return appContext.getInstance(this.targetType);
             }
         }
-        return HasorUtils.autoAware(getEventContext(), new TargetSupplierByInfo(targetType));
+        TargetSupplierByInfo supplier = new TargetSupplierByInfo(targetType);
+        this.bindSpiListener(ContextInitializeListener.class, (ContextInitializeListener) supplier::setAppContext);
+        return supplier;
+    }
+
+    /** Resolves one registered bean by name and type; blank name selects by type only. */
+    default <T> Supplier<T> getProvider(String name, Class<T> type) {
+        Objects.requireNonNull(name, "name");
+        Objects.requireNonNull(type, "type");
+        var dependency = new BeanDependency(null, name.isBlank() ? null : name, type);
+        java.util.concurrent.atomic.AtomicReference<AppContext> context = new java.util.concurrent.atomic.AtomicReference<>();
+        this.bindSpiListener(ContextInitializeListener.class, (ContextInitializeListener) context::set);
+        return () -> {
+            AppContext current = context.get();
+            if (current == null) {
+                throw new IllegalStateException("the current state is not ready.");
+            }
+            return type.cast(current.getInstance(dependency.resolve(current)));
+        };
     }
 
     /*--------------------------------------------------------------------------------------Faces*/
@@ -742,6 +764,36 @@ public interface ApiBinder {
 
     /** 负责启动之后的生命周期方法映射。 */
     interface LifeBindingBuilder<T> extends ScopedBindingBuilder<T> {
+        /** Declares exact binding IDs to obtain before creating this bean. */
+        default LifeBindingBuilder<T> dependsOn(String... bindingIds) {
+            for (String id : bindingIds) {
+                BeanDependency.add(this.toInfo(), new BeanDependency(Objects.requireNonNull(id), null, null));
+            }
+            return this;
+        }
+
+        /** Declares registered types, each of which must resolve to one binding. */
+        default LifeBindingBuilder<T> dependsOn(Class<?>... types) {
+            for (Class<?> type : types) {
+                BeanDependency.add(this.toInfo(), new BeanDependency(null, null, type));
+            }
+            return this;
+        }
+
+        /** Declares a dependency selected by name and registered type. */
+        default LifeBindingBuilder<T> dependsOn(String name, Class<?> type) {
+            BeanDependency.add(this.toInfo(), new BeanDependency(null, Objects.requireNonNull(name), type));
+            return this;
+        }
+
+        /** Declares dependencies on existing binding references. */
+        default LifeBindingBuilder<T> dependsOn(BindInfo<?>... bindings) {
+            for (BindInfo<?> binding : bindings) {
+                this.dependsOn(binding.getBindID());
+            }
+            return this;
+        }
+
         /**
          * 配置当对象被创建时调用的方法，如果{@link Init @Init()}注解也定义了一个初始化方法则，注解方式优先于配置。
          * @see net.hasor.core.Init

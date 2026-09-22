@@ -25,6 +25,7 @@ import net.hasor.core.ApiBinder.LinkedBindingBuilder;
 import net.hasor.core.ApiBinder.NamedBindingBuilder;
 import net.hasor.core.AppContext;
 import net.hasor.core.CircularDependencyException;
+import net.hasor.core.DependsOn;
 
 /** 处理配置类中 @Bean 方法的注册与生命周期。 */
 public final class BeanProcessor implements AnnotationProcessor<Method> {
@@ -70,6 +71,12 @@ public final class BeanProcessor implements AnnotationProcessor<Method> {
         NamedBindingBuilder namedBuilder = apiBinder.bindType(method.getReturnType());
         LinkedBindingBuilder builder = bean.value().isBlank() ? namedBuilder.idWith(method.getName()) : namedBuilder.bothWith(bean.value());
         LifeBindingBuilder binding = builder.toProvider(scopedFactory);
+        DependsOn dependencies = method.getAnnotation(DependsOn.class);
+        if (dependencies != null) {
+            binding.dependsOn(dependencies.value());
+            binding.dependsOn(dependencies.types());
+        }
+
         binding.metaData(CircularDependencyException.DEPENDENCY_DESCRIPTION, factoryMethodDescription(method));
         if (bean.singleton()) {
             binding.asEagerSingleton();

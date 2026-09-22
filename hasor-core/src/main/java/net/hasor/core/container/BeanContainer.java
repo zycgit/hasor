@@ -33,6 +33,7 @@ import net.hasor.core.EventListener;
 import net.hasor.core.binder.BindInfoBuilderFactory;
 import net.hasor.core.event.StandardEventManager;
 import net.hasor.core.info.AopBindInfoAdapter;
+import net.hasor.core.info.BeanDependency;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.info.DelegateBindInfoAdapter;
 import net.hasor.core.spi.*;
@@ -44,7 +45,8 @@ import static net.hasor.core.container.InnerUtils.*;
  * @version : 2015-11-25
  */
 public class BeanContainer extends AbstractContainer implements BindInfoBuilderFactory {
-    private static final ThreadLocal<Deque<CreationNode>> CREATION_PATH = ThreadLocal.withInitial(ArrayDeque::new);
+    private final        Map<String, Supplier<?>>         dependentProviders = new ConcurrentHashMap<>();
+    private static final ThreadLocal<Deque<CreationNode>> CREATION_PATH      = ThreadLocal.withInitial(ArrayDeque::new);
     private final        Settings                         settings;
     private final        SpiCallerContainer               spiCallerContainer;
     private final        BindInfoContainer                bindInfoContainer;
@@ -173,7 +175,20 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         String key = "BIND:" + bindInfo.getBindID();
         String description = dependencyDescription(bindInfo);
         if (adapter.getCustomerProvider() != null) {
-            return guardedProvider(key, description, adapter.getCustomerProvider());
+            List<BeanDependency> dependencies = BeanDependency.collect(bindInfo, bindInfo.getBindType());
+            if (dependencies.isEmpty()) {
+                return guardedProvider(key, description, adapter.getCustomerProvider());
+            }
+
+            Supplier<?> factory = this.dependentProviders.computeIfAbsent(bindInfo.getBindID(), ignored -> {
+                Provider<?> creator = () -> {
+                    this.initializeDependencies(dependencies, appContext);
+                    return adapter.getCustomerProvider().get();
+                };
+                return this.scopeContainer.isSingleton(bindInfo) ? creator.asSingle() : creator;
+            });
+
+            return guardedProvider(key, description, (Supplier<T>) factory);
         }
         //
         // .如果指定了 SourceType 那么使用 SourceType 作为 targetType
@@ -198,6 +213,12 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         //
         // .创建对象
         return guardedProvider(key, description, () -> createObject(targetType, constructorSupplier, parameterSupplier, bindInfo, appContext));
+    }
+
+    private void initializeDependencies(List<BeanDependency> dependencies, AppContext context) {
+        for (BeanDependency dependency : dependencies) {
+            context.getInstance(dependency.resolve(context));
+        }
     }
 
     private String dependencyDescription(BindInfo<?> bindInfo) {
@@ -366,6 +387,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         Supplier<T> targetSupplier = defBinder != null ? (Supplier<T>) defBinder.getCustomerProvider() : null;
         if (targetSupplier == null) {
             targetSupplier = () -> {
+                this.initializeDependencies(BeanDependency.collect(bindInfo, targetType), appContext);
                 //
                 // .Aop 代理
                 Class<T> proxyType = proxyType(targetType, appContext, defBinder);
@@ -659,6 +681,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
 
     @Override
     protected void doClose() {
+        this.dependentProviders.clear();
         this.classEngineMap.clear();
         tryClose(this.bindInfoContainer);
         tryClose(this.scopeContainer);

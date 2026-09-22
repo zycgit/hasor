@@ -140,3 +140,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 ## Annotation-based AOP
 
 `hasor-core` installs `net.hasor.core.aop.AopModule` by default, supporting `net.hasor.cobble.dynamic.Aop` without a Config dependency. Class-level interceptors run before method-level interceptors. Programmatic AOP through `ApiBinder.bindInterceptor` remains a Core feature; see [Class-Level Interceptors](../aop/classlevel.md).
+
+
+Factory methods can declare explicit initialization dependencies with `@DependsOn`; see [initialization dependencies](../life/depends-on.md).
