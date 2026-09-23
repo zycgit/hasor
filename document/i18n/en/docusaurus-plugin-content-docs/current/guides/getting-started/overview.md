@@ -2,20 +2,37 @@
 id: overview
 sidebar_position: 1
 title: 1. Getting Started
-description: Understand the responsibilities of hasor-core, hasor-config, hasor-web, and hasor-boot.
+description: Choose Hasor modules for object management, annotation configuration, Web MVC and application startup, then create, use and close a container.
 ---
 # 1. Getting Started
 
-Hasor is a lightweight framework for Java applications. The current repository is organized by responsibility:
+{/* llms:start */}
 
-- `hasor-core`: IoC, AOP, scopes, events, lifecycle, configuration, and plugin extensions.
-- `hasor-config`: optional declarative configuration with `@Configuration`, `@Bean`, and Web auto-configuration.
-- `hasor-web`: Web MVC, request mapping, request parameters, response rendering, file uploads, and Servlet integration on top of `hasor-core`.
-- `hasor-boot`: a unified application startup entry point and extension lifecycle, with companion modules for Web containers, the Loader, and packaging plugins.
+Hasor is a lightweight framework embedded in Java applications. It manages object creation, dependency injection, configuration, AOP, events and lifecycle. Start with its core container and add annotation configuration, Web MVC and application startup modules as needed.
 
-`hasor-boot` is both the module-group directory name and the published name of the unified startup module. Ordinary Boot applications depend on `net.hasor:hasor-boot`; Web applications need one container module.
+Four concepts connect the API: `Module` declares assembly rules, `ApiBinder` registers objects and extensions, `Hasor` builds the container, and `AppContext` holds the runtime and resolves beans. Application code uses objects created or bound by the container; closing the context ends their managed lifecycle.
 
-Hasor lets applications start with a small core container and add Web or executable packaging capabilities as needed. Application code centers on `Module`, `ApiBinder`, and `AppContext`: declare bindings and extensions in a `Module`, then create the runtime context through `Hasor.create().build(...)`.
+## Choose modules by task
+
+| Requirement | Dependency and entry point | Read next |
+| --- | --- | --- |
+| Object management and injection in ordinary Java | `net.hasor:hasor-core`; `Module`, `Hasor.create().build(...)` | [Quick start](./quickstart.mdx) |
+| Declare beans with configuration classes and factory methods | `net.hasor:hasor-config`; `@Configuration`, `@Bean`, `ApplicationBoot` | [Annotation configuration](../core/conf/java-config.md) |
+| Serve HTTP endpoints in an existing Servlet container | `net.hasor:hasor-web`; `WebModule`, `WebApiBinder`, and a Web runtime | [Web MVC](../webmvc/overview.md) |
+| Start an application or an embedded Web server | `net.hasor:hasor-boot`; add one container module for Web applications | [Boot startup](../deployment/boot-launcher.md) |
+| Build an executable Fat Jar | Configure the Maven or Gradle packaging plugin; the Loader loads the archive | [Project configuration](../deployment/project-config.md) |
+
+These capabilities can be combined. `hasor-config` does not supply a Web container; embedded Web applications choose one of the Tomcat, Jetty or Undertow modules. Database access is provided by the separate [dbVisitor integration](../data-access.md).
+
+## Complete a first call
+
+1. Start with `hasor-core` and declare bindings with `bindType(...)` in `Module.loadModule(ApiBinder)`.
+2. Pass the Module to `Hasor.create().build(module)` to obtain an `AppContext`. Resolve a service with `getInstance(Service.class)` and call it.
+3. Close the context when the application stops. Modules register assembly rules; use business objects after container assembly completes.
+
+The [quick start](./quickstart.mdx) provides dependencies and code. For annotation configuration, set the scan scope with `hasor.loadPackages`. For Web applications, establish a Servlet or Boot runtime before registering controllers.
+
+{/* llms:end */}
 
 ## Runtime requirements
 

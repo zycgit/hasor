@@ -1,7 +1,7 @@
 
 ## 构建项目
 
-在仓库根目录执行 `./build.sh package test`，或在本目录执行 `../gradlew clean build`。应用 Java 编译目标为 17。
+在仓库根目录执行 `./build.sh package test`，或在本目录执行 `../gradlew -p .. clean build`。应用 Java 编译目标为 17。
 
 ## 构建文档网站
 
@@ -31,6 +31,27 @@ npm run build
 ## 英文文档同步
 
 中文源文档位于 `docs/`，英文正文位于 `i18n/en/docusaurus-plugin-content-docs/current/`，保持相同的文件路径、文档 ID 和目录顺序。版本日期、更新条目和代码示例必须同步；准确的已有译文无需重复改写。
+
+## AI 文档索引
+
+`npm run build` 通过 `@signalwire/docusaurus-plugin-llms-txt` 收集现有文档页面，再由 `plugins/llms.js` 整理项目介绍和目录。每种语言只生成一个入口：`build/llms.txt` 和 `build/en/llms.txt`；文档构建与本地开发只需要 Node.js 依赖环境。
+
+索引先说明项目定位、架构、能力选择和第一次调用流程，再列出使用指南、驱动和数据源能力等文档。版本说明和博客位于 `Optional` 部分，链接直接指向相应语言的现有网页。页面的 `rel="describedby"` 指向当前语言的 `llms.txt`。
+
+入口介绍复用中英文概览正文。`docusaurus.config.js` 中的 `overview` 指向 `docs/guides/getting-started/overview.md`；插件读取对应语言文件中 `{/* llms:start */}` 与 `{/* llms:end */}` 之间的普通 Markdown。维护项目定位、架构与起步流程时修改这段正文即可，文档页面和 AI 入口会一起更新。
+
+摘要中的链接使用实际发布地址，可写成相对于概览的路径；插件会移除 `.md`、`.mdx` 扩展名并补齐站点地址与语言前缀。文档版本来自 `plugins/projectVars.js`，使用前应核对项目依赖版本。
+
+可以向编程助手提供以下指引：
+
+> 先读取本项目的 `/llms.txt`，理解核心理念与适用场景，选择对应的使用指南。核对项目依赖版本，再参考文档中的调用方式与示例编写代码并编译验证。
+
+索引随静态站点发布，不手工修改或提交生成文件。`npm run start` 用于开发文档页面；查看完整索引使用构建后的站点：
+
+```bash
+npm run build
+npm run serve -- --host 127.0.0.1 --port 3000
+```
 
 ## 部署到 OSS 并刷新 CDN
 

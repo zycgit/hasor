@@ -1,8 +1,11 @@
 ---
-title: Explicit initialization dependencies
+id: depends-on
+sidebar_position: 6
+title: 2.6.5 Explicit Initialization Dependencies
+description: Declare initialization dependencies for Hasor beans with DependsOn.
 ---
 
-# DependsOn
+# 2.6.5 Explicit Initialization Dependencies
 
 `dependsOn(...)` obtains declared dependencies before creating the current bean. Their synchronous initialization completes first. Resolution happens when the bean is created, so later modules may register dependencies.
 

@@ -11,7 +11,7 @@ const projectVars = require('./plugins/projectVars.js');
 const config = {
     title: 'Hasor',
     tagline: 'Hasor 框架',
-    url: 'http://www.hasor.net',
+    url: 'https://www.hasor.net',
     baseUrl: '/',
     onBrokenLinks: 'throw',
     markdown: {
@@ -115,7 +115,29 @@ const config = {
         },
     },
     plugins: [
-        analyticsPlugin
+        analyticsPlugin,
+        [
+            require.resolve('./plugins/llms.js'),
+            {
+                siteTitle: 'Hasor',
+                overview: 'guides/getting-started/overview.md',
+                descriptions: {
+                    'zh-cn': `Hasor ${projectVars.docsVersion} 文档：依赖注入、配置、Web MVC 和应用启动。开发版本在版本说明中单独标注。`,
+                    en: `Hasor ${projectVars.docsVersion} documentation: dependency injection, configuration, Web MVC, and application startup. Development releases are marked separately.`,
+                },
+                depth: 2,
+                onRouteError: 'throw',
+                content: {
+                    enableMarkdownFiles: false,
+                    enableLlmsFullTxt: false,
+                    includeDocs: true,
+                    includeBlog: false,
+                    includePages: false,
+                    includeGeneratedIndex: false,
+                    excludeRoutes: ['**/tags{,/**}', '**/search', '**/404.html'],
+                },
+            },
+        ],
     ],
     themes: [
         [

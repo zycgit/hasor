@@ -2,20 +2,37 @@
 id: overview
 sidebar_position: 1
 title: 1. 入门
-description: 了解 hasor-core、hasor-config、hasor-web 和 hasor-boot 的职责。
+description: 从 Java 对象管理、注解配置、Web MVC 和应用启动需求选择 Hasor 模块，并完成容器的创建、调用和关闭。
 ---
 # 1. 入门
 
-Hasor 是一个面向 Java 应用的轻量级框架。当前代码仓库按以下职责组织：
+{/* llms:start */}
 
-- `hasor-core`：提供 IoC、AOP、作用域、事件、生命周期、配置和插件扩展能力。
-- `hasor-config`：提供 `@Configuration`、`@Bean` 和 Web 自动配置，是可选的声明式配置入口。
-- `hasor-web`：在 `hasor-core` 之上提供 Web MVC、请求映射、请求参数、响应渲染、文件上传和 Servlet 集成。
-- `hasor-boot`：提供统一应用启动入口和扩展生命周期；Web 容器、Loader、打包插件作为配套模块。
+Hasor 是一个嵌入 Java 应用的轻量级框架，负责对象创建、依赖注入、配置、AOP、事件和生命周期管理。应用可以从核心容器开始，按需加入注解配置、Web MVC 和应用启动模块。
 
-`hasor-boot` 同时是模块组目录名和统一启动模块的发布名。普通 Boot 应用依赖 `net.hasor:hasor-boot`；Web 应用引入一个容器模块即可。
+核心概念有四个：`Module` 声明装配规则，`ApiBinder` 注册对象和扩展，`Hasor` 构建容器，`AppContext` 保存运行时环境并提供 Bean。业务代码使用容器创建或绑定的对象，容器关闭时结束相应的生命周期。
 
-Hasor 的目标是让应用可以从一个小的核心容器开始，需要 Web 或可执行包能力时再按需加入对应模块。应用代码主要围绕 `Module`、`ApiBinder`、`AppContext` 展开：在 `Module` 中声明绑定关系和扩展点，通过 `Hasor.create().build(...)` 创建运行时上下文。
+## 按需求选择模块
+
+| 需求 | 起步依赖与入口 | 继续阅读 |
+| --- | --- | --- |
+| 普通 Java 程序需要对象管理和依赖注入 | `net.hasor:hasor-core`；`Module`、`Hasor.create().build(...)` | [快速上手](./quickstart.mdx) |
+| 使用配置类和工厂方法声明 Bean | `net.hasor:hasor-config`；`@Configuration`、`@Bean`、`ApplicationBoot` | [注解配置](../core/conf/java-config.md) |
+| 在已有 Servlet 容器中提供 HTTP 接口 | `net.hasor:hasor-web`；`WebModule`、`WebApiBinder`，安装 Web 运行环境 | [Web MVC](../webmvc/overview.md) |
+| 统一启动应用，或启动内嵌 Web 服务 | `net.hasor:hasor-boot`；Web 应用额外选择一个容器模块 | [Boot 启动](../deployment/boot-launcher.md) |
+| 构建可执行 Fat Jar | 配置 Maven 或 Gradle 打包插件；Loader 负责加载归档 | [工程配置](../deployment/project-config.md) |
+
+这些能力可以组合。`hasor-config` 不自动提供 Web 容器；内嵌 Web 应用在 Tomcat、Jetty、Undertow 模块中选择一个。数据库访问由独立的 [dbVisitor](../data-access.md) 集成提供。
+
+## 完成第一次调用
+
+1. 从 `hasor-core` 开始，在 `Module.loadModule(ApiBinder)` 中调用 `bindType(...)` 声明绑定。
+2. 将 Module 传给 `Hasor.create().build(module)`，得到 `AppContext`；通过 `getInstance(Service.class)` 获取并调用业务对象。
+3. 应用退出时关闭上下文。配置模块负责注册规则，业务对象的使用放在容器完成装配之后。
+
+[快速上手](./quickstart.mdx) 包含依赖和代码。选择注解配置时，用 `hasor.loadPackages` 明确扫描范围；选择 Web 时，先准备 Servlet 或 Boot 运行环境，再注册 Controller。
+
+{/* llms:end */}
 
 ## 运行环境
 

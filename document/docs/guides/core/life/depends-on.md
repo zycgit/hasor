@@ -1,8 +1,11 @@
 ---
-title: 显式初始化依赖
+id: depends-on
+sidebar_position: 6
+title: 2.6.5 显式初始化依赖
+description: 使用 DependsOn 声明 Hasor Bean 的初始化依赖。
 ---
 
-# DependsOn
+# 2.6.5 显式初始化依赖
 
 `dependsOn(...)` 声明当前 Bean 创建前必须取得的容器依赖。依赖完成同步初始化后，才创建当前对象并执行其注入、初始化。依赖在实际创建时解析，所以可以由后续模块注册，不需要调整扫描顺序。
 

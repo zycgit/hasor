@@ -30,7 +30,12 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.10.2",
     "@docusaurus/types": "^3.10.2",
-    "baseline-browser-mapping": "^2.10.43"
+    "@signalwire/docusaurus-plugin-llms-txt": "1.2.2",
+    "baseline-browser-mapping": "^2.10.43",
+    "remark-gfm": "4.0.1",
+    "remark-stringify": "11.0.0",
+    "unified": "11.0.5",
+    "remark-parse": "11.0.0"
   },
   "browserslist": {
     "production": [

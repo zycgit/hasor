@@ -1,6 +1,8 @@
 # Hasor
 
 * Project Home: [https://www.hasor.net](https://www.hasor.net)
+* AI 文档索引：[项目介绍与使用指南](https://www.hasor.net/llms.txt) · [English](https://www.hasor.net/en/llms.txt)
+* 使用编程助手时，先读取上述编程资料入口并核对项目依赖版本，再查具体方法和示例。
 * [![QQ群:193943114](https://img.shields.io/badge/QQ%E7%BE%A4-193943114-orange)](https://qm.qq.com/cgi-bin/qm/qr?k=0ZqU8WlKVENanH6ajgpbVua7WJUMOKQ9&jump_from=webapi)
   [![Gitter](https://badges.gitter.im/hasor/hasor-dataql.svg)](https://gitter.im/hasor/hasor-dataql?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 * [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
