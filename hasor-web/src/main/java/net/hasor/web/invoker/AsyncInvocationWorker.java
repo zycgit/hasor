@@ -26,16 +26,28 @@ public abstract class AsyncInvocationWorker implements Runnable {
 
     @Override
     public void run() {
+        boolean success = false;
         try {
             this.doWork(this.targetMethod);
+            success = true;
         } catch (Throwable e) {
             this.doWorkWhenError(this.targetMethod, e);
-        } finally {
+        }
+
+        this.finish(success);
+    }
+
+    /** Completes successful work or dispatches a recorded failure to the container. */
+    protected void finish(boolean success) {
+        if (success) {
             this.asyncContext.complete();
+        } else {
+            this.asyncContext.dispatch();
         }
     }
 
     public abstract void doWork(Method targetMethod) throws Throwable;
 
+    /** Handles a work failure before dispatch. This callback must not complete or dispatch the request. */
     public abstract void doWorkWhenError(Method targetMethod, Throwable e);
 }

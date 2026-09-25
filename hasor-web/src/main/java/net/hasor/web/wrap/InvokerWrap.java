@@ -44,6 +44,16 @@ public class InvokerWrap implements Invoker {
     }
 
     @Override
+    public boolean isSkipRender() {
+        return this.dataContext.isSkipRender();
+    }
+
+    @Override
+    public void setSkipRender() {
+        this.dataContext.setSkipRender();
+    }
+
+    @Override
     public <T> Future<T> asyncExecute(EFunction<Invoker, T, Throwable> consumer, Executor executor) {
         return this.dataContext.asyncExecute(consumer, executor);
     }

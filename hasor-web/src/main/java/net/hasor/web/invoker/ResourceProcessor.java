@@ -14,7 +14,7 @@ import net.hasor.web.Invoker;
 import net.hasor.web.binder.ResourceDef;
 import net.hasor.web.render.OwnedResponse;
 
-/** Static-resource dispatch, only when no Action matches, bypassing business filters and rendering. */
+/** Static-resource dispatch when no Action matches, outside MVC interception and rendering. */
 final class ResourceProcessor {
     private final List<ResourceHandler> handlers;
 

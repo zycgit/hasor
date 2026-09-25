@@ -36,6 +36,7 @@ public class InvokerSupplier implements Invoker {
     private final    Set<String>         lockKeys        = new HashSet<>();
     private          HttpServletRequest  httpRequest     = null;
     private          HttpServletResponse httpResponse    = null;
+    private volatile boolean             skipRender;
     private          AppContext          appContext      = null;
     private          String              contentType     = null;    // 内容类型（如果指定了内容类型，那么会设置setContentType）
     private          MimeType            mimeType        = null;
@@ -73,6 +74,16 @@ public class InvokerSupplier implements Invoker {
     @Override
     public HttpServletResponse getHttpResponse() {
         return this.httpResponse;
+    }
+
+    @Override
+    public boolean isSkipRender() {
+        return this.skipRender;
+    }
+
+    @Override
+    public void setSkipRender() {
+        this.skipRender = true;
     }
 
     @Override
@@ -121,7 +132,8 @@ public class InvokerSupplier implements Invoker {
         if (StringUtils.isNotBlank(this.contentType)) {
             return this.contentType;
         } else {
-            String contentType = ownerMapping().getSpecialContentType(getHttpRequest().getMethod());
+            Mapping mapping = this.ownerMapping();
+            String contentType = mapping == null ? null : mapping.getSpecialContentType(this.getHttpRequest().getMethod());
             if (StringUtils.isBlank(contentType)) {
                 String viewName = getRequestPath();
                 int lastIndex = viewName.lastIndexOf(".");

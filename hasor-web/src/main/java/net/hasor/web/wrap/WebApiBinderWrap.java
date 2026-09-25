@@ -14,10 +14,7 @@ import java.util.Objects;
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.web.InvokerFilter;
-import net.hasor.web.Mapping;
-import net.hasor.web.ServletVersion;
-import net.hasor.web.WebApiBinder;
+import net.hasor.web.*;
 
 /**
  * {@link WebApiBinder} 接口包装器
@@ -104,6 +101,18 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     @Override
     public void loadMimeType(Reader reader) throws IOException {
         this.webApiBinder.loadMimeType(reader);
+    }
+
+    @Override
+    public WebApiBinder bindInterceptor(HandlerInterceptor interceptor) {
+        this.webApiBinder.bindInterceptor(interceptor);
+        return this;
+    }
+
+    @Override
+    public <E extends Throwable> WebApiBinder addExceptionHandler(Class<E> e, ExceptionHandler<? super E> handler) {
+        this.webApiBinder.addExceptionHandler(e, handler);
+        return this;
     }
 
     @Override

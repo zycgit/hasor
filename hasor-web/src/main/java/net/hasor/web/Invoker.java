@@ -29,13 +29,13 @@ import net.hasor.core.AppContext;
  */
 public interface Invoker extends MimeType {
     /** 数据池中的key，该数据是表示请求方法的执行返回值。 */
-    String RETURN_DATA_KEY = "resultData";  //
+    String RETURN_DATA_KEY = "resultData";
     /** 数据池中的key，数据池中的自关联，相当于 this的含义。 */
-    String ROOT_DATA_KEY   = "rootData";    //
+    String ROOT_DATA_KEY   = "rootData";
     /** 数据池中的key，request对象。 */
-    String REQUEST_KEY     = "request";     //
+    String REQUEST_KEY     = "request";
     /** 数据池中的key，response对象。 */
-    String RESPONSE_KEY    = "response";    //
+    String RESPONSE_KEY    = "response";
 
     /** 获取当前{@link AppContext} 对象。 */
     AppContext getAppContext();
@@ -45,6 +45,12 @@ public interface Invoker extends MimeType {
 
     /** 获取 {@link HttpServletResponse} 对象。 */
     HttpServletResponse getHttpResponse();
+
+    /** Whether MVC must skip invoking the renderer for this invocation. */
+    boolean isSkipRender();
+
+    /** Skips MVC rendering. Set this before rendering begins; this setting cannot be cleared. */
+    void setSkipRender();
 
     /** 安排一个异步任务来执行接下来的任务。 */
     <T> Future<T> asyncExecute(EFunction<Invoker, T, Throwable> consumer, Executor executor);

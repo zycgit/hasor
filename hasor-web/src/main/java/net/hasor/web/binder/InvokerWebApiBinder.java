@@ -23,10 +23,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.web.InvokerFilter;
-import net.hasor.web.Mapping;
-import net.hasor.web.ServletVersion;
-import net.hasor.web.WebApiBinder;
+import net.hasor.web.*;
 import net.hasor.web.mime.MimeTypeSupplier;
 import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderProcessor;
@@ -38,14 +35,16 @@ import net.hasor.web.startup.RuntimeFilter;
  * @version : 2017-01-10
  */
 public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
-    private final InstanceProvider<String>        requestEncoding  = new InstanceProvider<>("");
-    private final InstanceProvider<String>        responseEncoding = new InstanceProvider<>("");
+    private final InstanceProvider<String>        requestEncoding     = new InstanceProvider<>("");
+    private final InstanceProvider<String>        responseEncoding    = new InstanceProvider<>("");
     private final ServletVersion                  curVersion;
     private final MimeTypeSupplier                mimeType;
-    private final List<Mapping>                   mappings         = new ArrayList<>();
-    private final InstanceProvider<ResourceDef[]> resources        = new InstanceProvider<>(new ResourceDef[0]);
-    private final List<InnerResourceBinder>       resourceBindings = new ArrayList<>();
-    private final RenderProcessor                 renderProcessor  = new RenderProcessor();
+    private final List<Mapping>                   mappings            = new ArrayList<>();
+    private final InstanceProvider<ResourceDef[]> resources           = new InstanceProvider<>(new ResourceDef[0]);
+    private final List<InnerResourceBinder>       resourceBindings    = new ArrayList<>();
+    private final RenderProcessor                 renderProcessor     = new RenderProcessor();
+    private final Map<Class<?>, ExceptionDef<?>>  exceptionBindings   = new LinkedHashMap<>();
+    private final List<HandlerInterceptor>        interceptorBindings = new ArrayList<>();
 
     // ------------------------------------------------------------------------------------------------------
 
@@ -55,6 +54,10 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY).toProvider(this.responseEncoding);
         apiBinder.bindType(ResourceDef[].class).toProvider(this.resources);
         apiBinder.bindType(RenderProcessor.class).toInstance(this.renderProcessor);
+        apiBinder.bindType(ExceptionDef[].class).toProvider(() -> {
+            return this.exceptionBindings.values().toArray(new ExceptionDef<?>[0]);
+        });
+        apiBinder.bindType(HandlerInterceptor[].class).toProvider(() -> this.interceptorBindings.toArray(new HandlerInterceptor[0]));
         this.curVersion = Objects.requireNonNull(curVersion);
         this.mimeType = Objects.requireNonNull(mimeType);
         this.registerConfiguredRenderEngines();
@@ -96,6 +99,22 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         } catch (ReflectiveOperationException | LinkageError | RuntimeException e) {
             throw new IllegalStateException("Cannot create render engine '" + name + "': " + className, e);
         }
+    }
+
+    @Override
+    public WebApiBinder bindInterceptor(HandlerInterceptor interceptor) {
+        this.interceptorBindings.add(Objects.requireNonNull(interceptor));
+        return this;
+    }
+
+    @Override
+    public <E extends Throwable> WebApiBinder addExceptionHandler(Class<E> e, ExceptionHandler<? super E> handler) {
+        ExceptionDef<E> def = new ExceptionDef<>(e, handler);
+        if (this.exceptionBindings.putIfAbsent(e, def) != null) {
+            throw new IllegalStateException("Exception handler already registered: " + e.getName());
+        }
+
+        return this;
     }
 
     private static List<String> checkEmpty(List<String> patternArrays, String npeMessage) {

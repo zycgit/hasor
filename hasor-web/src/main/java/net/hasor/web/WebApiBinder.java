@@ -38,7 +38,8 @@ import net.hasor.web.render.RenderEngine;
  * @version : 2016-12-26
  */
 public interface WebApiBinder extends ApiBinder, MimeType {
-    /** Configure static resources independently of business filters and rendering. */
+
+    /** Configure static resources outside MVC interception and rendering. */
     ResourceBinder addResource(String pathPattern, ResourceLoader... loaders);
 
     /** 获取ServletContext对象。 */
@@ -137,6 +138,15 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         }
         return this;
     }
+
+    /** Registers an MVC interceptor; pre-handlers execute in registration order. */
+    WebApiBinder bindInterceptor(HandlerInterceptor interceptor);
+
+    /**
+     * Registers a handler for an exception type. The closest registered superclass wins.
+     * A non-null result is rendered; null propagates unless the response is explicitly marked handled.
+     */
+    <E extends Throwable> WebApiBinder addExceptionHandler(Class<E> e, ExceptionHandler<? super E> handler);
 
     /** 使用传统表达式，创建一个{@link FilterBindingBuilder}。 */
     default FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns) {

@@ -46,6 +46,7 @@ public final class HttpParameters {
             cookieParamLocal.remove();
             pathParamLocal.remove();
             queryParamLocal.remove();
+            requestParamLocal.remove();
         }
     }
 
