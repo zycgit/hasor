@@ -8,6 +8,7 @@
  */
 package net.hasor.config.scanner;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
@@ -22,8 +23,17 @@ import net.hasor.core.Module;
 
 /** 处理 @Configuration 配置类及其模块装配。 */
 public final class ConfigurationProcessor implements AnnotationProcessor<Class<?>> {
-    private static final String        CONFIGURATION_PROCESSED = "hasor.config.processed";
-    private static final BeanProcessor BEAN_PROCESSOR          = new BeanProcessor();
+    private static final String                      CONFIGURATION_PROCESSED = "hasor.config.processed";
+    private static final BeanProcessor               BEAN_PROCESSOR          = new BeanProcessor();
+    private static final AnnotationProcessor<Method> EXCEPTION_PROCESSOR     = createExceptionProcessor();
+
+    private static AnnotationProcessor<Method> createExceptionProcessor() {
+        try {
+            return new ExceptionProcessor();
+        } catch (NoClassDefFoundError ignored) {
+            return null;
+        }
+    }
 
     @Override
     public List<Class<? extends Annotation>> annotationTypes() {
@@ -68,7 +78,16 @@ public final class ConfigurationProcessor implements AnnotationProcessor<Class<?
             configurationInfo.setMetaData(CONFIGURATION_PROCESSED, true);
         }
 
-        BEAN_PROCESSOR.process(apiBinder, Arrays.asList(configType.getDeclaredMethods()));
+        List<Method> methods = Arrays.asList(configType.getDeclaredMethods());
+        BEAN_PROCESSOR.process(apiBinder, methods);
+        if (EXCEPTION_PROCESSOR != null) {
+            try {
+                EXCEPTION_PROCESSOR.process(apiBinder, methods);
+            } catch (Throwable e) {
+                throw ExceptionUtils.toRuntime(e);
+            }
+        }
+
         if (moduleType) {
             try {
                 apiBinder.installModule((Module) moduleInstance);

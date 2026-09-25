@@ -15,12 +15,14 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.web.InvokerFilter;
+import net.hasor.web.HandlerInterceptor;
 import net.hasor.web.binder.FilterDef;
 import net.hasor.web.binder.RenderDef;
 import net.hasor.web.render.json.JsonRenderEngine;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class WebMvcConfigurerTest {
@@ -29,6 +31,7 @@ public class WebMvcConfigurerTest {
         WebMvcConfiguration.RESOURCE_CONFIGURES.set(0);
         WebMvcConfiguration.CORS_CONFIGURES.set(0);
         WebMvcConfiguration.JSON_CONFIGURES.set(0);
+        WebMvcConfiguration.INTERCEPTOR_CONFIGURES.set(0);
 
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(servletContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
@@ -43,6 +46,11 @@ public class WebMvcConfigurerTest {
         assertEquals(1, WebMvcConfiguration.RESOURCE_CONFIGURES.get());
         assertEquals(1, WebMvcConfiguration.CORS_CONFIGURES.get());
         assertEquals(1, WebMvcConfiguration.JSON_CONFIGURES.get());
+        assertEquals(1, WebMvcConfiguration.INTERCEPTOR_CONFIGURES.get());
+        HandlerInterceptor[] interceptors = context.getInstance(HandlerInterceptor[].class);
+        assertEquals(2, interceptors.length);
+        assertSame(WebMvcConfiguration.FIRST_INTERCEPTOR, interceptors[0]);
+        assertSame(WebMvcConfiguration.SECOND_INTERCEPTOR, interceptors[1]);
 
         List<FilterDef> filters = context.findBindingBean(FilterDef.class);
         assertEquals(1, filters.size());

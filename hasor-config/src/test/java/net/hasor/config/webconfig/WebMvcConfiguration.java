@@ -13,12 +13,18 @@ import net.hasor.config.web.WebMvcConfigurer;
 import net.hasor.config.web.cors.CorsRegistry;
 import net.hasor.config.web.render.JsonRenderConfigurer;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.HandlerInterceptor;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
     public static final AtomicInteger RESOURCE_CONFIGURES = new AtomicInteger();
     public static final AtomicInteger CORS_CONFIGURES     = new AtomicInteger();
     public static final AtomicInteger JSON_CONFIGURES     = new AtomicInteger();
+    public static final AtomicInteger INTERCEPTOR_CONFIGURES = new AtomicInteger();
+    public static final HandlerInterceptor FIRST_INTERCEPTOR = new HandlerInterceptor() {
+    };
+    public static final HandlerInterceptor SECOND_INTERCEPTOR = new HandlerInterceptor() {
+    };
 
     @Override
     public void addResourceHandlers(WebApiBinder binder) {
@@ -26,6 +32,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         binder.addResource("/assets/**", new PrefixResourceLoader(binder.getResourceLoader(), "web-assets"))//
                 .welcomeFile("home.html")//
                 .order(-100);
+    }
+
+    @Override
+    public void addInterceptors(WebApiBinder binder) {
+        INTERCEPTOR_CONFIGURES.incrementAndGet();
+        binder.bindInterceptor(FIRST_INTERCEPTOR);
+        binder.bindInterceptor(SECOND_INTERCEPTOR);
     }
 
     @Override

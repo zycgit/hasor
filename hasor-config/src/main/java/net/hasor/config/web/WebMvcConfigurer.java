@@ -21,6 +21,7 @@ public interface WebMvcConfigurer extends WebModule {
     @Override
     default void loadModule(WebApiBinder webBinder) {
         this.addResourceHandlers(webBinder);
+        this.addInterceptors(webBinder);
 
         CorsRegistry corsRegistry = new CorsRegistry(webBinder);
         this.addCorsMappings(corsRegistry);
@@ -33,6 +34,10 @@ public interface WebMvcConfigurer extends WebModule {
 
     /** Configure static resource mappings. */
     default void addResourceHandlers(WebApiBinder binder) {
+    }
+
+    /** Register MVC interceptors in the desired execution order through the Web API. */
+    default void addInterceptors(WebApiBinder binder) {
     }
 
     /** Configure cross-origin request mappings. */

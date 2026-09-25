@@ -17,15 +17,13 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import net.hasor.cobble.provider.Provider;
 import net.hasor.config.Bean;
-import net.hasor.core.ApiBinder;
+import net.hasor.core.*;
 import net.hasor.core.ApiBinder.LifeBindingBuilder;
 import net.hasor.core.ApiBinder.LinkedBindingBuilder;
 import net.hasor.core.ApiBinder.NamedBindingBuilder;
-import net.hasor.core.AppContext;
-import net.hasor.core.CircularDependencyException;
-import net.hasor.core.DependsOn;
 
 /** 处理配置类中 @Bean 方法的注册与生命周期。 */
 public final class BeanProcessor implements AnnotationProcessor<Method> {
@@ -39,37 +37,43 @@ public final class BeanProcessor implements AnnotationProcessor<Method> {
         for (Method method : methods) {
             Bean bean = method.getAnnotation(Bean.class);
             if (bean != null) {
-                bindBeanMethod(binder, binder.getProvider(method.getDeclaringClass()), method, bean);
+                this.bindBeanMethod(binder, method, bean);
             }
         }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private void bindBeanMethod(ApiBinder apiBinder, Supplier<?> configuration, Method method, Bean bean) {
+    BindInfo<?> bindBeanMethod(ApiBinder apiBinder, Method method, Bean bean) {
+        Supplier<?> configuration = apiBinder.getProvider(method.getDeclaringClass());
+        String beanName = bean == null ? "" : bean.value();
+        String initMethod = bean == null ? "" : bean.initMethod();
+        String destroyMethod = bean == null ? "" : bean.destroyMethod();
+        boolean singleton = bean == null || bean.singleton();
+
         this.checkBeanMethod(method);
         method.trySetAccessible();
         Supplier<?>[] parameters = Arrays.stream(method.getParameterTypes()).map(apiBinder::getProvider).toArray(Supplier[]::new);
         CopyOnWriteArrayList<Object> createdBeans = new CopyOnWriteArrayList<>();
         Provider<Object> factory = () -> {
             Object instance = this.invoke(method, configuration.get(), parameters);
-            this.invokeLifecycle(instance, bean.initMethod());
-            if (!bean.destroyMethod().isBlank()) {
+            this.invokeLifecycle(instance, initMethod);
+            if (!destroyMethod.isBlank()) {
                 createdBeans.add(instance);
             }
             return instance;
         };
 
-        Supplier<?> scopedFactory = bean.singleton() ? factory.asSingle() : factory;
-        if (!bean.destroyMethod().isBlank()) {
+        Supplier<?> scopedFactory = singleton ? factory.asSingle() : factory;
+        if (!destroyMethod.isBlank()) {
             apiBinder.onShutdown((Consumer<AppContext>) appContext -> {
                 for (Object instance : createdBeans) {
-                    this.invokeLifecycle(instance, bean.destroyMethod());
+                    this.invokeLifecycle(instance, destroyMethod);
                 }
             });
         }
 
         NamedBindingBuilder namedBuilder = apiBinder.bindType(method.getReturnType());
-        LinkedBindingBuilder builder = bean.value().isBlank() ? namedBuilder.idWith(method.getName()) : namedBuilder.bothWith(bean.value());
+        LinkedBindingBuilder builder = beanName.isBlank() ? namedBuilder.idWith(method.getName()) : namedBuilder.bothWith(beanName);
         LifeBindingBuilder binding = builder.toProvider(scopedFactory);
         DependsOn dependencies = method.getAnnotation(DependsOn.class);
         if (dependencies != null) {
@@ -77,17 +81,19 @@ public final class BeanProcessor implements AnnotationProcessor<Method> {
             binding.dependsOn(dependencies.types());
         }
 
-        binding.metaData(CircularDependencyException.DEPENDENCY_DESCRIPTION, factoryMethodDescription(method));
-        if (bean.singleton()) {
+        binding.metaData(CircularDependencyException.DEPENDENCY_DESCRIPTION, this.factoryMethodDescription(method));
+        if (singleton) {
             binding.asEagerSingleton();
         } else {
             binding.asEagerPrototype();
         }
+
+        return binding.toInfo();
     }
 
     private String factoryMethodDescription(Method method) {
-        String parameters = Arrays.stream(method.getParameterTypes()).map(Class::getSimpleName).collect(java.util.stream.Collectors.joining(", "));
-        return "@Bean " + method.getDeclaringClass().getName() + "." + method.getName() + "(" + parameters + ")";
+        String parameters = Arrays.stream(method.getParameterTypes()).map(Class::getSimpleName).collect(Collectors.joining(", "));
+        return "Bean factory " + method.getDeclaringClass().getName() + "." + method.getName() + "(" + parameters + ")";
     }
 
     private void invokeLifecycle(Object instance, String methodName) {
@@ -114,9 +120,9 @@ public final class BeanProcessor implements AnnotationProcessor<Method> {
         Object[] args = Arrays.stream(parameters).map(Supplier::get).toArray();
         try {
             Object result = method.invoke(configuration, args);
-            return Objects.requireNonNull(result, "@Bean method returned null: " + method);
+            return Objects.requireNonNull(result, "Bean factory method returned null: " + method);
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Cannot invoke @Bean method: " + method, e);
+            throw new IllegalStateException("Cannot invoke bean factory method: " + method, e);
         } catch (InvocationTargetException e) {
             Throwable target = e.getTargetException();
             if (target instanceof RuntimeException ee) {
@@ -125,20 +131,20 @@ public final class BeanProcessor implements AnnotationProcessor<Method> {
             if (target instanceof Error error) {
                 throw error;
             }
-            throw new IllegalStateException("@Bean method failed: " + method, target);
+            throw new IllegalStateException("Bean factory method failed: " + method, target);
         }
     }
 
     private void checkBeanMethod(Method method) {
         int modifiers = method.getModifiers();
         if (Modifier.isStatic(modifiers)) {
-            throw new IllegalArgumentException("@Bean method must not be static: " + method);
+            throw new IllegalArgumentException("Bean factory method must not be static: " + method);
         }
         if (Modifier.isAbstract(modifiers)) {
-            throw new IllegalArgumentException("@Bean method must not be abstract: " + method);
+            throw new IllegalArgumentException("Bean factory method must not be abstract: " + method);
         }
         if (method.getReturnType() == Void.TYPE) {
-            throw new IllegalArgumentException("@Bean method must return a value: " + method);
+            throw new IllegalArgumentException("Bean factory method must return a value: " + method);
         }
     }
 }
