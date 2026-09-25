@@ -164,8 +164,7 @@ public class Handler extends URLStreamHandler {
                 logger.trace(message + System.lineSeparator() + stack);
             }
         } catch (Exception | LinkageError ex) {
-            // Cobble may still be inside an unopened nested application JAR.
-            // Logging must never prevent the bootstrap loader from opening that JAR.
+            // Logging failures must not prevent the bootstrap loader from opening a JAR.
             if (warning) {
                 System.err.println("WARNING: " + message);
             }

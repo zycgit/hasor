@@ -1,12 +1,50 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'com.gradleup.shadow' version '9.2.2'
 }
 
 ext.pomName = 'Hasor-Boot-Loader'
 description = 'Hasor Boot executable archive loader.'
 
-// Bootstrap must remain runnable before nested application dependencies are available.
+configurations {
+    shaded
+    compileOnly.extendsFrom shaded
+}
+
 dependencies {
-    compileOnly "net.hasor:cobble-all:${property('lib.cobble')}"
+    shaded "net.hasor:cobble-lang:${property('lib.cobble')}"
+
+    // Keep an older application version to verify isolation from the embedded copy.
+    testRuntimeOnly 'net.hasor:cobble-lang:5.0.2'
+}
+
+def loaderJar = tasks.named('shadowJar') {
+    archiveClassifier = ''
+    configurations = [project.configurations.shaded]
+    relocate 'net.hasor.cobble', 'net.hasor.boot.loader.internal.cobble'
+    sourceSetsClassesDirs.setFrom(sourceSets.main.output.classesDirs)
+    minimize()
+    exclude 'module-info.class', 'META-INF/versions/**/module-info.class'
+}
+
+// Both project dependencies and published artifacts use the self-contained loader.
+tasks.named('jar') {
+    enabled = false
+    archiveClassifier = 'plain'
+    dependsOn loaderJar
+}
+configurations.apiElements.outgoing.artifacts.clear()
+configurations.runtimeElements.outgoing.artifacts.clear()
+artifacts {
+    apiElements loaderJar
+    runtimeElements loaderJar
+}
+shadow {
+    addShadowVariantIntoJavaComponent = false
+}
+
+tasks.named('test') {
+    classpath = files(sourceSets.test.output, loaderJar) +
+            (sourceSets.test.runtimeClasspath - sourceSets.main.output)
 }
