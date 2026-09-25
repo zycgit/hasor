@@ -28,8 +28,8 @@ GET, HEAD, and Last-Modified/304 validation are supported. The default cache pol
 ## Interaction with Actions and filters
 
 Actions always take precedence; resources are tried only if no Action matches. A matched resource rule with a missing file returns 404 without trying other rules. The Servlet chain continues only if no rule matches.
-Resources bypass Hasor business filters and return-value rendering. Authentication, auditing, and CORS in business filters therefore do not apply to static resources.
-Serve protected content through Actions. External Servlet Filters are not subject to this limitation.
+Resources bypass filters registered through `WebApiBinder.filter(...)` or `jeeFilter(...)`, as well as MVC `HandlerInterceptor`, MVC exception handling, and return-value rendering.
+Register a Filter with the host Servlet container to apply authentication, auditing, or CORS to resources.
 
 ## Integration
 

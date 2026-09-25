@@ -137,6 +137,10 @@ public class WebConfiguration implements WebMvcConfigurer {
 }
 ```
 
+从 **5.3.0** 开始，可在 `WebMvcConfigurer.addInterceptors(WebApiBinder)` 中调用 `binder.bindInterceptor(...)` 注册 MVC 拦截器，执行顺序由注册顺序决定，详见 [MVC 拦截器](../../webmvc/filter/interceptor.md)。
+
+配置类还可以用 `@Exception` 标注返回 `ExceptionHandler` 的工厂方法，自动注册所处理的异常类型。该工厂复用上述 Bean 创建规则，支持参数注入、`@DependsOn`，以及通过 `@Bean` 配置作用域和生命周期，详见[异常处理](../../webmvc/response/exception.md)。
+
 ## 注解 AOP
 
 `hasor-core` 默认安装 `net.hasor.core.aop.AopModule`，无需 Config 依赖，支持 `net.hasor.cobble.dynamic.Aop` 注解。类级拦截器先于方法级拦截器执行。原有 `ApiBinder.bindInterceptor` 编程式 AOP 仍属于核心能力，详见 [类级拦截器](../aop/classlevel.md)。

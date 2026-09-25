@@ -17,6 +17,11 @@ If you want to use Servlet 3.0 asynchronous requests, first make sure your web c
 
 Then mark the class with `@Async` as shown below. In a Servlet 3.0 container, Hasor automatically starts asynchronous processing through `javax.servlet.AsyncContext.start`.
 
+MVC interceptors, the Action, and exception handlers run on the worker thread. Requests in Servlet asynchronous mode currently skip automatic return-value rendering; the worker must write the response explicitly.
+When configuring `RuntimeFilter` manually, enable asynchronous support and include the `ASYNC` dispatcher mapping. Hasor Boot already configures this for all three embedded containers.
+`afterCompletion` marks the end of the current MVC invocation without waiting for Servlet asynchronous completion. Application-managed asynchronous work should use an `AsyncListener` for completion, errors, and timeouts.
+Propagation of unresolved asynchronous failures is currently incomplete and must not be relied on to produce an HTTP error response automatically. Handle failures and write the response within asynchronous work; an `ExceptionHandler` that writes the response must still return a non-null value to mark the exception as resolved.
+
 ```java title='Example'
 @Async
 @MappingTo("/helloAction.do")
@@ -42,3 +47,13 @@ public class HelloAction {
     }
 }
 ```
+
+## Asynchronous task completion
+
+Starting with **5.3.0**, `AsyncInvocationWorker` separates work, error handling, and completion:
+
+- When `doWork(Method)` returns normally, `finish(true)` calls `AsyncContext.complete()`.
+- If work throws, `doWorkWhenError(Method, Throwable)` runs first. The framework implementation records the failure in the invocation's `Future`; `finish(false)` then calls `AsyncContext.dispatch()`.
+- Custom error callbacks only handle or record failures; they must not call `complete()` or `dispatch()` again. Override `finish(boolean)` to change the completion strategy.
+
+Here, `dispatch()` only redispatches the request. `RuntimeFilter` does not yet fully connect the original asynchronous failure to container error handling, so redispatch does not guarantee an HTTP 500 response or error body. Applications must still handle asynchronous responses explicitly as described above.

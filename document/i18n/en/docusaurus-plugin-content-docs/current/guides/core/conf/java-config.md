@@ -137,6 +137,10 @@ public class WebConfiguration implements WebMvcConfigurer {
 }
 ```
 
+Starting with **5.3.0**, register MVC interceptors through `binder.bindInterceptor(...)` inside `WebMvcConfigurer.addInterceptors(WebApiBinder)`. Registration order determines execution order; see [MVC interceptors](../../webmvc/filter/interceptor.md).
+
+Configuration classes can also annotate factories returning `ExceptionHandler` with `@Exception` to register the handled exception types automatically. These factories reuse the Bean creation rules above, including parameter injection, `@DependsOn`, and scope and lifecycle settings through `@Bean`. See [exception handling](../../webmvc/response/exception.md).
+
 ## Annotation-based AOP
 
 `hasor-core` installs `net.hasor.core.aop.AopModule` by default, supporting `net.hasor.cobble.dynamic.Aop` without a Config dependency. Class-level interceptors run before method-level interceptors. Programmatic AOP through `ApiBinder.bindInterceptor` remains a Core feature; see [Class-Level Interceptors](../aop/classlevel.md).

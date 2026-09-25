@@ -8,8 +8,22 @@ description: Configure built-in response rendering, encoding and redirects.
 # 4.4.1 Default return-value rendering
 
 Rendering is built into Hasor Web, without Config, Boot or a rendering filter.
-Objects and collections default to JSON, strings to text; null and void produce no default body.
+Objects and collections default to JSON, strings to text.
 Strings are not implicit template names. See [rendering engines](./render.md) for explicit views.
+
+## Invocation and rendering order
+
+Starting with **5.3.0**, MVC completes invocation and exception handling first, then checks `isSkipRender()` before rendering the final result.
+Normal return values, results replaced by `postHandle`, and exception handler results use the same rendering path. A `void` method declaration does not discard a result supplied later.
+
+The following assumes a synchronous request, default renderers, and a response that has not been committed or taken over by the application:
+
+![MVC invocation and exception handling produce the final result, then SkipRender determines whether it is rendered. Unresolved and rendering failures propagate outward.](/img/webmvc-result-flow-en.svg)
+
+The diagram omits the short-circuit branch where `preHandle` returns `false`; see [MVC interceptors](../filter/interceptor.md) for callback ordering.
+A normal null or void return has no default body when post-handlers supply no result. `false`, zero, and empty strings are valid results.
+An explicitly selected renderer or view may still process a null result; call `setSkipRender()` to skip output completely.
+See [exception handling](./exception.md) for exception result rules.
 
 ## Default engines
 
@@ -56,10 +70,28 @@ If no global response encoding is set, use the request encoding. If neither is s
 An Action can override encoding before writing through `@Produces` or the response API.
 There is no separate rendering charset setting or default-encoding API.
 
-Rendering runs after the Action, before business filters unwind. Filter short-circuit return values are not rendered automatically.
+Rendering runs after the Action and MVC `postHandle`, before `afterCompletion` and outer filters unwind. Filter short-circuit return values are not rendered automatically.
+Declaring a `ServletResponse` or `HttpServletResponse` parameter does not automatically skip rendering. An explicitly selected renderer may still run for a void or null return; call `setSkipRender()` explicitly when handling the response yourself.
+Setting headers through a response parameter and then returning a non-null value still renders that value.
 Acquiring the response writer or output stream takes ownership; automatic rendering does not append to that response.
-Committed, asynchronous, 204 and 304 responses are also skipped. HEAD retains calculated length but omits the body.
+Committed responses, requests in Servlet asynchronous mode, and 204/304 responses skip automatic rendering. This currently also applies to framework `@Async` requests; see [asynchronous requests](../j2ee/async.md). HEAD computes content length without writing a body.
 Static [resources](../web/resources.md) have a separate handling path.
+
+Controllers and MVC interceptors can explicitly skip rendering through `Invoker`:
+
+```java
+@Override
+public void postHandle(Invoker invoker, Object result) {
+    invoker.getHttpResponse().setStatus(204);
+    invoker.setSkipRender();
+}
+```
+
+`isSkipRender()` starts as `false`. `setSkipRender()` takes no arguments and is idempotent: it enables skipping further rendering and cannot re-enable rendering.
+The state belongs to the current request and is shared by `Invoker` wrappers and framework asynchronous calls. Each subsequent request starts with `false`.
+Layout and render-type defaults are initialized before invocation, and Controllers and interceptors can override them. After MVC invocation and exception handling produce the final result, `InvokerCaller` checks `isSkipRender()` before passing that result to `RenderProcessor` for output.
+Normal return values and exception handler return values use the same rendering path. Setting this state does not stop Controllers, interceptor callbacks, or exception handling; a pre-handler must return `false` to stop MVC execution.
+Set the state before rendering begins. Renderers only produce output and must not use `setSkipRender()` to control an ongoing render; the framework does not interrupt rendering based on changes to that state.
 
 ## Redirects
 

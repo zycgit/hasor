@@ -7,6 +7,9 @@ description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-bo
 
 # 4.6.1 InvokerFilter形式
 
+`InvokerFilter` 按路径匹配，包裹已匹配 Action 的 MVC 调用、异常处理和渲染。静态资源和未匹配 Action 的请求不会进入这条过滤器链。
+需要前置、后置和完成回调时，使用 [HandlerInterceptor](./interceptor.md)。
+
 ```java title='例子'
 public class MyInvokerFilter implements InvokerFilter {
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {

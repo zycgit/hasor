@@ -37,6 +37,8 @@ Hasor Boot executable archives mainly use the following layout. `APP-INF/hasor/`
 
 ```text
 META-INF/MANIFEST.MF
+net/hasor/boot/loader/
+net/hasor/boot/loader/internal/cobble/logging/
 APP-INF/classes/
 APP-INF/lib/
 APP-INF/hasor/
@@ -46,7 +48,11 @@ The runtime classpath is assembled by Boot Loader:
 
 - `APP-INF/classes/` is used as the application classpath.
 - `APP-INF/lib/*.jar` is used as nested dependency jars.
-- Classes, resources, and `META-INF/hasor.schemas` inside nested jars are read through Cobble Loader.
+- Classes, resources, and `META-INF/hasor.schemas` inside nested jars are read through Boot Loader.
+
+Starting with **5.3.0**, `hasor-boot-loader` embeds the required Cobble logging classes at build time, relocates them to `net.hasor.boot.loader.internal.cobble`, and removes unrelated classes.
+Project dependencies and Maven/Gradle publications use this self-contained Loader JAR without an additional classifier. Both packaging plugins use it, so the launcher can log before application dependencies are loaded and requires no additional application Cobble dependency.
+The application's own Cobble stays in `APP-INF/lib/` with its original package names, independently of the loader's embedded version. Hasor Core, Config, and Boot within the application still require compatible Cobble versions.
 
 ## Reading Path
 

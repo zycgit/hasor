@@ -1,0 +1,77 @@
+<!-- Copyright 2015-2026 the original author or authors.
+     Licensed under the Apache License, Version 2.0.
+     See the LICENSE.txt file for the full license.
+     https://www.apache.org/licenses/LICENSE-2.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="820" viewBox="0 0 960 820" role="img" aria-labelledby="title description">
+  <title id="title">MVC 调用、异常处理与渲染流程</title>
+  <desc id="description">调用正常返回或异常处理器返回非 null 值后，得到最终结果 R。随后检查 SkipRender，决定跳过渲染还是执行 Render。未处理的异常和渲染失败进入带有异常的完成回调，并向外抛出；成功或跳过渲染时完成回调的异常参数为 null。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#64748b"/></marker>
+    <marker id="error-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#dc2626"/></marker>
+    <style>
+      text { font-family: system-ui, -apple-system, "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; text-anchor: middle; fill: #172b4d; }
+      .label { font-size: 20px; font-weight: 600; }
+      .detail { font-size: 16px; fill: #475569; }
+      .edge-label { font-size: 16px; fill: #475569; }
+      .flow { fill: none; stroke: #64748b; stroke-width: 2; stroke-linejoin: round; marker-end: url(#arrow); }
+      .error-flow { fill: none; stroke: #dc2626; stroke-width: 2; stroke-linejoin: round; marker-end: url(#error-arrow); }
+      .node { stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect width="960" height="820" rx="18" fill="#ffffff"/>
+
+  <path class="flow" d="M485 140 V250"/>
+  <path class="flow" d="M645 95 H805 V170"/>
+  <path class="flow" d="M680 214 H610 V250"/>
+  <path class="flow" d="M485 326 V350"/>
+  <path class="flow" d="M375 407 H162 V505"/>
+  <path class="flow" d="M485 464 V520"/>
+  <path class="flow" d="M162 585 V734 H330"/>
+  <path class="flow" d="M485 600 V690"/>
+  <path class="error-flow" d="M805 258 V690"/>
+  <path d="M640 560 H805" fill="none" stroke="#dc2626" stroke-width="2"/>
+  <circle cx="805" cy="560" r="4" fill="#dc2626"/>
+
+  <rect class="node" x="325" y="50" width="320" height="90" rx="12" fill="#eff6ff" stroke="#93b4e8"/>
+  <text class="label" x="485" y="87">MVC 调用</text>
+  <text x="485" y="116" font-size="14" fill="#475569">preHandle → Controller → postHandle</text>
+
+  <rect class="node" x="680" y="170" width="250" height="88" rx="12" fill="#fffbeb" stroke="#e4bd66"/>
+  <text class="label" x="805" y="207">ExceptionHandler</text>
+  <text class="detail" x="805" y="236">按异常类型匹配</text>
+
+  <rect class="node" x="330" y="250" width="310" height="76" rx="12" fill="#eff6ff" stroke="#93b4e8"/>
+  <text class="label" x="485" y="281">最终结果 R</text>
+  <text class="detail" x="485" y="309">来自正常调用或异常处理</text>
+
+  <path class="node" d="M485 350 L595 407 L485 464 L375 407 Z" fill="#f5f3ff" stroke="#b5a1de"/>
+  <text class="label" x="485" y="402">SkipRender</text>
+  <text class="detail" x="485" y="425">是否为 true？</text>
+
+  <rect class="node" x="40" y="505" width="245" height="80" rx="12" fill="#f8fafc" stroke="#b3bfce"/>
+  <text class="label" x="162" y="538">跳过渲染</text>
+  <text class="detail" x="162" y="565">保留最终结果 R</text>
+
+  <rect class="node" x="330" y="520" width="310" height="80" rx="12" fill="#ecfdf5" stroke="#86c6ab"/>
+  <text class="label" x="485" y="552">Render(R)</text>
+  <text class="detail" x="485" y="579">使用已有渲染器</text>
+
+  <rect class="node" x="330" y="690" width="310" height="88" rx="12" fill="#ecfdf5" stroke="#86c6ab"/>
+  <text x="485" y="725" font-size="19" font-weight="600">afterCompletion(null)</text>
+  <text class="detail" x="485" y="752">返回最终结果 R</text>
+
+  <rect class="node" x="680" y="690" width="250" height="88" rx="12" fill="#fff1f2" stroke="#e5a1a8"/>
+  <text x="805" y="725" font-size="18" font-weight="600">afterCompletion(error)</text>
+  <text class="detail" x="805" y="752">异常向外抛出</text>
+
+  <text class="edge-label" x="426" y="200">正常返回</text>
+  <text class="edge-label" x="742" y="80">抛出异常</text>
+  <text class="edge-label" x="595" y="200">返回非 null 的 R</text>
+  <text class="edge-label" x="270" y="394">是</text>
+  <text class="edge-label" x="505" y="498">否</text>
+  <text class="edge-label" x="537" y="651">渲染成功</text>
+  <text x="718" y="545" font-size="16" fill="#b91c1c">渲染失败</text>
+  <rect x="690" y="291" width="230" height="65" rx="8" fill="#ffffff"/>
+  <text x="805" y="316" font-size="16" fill="#b91c1c">无匹配 / 返回 null</text>
+  <text x="805" y="341" font-size="16" fill="#b91c1c">或处理器抛出异常</text>
+</svg>

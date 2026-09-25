@@ -37,6 +37,8 @@ Hasor Boot 可执行包主要使用下面的布局，其中 `APP-INF/hasor/` 是
 
 ```text
 META-INF/MANIFEST.MF
+net/hasor/boot/loader/
+net/hasor/boot/loader/internal/cobble/logging/
 APP-INF/classes/
 APP-INF/lib/
 APP-INF/hasor/
@@ -46,7 +48,11 @@ APP-INF/hasor/
 
 - `APP-INF/classes/` 作为应用 classpath。
 - `APP-INF/lib/*.jar` 作为嵌套依赖 jar。
-- 嵌套 jar 中的 class、资源和 `META-INF/hasor.schemas` 会通过 Cobble Loader 读取。
+- 嵌套 jar 中的 class、资源和 `META-INF/hasor.schemas` 会通过 Boot Loader 读取。
+
+从 **5.3.0** 开始，`hasor-boot-loader` 在构建时内置所需的 Cobble 日志类，移入 `net.hasor.boot.loader.internal.cobble`，并裁剪无关类。
+项目依赖和 Maven/Gradle 发布产物统一使用该自包含 Loader JAR，无需额外选择 classifier。两种打包插件均使用它，启动器在应用依赖尚未加载时就能记录日志，应用不需要为启动器额外声明 Cobble 依赖。
+应用自己的 Cobble 位于 `APP-INF/lib/`，保留原包名，与启动器内置版本独立；应用内的 Hasor Core、Config 和 Boot 仍需使用彼此兼容的 Cobble 版本。
 
 应用 classes 目录作为嵌套目录参与加载，即使归档没有显式的目录条目也可以建立目录视图。空资源名查询会返回应用目录和嵌套依赖的根 URL，供 classpath 资源发现使用。应用资源路径仍相对于 classpath 根，例如读取 `hconfig.xml`，无需写入 `APP-INF/classes/` 前缀。
 

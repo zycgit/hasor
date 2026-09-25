@@ -28,8 +28,8 @@ binder.addResource("/app/**", resourceLoader)
 ## 与 Action、过滤器的关系
 
 Action 始终优先，未匹配 Action 才尝试资源。资源规则命中但文件缺失返回 404，不继续其他规则；没有规则匹配才继续 Servlet 链。
-资源不进入 Hasor 业务过滤器和返回值渲染，因此业务过滤器中的鉴权、审计和 CORS 不作用于静态资源。
-受保护内容通过 Action 提供；外部 Servlet Filter 不受此限制。
+资源不进入通过 `WebApiBinder.filter(...)` 或 `jeeFilter(...)` 注册的过滤器链，也不进入 MVC `HandlerInterceptor`、MVC 异常处理和返回值渲染。
+需要对资源进行鉴权、审计或 CORS 处理时，应在宿主 Servlet 容器中注册 Filter。
 
 ## 配套装配
 

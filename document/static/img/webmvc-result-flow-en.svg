@@ -1,0 +1,77 @@
+<!-- Copyright 2015-2026 the original author or authors.
+     Licensed under the Apache License, Version 2.0.
+     See the LICENSE.txt file for the full license.
+     https://www.apache.org/licenses/LICENSE-2.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="820" viewBox="0 0 960 820" role="img" aria-labelledby="title description">
+  <title id="title">MVC invocation, exception handling, and rendering</title>
+  <desc id="description">Normal invocation and non-null exception handler values produce a final result R. SkipRender then determines whether to skip output or call Render. Unresolved and rendering failures reach completion callbacks and propagate outward. Successful or skipped rendering completes with a null failure.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#64748b"/></marker>
+    <marker id="error-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 Z" fill="#dc2626"/></marker>
+    <style>
+      text { font-family: system-ui, -apple-system, "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; text-anchor: middle; fill: #172b4d; }
+      .label { font-size: 20px; font-weight: 600; }
+      .detail { font-size: 16px; fill: #475569; }
+      .edge-label { font-size: 16px; fill: #475569; }
+      .flow { fill: none; stroke: #64748b; stroke-width: 2; stroke-linejoin: round; marker-end: url(#arrow); }
+      .error-flow { fill: none; stroke: #dc2626; stroke-width: 2; stroke-linejoin: round; marker-end: url(#error-arrow); }
+      .node { stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect width="960" height="820" rx="18" fill="#ffffff"/>
+
+  <path class="flow" d="M485 140 V250"/>
+  <path class="flow" d="M645 95 H805 V170"/>
+  <path class="flow" d="M680 214 H610 V250"/>
+  <path class="flow" d="M485 326 V350"/>
+  <path class="flow" d="M375 407 H162 V505"/>
+  <path class="flow" d="M485 464 V520"/>
+  <path class="flow" d="M162 585 V734 H330"/>
+  <path class="flow" d="M485 600 V690"/>
+  <path class="error-flow" d="M805 258 V690"/>
+  <path d="M640 560 H805" fill="none" stroke="#dc2626" stroke-width="2"/>
+  <circle cx="805" cy="560" r="4" fill="#dc2626"/>
+
+  <rect class="node" x="325" y="50" width="320" height="90" rx="12" fill="#eff6ff" stroke="#93b4e8"/>
+  <text class="label" x="485" y="87">MVC invocation</text>
+  <text x="485" y="116" font-size="14" fill="#475569">preHandle → Controller → postHandle</text>
+
+  <rect class="node" x="680" y="170" width="250" height="88" rx="12" fill="#fffbeb" stroke="#e4bd66"/>
+  <text class="label" x="805" y="207">ExceptionHandler</text>
+  <text class="detail" x="805" y="236">Match the exception type</text>
+
+  <rect class="node" x="330" y="250" width="310" height="76" rx="12" fill="#eff6ff" stroke="#93b4e8"/>
+  <text class="label" x="485" y="281">Final result R</text>
+  <text class="detail" x="485" y="309">From invocation or its handler</text>
+
+  <path class="node" d="M485 350 L595 407 L485 464 L375 407 Z" fill="#f5f3ff" stroke="#b5a1de"/>
+  <text class="label" x="485" y="402">SkipRender</text>
+  <text class="detail" x="485" y="425">true?</text>
+
+  <rect class="node" x="40" y="505" width="245" height="80" rx="12" fill="#f8fafc" stroke="#b3bfce"/>
+  <text class="label" x="162" y="538">Skip rendering</text>
+  <text class="detail" x="162" y="565">Keep the final result R</text>
+
+  <rect class="node" x="330" y="520" width="310" height="80" rx="12" fill="#ecfdf5" stroke="#86c6ab"/>
+  <text class="label" x="485" y="552">Render(R)</text>
+  <text class="detail" x="485" y="579">Use the existing renderer</text>
+
+  <rect class="node" x="330" y="690" width="310" height="88" rx="12" fill="#ecfdf5" stroke="#86c6ab"/>
+  <text x="485" y="725" font-size="19" font-weight="600">afterCompletion(null)</text>
+  <text class="detail" x="485" y="752">Return the final result R</text>
+
+  <rect class="node" x="680" y="690" width="250" height="88" rx="12" fill="#fff1f2" stroke="#e5a1a8"/>
+  <text x="805" y="725" font-size="18" font-weight="600">afterCompletion(error)</text>
+  <text class="detail" x="805" y="752">Propagate the failure</text>
+
+  <text class="edge-label" x="423" y="200">Normal return</text>
+  <text class="edge-label" x="742" y="80">Throws</text>
+  <text class="edge-label" x="595" y="200">Non-null R</text>
+  <text class="edge-label" x="270" y="394">Yes</text>
+  <text class="edge-label" x="505" y="498">No</text>
+  <text class="edge-label" x="544" y="651">Rendered</text>
+  <text x="718" y="545" font-size="16" fill="#b91c1c">Render fails</text>
+  <rect x="680" y="291" width="250" height="65" rx="8" fill="#ffffff"/>
+  <text x="805" y="316" font-size="16" fill="#b91c1c">Unmatched / null result</text>
+  <text x="805" y="341" font-size="16" fill="#b91c1c">or the handler throws</text>
+</svg>

@@ -18,6 +18,11 @@ Hasor 会自动识别容器的 Servlet 版本。因此 Hasor 在自动识别的�
 
 然后像如下这样标记一个 `@Async` 就可以了，Hasor 会自动在 Servlet 3.0 容器下通过 `javax.servlet.AsyncContext.start` 方法启动异步处理。
 
+MVC 拦截器、Action 和异常处理器在工作线程执行。当前处于 Servlet 异步状态的请求不会自动渲染返回值，响应需要由工作线程显式写出。
+手动配置 `RuntimeFilter` 时，需要启用异步支持并映射 `ASYNC` dispatcher；Hasor Boot 的三个内嵌容器已完成这项配置。
+`afterCompletion` 表示当前 MVC 调用结束，不会等待 Servlet 异步请求结束；应用自己的异步任务应使用 `AsyncListener` 处理完成、错误和超时。
+当前未处理异常的异步传播尚未完成，不能依赖它自动产生 HTTP 错误响应。异步任务应自行处理异常并写出响应；通过 `ExceptionHandler` 写出响应时仍需返回非 `null` 值表示异常已处理。
+
 ```java title='例子'
 @Async
 @MappingTo("/helloAction.do")
@@ -43,3 +48,13 @@ public class HelloAction {
     }
 }
 ```
+
+## 异步任务的结束流程
+
+从 **5.3.0** 开始，`AsyncInvocationWorker` 将工作执行、错误处理与结束分开：
+
+- `doWork(Method)` 正常结束后，`finish(true)` 调用 `AsyncContext.complete()`。
+- 工作抛出异常时，先调用 `doWorkWhenError(Method, Throwable)`；框架的实现将异常记录到调用的 `Future`，随后 `finish(false)` 调用 `AsyncContext.dispatch()`。
+- 自定义错误回调只负责处理或记录异常，不应再次调用 `complete()` 或 `dispatch()`；需要改变结束策略时重写 `finish(boolean)`。
+
+这里的 `dispatch()` 只是重新分发请求。当前 `RuntimeFilter` 尚未将原异步失败完整衔接到容器错误处理，不能据此保证返回 HTTP 500 或错误正文；应用仍需按上文的限制显式处理异步响应。
