@@ -14,12 +14,15 @@ import java.util.function.Supplier;
 import javax.servlet.AsyncContext;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.concurrent.future.BasicFuture;
 import net.hasor.cobble.logging.Logger;
 import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.web.*;
+import net.hasor.web.binder.ExceptionDef;
 import net.hasor.web.binder.FilterDef;
+import net.hasor.web.render.OwnedResponse;
 import net.hasor.web.render.RenderProcessor;
 
 /**
@@ -28,14 +31,18 @@ import net.hasor.web.render.RenderProcessor;
  * @version : 2014年8月27日
  */
 class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller {
-    protected static Logger            logger          = LoggerFactory.getLogger(InvokerCaller.class);
-    private          FilterDef[]       filterArrays    = null;
-    private          Supplier<Invoker> invokerSupplier = null;
+    protected static Logger               logger          = LoggerFactory.getLogger(InvokerCaller.class);
+    private          FilterDef[]          filterArrays    = null;
+    private          Supplier<Invoker>    invokerSupplier = null;
+    private final    HandlerInterceptor[] interceptors;
+    private final    ExceptionDef<?>[]    exceptionHandlers;
+    private final    RenderProcessor      renderProcessor;
+    private final    ServletVersion       servletVersion;
 
-    private final RenderProcessor renderProcessor;
-    private final ServletVersion  servletVersion;
-
-    public InvokerCaller(Supplier<Invoker> invokerSupplier, FilterDef[] filterArrays, RenderProcessor renderProcessor, ServletVersion servletVersion) {
+    public InvokerCaller(Supplier<Invoker> invokerSupplier, FilterDef[] filterArrays, HandlerInterceptor[] interceptors, //
+            ExceptionDef<?>[] exceptionHandlers, RenderProcessor renderProcessor, ServletVersion servletVersion) {
+        this.interceptors = interceptors;
+        this.exceptionHandlers = exceptionHandlers;
         this.renderProcessor = renderProcessor;
         this.servletVersion = servletVersion;
         this.invokerSupplier = invokerSupplier;
@@ -81,17 +88,16 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller 
 
     /** 执行调用 */
     private Object invoke(final Method targetMethod, final Invoker invoker) throws Throwable {
-        // .初始化 Controller
-        final Object targetObject = invoker.getAppContext().getInstance(invoker.ownerMapping().getTargetType());
-        if (targetObject instanceof Controller controller) {
-            controller.initController(invoker);
-        }
-        if (targetObject == null) {
-            throw new NullPointerException("mappingToDefine newInstance is null.");
-        }
-
         // .准备过滤器链
         final InvokerChain ic = i -> {
+            Object targetObject = i.getAppContext().getInstance(i.ownerMapping().getTargetType());
+            if (targetObject == null) {
+                throw new NullPointerException("mappingToDefine newInstance is null.");
+            }
+            if (targetObject instanceof Controller controller) {
+                controller.initController(i);
+            }
+
             // 设置contentType
             String contentType = i.contentType();
             if (StringUtils.isNotBlank(contentType)) {
@@ -103,16 +109,94 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExecuteCaller 
             // 执行调用
             try {
                 final Object[] resolveParamsArrays = this.resolveParams(i, targetMethod);
-                Object result = targetMethod.invoke(targetObject, resolveParamsArrays);
-                i.put(Invoker.RETURN_DATA_KEY, result);
-                return result;
+                return targetMethod.invoke(targetObject, resolveParamsArrays);
             } catch (InvocationTargetException e) {
                 throw e.getTargetException();
             }
         };
 
-        // .业务过滤链，末端执行 Action 和返回值渲染
-        final InvokerChain last = i -> this.renderProcessor.invoke(i, ic);
+        // Resolve the invocation result before deciding whether to render it.
+        final InvokerChain last = i -> {
+            int entered = 0;
+            Throwable invocationFailure = null;
+            Throwable completionFailure = null;
+
+            try {
+                Object result;
+                try {
+                    this.renderProcessor.initInvoker(i);
+
+                    // MVC: preHandle
+                    for (HandlerInterceptor interceptor : this.interceptors) {
+                        if (!interceptor.preHandle(i)) {
+                            return null;
+                        }
+                        entered++;
+                    }
+
+                    // MVC: call
+                    result = ic.doNext(i);
+                    i.put(Invoker.RETURN_DATA_KEY, result);
+
+                    // MVC: postHandle
+                    for (int index = entered - 1; index >= 0; index--) {
+                        this.interceptors[index].postHandle(i, result);
+                        result = i.get(Invoker.RETURN_DATA_KEY);
+                    }
+                } catch (Throwable e) {
+                    // MVC: error
+                    invocationFailure = e;
+                    result = this.handleException(i, e);
+                }
+
+                // final data
+                i.put(Invoker.RETURN_DATA_KEY, result);
+                if (!i.isSkipRender()) {
+                    this.renderProcessor.invoke(i, result);
+                }
+                return result;
+            } catch (Throwable e) {
+                if (invocationFailure != null && invocationFailure != e) {
+                    e.addSuppressed(invocationFailure);
+                }
+                completionFailure = e;
+                throw e;
+            } finally {
+                for (int index = entered - 1; index >= 0; index--) {
+                    try {
+                        this.interceptors[index].afterCompletion(i, completionFailure);
+                    } catch (Throwable e) {
+                        logger.error("MVC interceptor completion failed", e);
+                    }
+                }
+            }
+        };
+
         return new InvokerChainInvocation(this.filterArrays, last).doNext(invoker);
+    }
+
+    private Object handleException(Invoker invoker, Throwable e) throws Throwable {
+        HttpServletResponse response = invoker.getHttpResponse();
+        if (response.isCommitted() || response instanceof OwnedResponse owned && owned.isOwned()) {
+            throw e;
+        }
+
+        ExceptionDef<?> match = null;
+        for (ExceptionDef<?> definition : this.exceptionHandlers) {
+            Class<?> type = definition.getExceptionType();
+            if (type.isInstance(e) && (match == null || match.getExceptionType().isAssignableFrom(type))) {
+                match = definition;
+            }
+        }
+
+        if (match == null) {
+            throw e;
+        }
+
+        Object result = match.handleException(invoker, e);
+        if (result == null) {
+            throw e;
+        }
+        return result;
     }
 }

@@ -14,6 +14,8 @@ import net.hasor.cobble.loader.providers.PathResourceLoader;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.AbstractTest;
+import net.hasor.web.HandlerInterceptor;
+import net.hasor.web.Invoker;
 import net.hasor.web.WebModule;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.binder.FilterDef;
@@ -94,11 +96,18 @@ public class ResourceDispatchTest extends AbstractTest {
     }
 
     @Test
-    public void resourcesBypassBusinessFilters() throws Throwable {
+    public void resourcesUseHttpFiltersButBypassMvcInterceptors() throws Throwable {
         Path root = directory("filtered", "asset");
         List<String> events = new ArrayList<>();
         try (AppContext app = Hasor.create(servlet30("/")).build((WebModule) binder -> {
             binder.addResource("/assets/**", new PathResourceLoader(root.toFile()));
+            binder.bindInterceptor(new HandlerInterceptor() {
+                @Override
+                public boolean preHandle(Invoker invoker) {
+                    fail("Static resources must bypass MVC interceptors");
+                    return false;
+                }
+            });
             binder.filter("/*").through((invoker, chain) -> {
                 events.add("before");
                 if (invoker.getRequestPath().endsWith("index.html")) {
@@ -112,9 +121,10 @@ public class ResourceDispatchTest extends AbstractTest {
         })) {
             assertEquals(1, app.findBindingBean(FilterDef.class).size());
             assertEquals("asset", mockAndCallHttp("GET", "http://localhost/assets/app.txt", app));
-            assertTrue(events.isEmpty());
-            assertEquals("welcome", mockAndCallHttp("GET", "http://localhost/assets/index.html", app));
-            assertTrue(events.isEmpty());
+            assertEquals(List.of("before", "after"), events);
+            events.clear();
+            assertEquals("", mockAndCallHttp("GET", "http://localhost/assets/index.html", app));
+            assertEquals(List.of("before"), events);
         }
     }
 
@@ -122,13 +132,16 @@ public class ResourceDispatchTest extends AbstractTest {
     public void matchedMissingResourceIs404AndOnlyUnmatchedPathsContinue() throws Throwable {
         Path root = directory("missing", "asset");
         Path lower = directory("lower", "other");
+        List<String> filteredPaths = new ArrayList<>();
         Files.writeString(lower.resolve("missing.txt"), "must not be served");
         try (AppContext app = Hasor.create(servlet30("/")).build((WebModule) binder -> {
             binder.addResource("/assets/**", new PathResourceLoader(root.toFile()));
             binder.addResource("/assets/**", new PathResourceLoader(lower.toFile())).order(1);
             binder.filter("/*").through((invoker, chain) -> {
-                fail("No Action: no business filters");
-                return null;
+                assertNull(invoker.ownerMapping());
+                invoker.contentType();
+                filteredPaths.add(invoker.getRequestPath());
+                return chain.doNext(invoker);
             });
         })) {
             net.hasor.web.invoker.InvokerContext context = new net.hasor.web.invoker.InvokerContext();
@@ -142,6 +155,7 @@ public class ResourceDispatchTest extends AbstractTest {
             javax.servlet.http.HttpServletResponse unmatched = org.mockito.Mockito.mock(javax.servlet.http.HttpServletResponse.class);
             context.genCaller(mockRequest("GET", new java.net.URL("http://localhost/other")), unmatched).invoke(chain).get();
             assertEquals(1, continuations.get());
+            assertEquals(List.of("/assets/missing.txt", "/other"), filteredPaths);
         }
     }
 

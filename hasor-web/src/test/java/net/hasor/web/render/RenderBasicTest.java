@@ -9,6 +9,8 @@
 package net.hasor.web.render;
 import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
+import net.hasor.cobble.setting.Settings;
+import net.hasor.core.AppContext;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.Invoker;
 import org.junit.Test;
@@ -21,6 +23,10 @@ public class RenderBasicTest extends AbstractTest {
         HttpServletRequest request = mockRequest("get", new URL("http://www.hasor.net/abc.do?a=1&b=2"));
         Invoker invoker = PowerMockito.mock(Invoker.class);
         PowerMockito.when(invoker.getHttpRequest()).thenReturn(request);
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        Settings settings = PowerMockito.mock(Settings.class);
+        PowerMockito.when(invoker.getAppContext()).thenReturn(appContext);
+        PowerMockito.when(appContext.getSettings()).thenReturn(settings);
         RenderInvokerSupplier supplier = new RenderInvokerSupplier(invoker);
         //
         assert supplier.get("req_a").equals("1");

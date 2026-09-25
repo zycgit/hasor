@@ -32,6 +32,8 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 public class InvokerBasicTest extends AbstractTest {
     @Test
@@ -113,6 +115,8 @@ public class InvokerBasicTest extends AbstractTest {
         //
         worker.run();
         assertTrue(atomicBoolean.get());
+        verify(asyncContext).complete();
+        verify(asyncContext, never()).dispatch();
     }
 
     @Test
@@ -128,12 +132,17 @@ public class InvokerBasicTest extends AbstractTest {
             }
 
             @Override
-            public void doWorkWhenError(Method targetMethod, Throwable e) {
+            public void doWorkWhenError(Method method, Throwable e) {
+                assertSame(targetMethod, method);
                 assertSame(error, e);
+                verify(asyncContext, never()).complete();
+                verify(asyncContext, never()).dispatch();
             }
         };
         //
         worker.run();
+        verify(asyncContext).dispatch();
+        verify(asyncContext, never()).complete();
     }
 
     @Test

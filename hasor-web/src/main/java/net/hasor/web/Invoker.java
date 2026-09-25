@@ -46,7 +46,7 @@ public interface Invoker extends MimeType {
     /** 获取 {@link HttpServletResponse} 对象。 */
     HttpServletResponse getHttpResponse();
 
-    /** Whether MVC must skip invoking the renderer for this invocation. */
+    /** Whether MVC must skip rendering the response for this invocation. */
     boolean isSkipRender();
 
     /** Skips MVC rendering. Set this before rendering begins; this setting cannot be cleared. */

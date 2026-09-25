@@ -17,14 +17,8 @@ import net.hasor.cobble.logging.Logger;
 import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.web.Invoker;
-import net.hasor.web.InvokerFilter;
-import net.hasor.web.Mapping;
-import net.hasor.web.ServletVersion;
-import net.hasor.web.binder.FilterDef;
-import net.hasor.web.binder.MappingDef;
-import net.hasor.web.binder.OneConfig;
-import net.hasor.web.binder.ResourceDef;
+import net.hasor.web.*;
+import net.hasor.web.binder.*;
 import net.hasor.web.render.OwnedResponse;
 import net.hasor.web.render.RenderProcessor;
 import net.hasor.web.spi.MappingDiscoverer;
@@ -35,17 +29,21 @@ import net.hasor.web.spi.MappingDiscoverer;
  * @version : 2017-01-10
  */
 public class InvokerContext {
-    protected static Logger             logger         = LoggerFactory.getLogger(InvokerContext.class);
-    private          AppContext         appContext     = null;
-    private          Mapping[]          invokeArray    = new Mapping[0];
-    private          FilterDef[]        filters        = new FilterDef[0];
-    private          RootInvokerCreater invokerCreator = null;
-    private          RenderProcessor    renderProcessor;
-    private          ResourceProcessor  resourceProcessor;
-    private          ServletVersion     servletVersion;
+    protected static Logger               logger            = LoggerFactory.getLogger(InvokerContext.class);
+    private          AppContext           appContext        = null;
+    private          Mapping[]            invokeArray       = new Mapping[0];
+    private          FilterDef[]          filters           = new FilterDef[0];
+    private          ExceptionDef<?>[]    exceptionHandlers = new ExceptionDef<?>[0];
+    private          HandlerInterceptor[] interceptors      = new HandlerInterceptor[0];
+    private          RootInvokerCreater   invokerCreator    = null;
+    private          RenderProcessor      renderProcessor;
+    private          ResourceProcessor    resourceProcessor;
+    private          ServletVersion       servletVersion;
 
     public void initContext(final AppContext appContext, final OneConfig configMap) throws Throwable {
         this.appContext = Objects.requireNonNull(appContext);
+        this.exceptionHandlers = appContext.getInstance(ExceptionDef[].class);
+        this.interceptors = appContext.getInstance(HandlerInterceptor[].class);
         this.renderProcessor = appContext.getInstance(RenderProcessor.class);
         this.resourceProcessor = new ResourceProcessor(appContext.getInstance(ResourceDef[].class));
         this.servletVersion = appContext.getInstance(ServletVersion.class);
@@ -119,7 +117,9 @@ public class InvokerContext {
                 return future;
             };
         } else {
-            ec = new InvokerCaller(() -> invoker, this.filters, this.renderProcessor, this.servletVersion);
+            ec = new InvokerCaller(() -> {
+                return invoker;
+            }, this.filters, this.interceptors, this.exceptionHandlers, this.renderProcessor, this.servletVersion);
         }
 
         ExecuteCaller finalEC = ec;

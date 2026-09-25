@@ -127,8 +127,8 @@ public class FilterTest extends AbstractTest {
         ExecuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
         //
-        assert !j2eeFilter1.isDoCall();
-        assert !j2eeFilter2.isDoCall();
-        assert !j2eeFilter3.isDoCall();
+        assert j2eeFilter1.isDoCall();
+        assert j2eeFilter2.isDoCall();
+        assert j2eeFilter3.isDoCall();
     }
 }

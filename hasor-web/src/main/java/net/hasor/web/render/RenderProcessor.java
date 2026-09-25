@@ -24,7 +24,6 @@ import net.hasor.cobble.logging.LoggerFactory;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.core.AppContext;
 import net.hasor.web.Invoker;
-import net.hasor.web.InvokerChain;
 import net.hasor.web.annotation.Produces;
 import net.hasor.web.binder.RenderDef;
 import net.hasor.web.render.none.NoopRenderEngine;
@@ -85,40 +84,41 @@ public final class RenderProcessor {
                 this.useLayout, this.layoutPath, this.templatePath, this.placeholder, this.defaultLayout));
     }
 
-    public Object invoke(Invoker invoker, InvokerChain chain) throws Throwable {
+    /** Renders the final result produced by MVC invocation and exception handling. */
+    public Object invoke(Invoker invoker, Object returnData) throws Throwable {
         if (invoker instanceof RenderInvoker renderInvoker) {
-            return doRenderInvoker(renderInvoker, chain);
+            return this.doRenderInvoker(renderInvoker, returnData);
         } else {
-            return chain.doNext(invoker);
+            return returnData;
         }
     }
 
-    private static RenderType findRenderType(Annotation[] annotations) {
-        return Arrays.stream(annotations).map(annotation -> {
-            if (annotation instanceof RenderType renderType) {
+    private static RenderType findRenderType(Annotation[] annos) {
+        return Arrays.stream(annos).map(a -> {
+            if (a instanceof RenderType renderType) {
                 return renderType;
             }
-            return annotation.annotationType().getAnnotation(RenderType.class);
+            return a.annotationType().getAnnotation(RenderType.class);
         }).filter((Predicate<Annotation>) Objects::nonNull).findFirst().orElse(null);
     }
 
-    public Object doRenderInvoker(RenderInvoker invoker, InvokerChain chain) throws Throwable {
+    /** Initializes request defaults before the controller can override them. */
+    public void initInvoker(Invoker dataContext) {
+        if (!(dataContext instanceof RenderInvoker invoker)) {
+            return;
+        }
+
         // Layout 预设
         if (this.useLayout) {
             invoker.layoutEnable();
         } else {
             invoker.layoutDisable();
         }
-        //
+
         // 处理 RenderType
-        RenderEngine specialEngine = null;
-        Method method = null;
         if (invoker.ownerMapping() != null) {
-            method = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
-            RenderType renderType = findRenderType(method.getAnnotations());
-            if (renderType == null) {
-                renderType = findRenderType(method.getDeclaringClass().getAnnotations());
-            }
+            Method method = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
+            RenderType renderType = findRenderType(method);
             if (renderType != null && StringUtils.isNotBlank(renderType.value())) {
                 invoker.renderType(renderType.value());
                 String mimeType = invoker.getMimeType(renderType.value());
@@ -126,26 +126,35 @@ public final class RenderProcessor {
                     invoker.contentType(mimeType);
                 }
             }
-            if (renderType != null && renderType.engineType() != RenderType.DEFAULT.class) {
-                specialEngine = invoker.getAppContext().getInstance(renderType.engineType());
-            }
         }
+    }
 
-        // .执行 Action，正常返回后渲染结果
-        Object returnData = chain.doNext(invoker);
+    private static RenderType findRenderType(Method method) {
+        RenderType renderType = findRenderType(method.getAnnotations());
+        return renderType != null ? renderType : findRenderType(method.getDeclaringClass().getAnnotations());
+    }
+
+    public Object doRenderInvoker(RenderInvoker invoker, Object returnData) throws Throwable {
         if (invoker.getHttpResponse().isCommitted()) {
             return returnData;
         }
 
+        RenderEngine specialEngine = null;
+        Method method = invoker.ownerMapping() == null ? null : invoker.ownerMapping().findMethod(invoker.getHttpRequest());
         if (method != null) {
             HttpServletResponse response = invoker.getHttpResponse();
             if ((response instanceof OwnedResponse owned && owned.isOwned()) || response.getStatus() == 204 || response.getStatus() == 304 || invoker.getHttpRequest().isAsyncStarted()) {
                 return returnData;
             }
+            RenderType renderType = findRenderType(method);
+            if (renderType != null && renderType.engineType() != RenderType.DEFAULT.class) {
+                specialEngine = invoker.getAppContext().getInstance(renderType.engineType());
+            }
+
             // A view name keeps the existing template pipeline. Defaults apply only to mapped return values.
             if (StringUtils.isEmpty(invoker.renderTo())) {
                 if (specialEngine == null && StringUtils.isEmpty(invoker.renderType())) {
-                    if (method.getReturnType() == void.class || returnData == null) {
+                    if (returnData == null) {
                         return returnData;
                     }
                     invoker.renderType(returnData instanceof CharSequence ? this.defaultStringEngine : this.defaultObjectEngine);
@@ -167,6 +176,7 @@ public final class RenderProcessor {
                     String type = "TEXT".equals(invoker.renderType()) ? "text/plain" : invoker.renderType() == null ? null : invoker.getMimeType(invoker.renderType().toLowerCase(Locale.ROOT));
                     response.setContentType(StringUtils.isBlank(type) ? "application/octet-stream" : type);
                 }
+
                 invoker.layoutDisable();
                 StringWriter writer = new StringWriter();
                 engine.process(invoker, writer);
@@ -179,6 +189,7 @@ public final class RenderProcessor {
         if (this.process(invoker, specialEngine)) {
             return returnData;
         }
+
         // .如果处理渲染失败，但是isCommitted = false，那么做服务端转发 renderTo
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
@@ -188,6 +199,7 @@ public final class RenderProcessor {
                 requestDispatcher.forward(httpRequest, httpResponse);
             }
         }
+
         return returnData;
     }
 
@@ -199,6 +211,7 @@ public final class RenderProcessor {
                 return false;
             }
         }
+
         if (engine instanceof NoopRenderEngine) {
             return true;
         }

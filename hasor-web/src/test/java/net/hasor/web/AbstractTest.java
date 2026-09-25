@@ -319,6 +319,8 @@ public class AbstractTest {
         }).when(asyncContext).start(any());
         PowerMockito.when(request.startAsync(any(), any())).thenReturn(asyncContext);
         PowerMockito.when(request.startAsync()).thenReturn(asyncContext);
+        PowerMockito.when(request.isAsyncSupported()).thenReturn(true);
+        PowerMockito.when(request.getAsyncContext()).thenReturn(asyncContext);
         //
         return request;
     }

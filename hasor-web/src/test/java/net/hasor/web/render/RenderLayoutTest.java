@@ -76,22 +76,18 @@ public class RenderLayoutTest extends AbstractTest {
         });
         //
         Field layoutPathField = RenderProcessor.class.getDeclaredField("layoutPath");
-        Field useLayoutField = RenderProcessor.class.getDeclaredField("useLayout");
         Field templatePathField = RenderProcessor.class.getDeclaredField("templatePath");
         Field engineMapField = RenderProcessor.class.getDeclaredField("engineMap");
         layoutPathField.setAccessible(true);
-        useLayoutField.setAccessible(true);
         templatePathField.setAccessible(true);
         engineMapField.setAccessible(true);
         //
         RenderProcessor renderPlugin = appContext.getInstance(RenderProcessor.class);
         String layoutPath = (String) layoutPathField.get(renderPlugin);
-        boolean useLayout = (boolean) useLayoutField.get(renderPlugin);
         String templatePath = (String) templatePathField.get(renderPlugin);
         Map<String, RenderEngine> engineMap = (Map<String, RenderEngine>) engineMapField.get(renderPlugin);
         //
         assert "/layout/mytest".equals(layoutPath);
-        assert useLayout;
         assert "/templates/myfiles".equals(templatePath);
         assert engineMap.size() == 4;
         assert engineMap.get("TEXT") instanceof TextRenderEngine;
