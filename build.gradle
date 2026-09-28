@@ -63,6 +63,7 @@ subprojects {
                                 if (configurations.findByName('shaded')) {
                                     excluded.addAll(configurations.shaded.dependencies)
                                 }
+
                                 excluded.each { dep ->
                                     def groupId = dep.group ?: project.group
                                     def dependenciesNode = asNode().dependencies[0]
@@ -83,7 +84,9 @@ subprojects {
             signing {
                 required { findProperty('centralRelease') == 'true' }
                 def key = findProperty('maven.central.signing_key')
-                if (key) useInMemoryPgpKeys(key.replace('\\n', '\n'), findProperty('maven.central.signing_password'))
+                if (key) {
+                    useInMemoryPgpKeys(key.replace('\\n', '\n'), findProperty('maven.central.signing_password'))
+                }
                 sign publishing.publications.mavenJava
             }
         }
