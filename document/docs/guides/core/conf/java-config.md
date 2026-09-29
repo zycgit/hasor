@@ -67,7 +67,17 @@ apiBinder.installModule(ConfigurationModule.auto());
 
 ## Bean 工厂与生命周期
 
-`@Bean` 标注配置类自身声明的方法，以返回类型注册 Bean。方法参数按类型从容器获取，可用于表达 Bean 间依赖。
+`@Bean` 标注配置类自身声明的方法，以返回类型注册 Bean。方法参数默认按类型从容器获取，可用于表达 Bean 间依赖。参数上使用 `@Inject("name")` 时按名称和类型获取，使用 `@Inject(value = "beanId", byType = Type.ByID)` 时按绑定 ID 获取。未设置 `@Inject.value` 时仍按类型获取。
+
+```java
+@Bean
+public OrderService orderService(DataSource mainSource,
+        @Inject("orders") DataSource ordersSource) {
+    return new OrderService(mainSource, ordersSource);
+}
+```
+
+依赖在调用工厂方法时解析，允许先声明使用方、后注册依赖。每次调用工厂都会重新获取参数，遵循依赖自身的作用域。
 
 - 默认 `singleton = true`，注册为 eager singleton；`singleton = false` 使用 prototype。
 - 未指定 `value` 时，方法名作为绑定 ID；显式 `@Bean("name")` 同时设置绑定 ID 和名称。

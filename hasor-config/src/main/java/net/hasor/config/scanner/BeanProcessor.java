@@ -11,6 +11,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -52,7 +53,7 @@ public final class BeanProcessor implements AnnotationProcessor<Method> {
 
         this.checkBeanMethod(method);
         method.trySetAccessible();
-        Supplier<?>[] parameters = Arrays.stream(method.getParameterTypes()).map(apiBinder::getProvider).toArray(Supplier[]::new);
+        Supplier<?>[] parameters = Arrays.stream(method.getParameters()).map(parameter -> this.parameterProvider(apiBinder, parameter)).toArray(Supplier[]::new);
         CopyOnWriteArrayList<Object> createdBeans = new CopyOnWriteArrayList<>();
         Provider<Object> factory = () -> {
             Object instance = this.invoke(method, configuration.get(), parameters);
@@ -89,6 +90,18 @@ public final class BeanProcessor implements AnnotationProcessor<Method> {
         }
 
         return binding.toInfo();
+    }
+
+    private Supplier<?> parameterProvider(ApiBinder binder, Parameter parameter) {
+        Inject inject = parameter.getAnnotation(Inject.class);
+        if (inject == null || inject.value().isBlank()) {
+            return binder.getProvider(parameter.getType());
+        }
+        if (inject.byType() == Type.ByID) {
+            Supplier<AppContext> context = binder.getProvider(AppContext.class);
+            return () -> context.get().getInstance(inject.value());
+        }
+        return binder.getProvider(inject.value(), parameter.getType());
     }
 
     private String factoryMethodDescription(Method method) {

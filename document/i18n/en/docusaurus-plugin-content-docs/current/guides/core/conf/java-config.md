@@ -67,7 +67,17 @@ apiBinder.installModule(ConfigurationModule.auto());
 
 ## Bean factories and lifecycle
 
-Annotate methods declared by the configuration class with `@Bean` to register Beans by return type. Method parameters are resolved from the container by type and can express dependencies between Beans.
+Annotate methods declared by the configuration class with `@Bean` to register Beans by return type. Method parameters are resolved by type by default and can express dependencies between Beans. Use `@Inject("name")` on a parameter to resolve by name and type, or `@Inject(value = "beanId", byType = Type.ByID)` to resolve by binding ID. An empty `@Inject.value` still resolves by type.
+
+```java
+@Bean
+public OrderService orderService(DataSource mainSource,
+        @Inject("orders") DataSource ordersSource) {
+    return new OrderService(mainSource, ordersSource);
+}
+```
+
+Dependencies are resolved when the factory method is called, so they may be registered after the factory. Each factory invocation resolves its parameters again, respecting each dependency's scope.
 
 - By default, `singleton = true` registers an eager singleton; `singleton = false` uses prototype scope.
 - If `value` is omitted, the method name becomes the binding ID; explicit `@Bean("name")` sets both the binding ID and name.
