@@ -78,28 +78,29 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     /** 使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。 */
     <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns);
 
-    /** 加载带有 @MappingTo 注解的类。 */
+    /** Registers controllers with class-level or method-level {@link MappingTo} annotations. */
     default WebApiBinder loadMappingTo(Set<Class<?>> udfTypeSet) {
         return this.loadMappingTo(udfTypeSet, Matchers.anyClass(), null);
     }
 
-    /** 加载带有 @MappingTo 注解的类。 */
+    /** Registers matching controllers with class-level or method-level {@link MappingTo} annotations. */
     default WebApiBinder loadMappingTo(Set<Class<?>> maybeUdfTypeSet, Predicate<Class<?>> matcher, TypeSupplier typeSupplier) {
         if (maybeUdfTypeSet != null && !maybeUdfTypeSet.isEmpty()) {
             maybeUdfTypeSet.stream()//
                     .filter(matcher)//
-                    .filter(Matchers.annotatedWithClass(MappingTo.class))//
-                    .forEach(aClass -> loadMappingTo(aClass, typeSupplier));
+                    .filter(t -> t.getAnnotationsByType(MappingTo.class).length > 0 || Arrays.stream(t.getMethods())//
+                            .anyMatch(m -> m.getAnnotationsByType(MappingTo.class).length > 0))//
+                    .forEach(aClass -> this.loadMappingTo(aClass, typeSupplier));
         }
         return this;
     }
 
-    /** 加载带有 @MappingTo 注解的类。 */
+    /** Registers a controller's class-level or method-level {@link MappingTo} annotations. */
     default WebApiBinder loadMappingTo(Class<?> mappingType) {
-        return loadMappingTo(mappingType, null);
+        return this.loadMappingTo(mappingType, null);
     }
 
-    /** 加载带有 @MappingTo 注解的类。 */
+    /** Registers a controller, optionally resolving its instances through the supplied provider. */
     default WebApiBinder loadMappingTo(Class<?> mappingType, final TypeSupplier typeSupplier) {
         Objects.requireNonNull(mappingType, "class is null.");
         int modifier = mappingType.getModifiers();
@@ -108,7 +109,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         }
 
         MappingTo[] annotationsByType = mappingType.getAnnotationsByType(MappingTo.class);
-        if (annotationsByType == null || annotationsByType.length == 0) {
+        if (annotationsByType.length == 0) {
             throw new IllegalStateException(mappingType.getName() + " must be configure @MappingTo");
         }
         //

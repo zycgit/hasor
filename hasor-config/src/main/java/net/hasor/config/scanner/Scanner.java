@@ -6,9 +6,12 @@
  * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.config.scanner;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-import net.hasor.cobble.loader.CobbleClassScanner;
+import net.hasor.cobble.asm.ClassReader;
+import net.hasor.cobble.loader.MatchType;
+import net.hasor.cobble.loader.ResourceLoader;
 import net.hasor.core.ApiBinder;
 
 /** 一次遍历类路径，再按处理器顺序分发匹配的类。 */
@@ -30,15 +33,29 @@ public final class Scanner {
         }).collect(Collectors.toSet());
 
         Map<String, Set<String>> discovered = new HashMap<>();
-        CobbleClassScanner scanner = new CobbleClassScanner(binder.getClassLoader(), binder.getResourceLoader());
-        List<Class<?>> types = scanner.getClassSet(packages, context -> {
-            Set<String> matched = Arrays.stream(context.getClassInfo().annos).filter(annotations::contains).collect(Collectors.toSet());
-            if (matched.isEmpty()) {
-                return false;
+        ResourceLoader resources = binder.getResourceLoader();
+        ClassLoader loader = resources.toClassLoader(binder.getClassLoader());
+        String[] paths = Arrays.stream(packages).map(n -> n.replace('.', '/')).toArray(String[]::new);
+        List<Class<?>> types = resources.<Class<?>>scanResources(MatchType.Prefix, event -> {
+            if (!event.getName().endsWith(".class")) {
+                return null;
             }
-            discovered.put(context.getClassInfo().className, matched);
-            return true;
-        }).stream().sorted(Comparator.comparing(Class::getName)).toList();
+
+            try (InputStream input = event.getStream()) {
+                ClassReader reader = new ClassReader(input);
+                Set<String> matched = new HashSet<>();
+                reader.accept(new ClassAnnotationCollector(annotations, matched), ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+                if (matched.isEmpty()) {
+                    return null;
+                }
+
+                String name = reader.getClassName().replace('/', '.');
+                discovered.put(name, matched);
+                return loader.loadClass(name);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalStateException("Cannot load scanned class: " + event.getName(), e);
+            }
+        }, paths).stream().distinct().sorted(Comparator.comparing(Class::getName)).toList();
 
         for (AnnotationProcessor<Class<?>> processor : processors) {
             Set<String> supported = processor.annotationTypes().stream().map(Class::getName).collect(Collectors.toSet());

@@ -76,6 +76,25 @@ public abstract class WebDefaultsIntegrationTest extends ContainerIntegrationTes
     }
 
     @Test
+    public void methodMappingsUseNativeDispatchWithContextPathsAndHttpMethods() throws Exception {
+        start(WebServerConfig.of(DefaultApplication.class).contextPath("/console"));
+        assertEquals("read:Alice", get("/console/method?name=Alice", 200, "text/plain"));
+        assertEquals("read:Bob", get("/console/method-alias?name=Bob", 200, "text/plain"));
+        assertEquals("any", get("/console/method/any", 200, "text/plain"));
+        get("/console/method/missing", 404, null);
+        HttpURLConnection post = request("/console/method?name=Chris", "POST");
+
+        try {
+            assertEquals(200, post.getResponseCode());
+            try (InputStream input = post.getInputStream()) {
+                assertEquals("create:Chris", new String(input.readAllBytes(), StandardCharsets.UTF_8));
+            }
+        } finally {
+            post.disconnect();
+        }
+    }
+
+    @Test
     public void explicitSpaPathsDoNotMaskApiOrMissingAssets() throws Exception {
         start(WebServerConfig.of(DefaultApplication.class).spaPaths("/app/*", "/api/*"));
         assertTrue(get("/app/details", 200, "text/html").contains("Boot welcome"));

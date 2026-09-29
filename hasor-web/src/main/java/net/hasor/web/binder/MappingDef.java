@@ -22,7 +22,7 @@ import net.hasor.web.annotation.Produces;
 import net.hasor.web.invoker.AsyncSupported;
 
 /**
- * 一个请求地址只能是一个Action类进行处理，Action中的不同方法可以通过 @HttpMethod 等注解映射到 HTTP 协议中 GET、PUT 等行为上。
+ * Binds a request path to selected controller methods and their HTTP methods.
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2013-6-5
  */
@@ -79,41 +79,45 @@ public class MappingDef implements Mapping {
                 }
             }
             // .HttpMethod
+            boolean methodMapped = false;
             Annotation[] annos = targetMethod.getAnnotations();
-            if (annos != null) {
-                for (Annotation anno : annos) {
-                    if (anno instanceof HttpMethod m) {
-                        String[] methodSet = m.value();
-                        for (String http : methodSet) {
-                            this.httpMapping.put(http.toUpperCase(), targetMethod);
-                            if (StringUtils.isNotBlank(metaType)) {
-                                this.contentTypeMapping.put(http.toUpperCase(), metaType);
-                            }
-                        }
+            for (Annotation anno : annos) {
+                if (anno instanceof HttpMethod m) {
+                    String[] methodSet = m.value();
+                    for (String http : methodSet) {
+                        this.bindHttpMethod(http, targetMethod, metaType);
+                        methodMapped = true;
                     }
-                    HttpMethod httpMethodAnno = anno.annotationType().getAnnotation(HttpMethod.class);
-                    if (httpMethodAnno != null) {
-                        String[] methodSet = httpMethodAnno.value();
-                        for (String http : methodSet) {
-                            this.httpMapping.put(http.toUpperCase(), targetMethod);
-                            if (StringUtils.isNotBlank(metaType)) {
-                                this.contentTypeMapping.put(http.toUpperCase(), metaType);
-                            }
-                        }
+                }
+                HttpMethod httpMethodAnno = anno.annotationType().getAnnotation(HttpMethod.class);
+                if (httpMethodAnno != null) {
+                    String[] methodSet = httpMethodAnno.value();
+                    for (String http : methodSet) {
+                        this.bindHttpMethod(http, targetMethod, metaType);
+                        methodMapped = true;
                     }
                 }
             }
             // .Default (needAnno 为 true 表示，必须注释了 HttpMethod 注解的方法才可以被列为 Action)
-            if (this.httpMapping.isEmpty() && !needAnno) {
-                this.httpMapping.put(HttpMethod.ANY, targetMethod);
-                if (StringUtils.isNotBlank(metaType)) {
-                    this.contentTypeMapping.put(HttpMethod.ANY, metaType);
-                }
+            if (!methodMapped && !needAnno) {
+                this.bindHttpMethod(HttpMethod.ANY, targetMethod, metaType);
             }
             // .Async
             if (targetMethod.getAnnotation(Async.class) != null) {
                 this.asyncMethod.add(targetMethod);
             }
+        }
+    }
+
+    private void bindHttpMethod(String http, Method method, String contentType) {
+        String key = http.toUpperCase(Locale.ROOT);
+        Method previous = this.httpMapping.putIfAbsent(key, method);
+        if (previous != null && !previous.equals(method)) {
+            throw new IllegalStateException("Conflicting mapping " + key + " " + this.mappingTo + ": " + previous + " and " + method);
+        }
+
+        if (StringUtils.isNotBlank(contentType)) {
+            this.contentTypeMapping.put(key, contentType);
         }
     }
 

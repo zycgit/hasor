@@ -9,21 +9,27 @@
 package net.hasor.web.binder;
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Supplier;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
+import net.hasor.cobble.BeanUtils;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.dynamic.Matchers;
+import net.hasor.cobble.loader.ResourceLoader;
 import net.hasor.cobble.provider.InstanceProvider;
 import net.hasor.cobble.setting.SettingNode;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.core.TypeSupplier;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.*;
+import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.mime.MimeTypeSupplier;
 import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderProcessor;
@@ -133,7 +139,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
 
     @Override
-    public ResourceBinder addResource(String pathPattern, net.hasor.cobble.loader.ResourceLoader... loaders) {
+    public ResourceBinder addResource(String pathPattern, ResourceLoader... loaders) {
         InnerResourceBinder binding = new InnerResourceBinder(pathPattern, loaders);
         this.resourceBindings.add(binding);
         return binding;
@@ -363,6 +369,92 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     @Override
     public List<Mapping> getMappings() {
         return List.copyOf(this.mappings);
+    }
+
+    @Override
+    public WebApiBinder loadMappingTo(Class<?> mappingType, TypeSupplier typeSupplier) {
+        if (HttpServlet.class.isAssignableFrom(mappingType)) {
+            return WebApiBinder.super.loadMappingTo(mappingType, typeSupplier);
+        }
+
+        List<Method> methods = BeanUtils.getMethods(mappingType).stream()                 //
+                .filter(method -> !method.isBridge() && !method.isSynthetic())            //
+                .filter(method -> method.getAnnotationsByType(MappingTo.class).length > 0)//
+                .sorted(Comparator.comparing(Method::toGenericString)).toList();
+        if (methods.isEmpty()) {
+            return WebApiBinder.super.loadMappingTo(mappingType, typeSupplier);
+        }
+        if (mappingType.isInterface() || Modifier.isAbstract(mappingType.getModifiers()) || mappingType.isArray() || mappingType.isEnum()) {
+            throw new IllegalStateException(mappingType.getName() + " must be normal Bean");
+        }
+
+        Map<String, Set<Method>> routes = this.methodRoutes(mappingType, methods);
+        BindInfo<?> target = this.mappingTarget(mappingType, typeSupplier);
+        for (var route : routes.entrySet()) {
+            MappingDef mapping = new MappingDef(0, target, route.getKey(), route.getValue()::contains, false);
+            this.mappings.add(mapping);
+            this.bindType(MappingDef.class).uniqueName().toInstance(mapping);
+        }
+        return this;
+    }
+
+    private <T> BindInfo<T> mappingTarget(Class<T> type, TypeSupplier supplier) {
+        if (supplier == null) {
+            return this.bindType(type).uniqueName().toInfo();
+        } else {
+            return this.bindType(type).uniqueName().toProvider(() -> supplier.get(type)).toInfo();
+        }
+    }
+
+    private Map<String, Set<Method>> methodRoutes(Class<?> type, List<Method> methods) {
+        MappingTo[] annotations = type.getAnnotationsByType(MappingTo.class);
+        List<String> prefixes = new ArrayList<>();
+        if (annotations.length == 0) {
+            prefixes.add("");
+        } else {
+            for (MappingTo annotation : annotations) {
+                prefixes.addAll(Arrays.asList(annotation.value()));
+            }
+        }
+
+        if (prefixes.isEmpty()) {
+            throw new IllegalStateException(type.getName() + " has no mapping paths");
+        }
+
+        Map<String, Set<Method>> routes = new LinkedHashMap<>();
+        for (Method method : methods) {
+            int modifiers = method.getModifiers();
+            if (!Modifier.isPublic(modifiers) || Modifier.isStatic(modifiers) || Modifier.isAbstract(modifiers)) {
+                throw new IllegalStateException("Mapped method must be a public instance method: " + method);
+            }
+
+            for (MappingTo annotation : method.getAnnotationsByType(MappingTo.class)) {
+                if (annotation.value().length == 0) {
+                    throw new IllegalStateException("Mapped method has no paths: " + method);
+                }
+                for (String prefix : prefixes) {
+                    for (String path : annotation.value()) {
+                        String route = this.mappingPath(prefix, path);
+                        routes.computeIfAbsent(route, key -> new LinkedHashSet<>()).add(method);
+                    }
+                }
+            }
+        }
+
+        return routes;
+    }
+
+    private String mappingPath(String prefix, String path) {
+        if ((!prefix.isEmpty() && !prefix.startsWith("/")) || (!path.isEmpty() && !path.startsWith("/"))) {
+            throw new IllegalStateException("Mapping paths must start with '/': " + prefix + " + " + path);
+        }
+
+        if (prefix.endsWith("/") && path.startsWith("/")) {
+            return prefix.substring(0, prefix.length() - 1) + path;
+        }
+
+        String route = prefix + path;
+        return route.isEmpty() ? "/" : route;
     }
 
     @Override

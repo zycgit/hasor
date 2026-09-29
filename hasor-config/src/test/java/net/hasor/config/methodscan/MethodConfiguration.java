@@ -1,0 +1,18 @@
+/*
+ * Copyright 2015-2026 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0.
+ * See the LICENSE.txt file for the full license.
+ * https://www.apache.org/licenses/LICENSE-2.0
+ */
+package net.hasor.config.methodscan;
+import net.hasor.config.Bean;
+import net.hasor.config.Configuration;
+
+@Configuration
+public class MethodConfiguration {
+    @Bean
+    public StringBuilder greeting() {
+        return new StringBuilder("hello:");
+    }
+}

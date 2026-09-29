@@ -19,6 +19,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.TypeSupplier;
 import net.hasor.web.Mapping;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.annotation.HttpMethod;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.MappingToGroup;
 
@@ -44,10 +45,11 @@ public final class MappingProcessor implements AnnotationProcessor<Class<?>> {
 
     private static void register(WebApiBinder binder, WebOptions options, List<Class<?>> types) {
         Set<Class<?>> registered = new HashSet<>();
-        Map<String, Class<?>> routes = new HashMap<>();
+        Map<String, List<Mapping>> routes = new HashMap<>();
         for (Mapping mapping : binder.getMappings()) {
             registered.add(mapping.getTargetType().getBindType());
-            routes.put(mapping.getMappingTo().replaceAll("\\{\\w+\\}", "{}"), mapping.getTargetType().getBindType());
+            String path = mapping.getMappingTo().replaceAll("\\{\\w+\\}", "{}");
+            routes.computeIfAbsent(path, key -> new ArrayList<>()).add(mapping);
         }
 
         types.stream().filter(type -> {
@@ -55,17 +57,6 @@ public final class MappingProcessor implements AnnotationProcessor<Class<?>> {
         }).filter(type -> {
             return !registered.contains(type) && !options.getScanExcludes().contains(type.getName());
         }).sorted(Comparator.comparing(Class::getName)).forEach(type -> {
-            // Parameter names do not make two otherwise identical routes distinct.
-            for (MappingTo mapping : type.getAnnotationsByType(MappingTo.class)) {
-                for (String value : mapping.value()) {
-                    String path = value.replaceAll("\\{\\w+\\}", "{}");
-                    Class<?> previous = routes.putIfAbsent(path, type);
-                    if (previous != null && previous != type) {
-                        throw new IllegalStateException("Conflicting auto-scanned route " + value + ": " + previous.getName() + " and " + type.getName());
-                    }
-                }
-            }
-
             TypeSupplier managed = new TypeSupplier() {
                 private final Supplier<?> provider = binder.getProvider(type);
 
@@ -75,7 +66,23 @@ public final class MappingProcessor implements AnnotationProcessor<Class<?>> {
                     return (T) this.provider.get();
                 }
             };
+
+            int previousSize = binder.getMappings().size();
             binder.loadMappingTo(type, managed);
+            List<Mapping> mappings = binder.getMappings();
+            for (Mapping mapping : mappings.subList(previousSize, mappings.size())) {
+                // Parameter names do not make two otherwise identical routes distinct.
+                String path = mapping.getMappingTo().replaceAll("\\{\\w+\\}", "{}");
+                List<Mapping> previous = routes.computeIfAbsent(path, key -> new ArrayList<>());
+                Set<String> methods = new HashSet<>(Arrays.asList(mapping.getHttpMethodSet()));
+                for (Mapping other : previous) {
+                    Set<String> otherMethods = new HashSet<>(Arrays.asList(other.getHttpMethodSet()));
+                    if (methods.isEmpty() || otherMethods.isEmpty() || methods.contains(HttpMethod.ANY) || otherMethods.contains(HttpMethod.ANY) || !Collections.disjoint(methods, otherMethods)) {
+                        throw new IllegalStateException("Conflicting auto-scanned route " + mapping.getMappingTo() + ": " + other.getTargetType().getBindType().getName() + " and " + type.getName());
+                    }
+                }
+                previous.add(mapping);
+            }
         });
     }
 }
