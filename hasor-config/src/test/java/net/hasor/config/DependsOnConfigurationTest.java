@@ -47,6 +47,7 @@ public class DependsOnConfigurationTest {
     public void methodAnnotationUsesCoreDependenciesAcrossConfigurations() throws Throwable {
         EVENTS.clear();
         try (AppContext context = Hasor.create().build(ConfigurationModule.of(ConsumerConfig.class, StorageConfig.class))) {
+            assertEquals(List.of("storage.new", "storage.init", "consumer"), EVENTS);
             assertEquals("ready", context.getInstance("consumer"));
             assertEquals("ready", context.getInstance("consumer"));
             assertEquals(List.of("storage.new", "storage.init", "consumer"), EVENTS);
@@ -70,14 +71,12 @@ public class DependsOnConfigurationTest {
 
     @Test
     public void factoryCycleUsesCoreDiagnostics() throws Throwable {
-        try (AppContext context = Hasor.create().build(ConfigurationModule.of(CycleConfig.class))) {
-            try {
-                context.getInstance("a");
-                fail("Cycle must fail");
-            } catch (CircularDependencyException expected) {
-                assertTrue(expected.getMessage().contains("CycleConfig.a"));
-                assertTrue(expected.getMessage().contains("CycleConfig.b"));
-            }
+        try {
+            Hasor.create().build(ConfigurationModule.of(CycleConfig.class));
+            fail("Cycle must fail during startup");
+        } catch (CircularDependencyException expected) {
+            assertTrue(expected.getMessage().contains("CycleConfig.a"));
+            assertTrue(expected.getMessage().contains("CycleConfig.b"));
         }
     }
 }

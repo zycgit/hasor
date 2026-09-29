@@ -85,6 +85,8 @@ public final class BeanProcessor implements AnnotationProcessor<Method> {
         binding.metaData(CircularDependencyException.DEPENDENCY_DESCRIPTION, this.factoryMethodDescription(method));
         if (singleton) {
             binding.asEagerSingleton();
+            BindInfo<?> beanInfo = binding.toInfo();
+            apiBinder.lazyLoad(appContext -> appContext.getInstance(beanInfo));
         } else {
             binding.asEagerPrototype();
         }

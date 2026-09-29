@@ -79,7 +79,7 @@ public OrderService orderService(DataSource mainSource,
 
 依赖在调用工厂方法时解析，允许先声明使用方、后注册依赖。每次调用工厂都会重新获取参数，遵循依赖自身的作用域。
 
-- 默认 `singleton = true`，注册为 eager singleton；`singleton = false` 使用 prototype。
+- 默认 `singleton = true`，容器启动时自动创建对象并执行配置的 `initMethod`；`singleton = false` 使用 prototype，在获取对象时创建。
 - 未指定 `value` 时，方法名作为绑定 ID；显式 `@Bean("name")` 同时设置绑定 ID 和名称。
 - 方法不能是 `static`、抽象方法或返回 `void`，实际返回值不能为 `null`。
 - `initMethod` 在工厂创建对象后执行；`destroyMethod` 在 AppContext 关闭时对已创建并记录的对象执行。两者都需要公开的无参方法。

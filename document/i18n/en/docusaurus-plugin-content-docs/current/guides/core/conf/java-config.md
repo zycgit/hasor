@@ -79,7 +79,7 @@ public OrderService orderService(DataSource mainSource,
 
 Dependencies are resolved when the factory method is called, so they may be registered after the factory. Each factory invocation resolves its parameters again, respecting each dependency's scope.
 
-- By default, `singleton = true` registers an eager singleton; `singleton = false` uses prototype scope.
+- By default, `singleton = true` creates the bean and runs its configured `initMethod` during container startup; `singleton = false` uses prototype scope and creates an instance when requested.
 - If `value` is omitted, the method name becomes the binding ID; explicit `@Bean("name")` sets both the binding ID and name.
 - Methods cannot be `static`, abstract, or return `void`; the actual return value must not be `null`.
 - `initMethod` runs after the factory creates an object. `destroyMethod` runs on created and tracked objects when AppContext closes. Both must be public no-argument methods.

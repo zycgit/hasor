@@ -54,8 +54,10 @@ public class ConfigurationModuleTest {
 
     @Test
     public void configurationShouldCreateBeansAndInjectMethodParameters() {
+        MessageRepository.created.set(0);
         AppContext context = manualHasor().build(ConfigurationModule.of(AppConfig.class));
 
+        assertEquals(1, MessageRepository.created.get());
         MessageService service = context.getInstance(MessageService.class);
         assertEquals("hello Hasor", service.message());
         assertSame(service.repository, context.getInstance(MessageRepository.class));
@@ -82,13 +84,15 @@ public class ConfigurationModuleTest {
     }
 
     @Test
-    public void beanShouldRunLifecycleMethods() throws Exception {
+    public void singletonBeanShouldInitializeDuringStartupAndOnlyOnce() throws Exception {
         LifecycleBean.initialized.set(0);
         LifecycleBean.destroyed.set(0);
         AppContext context = manualHasor().build(ConfigurationModule.of(LifecycleConfig.class));
 
+        assertEquals(1, LifecycleBean.initialized.get());
         LifecycleBean bean = context.getInstance(LifecycleBean.class);
         assertTrue(bean.ready);
+        assertSame(bean, context.getInstance(LifecycleBean.class));
         assertEquals(1, LifecycleBean.initialized.get());
         context.shutdown();
         assertEquals(1, LifecycleBean.destroyed.get());
@@ -96,10 +100,8 @@ public class ConfigurationModuleTest {
 
     @Test
     public void beanMethodCycleShouldReportVisualFactoryMethodPath() {
-        AppContext context = manualHasor().build(ConfigurationModule.of(CircularConfig.class));
-
         try {
-            context.getInstance(CircularA.class);
+            manualHasor().build(ConfigurationModule.of(CircularConfig.class));
             fail("CircularDependencyException expected.");
         } catch (CircularDependencyException e) {
             assertTrue(e.getMessage().contains("CircularConfig.circularA(CircularB)"));
@@ -193,10 +195,12 @@ public class ConfigurationModuleTest {
     }
 
     public static class MessageRepository {
-        private final String prefix;
+        private static final AtomicInteger created = new AtomicInteger();
+        private final        String        prefix;
 
         public MessageRepository(String prefix) {
             this.prefix = prefix;
+            created.incrementAndGet();
         }
     }
 
