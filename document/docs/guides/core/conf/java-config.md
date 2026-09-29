@@ -97,7 +97,7 @@ Config、Web、Boot 专用的 `scanPackages`、`autoScan` 配置及环境变量�
 
 Web 能力需要额外引入 `hasor-web`（或传递依赖它的内嵌容器模块）；`hasor-config` 不会自动引入 Web 运行环境。必须以 `ServletContext` 创建 Hasor，内嵌服务示例见 [Web 启动器](../../deployment/web-launcher.md#自定义-appcontext-创建)。
 
-Web 自动配置在限定范围内查找 `@MappingTo` 类并注册路由，配置阶段取得 Controller Provider，请求时再通过 Provider 获取实例。Controller 使用 Hasor 依赖注入，无需逐个调用 `loadMappingTo`。根路径 `@MappingTo("/")` 也受支持。
+Web 自动配置在限定范围内查找类或方法上带有 `@MappingTo` 的 Controller 并注册路由，配置阶段取得 Controller Provider，请求时再通过 Provider 获取实例。Controller 使用 Hasor 依赖注入，无需逐个调用 `loadMappingTo`。支持仅在方法上声明路径；同时声明类级和方法级映射时，类路径作为公共前缀，详见 [请求处理](../../webmvc/request/request.md)。根路径 `@MappingTo("/")` 也受支持。
 
 配置类可以实现 `WebMvcConfigurer`：
 

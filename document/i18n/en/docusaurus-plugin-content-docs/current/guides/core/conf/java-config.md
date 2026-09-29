@@ -97,7 +97,7 @@ An empty scope performs no scanning. Scanner traverses the classpath once, proce
 
 Web features require `hasor-web` or an embedded container module that depends on it transitively. `hasor-config` does not add a Web runtime automatically. Hasor must be created with a `ServletContext`; see [Web Launcher](../../deployment/web-launcher.md#custom-appcontext-creation) for an embedded server example.
 
-Web auto-configuration finds `@MappingTo` classes within the configured scope and registers routes. It obtains Controller Providers during configuration and resolves instances through them at request time. Controllers use Hasor dependency injection without individual `loadMappingTo` calls. Root mappings such as `@MappingTo("/")` are also supported.
+Web auto-configuration finds controllers with `@MappingTo` on their class or methods within the configured scope and registers routes. It obtains Controller Providers during configuration and resolves instances through them at request time. Controllers use Hasor dependency injection without individual `loadMappingTo` calls. Method mappings work without a class mapping; when both are present, class paths supply common prefixes. See [Request Handling](../../webmvc/request/request.md). Root mappings such as `@MappingTo("/")` are also supported.
 
 A configuration class can implement `WebMvcConfigurer`:
 

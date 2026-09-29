@@ -12,7 +12,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * 控制器映射的地址。
+ * Maps a controller or a public controller method to request paths.
+ * When method mappings are present, class mappings supply their common prefixes.
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2013-3-26
  */
