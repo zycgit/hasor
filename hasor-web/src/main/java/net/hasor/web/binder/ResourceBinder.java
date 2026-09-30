@@ -6,6 +6,7 @@
  * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.binder;
+import net.hasor.web.CacheControl;
 
 /** Configures the Web policy of a URL binding backed by one or more resource loaders. */
 public interface ResourceBinder {
@@ -15,7 +16,8 @@ public interface ResourceBinder {
     /** Explicit request paths eligible for SPA fallback. */
     ResourceBinder fallbackPaths(String... paths);
 
-    ResourceBinder cacheControl(String cacheControl);
+    /** Captures this policy at registration; CacheControl.empty() leaves the header unchanged. */
+    ResourceBinder cacheControl(CacheControl cacheControl);
 
     ResourceBinder excludedPrefixes(String... prefixes);
 

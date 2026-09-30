@@ -11,6 +11,7 @@ import java.util.Objects;
 import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.loader.ResourceLoader;
 import net.hasor.cobble.loader.providers.MultiResourceLoader;
+import net.hasor.web.CacheControl;
 
 /** Configures one static resource URL mapping. */
 class InnerResourceBinder implements ResourceBinder {
@@ -65,12 +66,16 @@ class InnerResourceBinder implements ResourceBinder {
     }
 
     @Override
-    public ResourceBinder cacheControl(String value) {
-        if (value == null || value.contains("\r") || value.contains("\n")) {
+    public ResourceBinder cacheControl(CacheControl value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Cache-Control policy is null");
+        }
+        String header = value.getHeaderValue();
+        if (header != null && (header.contains("\r") || header.contains("\n"))) {
             throw new IllegalArgumentException("Invalid Cache-Control value");
         }
 
-        this.cacheControl = value;
+        this.cacheControl = header;
         return this;
     }
 

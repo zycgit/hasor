@@ -22,6 +22,8 @@ public class Application {
 
 普通应用依赖 `net.hasor:hasor-boot:@project.docsVersion@`；Web 应用引入一个容器模块即可。一次性任务完成后关闭应用，不调用 `join()`。参见[工程配置](./project-config.md)。
 
+Web 应用启动成功后，控制台会打印完整访问地址，例如 `Hasor Web started at http://127.0.0.1:8080/console`。地址来自 `hasor.boot.web.connectors.http.host`、实际绑定端口和 `hasor.boot.web.server.contextPath`；配置端口为 `0` 时显示实际分配的端口。监听 `0.0.0.0` 时显示本机入口 `localhost`，IPv6 通配监听显示 `[::1]`，其他 IPv6 地址加方括号。禁用 HTTP 时仅提示没有 HTTP 监听端口。
+
 ## Core 启动入口
 
 普通应用使用 `Hasor.run(args, PrimarySource.class)` 作为启动入口。启动类通常同时实现 `Module`，`main` 方法负责启动，`loadModule` 方法负责声明 Bean 和扩展点。

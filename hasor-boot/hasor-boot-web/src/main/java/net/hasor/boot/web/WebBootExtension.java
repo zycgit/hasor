@@ -61,6 +61,7 @@ public final class WebBootExtension implements BootExtension {
                     throw new IllegalStateException("Web server did not create an application context.");
                 }
                 started.onClose(server);
+                WebServers.logStarted(server);
                 return started;
             } catch (Exception | Error e) {
                 try {

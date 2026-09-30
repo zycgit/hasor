@@ -7,24 +7,56 @@
  * https://www.apache.org/licenses/LICENSE-2.0
  */
 package net.hasor.web.binder;
+import java.time.Duration;
 import net.hasor.cobble.loader.ResourceLoader;
+import net.hasor.web.CacheControl;
 import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ResourceBinderTest {
     @Test
     public void definitionIsAnIndependentConfigurationSnapshot() {
-        ResourceLoader loader = org.mockito.Mockito.mock(ResourceLoader.class);
+        ResourceLoader loader = mock(ResourceLoader.class);
         InnerResourceBinder binder = new InnerResourceBinder("/app/**", loader);
         binder.fallbackPaths("/app/tasks/*").excludedPrefixes("/app/private");
         ResourceDef definition = binder.build();
         binder.welcomeFile("other.html").fallbackPaths("/other/*").excludedPrefixes("/other");
         definition.fallbackPaths()[0] = "/changed";
         definition.excludedPrefixes()[0] = "/changed";
-        org.junit.Assert.assertSame(loader, definition.loader());
-        org.junit.Assert.assertEquals("/app", definition.pathPattern());
-        org.junit.Assert.assertEquals("index.html", definition.welcomeFile());
-        org.junit.Assert.assertArrayEquals(new String[] { "/app/tasks/*" }, definition.fallbackPaths());
-        org.junit.Assert.assertArrayEquals(new String[] { "/app/private" }, definition.excludedPrefixes());
+        assertSame(loader, definition.loader());
+        assertEquals("/app", definition.pathPattern());
+        assertEquals("index.html", definition.welcomeFile());
+        assertArrayEquals(new String[] { "/app/tasks/*" }, definition.fallbackPaths());
+        assertArrayEquals(new String[] { "/app/private" }, definition.excludedPrefixes());
+    }
+
+    @Test
+    public void cachePolicyIsCapturedWhenRegistered() {
+        InnerResourceBinder binder = new InnerResourceBinder("/assets/**", mock(ResourceLoader.class));
+        assertEquals("no-cache", binder.build().cacheControl());
+        CacheControl policy = CacheControl.maxAge(Duration.ofHours(1)).cachePublic();
+        assertSame(binder, binder.cacheControl(policy));
+        ResourceDef definition = binder.build();
+        policy.cachePrivate();
+        assertEquals("max-age=3600, public", binder.build().cacheControl());
+        binder.cacheControl(CacheControl.noStore());
+        assertEquals("max-age=3600, public", definition.cacheControl());
+        assertEquals("no-store", binder.build().cacheControl());
+        binder.cacheControl(CacheControl.empty());
+        assertNull(binder.build().cacheControl());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void nullPolicyMustBeExplicitlyReplacedWithEmpty() {
+        new InnerResourceBinder("/assets/**", mock(ResourceLoader.class)).cacheControl(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void customPolicyCannotInjectResponseHeaders() {
+        CacheControl policy = mock(CacheControl.class);
+        when(policy.getHeaderValue()).thenReturn("no-cache\r\nX-Injected: value");
+        new InnerResourceBinder("/assets/**", mock(ResourceLoader.class)).cacheControl(policy);
     }
 
     @Test(expected = IllegalArgumentException.class)

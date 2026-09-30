@@ -22,6 +22,8 @@ public class Application {
 
 Ordinary applications depend on `net.hasor:hasor-boot:@project.docsVersion@`; Web applications need one container module. Close one-shot applications after completing their work instead of calling `join()`. See [Project Configuration](./project-config.md).
 
+After a Web application starts successfully, the console prints a complete URL such as `Hasor Web started at http://127.0.0.1:8080/console`. It uses `hasor.boot.web.connectors.http.host`, the actual bound port, and `hasor.boot.web.server.contextPath`. Port `0` displays the assigned port. An IPv4 wildcard listener (`0.0.0.0`) displays `localhost`; an IPv6 wildcard listener displays `[::1]`, and other IPv6 addresses are enclosed in brackets. With HTTP disabled, the log states that no HTTP listener is active.
+
 ## Core entry point
 
 Ordinary applications use `Hasor.run(args, PrimarySource.class)`. The startup class usually also implements `Module`: `main` starts the application, while `loadModule` declares Beans and extension points.

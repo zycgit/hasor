@@ -46,16 +46,38 @@ public final class WebServers {
         });
         try {
             server.start();
-            if (server.getPort() >= 0) {
-                logger.info("Hasor Web started at " + serverUrl(server));
-            } else {
-                logger.info("Hasor Web started without an HTTP listener.");
-            }
+            logStarted(server);
             return server;
         } catch (Exception e) {
             shutdownHook.close();
             throw e;
         }
+    }
+
+    static void logStarted(WebServer server) {
+        if (server.getPort() > 0) {
+            logger.info("Hasor Web started at " + serverUrl(server));
+        } else {
+            logger.info("Hasor Web started without an HTTP listener.");
+        }
+    }
+
+    private static String serverUrl(WebServer server) {
+        String host = server.getHost();
+        if (host.startsWith("[") && host.endsWith("]")) {
+            host = host.substring(1, host.length() - 1);
+        }
+
+        if ("0.0.0.0".equals(host)) {
+            host = "localhost";
+        } else if ("::".equals(host) || "0:0:0:0:0:0:0:0".equals(host)) {
+            host = "::1";
+        }
+        if (host.indexOf(':') >= 0) {
+            host = "[" + host + "]";
+        }
+
+        return "http://" + host + ":" + server.getPort() + WebServerConfig.normalizeContextPath(server.getContextPath());
     }
 
     public static WebServer create(String[] args, Class<?> rootModule) {
@@ -90,14 +112,8 @@ public final class WebServers {
             return candidate;
         }
         if (names.size() > 1) {
-            throw new IllegalStateException("Multiple embedded WebServerProviders found: " + names
-                    + ". Keep only one embedded container dependency.");
+            throw new IllegalStateException("Multiple embedded WebServerProviders found: " + names + ". Keep only one embedded container dependency.");
         }
         throw new IllegalStateException("No embedded WebServerProvider found. Add hasor-boot-web-tomcat, hasor-boot-web-jetty, or hasor-boot-web-undertow.");
-    }
-
-    private static String serverUrl(WebServer server) {
-        String host = "0.0.0.0".equals(server.getHost()) ? "localhost" : server.getHost();
-        return "http://" + host + ":" + server.getPort() + WebServerConfig.normalizeContextPath(server.getContextPath());
     }
 }

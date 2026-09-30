@@ -176,7 +176,10 @@ final class ResourceHandler {
         String mimeType = invoker.getMimeType(FilenameUtils.getExtension(resource));
         response.setContentType(StringUtils.isBlank(mimeType) ? "application/octet-stream" : mimeType);
         response.setHeader("X-Content-Type-Options", "nosniff");
-        response.setHeader("Cache-Control", this.cacheControl);
+        if (this.cacheControl != null) {
+            response.setHeader("Cache-Control", this.cacheControl);
+        }
+
         URL url = this.loader.getResource(resource);
         long modified = 0;
         if (url != null) {
