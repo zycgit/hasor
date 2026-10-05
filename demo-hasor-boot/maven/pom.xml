@@ -6,13 +6,13 @@
 
     <groupId>net.hasor.demo</groupId>
     <artifactId>demo-hasor-boot</artifactId>
-    <version>5.0.1</version>
+    <version>5.3.0</version>
     <packaging>pom</packaging>
 
     <name>Demo-Hasor-Boot</name>
 
     <properties>
-        <hasor.version>5.0.1</hasor.version>
+        <hasor.version>5.3.0</hasor.version>
         <slf4j.version>1.7.30</slf4j.version>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

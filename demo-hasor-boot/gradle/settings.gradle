@@ -1,4 +1,8 @@
 pluginManagement {
+    plugins {
+        id 'net.hasor.boot' version providers.gradleProperty('lib.hasor').get()
+    }
+
     repositories {
         gradlePluginPortal()
         mavenLocal()

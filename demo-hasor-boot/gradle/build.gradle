@@ -1,6 +1,6 @@
 subprojects {
     group = 'net.hasor.demo'
-    version = '5.0.1'
+    version = rootProject.version
 
     plugins.withType(JavaPlugin).configureEach {
         java {
