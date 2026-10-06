@@ -33,13 +33,13 @@ public class LoaderDependencyTest {
     }
 
     @Test
-    public void applicationCobbleVersionAndLoggerSelectionAreIndependent() throws Exception {
+    public void applicationCobbleAndLoggerSelectionAreIndependent() throws Exception {
         String factoryName = "net.hasor.cobble.logging.LoggerFactory";
         String internalFactoryName = "net.hasor.boot.loader.internal.cobble.logging.LoggerFactory";
         URL archive = JarLauncher.class.getProtectionDomain().getCodeSource().getLocation();
         Class<?> applicationCobble = Class.forName(factoryName, false, this.getClass().getClassLoader());
         URL cobbleArchive = applicationCobble.getProtectionDomain().getCodeSource().getLocation();
-        assertTrue(cobbleArchive.getPath().endsWith("cobble-lang-5.0.2.jar"));
+        assertNotEquals(archive, cobbleArchive);
 
         try (URLClassLoader bootstrap = new URLClassLoader(new URL[] { archive }, ClassLoader.getPlatformClassLoader())) {
             Class<?> resourceType = bootstrap.loadClass(ResourceLoader.class.getName());

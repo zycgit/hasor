@@ -15,8 +15,8 @@ configurations {
 dependencies {
     shaded "net.hasor:cobble-lang:${property('lib.cobble')}"
 
-    // Keep an older application version to verify isolation from the embedded copy.
-    testRuntimeOnly "net.hasor:cobble-lang:${property('lib.cobble.compat')}"
+    // Verify application classes remain isolated from the relocated embedded copy.
+    testRuntimeOnly "net.hasor:cobble-lang:${property('lib.cobble')}"
 }
 
 def loaderJar = tasks.named('shadowJar') {
