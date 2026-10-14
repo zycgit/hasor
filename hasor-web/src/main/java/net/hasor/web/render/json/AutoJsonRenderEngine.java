@@ -35,6 +35,11 @@ public final class AutoJsonRenderEngine implements RenderEngine {
         this.classLoader = Objects.requireNonNull(classLoader, "classLoader");
     }
 
+    @Override
+    public String defaultContentType() {
+        return "application/json";
+    }
+
     /** Resolve once, when actually selected, so explicit custom engines need no third-party JSON library. */
     public synchronized void initialize() {
         if (this.delegate != null) {

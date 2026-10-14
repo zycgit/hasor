@@ -25,6 +25,7 @@ import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.render.RenderType;
 import net.hasor.web.wrap.InvokerWrap;
 import org.junit.Test;
+import static net.hasor.web.render.RenderEngineTestSupport.renderEngine;
 import static org.junit.Assert.*;
 
 public class ResponseHandlingTest extends AbstractTest {
@@ -77,6 +78,11 @@ public class ResponseHandlingTest extends AbstractTest {
     }
 
     public static class UnexpectedRenderEngine implements RenderEngine {
+        @Override
+        public String defaultContentType() {
+            return null;
+        }
+
         @Override
         public void process(RenderInvoker invoker, Writer writer) {
             throw new AssertionError("Skipped rendering must not invoke the engine");
@@ -142,9 +148,9 @@ public class ResponseHandlingTest extends AbstractTest {
                     invoker.setSkipRender();
                 }
             });
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> {
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> {
                 throw new AssertionError("The completed response must not be rendered");
-            });
+            }));
         })) {
             for (String query : List.of("", "?view=true", "?view=true&layout=true")) {
                 assertEquals("", this.mockAndCallHttp("GET", "http://localhost/test" + query, app));
@@ -170,7 +176,7 @@ public class ResponseHandlingTest extends AbstractTest {
                 return null;
             }));
             binder.mappingTo("/value").with(new ResponseAction(response -> "value"));
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> writer.write("rendered"));
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> writer.write("rendered")));
         })) {
             for (String path : List.of("/void", "/null")) {
                 assertEquals("", this.mockAndCallHttp("GET", "http://localhost" + path, app));

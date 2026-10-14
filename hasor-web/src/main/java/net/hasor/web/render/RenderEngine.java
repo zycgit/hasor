@@ -16,6 +16,13 @@ import java.io.Writer;
  * @version : 2016年1月3日
  */
 public interface RenderEngine {
+    /**
+     * 渲染结果默认使用的响应内容类型，每个实现必须显式声明，返回 null 表示不指定。
+     * 已写入响应的类型优先；响应尚未设置时，{@link net.hasor.web.Invoker#contentType(String)}
+     * 设置的类型也优先于这个默认值。
+     */
+    String defaultContentType();
+
     /** 执行模版引擎 */
     void process(RenderInvoker invoker, Writer writer) throws Throwable;
 

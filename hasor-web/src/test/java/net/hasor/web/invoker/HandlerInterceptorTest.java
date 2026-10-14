@@ -26,6 +26,7 @@ import net.hasor.web.annotation.Any;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.wrap.WebApiBinderWrap;
 import org.junit.Test;
+import static net.hasor.web.render.RenderEngineTestSupport.renderEngine;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
@@ -88,10 +89,10 @@ public class HandlerInterceptorTest extends AbstractTest {
             assertSame(wrapped, wrapped.bindInterceptor(new RecordingInterceptor("a", events)));
             binder.bindInterceptor(new RecordingInterceptor("b", events));
             wrapped.bindInterceptor(new RecordingInterceptor("last", events));
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> {
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> {
                 events.add("render");
                 writer.write(invoker.get(Invoker.RETURN_DATA_KEY).toString());
-            });
+            }));
         })) {
             assertEquals("ok", this.mockAndCallHttp("GET", "http://localhost/test", app));
             assertEquals(List.of("filter.before", "first.pre", "a.pre", "b.pre", "last.pre", "action", "last.post", "b.post", "a.post", "first.post", "render", "last.complete", "b.complete", "a.complete", "first.complete", "filter.after"), events);

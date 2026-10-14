@@ -17,6 +17,11 @@ description: Hasor 框架开发手册，覆盖 hasor-core、hasor-web、hasor-bo
 public class FreemarkerRender implements RenderEngine {
     protected Configuration freemarker;
 
+    @Override
+    public String defaultContentType() {
+        return "text/html";
+    }
+
     /** 内置创建 Freemarker 对象的方法，您也可以通过 apiBinder.bind(Configuration.class).... 来设置您自定义的。 */
     protected Configuration newConfiguration(AppContext appContext, ServletContext servletContext) throws IOException {
         String realPath = servletContext.getRealPath("/");

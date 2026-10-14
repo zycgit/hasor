@@ -30,6 +30,11 @@ public @interface RedirectTo {
 
     class RedirectRenderEngine implements RenderEngine {
         @Override
+        public String defaultContentType() {
+            return null;
+        }
+
+        @Override
         public void process(RenderInvoker invoker, Writer writer) throws Throwable {
             int status = HttpServletResponse.SC_FOUND;
             if (invoker.ownerMapping() != null) {

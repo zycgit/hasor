@@ -28,6 +28,11 @@ public final class GsonRenderEngine implements RenderEngine {
     }
 
     @Override
+    public String defaultContentType() {
+        return "application/json";
+    }
+
+    @Override
     public void process(RenderInvoker invoker, Writer writer) {
         Object value = invoker.get(Invoker.RETURN_DATA_KEY);
         this.gson.toJson(value, writer);

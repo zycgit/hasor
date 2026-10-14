@@ -29,12 +29,20 @@ public @interface RenderType {
     String value() default "";
 
     /**
-     * 默认使用的渲染器类型，与 value 行为不同的是。是否处理 ContentType 取决于 engineType 的实现。
+     * 默认使用的渲染器类型，响应类型由 engineType 的 defaultContentType 声明。
+     * 已写入响应的类型优先；响应尚未设置时，Invoker.contentType 设置的类型也优先。
+     * 未声明默认响应类型的引擎继续使用框架兜底类型。
+     * @see RenderEngine#defaultContentType()
      * @see net.hasor.web.render.RenderProcessor
      */
     Class<? extends RenderEngine> engineType() default DEFAULT.class;
 
     class DEFAULT implements RenderEngine {
+        @Override
+        public String defaultContentType() {
+            return null;
+        }
+
         @Override
         public void process(RenderInvoker invoker, Writer writer) {
         }

@@ -41,6 +41,11 @@ public class JsonRenderEngine implements RenderEngine {
     }
 
     @Override
+    public String defaultContentType() {
+        return "application/json";
+    }
+
+    @Override
     public void process(RenderInvoker invoker, Writer writer) throws Throwable {
         Object obj = invoker.get(Invoker.RETURN_DATA_KEY);
         writer.write(JSON.toJSONString(obj, this.config, this.features));

@@ -29,6 +29,11 @@ public class WebRenderDefaultsTest extends AbstractTest {
 
     public static class CustomText implements RenderEngine {
         @Override
+        public String defaultContentType() {
+            return "text/plain";
+        }
+
+        @Override
         public void process(RenderInvoker invoker, Writer writer) throws Throwable {
             writer.write("custom");
         }
@@ -88,7 +93,9 @@ public class WebRenderDefaultsTest extends AbstractTest {
     @Test
     public void engineImplementationCanBeConfigured() throws Throwable {
         try (AppContext app = context(Hasor.create(servlet25("/")).mainSettingWith("/render-engines-override.xml"))) {
-            assertEquals("custom", mockAndCallHttp("get", "http://localhost/return", app));
+            Set<String> contentTypes = new HashSet<>();
+            assertEquals("custom", mockAndCallHttp("get", "http://localhost/return", app, contentTypes, null));
+            assertEquals(Set.of("text/plain"), contentTypes);
         }
     }
 

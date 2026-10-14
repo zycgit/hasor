@@ -22,6 +22,8 @@ public java.util.Map<String, Object> hello() {
 `AutoJsonRenderEngine` 按 Jackson 2、Gson、Fastjson 1、Fastjson 2 的顺序选择应用类路径中的实现。
 应用需提供相应库；默认 JSON 被选中而没有库时启动失败。已存在但损坏的实现会报错，不静默回退。
 默认选择不主动查找容器中的 Gson 或 ObjectMapper Bean。
+所有内置 JSON 渲染器都声明 `application/json`，使用 `@RenderType(engineType = ...)` 直接选择实现时
+无需再重复声明 `@Produces("application/json")`。
 
 ## 自定义序列化
 

@@ -28,6 +28,11 @@ import net.hasor.web.Invoker;
 public @interface ForwardTo {
     class RedirectRenderEngine implements RenderEngine {
         @Override
+        public String defaultContentType() {
+            return null;
+        }
+
+        @Override
         public void process(RenderInvoker invoker, Writer writer) throws Throwable {
             Object o = invoker.get(Invoker.RETURN_DATA_KEY);
             String redirectTo = null;

@@ -185,7 +185,7 @@ public class InvokerCallerParamsBuilder {
         Enumeration<?> e = httpRequest.getAttributeNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
-            if (name.equalsIgnoreCase(paramName)) {
+            if (StringUtils.equalsIgnoreCase(name, paramName)) {
                 return httpRequest.getAttribute(paramName);
             }
         }

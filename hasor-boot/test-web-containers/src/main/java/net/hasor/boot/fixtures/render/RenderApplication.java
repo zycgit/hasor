@@ -8,6 +8,7 @@
 package net.hasor.boot.fixtures.render;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ import net.hasor.web.annotation.Head;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.Produces;
 import net.hasor.web.render.RedirectTo;
+import net.hasor.web.render.RenderEngine;
+import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.render.RenderType;
 
 public class RenderApplication implements WebModule {
@@ -108,6 +111,27 @@ public class RenderApplication implements WebModule {
         @Produces("application/problem+json")
         public Map<String, String> get() {
             return Map.of("name", "中文");
+        }
+    }
+
+    @MappingTo("/render/engine-type")
+    @RenderType(engineType = DirectRenderEngine.class)
+    public static class DirectRenderAction {
+        @Get
+        public String get() {
+            return "ignored";
+        }
+    }
+
+    public static class DirectRenderEngine implements RenderEngine {
+        @Override
+        public String defaultContentType() {
+            return "application/vnd.hasor+json";
+        }
+
+        @Override
+        public void process(RenderInvoker invoker, Writer writer) throws IOException {
+            writer.write("{\"source\":\"engine\"}");
         }
     }
 
@@ -204,12 +228,36 @@ public class RenderApplication implements WebModule {
         }
     }
 
+    public static class CustomJsonRenderEngine implements RenderEngine {
+        @Override
+        public String defaultContentType() {
+            return "application/json";
+        }
+
+        @Override
+        public void process(RenderInvoker invoker, Writer writer) throws IOException {
+            writer.write("\"custom-json\"");
+        }
+    }
+
+    public static class CustomRenderEngine implements RenderEngine {
+        @Override
+        public String defaultContentType() {
+            return null;
+        }
+
+        @Override
+        public void process(RenderInvoker invoker, Writer writer) throws IOException {
+            writer.write("custom-engine");
+        }
+    }
+
     public static class CustomModule implements WebModule {
         @Override
         public void loadModule(WebApiBinder binder) {
             binder.setResponseCharacter("UTF-8");
-            binder.addRender("json").toProvider(() -> (invoker, writer) -> writer.write("\"custom-json\""));
-            binder.addRender("custom").toProvider(() -> (invoker, writer) -> writer.write("custom-engine"));
+            binder.addRender("json").toProvider(CustomJsonRenderEngine::new);
+            binder.addRender("custom").toProvider(CustomRenderEngine::new);
         }
     }
 }

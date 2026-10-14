@@ -26,6 +26,11 @@ public class TestRenderEngine implements RenderEngine {
     }
 
     @Override
+    public String defaultContentType() {
+        return null;
+    }
+
+    @Override
     public void process(RenderInvoker invoker, Writer writer) throws Throwable {
         Map<String, Object> invokerData = new HashMap<>();
         invoker.keySet().stream().filter(s -> {                         //

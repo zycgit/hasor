@@ -29,6 +29,11 @@ public class SimpleRenderEngine implements RenderEngine {
     }
 
     @Override
+    public String defaultContentType() {
+        return null;
+    }
+
+    @Override
     public void process(RenderInvoker invoker, Writer writer) throws Throwable {
         this.process = true;
     }

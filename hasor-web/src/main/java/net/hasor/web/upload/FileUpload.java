@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import net.hasor.cobble.ExceptionUtils;
+import net.hasor.cobble.StringUtils;
 import net.hasor.cobble.setting.Settings;
 import net.hasor.web.FileItem;
 import net.hasor.web.FileItemFactory;
@@ -75,8 +76,8 @@ public class FileUpload {
      * @return <code>true</code> if the request is multipart;
      * <code>false</code> otherwise.
      */
-    public static final boolean isMultipartContent(HttpServletRequest request) {
-        if (!POST_METHOD.equalsIgnoreCase(request.getMethod())) {
+    public static boolean isMultipartContent(HttpServletRequest request) {
+        if (!StringUtils.equalsIgnoreCase(POST_METHOD, request.getMethod())) {
             return false;
         }
         String contentType = new ServletRequestContext(request).getContentType();

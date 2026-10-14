@@ -175,9 +175,9 @@ public class MappingDef implements Mapping {
             return false;
         }
         for (String m : this.httpMapping.keySet()) {
-            if (httpMethod.equalsIgnoreCase(m)) {
+            if (StringUtils.equalsIgnoreCase(httpMethod, m)) {
                 return true;
-            } else if (HttpMethod.ANY.equalsIgnoreCase(m)) {
+            } else if (StringUtils.equalsIgnoreCase(HttpMethod.ANY, m)) {
                 return true;
             }
         }

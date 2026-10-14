@@ -25,6 +25,7 @@ import net.hasor.web.annotation.Async;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.wrap.WebApiBinderWrap;
 import org.junit.Test;
+import static net.hasor.web.render.RenderEngineTestSupport.renderEngine;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -347,10 +348,10 @@ public class ExceptionHandlerTest extends AbstractTest {
                     events.add("handler");
                     return "handled";
                 });
-                binder.addRender("text").toProvider(() -> (invoker, writer) -> {
+                binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> {
                     events.add("render");
                     writer.write(invoker.get(Invoker.RETURN_DATA_KEY).toString());
-                });
+                }));
             })) {
                 assertEquals("handled", this.mockAndCallHttp("GET", "http://localhost/test", app));
                 assertEquals(List.of("filter.before", "handler", "render", "filter.after"), events);
@@ -506,9 +507,9 @@ public class ExceptionHandlerTest extends AbstractTest {
         IOException failure = new IOException("render failure");
         try (AppContext app = Hasor.create(this.servlet30("/")).build((WebModule) binder -> {
             binder.mappingTo("/test").with(SuccessfulAction.class);
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> {
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> {
                 throw failure;
-            });
+            }));
             binder.addExceptionHandler(IOException.class, (invoker, exception) -> {
                 fail("Rendering runs after MVC exception handling");
                 return null;
@@ -533,9 +534,9 @@ public class ExceptionHandlerTest extends AbstractTest {
                 fail("A render failure must not restart exception handling");
                 return null;
             });
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> {
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> {
                 throw failure;
-            });
+            }));
         })) {
             this.assertFailure(app, failure);
             assertEquals(1, calls.get());

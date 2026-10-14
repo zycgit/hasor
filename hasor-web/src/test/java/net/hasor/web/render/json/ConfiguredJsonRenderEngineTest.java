@@ -42,6 +42,15 @@ public class ConfiguredJsonRenderEngineTest {
     }
 
     @Test
+    public void allJsonEnginesDeclareJsonContentType() {
+        assertEquals("application/json", new AutoJsonRenderEngine().defaultContentType());
+        assertEquals("application/json", new JacksonRenderEngine().defaultContentType());
+        assertEquals("application/json", new GsonRenderEngine().defaultContentType());
+        assertEquals("application/json", new JsonRenderEngine().defaultContentType());
+        assertEquals("application/json", new Fastjson2RenderEngine().defaultContentType());
+    }
+
+    @Test
     public void gsonUsesSuppliedSerializer() throws Throwable {
         GsonRenderEngine engine = new GsonRenderEngine(new GsonBuilder().registerTypeAdapter(Value.class, (JsonSerializer<Value>) (value, type, context) -> new JsonPrimitive("custom")).create());
         assertEquals("\"custom\"", render(engine, new Value()));

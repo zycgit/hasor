@@ -68,6 +68,9 @@ public abstract class RenderDefaultsIntegrationTest extends ContainerIntegration
         assertEquals("中文", get("/render/text", "text/plain", "UTF-8"));
         assertEquals("{\"name\":\"中文\"}", get("/render/raw", "application/json", "UTF-8"));
         assertEquals("{\"name\":\"中文\"}", get("/render/media", "application/problem+json", "UTF-8"));
+
+        String engineBody = get("/render/engine-type", "application/vnd.hasor+json", "UTF-8");
+        assertEquals("{\"source\":\"engine\"}", engineBody);
         assertEquals("中文", get("/render/charset", "text/plain", "GB18030"));
     }
 

@@ -19,6 +19,11 @@ Hasor 的渲染器实际上是 View 层的组件，它的最大意义是帮助�
 public class FreemarkerRender implements RenderEngine {
     protected Configuration freemarker;
 
+    @Override
+    public String defaultContentType() {
+        return "text/html";
+    }
+
     public void initEngine(AppContext appContext) throws Throwable {
         // 初始化过程，只会执行一次。在这里初始化 freemarker
         this.freemarker = ...
@@ -40,6 +45,11 @@ public class FreemarkerRender implements RenderEngine {
     }
 }
 ```
+
+`defaultContentType()` 是渲染器对响应类型的默认声明。`@Produces`、请求路径后缀或响应 API
+已经写入的类型优先。响应尚未设置时，再读取 `Invoker.contentType(...)`、根据渲染器名称推断 MIME，
+最后使用这个默认声明。每个渲染器都必须实现该方法；不指定响应类型时显式返回 `null`，
+框架继续使用原有兜底规则。
 
 渲染器在编写好之后需要被注册到框架中
 

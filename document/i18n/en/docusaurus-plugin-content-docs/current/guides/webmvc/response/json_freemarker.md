@@ -17,6 +17,11 @@ description: Implement a FreeMarker rendering engine for Hasor Web.
 public class FreemarkerRender implements RenderEngine {
     protected Configuration freemarker;
 
+    @Override
+    public String defaultContentType() {
+        return "text/html";
+    }
+
     /** Built-in method for creating the Freemarker object. You can also set your own object through apiBinder.bind(Configuration.class).... */
     protected Configuration newConfiguration(AppContext appContext, ServletContext servletContext) throws IOException {
         String realPath = servletContext.getRealPath("/");

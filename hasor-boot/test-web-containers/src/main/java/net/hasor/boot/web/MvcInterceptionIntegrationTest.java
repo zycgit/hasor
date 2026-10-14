@@ -24,6 +24,8 @@ import net.hasor.web.Invoker;
 import net.hasor.web.WebModule;
 import net.hasor.web.annotation.Any;
 import net.hasor.web.annotation.Async;
+import net.hasor.web.render.RenderEngine;
+import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.render.RenderType;
 import org.junit.After;
 import org.junit.Test;
@@ -91,6 +93,18 @@ public abstract class MvcInterceptionIntegrationTest extends ContainerIntegratio
         }
     }
 
+    public static class ManualRenderEngine implements RenderEngine {
+        @Override
+        public String defaultContentType() {
+            return null;
+        }
+
+        @Override
+        public void process(RenderInvoker invoker, java.io.Writer writer) throws IOException {
+            writer.write("must not render");
+        }
+    }
+
     private void start(boolean recover) throws Exception {
         WebServerConfig config = new WebServerConfig().port(0).contextPath("/host").appContextFactory(servlet -> {
             return Hasor.create(servlet).mainSettingWith("empty-scan.xml").build((WebModule) binder -> {
@@ -101,7 +115,7 @@ public abstract class MvcInterceptionIntegrationTest extends ContainerIntegratio
                 binder.mappingTo("/void-async").with(AsyncVoidAction.class);
                 binder.mappingTo("/direct").with(DirectResponseAction.class);
                 binder.mappingTo("/direct-async").with(AsyncDirectResponseAction.class);
-                binder.addRender("manual").toProvider(() -> (invoker, writer) -> writer.write("must not render"));
+                binder.addRender("manual").toProvider(ManualRenderEngine::new);
                 binder.filter("/*").through((invoker, chain) -> {
                     assertEquals("/host", invoker.getHttpRequest().getContextPath());
                     this.events.add("filter.before");

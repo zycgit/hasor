@@ -19,6 +19,11 @@ For example, after a request is processed, it needs to be rendered into HTML wit
 public class FreemarkerRender implements RenderEngine {
     protected Configuration freemarker;
 
+    @Override
+    public String defaultContentType() {
+        return "text/html";
+    }
+
     public void initEngine(AppContext appContext) throws Throwable {
         // Initialization runs only once. Initialize freemarker here.
         this.freemarker = ...
@@ -40,6 +45,11 @@ public class FreemarkerRender implements RenderEngine {
     }
 }
 ```
+
+`defaultContentType()` declares the renderer's default response type. An existing type set through
+`@Produces`, a request-path suffix, or the response API takes precedence. Otherwise Hasor checks
+`Invoker.contentType(...)`, MIME inferred from the renderer name, and finally this declaration.
+Every renderer must implement the method explicitly; return `null` when it does not declare a type.
 
 After a renderer is written, it must be registered in the framework.
 

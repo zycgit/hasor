@@ -25,7 +25,7 @@ class SaxXmlParser extends DefaultHandler {
     }
 
     public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
-        if (!"mime-mapping".equalsIgnoreCase(localName))
+        if (!StringUtils.equalsIgnoreCase("mime-mapping", localName))
             return;
         String extension = attributes.getValue("extension");
         String mimeType = attributes.getValue("mimeType");

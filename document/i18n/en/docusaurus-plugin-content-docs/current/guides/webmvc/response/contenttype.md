@@ -7,7 +7,7 @@ description: Set response ContentType values with @Produces.
 
 # 4.4.2 ContentType
 
-For a response whose result is HTML, set `ContentType` with the `@Produces` annotation, as shown below:
+Use `@Produces` when a handler needs to override the renderer's default response type:
 
 ```java
 @MappingTo("/my.html")
@@ -21,5 +21,8 @@ public class HtmlProduces {
 ```
 
 :::tip
-If `@Produces` is not specified, Hasor Web first tries to resolve `ContentType` from the suffix of `renderTo` through the MIME mapping. If no MIME type matches, it does not actively set `ContentType`.
+Hasor Web preserves a type already set through `@Produces`, a request-path suffix, or the response API.
+Otherwise it checks `Invoker.contentType(...)`, MIME inferred from the renderer name, and
+`RenderEngine.defaultContentType()`. Built-in JSON and text renderers declare `application/json` and
+`text/plain`. A normal return value with no resolvable type falls back to `application/octet-stream`.
 :::

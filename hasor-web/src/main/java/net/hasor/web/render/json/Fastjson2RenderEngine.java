@@ -44,6 +44,11 @@ public final class Fastjson2RenderEngine implements RenderEngine {
     }
 
     @Override
+    public String defaultContentType() {
+        return "application/json";
+    }
+
+    @Override
     public void process(RenderInvoker invoker, Writer writer) throws IOException {
         Object value = invoker.get(Invoker.RETURN_DATA_KEY);
         JSONWriter.Context context = this.contexts.get();

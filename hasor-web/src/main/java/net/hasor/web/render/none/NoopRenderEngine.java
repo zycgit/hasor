@@ -14,6 +14,11 @@ import net.hasor.web.render.RenderInvoker;
 /** Deliberately leaves the response body and headers untouched. */
 public final class NoopRenderEngine implements RenderEngine {
     @Override
+    public String defaultContentType() {
+        return null;
+    }
+
+    @Override
     public void process(RenderInvoker invoker, Writer writer) {
     }
 }

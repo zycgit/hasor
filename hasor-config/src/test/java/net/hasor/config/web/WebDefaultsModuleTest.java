@@ -18,6 +18,7 @@ import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.binder.MappingDef;
 import net.hasor.web.binder.RenderDef;
+import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.render.RenderProcessor;
 import org.junit.Test;
@@ -30,6 +31,18 @@ public class WebDefaultsModuleTest {
         @Get
         public Map<String, String> get() {
             return Map.of("name", "中文");
+        }
+    }
+
+    public static class CustomJsonRenderEngine implements RenderEngine {
+        @Override
+        public String defaultContentType() {
+            return "application/json";
+        }
+
+        @Override
+        public void process(RenderInvoker invoker, java.io.Writer writer) throws java.io.IOException {
+            writer.write("custom");
         }
     }
 
@@ -112,7 +125,7 @@ public class WebDefaultsModuleTest {
     @Test
     public void explicitRendererNeedsNoDetectedJsonLibrary() throws Throwable {
         try (AppContext context = Hasor.create(servletContext()).classLoaderWith(withoutJson()).addSettings(Settings.DefaultNameSpace, "hasor.loadPackages", "example.no_autoscan").build((WebModule) binder -> {
-            binder.addRender("json").toProvider(() -> (invoker, writer) -> writer.write("custom"));
+            binder.addRender("json").toProvider(CustomJsonRenderEngine::new);
             binder.installModule(new WebDefaultsModule(new WebOptions().staticResources(false)));
         })) {
             assertEquals(1, context.findBindingBean(RenderDef.class).stream().filter(def -> !def.isFallback()).count());

@@ -172,9 +172,9 @@ public final class RenderProcessor {
                     return returnData;
                 }
 
+                applyContentType(invoker, engine);
                 if (response.getContentType() == null) {
-                    String type = "TEXT".equals(invoker.renderType()) ? "text/plain" : invoker.renderType() == null ? null : invoker.getMimeType(invoker.renderType().toLowerCase(Locale.ROOT));
-                    response.setContentType(StringUtils.isBlank(type) ? "application/octet-stream" : type);
+                    response.setContentType("application/octet-stream");
                 }
 
                 invoker.layoutDisable();
@@ -201,6 +201,35 @@ public final class RenderProcessor {
         }
 
         return returnData;
+    }
+
+    private static void applyContentType(RenderInvoker invoker, RenderEngine engine) {
+        if (invoker.getHttpResponse().getContentType() != null) {
+            return;
+        }
+
+        String contentType = invoker.contentType();
+        if (StringUtils.isBlank(contentType)) {
+            contentType = resolveContentType(invoker, engine);
+        }
+        if (StringUtils.isNotBlank(contentType)) {
+            invoker.getHttpResponse().setContentType(contentType);
+        }
+    }
+
+    private static String resolveContentType(RenderInvoker invoker, RenderEngine engine) {
+        String renderType = invoker.renderType();
+        if (StringUtils.isNotBlank(renderType)) {
+            if (StringUtils.equalsIgnoreCase("TEXT", renderType)) {
+                return "text/plain";
+            }
+
+            String type = invoker.getMimeType(renderType.toLowerCase(Locale.ROOT));
+            if (StringUtils.isNotBlank(type)) {
+                return type;
+            }
+        }
+        return engine.defaultContentType();
     }
 
     public boolean process(RenderInvoker render, RenderEngine engine) throws Throwable {
@@ -233,14 +262,17 @@ public final class RenderProcessor {
             StringWriter tmpWriter = new StringWriter();
             if (engine.exist(newViewName)) {
                 render.renderTo(newViewName);
+                applyContentType(render, engine);
                 engine.process(render, tmpWriter);
             } else {
                 return false;
             }
+
             //渲染layout
             render.put(this.placeholder, tmpWriter.toString());
             if (engine.exist(layoutFile)) {
                 render.renderTo(layoutFile);
+                applyContentType(render, engine);
                 engine.process(render, finalWriter);
                 return writerToResponse(finalWriter.toString(), render.getHttpResponse());
             } else {
@@ -249,6 +281,7 @@ public final class RenderProcessor {
         } else {
             if (engine.exist(newViewName)) {
                 render.renderTo(newViewName);
+                applyContentType(render, engine);
                 engine.process(render, finalWriter);
                 return writerToResponse(finalWriter.toString(), render.getHttpResponse());
             } else {
@@ -265,7 +298,7 @@ public final class RenderProcessor {
         HttpServletResponse response = invoker.getHttpResponse();
         byte[] bytes = body.getBytes(java.nio.charset.Charset.forName(response.getCharacterEncoding()));
         response.setContentLength(bytes.length);
-        if (!"HEAD".equalsIgnoreCase(invoker.getHttpRequest().getMethod())) {
+        if (!StringUtils.equalsIgnoreCase("HEAD", invoker.getHttpRequest().getMethod())) {
             response.getOutputStream().write(bytes);
         }
     }

@@ -23,6 +23,7 @@ import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.InvokerContext;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
+import static net.hasor.web.render.RenderEngineTestSupport.renderEngine;
 import static org.junit.Assert.*;
 
 public class RenderPipelineTest extends AbstractTest {
@@ -57,10 +58,10 @@ public class RenderPipelineTest extends AbstractTest {
                 events.add("after");
                 return result;
             });
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> {
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> {
                 events.add("render");
                 writer.write("rendered");
-            });
+            }));
         })) {
             assertEquals(1, app.findBindingBean(FilterDef.class).size());
             assertEquals(1, app.findBindingBean(RenderProcessor.class).size());
@@ -91,7 +92,7 @@ public class RenderPipelineTest extends AbstractTest {
         AtomicInteger renders = new AtomicInteger();
         try (AppContext app = Hasor.create(servlet30("/")).build((WebModule) binder -> {
             binder.mappingTo("/test").with(FailedAction.class);
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> renders.incrementAndGet());
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> renders.incrementAndGet()));
         })) {
             try {
                 mockAndCallHttp("get", "http://localhost/test", app);
@@ -128,7 +129,7 @@ public class RenderPipelineTest extends AbstractTest {
         try (AppContext app = Hasor.create(servlet30("/")).build((WebModule) binder -> {
             binder.mappingTo("/test").with(Action.class);
             binder.filter("/*").through((invoker, chain) -> "short circuit");
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> renders.incrementAndGet());
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> renders.incrementAndGet()));
         })) {
             assertEquals("", mockAndCallHttp("GET", "http://localhost/test", app));
             assertEquals(0, renders.get());
@@ -140,7 +141,7 @@ public class RenderPipelineTest extends AbstractTest {
         AtomicInteger renders = new AtomicInteger();
         try (AppContext app = Hasor.create(servlet30("/")).build((WebModule) binder -> {
             binder.mappingTo("/test").with(Action.class);
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> renders.incrementAndGet());
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> renders.incrementAndGet()));
         })) {
             HttpServletRequest request = mockRequest("get", new URL("http://localhost/test"));
             PowerMockito.when(request.isAsyncStarted()).thenReturn(true);

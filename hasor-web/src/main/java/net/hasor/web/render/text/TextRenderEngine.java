@@ -16,6 +16,11 @@ import net.hasor.web.render.RenderInvoker;
 /** Emits an already formatted value without interpreting it as JSON or a template path. */
 public final class TextRenderEngine implements RenderEngine {
     @Override
+    public String defaultContentType() {
+        return "text/plain";
+    }
+
+    @Override
     public void process(RenderInvoker invoker, Writer writer) throws IOException {
         Object value = invoker.get(Invoker.RETURN_DATA_KEY);
         if (value != null) {

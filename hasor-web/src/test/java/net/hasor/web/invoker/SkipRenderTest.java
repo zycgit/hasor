@@ -24,6 +24,7 @@ import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.render.RenderType;
 import net.hasor.web.wrap.InvokerWrap;
 import org.junit.Test;
+import static net.hasor.web.render.RenderEngineTestSupport.renderEngine;
 import static org.junit.Assert.*;
 
 public class SkipRenderTest extends AbstractTest {
@@ -53,6 +54,11 @@ public class SkipRenderTest extends AbstractTest {
 
         public UnexpectedRenderEngine() {
             creations.incrementAndGet();
+        }
+
+        @Override
+        public String defaultContentType() {
+            return null;
         }
 
         @Override
@@ -111,10 +117,10 @@ public class SkipRenderTest extends AbstractTest {
         AtomicInteger renders = new AtomicInteger();
         try (AppContext app = Hasor.create(this.servlet30("/")).build((WebModule) binder -> {
             binder.mappingTo("/test").with(action);
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> {
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> {
                 renders.incrementAndGet();
                 writer.write(invoker.get(Invoker.RETURN_DATA_KEY).toString());
-            });
+            }));
         })) {
             assertEquals("", this.mockAndCallHttp("GET", "http://localhost/test?skip=true", app));
             assertEquals("body", this.mockAndCallHttp("GET", "http://localhost/test", app));
@@ -165,14 +171,14 @@ public class SkipRenderTest extends AbstractTest {
     public void controllerChoicesOverrideAnnotationDefaultsDuringNormalRendering() throws Throwable {
         try (AppContext app = Hasor.create(this.servlet30("/")).build((WebModule) binder -> {
             binder.mappingTo("/test").with(OverrideAction.class);
-            binder.addRender("text").toProvider(() -> (invoker, writer) -> {
+            binder.addRender("text").toProvider(() -> renderEngine("text/plain", (invoker, writer) -> {
                 fail("The annotation must not overwrite the controller's renderer choice");
-            });
-            binder.addRender("json").toProvider(() -> (invoker, writer) -> {
+            }));
+            binder.addRender("json").toProvider(() -> renderEngine("application/json", (invoker, writer) -> {
                 assertEquals("application/custom+json", invoker.contentType());
                 assertEquals(Map.of("value", "body"), invoker.get(Invoker.RETURN_DATA_KEY));
                 writer.write("overridden");
-            });
+            }));
         })) {
             assertEquals("overridden", this.mockAndCallHttp("GET", "http://localhost/test", app));
         }
